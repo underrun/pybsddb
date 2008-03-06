@@ -37,9 +37,18 @@ import sys
 #DictMixin was added
 if sys.version_info[:3] >= (2, 3, 0):
     HIGHEST_PROTOCOL = cPickle.HIGHEST_PROTOCOL
-    def _dumps(object, protocol):
-        return cPickle.dumps(object, protocol=protocol)
+# In python 2.3.*, "cPickle.dumps" accepts no
+# named parameters. "pickle.dumps" accepts them,
+# so this seems a bug.
+    if sys.version_info[:3] < (2, 4, 0):
+        def _dumps(object, protocol):
+            return cPickle.dumps(object, protocol)
+    else :
+        def _dumps(object, protocol):
+            return cPickle.dumps(object, protocol=protocol)
+
     from UserDict import DictMixin
+
 else:
     HIGHEST_PROTOCOL = None
     def _dumps(object, protocol):
