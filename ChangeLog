@@ -1,4 +1,4 @@
-4.6.1:
+4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.
   * Environments, database handles and cursors are
     maintained in a logical tree. Closing any element
@@ -11,7 +11,7 @@
   * Solved a bug when a DBEnv goes out of scope
     without closing first.
   * Add transactions to the management of closing
-    of nested objects. (not completed still!)
+    of nested objects. (not completed yet!)
   * Fix memory leaks.
   * Previous versions were inconsistent when key or
     value were "" (the null string), according to
