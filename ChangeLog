@@ -2,7 +2,7 @@
   * 'egg' (setuptools) support.
   * Environments, database handles and cursors are
     maintained in a logical tree. Closing any element
-    of the tree, implicitly closes its childs.
+    of the tree, implicitly closes its children.
   * Transactions are managed in a logical tree. When
     aborting transactions, enclosed db handles, cursors
     and transactions, are closed. If transaction commits,
