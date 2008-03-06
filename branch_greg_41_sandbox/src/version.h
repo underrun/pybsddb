@@ -1,0 +1,1 @@
+#define PY_BSDDB_VERSION "4.1.0"

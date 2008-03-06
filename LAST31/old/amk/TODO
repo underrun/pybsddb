@@ -1,0 +1,13 @@
+
+Still missing: 
+  * Test DB_RECNO support
+  * Backward compatibility with bsddbmodule possible?
+  * Test cursor type
+    * Segfault on deallocating cursor (because DB has been deallocated?)
+      I think this segfault is now fixed.
+  * Expand the test suite until it's complete
+  * Docstrings.  
+  * Wrap lock_detect() function
+  * Should the module always assume multithreading?  I think so...
+  * Finally, general tidying, re-indenting, and a careful
+reading to catch any stupid errors that I made.
