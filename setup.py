@@ -319,8 +319,8 @@ documentation as appropriate.  Not everything API
 supported has been documented in the included docs.""",
 
       author = 'Jesus Cea, Robin Dunn, Gregory P. Smith, Andrew Kuchling, Barry Warsaw',
-      author_email = 'pybsddb-users@lists.sourceforge.net',
-      url = 'http://pybsddb.sf.net/',
+      author_email = 'pybsddb@argo.es',
+      url = 'http://www.argo.es/~jcea/programacion/pybsddb.htm',
 
       packages = ['bsddb3', 'bsddb3/tests'],
       package_dir = {'bsddb3': 'Lib/bsddb',
