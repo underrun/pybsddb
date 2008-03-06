@@ -1,0 +1,1261 @@
+<p><!-- Yes this header is ugly...  Just ignore it please.  --></p>
+
+<p><html><head>
+<link rel="STYLESHEET" type="text/css" href="simple.css">
+<title>bsddb3 Python documentation</title>
+</head>
+<body background="images/wavback.jpg">
+<table><tr><td><img src="images/spacer.gif" width=80></td><td></p>
+
+<h1>Berkeley DB 3.2.x Python Extension Package</h1>
+<h2>Introduction</h2>
+<p>    This is a simple bit of documentation for the bsddb3.db Python
+    extension module which wraps the Berkeley DB 3.2.x C library.  The
+    extension module is located in a Python package along with a few
+    pure python modules.</p>
+
+<p>    It is expected that this module will be used in the following
+    general ways by different programmers in different situations.
+    The goals of this module are to allow all of these methods without
+    making things too complex for the simple cases, and without
+    leaving out funtionality needed by the complex cases.</p>
+
+<ol><li><p><strong>Backwards compatibility</strong> -- It is desirable for this package
+         to be a near drop-in replacement for the bsddb module shipped
+         with Python which is designed to wrap either DB 1.85, or the
+         1.85 compatibility interface. This means that there will need
+         to be equivalent object creation functions available,
+         (btopen(), hashopen(), and rnopen()) and the objects returned
+         will need to have the same or at least similar methods
+         available, (specifically, first(), last(), next(), and prev()
+         will need to be available without the user needing to
+         explicitly use a cursor.)  All of these have been implemented
+         in Python code in the bsddb3.__init__.py module.</p>
+
+</li>
+<li><p><strong>Simple persistent dictionary</strong> -- One small step beyond the
+         above.  The programmer may be aware of and use the new DB
+         object type directly, but only needs it from a single process
+         and thread.  The programmer should not have to be bothered
+         with using a DBEnv, and the DB object should behave as much
+         like a dictionary as possible.</p>
+
+</li>
+<li><p><strong>Concurrent access dictionaries</strong> -- This refers to the
+         ability to simultaneously have one writer and multiple
+         readers of a DB (either in multiple threads or processes) and
+         is implemented simply by creating a DBEnv with certain flags.
+         No extra work is required to allow this access mode in
+         bsddb3.</p>
+
+</li>
+<li><p><strong>Advanced transactional data store</strong> -- This mode of use is
+         where the full capabilities of the Berkeley DB library are
+         called into action.  The programmer will probably not use the
+         dictionary access methods as much as the regular methods of
+         the DB object, so he can pass transaction objects to the
+         methods.  Again, most of this advanced functionality is
+         activated simply by opening a DBEnv with the proper flags,
+         and also by using transactions and being aware of and
+         reacting to deadlock exceptions, etc.</p>
+
+</li></ol>
+
+<h2>Types Provided</h2>
+<p>    The bsddb3.db extension module provides the following object types:</p>
+<ul><li><p><strong>DB</strong>: The basic database object, capable of Hash, BTree,
+                Recno, and Queue access methods.</p>
+
+</li>
+<li><p><strong>DBEnv</strong>: Provides a Database Environment for more advanced
+                   database use.  Apps using transactions, logging,
+                   concurrent access, etc. will need to have an
+                   environment object.</p>
+
+</li>
+<li><p><strong>DBCursor</strong>: A pointer-like object used to traverse a
+                      database.</p>
+
+</li>
+<li><p><strong>DBTxn</strong>: A database transaction.  Allows for multi-file
+                   commit, abort and checkpoint of database
+                   modifications.</p>
+
+</li>
+<li><p><strong>DBLock</strong>: An opaque handle for a lock. See DBEnv.lock_get()
+                    and DBEnv.lock_put().  Locks are not necessarily
+                    associated with anything in the database, but can
+                    be used for any syncronization task across all
+                    threads and processes that have the DBEnv open.</p>
+
+</li></ul>
+
+
+<h2>Exceptions Provided</h2>
+<p>    The BerkeleyDB C API uses function return codes to signal various
+    errors.  The bsddb3.db module checks for these error codes and
+    turns them into Python exceptions, allowing you to use familiar
+    try:... except:... constructs and not have to bother with checking
+    every method's return value.</p>
+
+<p>    Each of the error codes is turned into an exception specific to
+    that error code, as outlined in the table below.  If you are using
+    the C API documentation then it is very easy to map the error
+    return codes specified there to the name of the Python exception
+    that will be raised.  Simply refer to the table below.</p>
+
+<p>    Each exception derives from the DBError exception class so if you
+    just want to catch generic errors you can use DBError to do it.
+    Since DBNotFoundError is raised when a given key is not found in
+    the database, DBNotFoundError also derives from the standard
+    KeyError exception to help make a DB look and act like a
+    dictionary.</p>
+
+<p>    When any of these exceptions is raised, the associated value is a
+    tuple containing an integer representing the error code and a
+    string for the error message itself.</p>
+
+<p>
+<TABLE BORDER=1 CELLPADDING=2>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBError</strong>               </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Base class, all others derive from this </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBIncompleteError</strong>     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_INCOMPLETE </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBKeyEmptyError</strong>       </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_KEYEMPTY </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBKeyExistError</strong>       </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_KEYEXIST </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBLockDeadlockError</strong>   </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_LOCK_DEADLOCK </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBLockNotGrantedError</strong> </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_LOCK_NOTGRANTED </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBNotFoundError</strong>       </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_NOTFOUND (derives from KeyError too) </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBOldVersionError</strong>     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_OLD_VERSION </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBRunRecoveryError</strong>    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_RUNRECOVERY </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBVerifyBadError</strong>      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_VERIFY_BAD </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBNoServerError</strong>       </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_NOSERVER </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBNoServerHomeError</strong>   </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_NOSERVER_HOME </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBNoServerIDError</strong>     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> DB_NOSERVER_ID </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBInvalidArgError</strong>     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> EINVAL </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBAccessError</strong>         </TD>
+  <TD ALIGN=CENTER COLSPAN=1> EACCES </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBNoSpaceError</strong>        </TD>
+  <TD ALIGN=CENTER COLSPAN=1> ENOSPC </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBNoMemoryError</strong>       </TD>
+  <TD ALIGN=CENTER COLSPAN=1> ENOMEM </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBAgainError</strong>          </TD>
+  <TD ALIGN=CENTER COLSPAN=1> EAGAIN </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBBusyError</strong>           </TD>
+  <TD ALIGN=CENTER COLSPAN=1> EBUSY  </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBFileExistsError</strong>     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> EEXIST </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBNoSuchFileError</strong>     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> ENOENT </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1> <strong>DBPermissionsError</strong>    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> EPERM  </TD>
+ </TR>
+</TABLE></p>
+
+
+<h2>Other Package Modules</h2>
+<ul><li><p><strong>dbshelve.py</strong>: This is an implementation of the standard
+          Python shelve concept for storing objects that uses bsddb3
+          specifically, and also exposes some of the more advanced
+          methods and capabilities of the underlying DB.</p>
+
+</li>
+<li><p><strong>dbtables.py</strong>: This is a module by Gregory Smith that
+          implements a simplistic table structure on top of a DB.</p>
+
+</li>
+<li><p><strong>dbutils.py</strong>: A catch-all for python code that is generally
+          useful when working with DB's</p>
+
+</li>
+<li><p><strong>dbobj.py</strong>: Contains subclassable versions of DB and DBEnv.</p>
+
+</li>
+<li><p><strong>dbrecio.py</strong>: Contains the DBRecIO class that can be used to
+          do partial reads and writes from a DB record using a
+          file-like interface. Contributed by Itamar Shtull-Trauring.</p>
+
+</li></ul>
+
+<h2>Testing</h2>
+<p>    A full unit test suite is being developed to exercise the various
+    object types, their methods and the various usage modes described
+    in the introduction.  <a href="http://pyunit.sourceforge.net/">PyUnit</a> is
+    used and the tests are structured such that they can be run
+    unattended and automated.  There are currently over 150 test cases!</p>
+
+
+<h2>Reference</h2>
+<p>    See the C language API <a href="http://sleepycat.com/docs/api_c/c_index.html">online
+    documentation</a> at
+    sleepycat.com (or the <a href="api_c/c_index.html">local copy</a> ) for more
+    details of the functionality of each of these methods.  The names
+    of all the Python methods should be the same or similar to the
+    names in the C API.</p>
+
+<p>    This version of the documentation is for Berkeley DB 3.3.  If you
+    build this module for an earlier version of Berkeley DB then the
+    items below and in the Sleepycat docs may not be entirely
+    accurate.</p>
+
+<p>    <strong>NOTE:</strong> All the methods shown below having more than one keyword
+    argument are actually implemented using keyword argument parsing,
+    so you can use keywords to provide optional parameters as
+    desired.  Those that have only a single optional argument are
+    implemented without keyword parsing to help keep the
+    implementation simple.  If this is too confusing let me know and
+    I'll think about using keywords for everything.</p>
+
+<h3>DBEnv Attributes</h3>
+<dl><dt>        db_home</dt><dd><p>database home directory (read-only)</p>
+
+</dd></dl>
+
+<h3>DBEnv Methods</h3>
+<dl><dt>        DBEnv(flags=0):</dt><dd><p>Constructor
+                <a href="api_c/env_create.html">More info...</a></p>
+
+</dd>
+<dt>        close(flags=0):</dt><dd><p>Close the database environment, freeing resources.
+                <a href="api_c/env_close.html">More info...</a></p>
+
+</dd>
+<dt>        open(homedir, flags=0, mode=0660):</dt><dd><p>Prepare the database environment for use.
+                <a href="api_c/env_open.html">More info...</a></p>
+
+</dd>
+<dt>        remove(homedir, flags=0):</dt><dd><p>Remove a database environment.
+                <a href="api_c/env_remove.html">More info...</a></p>
+
+</dd>
+<dt>        set_cachesize(gbytes, bytes, ncache=0):</dt><dd><p>Set the size of the shared memory buffer pool
+                <a href="api_c/env_set_cachesize.html">More info...</a></p>
+
+</dd>
+<dt>        set_data_dir(dir):</dt><dd><p>Set the environment data directory
+                <a href="api_c/env_set_data_dir.html">More info...</a></p>
+
+</dd>
+<dt>        set_flags(flags, onoff):</dt><dd><p>Set additional flags for the DBEnv.  The onoff
+                parameter specifes if the flag is set or cleared.
+                <a href="api_c/env_set_flags.html">More info...</a></p>
+
+</dd>
+<dt>        set_tmp_dir(dir):</dt><dd><p>Set the directory to be used for temporary files
+                <a href="api_c/env_set_tmp_dir.html">More info...</a></p>
+
+</dd>
+<dt>        set_get_returns_none(flag):</dt><dd><p>By default when DB.get or any of the DBCursor methods
+                that wrap DBCursor.get returns DB_NOTFOUND then None
+                is returned instead of raising an exception in order
+                to help emulate Python dictionaries.  You can use this
+                method to change that behaivour.</p>
+<p>                The default of returning None makes it easy to do
+                things like this:</p>
+<PRE>
+                    data = db.get(key)
+                    if data:
+                        doSomething(data)
+
+</PRE>
+
+<p>                or this:</p>
+<PRE>
+                    rec = cursor.first()
+                    while rec:
+                        print rec
+                        rec = cursor.next()
+
+</PRE>
+
+<p>                instead of having to catch a DBNotFoundError.  The
+                downside to this it that it is inconsistent with the
+                rest of the package and noticeably diverges from the
+                Sleepycat DB API.  If you prefer to have the get
+                methods raise an exception when a key is not found
+                then you can use this method to tell them to do so.</p>
+
+<p>                Calling set_get_returns_none on a DBEnv object will
+                set the default for all DB's later created within that
+                environment.  Calling it on a DB object sets the
+                behaviour for that DB only.</p>
+
+<p>                The previous setting is retured.</p>
+
+
+</dd>
+<dt>        set_lg_bsize(size):</dt><dd><p>Set the size of the in-memory log buffer, in bytes.
+                <a href="api_c/env_set_lg_bsize.html">More info...</a></p>
+
+</dd>
+<dt>        set_lg_dir(dir):</dt><dd><p>The path of a directory to be used as the location of
+                logging files.  Log files created by the Log Manager
+                subsystem will be created in this directory.
+                <a href="api_c/env_set_lg_dir.html">More info...</a></p>
+
+</dd>
+<dt>        set_lg_max(size):</dt><dd><p>Set the maximum size of a single file in the log, in
+                bytes.
+                <a href="api_c/env_set_lg_max.html">More info...</a></p>
+
+</dd>
+<dt>        set_lk_detect(mode):</dt><dd><p>Set the automatic deadlock detection mode
+                <a href="api_c/env_set_lk_detect.html">More info...</a></p>
+
+</dd>
+<dt>        set_lk_max(max):</dt><dd><p>Set the maximum number of locks.  (This method is
+                deprecated.)
+                <a href="api_c/env_set_lk_max.html">More info...</a></p>
+
+</dd>
+<dt>        set_lk_max_locks(max):</dt><dd><p>Set the maximum number of locks supported by the
+                Berkeley DB lock subsystem.
+                <a href="api_c/env_set_lk_max_locks.html">More info...</a></p>
+
+</dd>
+<dt>        set_lk_max_lockers(max):</dt><dd><p>Set the maximum number of simultaneous locking
+                entities supported by the Berkeley DB lock subsystem.
+                <a href="api_c/env_set_lk_max_lockers.html">More info...</a></p>
+
+</dd>
+<dt>        set_lk_max_objects(max):</dt><dd><p>Set the maximum number of simultaneously locked
+                objects supported by the Berkeley DB lock subsystem.
+                <a href="api_c/env_set_lk_max_lockers.html">More info...</a></p>
+
+</dd>
+<dt>        set_mp_mmapsize(size):</dt><dd><p>Files that are opened read-only in the memory pool
+                (and that satisfy a few other criteria) are, by
+                default, mapped into the process address space instead
+                of being copied into the local cache.  This can result
+                in better-than-usual performance, as available virtual
+                memory is normally much larger than the local cache,
+                and page faults are faster than page copying on many
+                systems.  However, in the presence of limited virtual
+                memory it can cause resource starvation, and in the
+                presence of large databases, it can result in immense
+                process sizes.</p>
+<p>                This method sets the maximum file size, in bytes, for
+                a file to be mapped into the process address space.
+                If no value is specified, it defaults to 10MB.
+                <a href="api_c/env_set_mp_mmapsize.html">More info...</a></p>
+
+
+</dd>
+<dt>        log_archive(flags=0):</dt><dd><p>Returns a list of log or database file names.  By
+                default, log_archive returns the names of all of the
+                log files that are no longer in use (e.g., no longer
+                involved in active transactions), and that may safely
+                be archived for catastrophic recovery and then removed
+                from the system.
+                <a href="api_c/log_archive.html">More info...</a></p>
+
+</dd>
+<dt>        lock_detect(atype, flags=0):</dt><dd><p>Run one iteration of the deadlock detector, returns
+                the number of transactions aborted.
+                <a href="api_c/lock_detect.html">More info...</a></p>
+
+</dd>
+<dt>        lock_get(locker, obj, lock_mode, flags=0):</dt><dd><p>Aquires a lock and returns a handle to it as a DBLock
+                object.  The locker parameter is an integer
+                representing the entity doing the locking, and obj is a
+                string representing the item to be locked.
+                <a href="api_c/lock_get.html">More info...</a></p>
+
+</dd>
+<dt>        lock_id():</dt><dd><p>Aquires a locker id, guaranteed to be unique across
+                all threads and processes that have the DBEnv open.
+                <a href="api_c/lock_id.html">More info...</a></p>
+
+</dd>
+<dt>        lock_put(lock):</dt><dd><p>Release the lock.
+                <a href="api_c/lock_put.html">More info...</a></p>
+
+</dd>
+<dt>        lock_stat(flags=0):</dt><dd><p>Returns a dictionary of locking subsystem statisticas
+                with the following keys:</p>
+<p>
+<TABLE BORDER=1 CELLPADDING=2>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>lastid        </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The last allocated lock ID. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nmodes        </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of lock modes. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>maxlocks      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The maximum number of locks possible. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>maxlockers	</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The maximum number of lockers possible. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>maxobjects	</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The maximum number of objects possible. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nlocks	</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of current locks.  </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>maxnlocks	</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The maximum number of locks at any one time.  </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nlockers      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of current lockers. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nobjects	</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of current objects.  </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>maxnobjects	</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The maximum number of objects at any one time. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>maxnlockers   </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The maximum number of lockers at any one time. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nrequests     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The total number of locks requested. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nreleases     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The total number of locks released. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nnowaits      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The total number of lock requests that failed because DB_LOCK_NOWAIT was set. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nconflicts    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The total number of locks not immediately available due to conflicts. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>ndeadlocks    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of deadlocks detected. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>regsize       </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The size of the region. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>region_wait   </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of times that a thread of control was forced to wait before obtaining the region lock. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>region_nowait </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of times that a thread of control was able to obtain the region lock without waiting. </TD>
+ </TR>
+</TABLE></p>
+
+<p>                <a href="api_c/lock_stat.html">More info...</a></p>
+
+
+</dd>
+<dt>        set_tx_max(max):</dt><dd><p>Set the maximum number of active transactions
+                <a href="api_c/env_set_tx_max.html">More info...</a></p>
+
+</dd>
+<dt>        txn_begin(parent=None, flags=0):</dt><dd><p>Creates and begins a new transaction.  A DBTxn object
+                is returned.
+                <a href="api_c/txn_begin.html">More info...</a></p>
+
+</dd>
+<dt>        txn_checkpoint(kbyte=0, min=0, flag=0):</dt><dd><p>Flushes the underlying memory pool, writes a
+                checkpoint record to the log and then flushes the log.
+                <a href="api_c/txn_checkpoint.html">More info...</a></p>
+
+</dd>
+<dt>        txn_stat():</dt><dd><p>Return a dictionary of transaction statistics with the
+                following keys:</p>
+<p>
+<TABLE BORDER=1 CELLPADDING=2>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>time_ckp     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The time the last completed checkpoint finished (as the number of seconds since the Epoch,     returned by the IEEE/ANSI Std 1003.1 (POSIX) time interface). </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>last_txnid   </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The last transaction ID allocated. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>maxtxns      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The maximum number of active transactions possible. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nactive      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of transactions that are currently active. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>maxnactive   </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The maximum number of active transactions at any one time. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nbegins      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of transactions that have begun. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>naborts      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of transactions that have aborted. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>ncommits     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of transactions that have committed. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>regsize      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The size of the region. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>region_wait  </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of times that a thread of control was forced to wait before obtaining the region     lock. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>region_nowait</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of times that a thread of control was able to obtain the region lock without     waiting.  </TD>
+ </TR>
+</TABLE></p>
+
+<p>                <a href="api_c/txn_stat.html">More info...</a></p>
+
+
+</dd></dl>
+
+<h3>DB Methods</h3>
+<dl><dt>        DB(dbEnv=None, flags=0)</dt><dd><p>Constructor.
+                <a href="api_c/db_create.html">More info...</a></p>
+
+</dd>
+<dt>        append(data, txn=None)</dt><dd><p>A convenient version of put() that can be used for
+                Recno or Queue databases.  The DB_APPEND flag is
+                automatically used, and the record number is
+                returned.
+                <a href="api_c/db_put.html#DB_APPEND">More info...</a></p>
+
+</dd>
+<dt>        associate(secondaryDB, callback, flags=0)</dt><dd><p>Used to associate secondaryDB to act as a secondary
+                index for this (primary) database.  The callback
+                parameter should be a reference to a Python callable
+                object that will consruct and return the secondary key
+                or DB_DONOTINDEX if the item should not be indexed.
+                The parameters the callback will receive are the
+                primaryKey and primaryData values.
+                <a href="api_c/db_associate.html">More info...</a></p>
+
+</dd>
+<dt>        close(flags=0)</dt><dd><p>Flushes cached data and closes the database
+                <a href="api_c/db_close.html">More info...</a></p>
+
+</dd>
+<dt>        consume(txn=None, flags=0)</dt><dd><p>For a database with the Queue access method, returns
+                the record number and data from the first available
+                record and deletes it from the queue.
+                <a href="api_c/db_get.html#DB_CONSUME">More info...</a></p>
+
+</dd>
+<dt>        consume_wait(txn=None, flags=0)</dt><dd><p>For a database with the Queue access method, returns
+                the record number and data from the first available
+                record and deletes it from the queue.  If the Queue
+                database is empty, the thread of control will wait
+                until there is data in the queue before returning.
+                <a href="api_c/db_get.html#DB_CONSUME_WAIT">More info...</a></p>
+
+</dd>
+<dt>        cursor(txn=None, flags=0)</dt><dd><p>Create a cursor on the DB and returns a DBCursor
+                object.  If a transaction is passed then the cursor
+                can only be used within that transaction and you
+                <em>must</em> be sure to close the cursor before commiting
+                the transaction.
+                <a href="api_c/db_cursor.html">More info...</a></p>
+
+</dd>
+<dt>        delete(key, txn=None, flags=0)</dt><dd><p>Removes a key/data pair from the database
+                <a href="api_c/db_del.html">More info...</a></p>
+
+</dd>
+<dt>        fd()</dt><dd><p>Returns a file descriptor for the database
+                <a href="api_c/db_fd.html">More info...</a></p>
+
+</dd>
+<dt>        get(key, default=None, txn=None, flags=0, dlen=-1, doff=-1)</dt><dd><p>Returns the data object associated with key.  If key
+                is an integer then the DB_SET_RECNO flag is
+                automatically set for BTree databases and the actual
+                key and the data value are returned as a tuple.  If
+                default is given then it is returned if the key is not
+                found in the database.  Partial records can be read
+                using dlen and doff, however be sure to not read
+                beyond the end of the actual data or you may get
+                garbage.
+                <a href="api_c/db_get.html">More info...</a></p>
+
+</dd>
+<dt>        get_both(key, data, txn=None, flags=0)</dt><dd><p>A convenient version of get() that automatically sets
+                the DB_GET_BOTH flag, and which will be successful
+                only if both the key and data value are found in the
+                database.  (Can be used to verify the presence of a
+                record in the database when duplicate keys are
+                allowed.)
+                <a href="api_c/db_get.html#DB_GET_BOTH">More info...</a></p>
+
+</dd>
+<dt>        get_byteswapped()</dt><dd><p>May be used to determine if the database was created
+                on a machine with the same endianess as the current
+                machine.
+                <a href="api_c/db_get_byteswapped.html">More info...</a></p>
+
+</dd>
+<dt>        get_size(key, txn=None)</dt><dd><p>Return the size of the data object associated with key.</p>
+
+</dd>
+<dt>        get_type()</dt><dd><p>Return the database's access method type
+                <a href="api_c/db_get_type.html">More info...</a></p>
+
+</dd>
+<dt>        join(cursorList, flags=0)</dt><dd><p>Create and return a specialized cursor for use in
+                performing joins on secondary indices
+                <a href="api_c/db_join.html">More info...</a></p>
+
+</dd>
+<dt>        key_range(key, txn=None, flags=0)</dt><dd><p>Returns an estimate of the proportion of keys that are
+                less than, equal to and greater than the specified key.
+                <a href="api_c/db_key_range.html">More info...</a></p>
+
+</dd>
+<dt>        open(filename, dbname=None, dbtype=DB_UNKNOWN, flags=0, mode=0660)</dt><dd><p>Opens the database named dbname in the file named
+                fileName. The dbname argument is optional and allows
+                applications to have multiple logical databases in a
+                single physical file. It is an error to attempt to
+                open a second database in a file that was not
+                initially created using a database name. In-memory
+                databases never intended to be shared or preserved on
+                disk may be created by setting both the fileName and
+                dbName arguments to None.
+                <a href="api_c/db_open.html">More info...</a></p>
+
+</dd>
+<dt>        put(key, data, txn=None, flags=0, dlen=-1, doff=-1)</dt><dd><p>Stores the key/data pair in the database.  If the
+                DB_APPEND flag is used and the database is using the
+                Recno or Queue access method then the record number
+                allocated to the data is returned.  Partial data
+                objects can be written using dlen and doff.
+                <a href="api_c/db_put.html">More info...</a></p>
+
+</dd>
+<dt>        remove(filename, dbname=None, flags=0)</dt><dd><p>Remove a database
+                <a href="api_c/db_remove.html">More info...</a></p>
+
+</dd>
+<dt>        rename(filename, dbname, newname, flags=0)</dt><dd><p>Rename a database
+                <a href="api_c/db_rename.html">More info...</a></p>
+
+</dd>
+<dt>        set_bt_minkey(minKeys)</dt><dd><p>Set the minimum number of keys that will be stored on
+                any single BTree page
+                <a href="api_c/db_set_bt_minkey.html">More info...</a></p>
+
+</dd>
+<dt>        set_cachesize(gbytes, bytes, ncache=0)</dt><dd><p>Set the size of the database's shared memory buffer
+                pool
+                <a href="api_c/db_set_cachesize.html">More info...</a></p>
+
+</dd>
+<dt>        set_get_returns_none(flag):</dt><dd><p>By default when DB.get or any of the DBCursor methods
+                that wrap DBCursor.get returns DB_NOTFOUND then None
+                is returned instead of raising an exception in order
+                to help emulate Python dictionaries.  You can use this
+                method to change that behaivour.</p>
+<p>                The default of returning None makes it easy to do
+                things like this:</p>
+<PRE>
+                    data = db.get(key)
+                    if data:
+                        doSomething(data)
+
+</PRE>
+
+<p>                or this:</p>
+<PRE>
+                    rec = cursor.first()
+                    while rec:
+                        print rec
+                        rec = cursor.next()
+
+</PRE>
+
+<p>                instead of having to catch a DBNotFoundError.  The
+                downside to this it that it is inconsistent with the
+                rest of the package and noticeably diverges from the
+                Sleepycat DB API.  If you prefer to have the get
+                methods raise an exception when a key is not found
+                then you can use this method to tell them to do so.</p>
+
+<p>                Calling set_get_returns_none on a DBEnv object will
+                set the default for all DB's later created within that
+                environment.  Calling it on a DB object sets the
+                behaviour for that DB only.</p>
+
+<p>                The previous setting is retured.</p>
+
+
+</dd>
+<dt>        set_flags(flags)</dt><dd><p>Set additional flags on the database before opening.
+                <a href="api_c/db_set_flags.html">More info...</a></p>
+
+</dd>
+<dt>        set_h_ffactor(ffactor)</dt><dd><p>Set the desired density within the hash table
+                <a href="api_c/db_set_h_ffactor.html">More info...</a></p>
+
+</dd>
+<dt>        set_h_nelem(nelem)</dt><dd><p>Set an estimate of the final size of the hash table
+                <a href="api_c/db_set_h_nelem.html">More info...</a></p>
+
+</dd>
+<dt>        set_lorder(lorder)</dt><dd><p>Set the byte order for integers in the stored database
+                metadata.
+                <a href="api_c/db_set_lorder.html">More info...</a></p>
+
+</dd>
+<dt>        set_pagesize(pagesize)</dt><dd><p>Set the size of the pages used to hold items in the
+                database, in bytes.
+                <a href="api_c/db_set_pagesize.html">More info...</a></p>
+
+</dd>
+<dt>        set_re_delim(delim)</dt><dd><p>Set the delimiting byte used to mark the end of a
+                record in the backing source file for the Recno access
+                method.
+                <a href="api_c/db_set_re_delim.html">More info...</a></p>
+
+</dd>
+<dt>        set_re_len(length)</dt><dd><p>For the Queue access method, specify that the records
+                are of length length.  For the Recno access method,
+                specify that the records are fixed-length, not byte
+                delimited, and are of length length.
+                <a href="api_c/db_set_re_len.html">More info...</a></p>
+
+</dd>
+<dt>        set_re_pad(pad)</dt><dd><p>Set the padding character for short, fixed-length
+                records for the Queue and Recno access methods.
+                <a href="api_c/db_set_re_pad.html">More info...</a></p>
+
+</dd>
+<dt>        set_re_source(source)</dt><dd><p>Set the underlying source file for the Recno access method
+                <a href="api_c/db_set_re_source.html">More info...</a></p>
+
+</dd>
+<dt>        set_q_extentsize(extentsize)</dt><dd><p>Set the size of the extents used to hold pages in a
+                Queue database, specified as a number of pages. Each
+                extent is created as a separate physical file. If no
+                extent size is set, the default behavior is to create
+                only a single underlying database file.
+                <a href="api_c/db_set_q_extentsize.html">More info...</a></p>
+
+</dd>
+<dt>        stat(flags=0)</dt><dd><p>Return a dictionary containing database
+                statistics with the following keys.</p>
+<p>                For Hash databases:</p>
+
+<p>
+<TABLE BORDER=1 CELLPADDING=2>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>magic    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Magic number that identifies the file as a Hash file.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>version  </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The version of the Hash database.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nkeys    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of unique keys in the database.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>ndata    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of key/data pairs in the database.]</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>pagesize </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The underlying Hash database page (and bucket) size.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nelem    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The estimated size of the hash table specified at database creation time.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>ffactor  </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The desired fill factor (number of items per bucket) specified at database creation time.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>buckets  </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of hash buckets.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>free     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of pages on the free list.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>bfree    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of bytes free on bucket pages.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>bigpages </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of big key/data pages.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>big_bfree</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of bytes free on big item pages.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>overflows</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of overflow pages (overflow pages are pages that contain items that did not fit in the main bucket page).</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>ovfl_free</TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of bytes free on overflow pages.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>dup      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of duplicate pages.</TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>dup_free </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of bytes free on duplicate pages.</TD>
+ </TR>
+</TABLE></p>
+
+<p>                For BTree and Recno databases:</p>
+
+<p>
+<TABLE BORDER=1 CELLPADDING=2>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>magic      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Magic number that identifies the file as a Btree database. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>version    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The version of the Btree database. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nkeys      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> For the Btree Access Method, the number of unique keys in the database. <p>     For the Recno Access Method, the number of records in the database. If the database has     been configured to not re-number records during deletion, the number of records may include     records that have been deleted. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>ndata      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> For the Btree Access Method, the number of key/data pairs in the database, <p>     For the Recno Access Method, the number of records in the database. If the database has     been configured to not re-number records during deletion, the number of records may include    records that have been deleted. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>pagesize   </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Underlying database page size. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>minkey     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The minimum keys per page. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>re_len     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The length of fixed-length records. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>re_pad     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The padding byte value for fixed-length records. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>levels     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of levels in the database. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>int_pg     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of database internal pages. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>leaf_pg    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of database leaf pages. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>dup_pg     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of database duplicate pages. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>over_pg    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of database overflow pages. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>free       </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of pages on the free list. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>int_pgfree </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of bytes free in database internal pages. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>leaf_pgfree</TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of bytes free in database leaf pages. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>dup_pgfree </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of bytes free in database duplicate pages. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>over_pgfree</TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of bytes free in database overflow pages. </TD>
+ </TR>
+</TABLE></p>
+
+<p>                For Queue databases:</p>
+
+<p>
+<TABLE BORDER=1 CELLPADDING=2>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>magic      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Magic number that identifies the file as a Queue file. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>version    </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The version of the Queue file type. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>nkeys      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of records in the database. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>ndata      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The number of records in the database. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>pagesize   </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Underlying database page size. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>pages      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of pages in the database. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>re_len     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The length of the records. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>re_pad     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> The padding byte value for the records. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>pgfree     </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Number of bytes free in database pages. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>start      </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Start offset. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>first_recno</TD>
+  <TD ALIGN=CENTER COLSPAN=1> First undeleted record in the database. </TD>
+ </TR>
+ <TR>
+  <TD ALIGN=CENTER COLSPAN=1>cur_recno  </TD>
+  <TD ALIGN=CENTER COLSPAN=1> Last allocated record number in the database. </TD>
+ </TR>
+</TABLE></p>
+
+<p>                <a href="api_c/db_stat.html">More info...</a></p>
+
+
+</dd>
+<dt>        sync(flags=0)</dt><dd><p>Flushes any cached information to disk
+                <a href="api_c/db_sync.html">More info...</a></p>
+
+</dd>
+<dt>        truncate(txn=None, flags=0)</dt><dd><p>Empties the database, discarding all records it
+                contains. The number of records discarded from the
+                database is returned.
+                <a href="api_c/db_truncate.html">More info...</a></p>
+
+</dd>
+<dt>        upgrade(filename, flags=0)</dt><dd><p>Upgrades all of the databases included in the file
+                filename, if necessary.
+                <a href="api_c/db_upgrade.html">More info...</a></p>
+
+</dd>
+<dt>        verify(filename, dbname=None, outfile=None, flags=0)</dt><dd><p>Verifies the integrity of all databases in the file
+                specified by the filename argument, and optionally
+                outputs the databases' key/data pairs to a file.
+                <a href="api_c/db_verify.html">More info...</a></p>
+
+</dd></dl>
+
+<h3>DB Mapping and Compatibility Methods</h3>
+<p>        These methods of the DB type are for implementing the Mapping
+        Interface, as well as others for making a DB behave as much
+        like a dictionary as possible.  The main downside to using a
+        DB as a dictionary is you are not able to specify a transaction
+        object.</p>
+
+<dl><dt>        DB_length()            [ usage: len(db) ]</dt><dd><p>Return the number of key/data pairs in the database.</p>
+
+</dd>
+<dt>        DB_subscript(key)      [ usage: db[key] ]</dt><dd><p>Return the data associated with key.</p>
+
+</dd>
+<dt>        DB_ass_sub(key, data)  [ usage: db[key] = data ]</dt><dd><p>Assign or update a key/data pair, or delete a key/data
+                pair if data is NULL.</p>
+
+</dd>
+<dt>        keys(txn=None)</dt><dd><p>Return a list of all keys in the database.  Warning:
+                this method traverses the entire database so it can
+                possibly take a long time to complete.</p>
+
+</dd>
+<dt>        items(txn=None)</dt><dd><p>Return a list of tuples of all key/data pairs in the
+                database.  Warning: this method traverses the entire
+                database so it can possibly take a long time to
+                complete.</p>
+
+</dd>
+<dt>        values(txn=None)</dt><dd><p>Return a list of all data values in the database.
+                Warning: this method traverses the entire database so
+                it can possibly take a long time to complete.</p>
+
+</dd>
+<dt>        has_key(key, txn=None)</dt><dd><p>Returns true if key is present in the
+                database.</p>
+
+</dd></dl>
+
+<h3>DBCursor Methods</h3>
+<dl><dt>        close()</dt><dd><p>Discards the cursor.  If the cursor is created within
+                a transaction then you <em>must</em> be sure to close the
+                cursor before commiting the transaction.
+                <a href="api_c/dbc_close.html">More info...</a></p>
+
+</dd>
+<dt>        count(flags=0)</dt><dd><p>Returns a count of the number of duplicate data items
+                for the key referenced by the cursor.
+                <a href="api_c/dbc_count.html">More info...</a></p>
+
+</dd>
+<dt>        delete(flags=0)</dt><dd><p>Deletes the key/data pair currently referenced by the
+                cursor.
+                <a href="api_c/dbc_del.html">More info...</a></p>
+
+</dd>
+<dt>        dup(flags=0)</dt><dd><p>Create a new cursor
+                <a href="api_c/dbc_del.html">More info...</a></p>
+
+</dd>
+<dt>        put(key, data, flags=0)</dt><dd><p>Stores the key/data pair into the database.
+                <a href="api_c/dbc_put.html">More info...</a></p>
+
+</dd>
+<dt>        get(flags)</dt><dd><p>See get(key, data, flags) below.</p>
+
+</dd>
+<dt>        get(key, flags)</dt><dd><p>See get(key, data, flags) below.</p>
+
+</dd>
+<dt>        get(key, data, flags)</dt><dd><p>Retrieves key/data pairs from the database using the
+                 cursor.  All the specific functionalities of the get
+                 method are actually provided by the various methods
+                 below, which are the preferred way to fetch data
+                 using the cursor.  These generic interfaces are only
+                 provided as an inconvenience.
+                 <a href="api_c/dbc_get.html">More info...</a></p>
+
+</dd></dl>
+
+<h3>DBCursor Get Methods</h3>
+<p>        These DBCursor methods are all wrappers around the get()
+        function in the C API.</p>
+
+<dl><dt>        current(flags=0)</dt><dd><p>Returns the key/data pair currently referenced by the
+                cursor.
+                <a href="api_c/dbc_get.html#DB_CURRENT">More info...</a></p>
+
+</dd>
+<dt>        first(flags=0)</dt><dd><p>Position the cursor to the first key/data pair and
+                return it.
+                <a href="api_c/dbc_get.html#DB_FIRST">More info...</a></p>
+
+</dd>
+<dt>        last(flags=0)</dt><dd><p>Position the cursor to the last key/data pair and
+                return it.
+                <a href="api_c/dbc_get.html#DB_LAST">More info...</a></p>
+
+</dd>
+<dt>        next(flags=0)</dt><dd><p>Position the cursor to the next key/data pair and
+                return it.
+                <a href="api_c/dbc_get.html#DB_NEXT">More info...</a></p>
+
+</dd>
+<dt>        prev(flags=0)</dt><dd><p>Position the cursor to the previous key/data pair and
+                return it.
+                <a href="api_c/dbc_get.html#DB_PREV">More info...</a></p>
+
+</dd>
+<dt>        consume(flags=0)</dt><dd><p>For a database with the Queue access method, returns
+                the record number and data from the first available
+                record and deletes it from the queue.</p>
+<p>                <em>NOTE:</em> This method is deprecated in Berkeley DB
+                version 3.2 in favor of the new consume method in the
+                DB class.</p>
+
+
+</dd>
+<dt>        get_both(key, data, flags=0)</dt><dd><p>Like set() but positions the cursor to the record
+                matching both key and data.  (An alias for this is
+                set_both, which makes more sense to me...)
+                <a href="api_c/dbc_get.html#DB_GET_BOTH">More info...</a></p>
+
+</dd>
+<dt>        get_recno()</dt><dd><p>Return the record number associated with the cursor.
+                The database must use the BTree access method and have
+                been created with the DB_RECNUM flag.
+                <a href="api_c/dbc_get.html#DB_GET_RECNO">More info...</a></p>
+
+</dd>
+<dt>        join_item()</dt><dd><p>For cursors returned from the DB.join method, returns
+                the combined key value from the joined cursors.
+                <a href="api_c/dbc_get.html#DB_JOIN_ITEM">More info...</a></p>
+
+</dd>
+<dt>        next_dup(flags=0)</dt><dd><p>If the next key/data pair of the database is a
+                duplicate record for the current key/data pair, the
+                cursor is moved to the next key/data pair of the
+                database, and that pair is returned.
+                <a href="api_c/dbc_get.html#DB_NEXT_DUP">More info...</a></p>
+
+</dd>
+<dt>        next_nodup(flags=0)</dt><dd><p>The cursor is moved to the next non-duplicate key/data
+                pair of the database, and that pair is returned.
+                <a href="api_c/dbc_get.html#DB_NEXT_NODUP">More info...</a></p>
+
+</dd>
+<dt>        prev_nodup(flags=0)</dt><dd><p>The cursor is moved to the previous non-duplicate
+                key/data pair of the database, and that pair is
+                returned.
+                <a href="api_c/dbc_get.html#DB_PREV_NODUP">More info...</a></p>
+
+</dd>
+<dt>        set(key, flags=0)</dt><dd><p>Move the cursor to the specified key in the database
+                and return the key/data pair found there.
+                <a href="api_c/dbc_get.html#DB_SET">More info...</a></p>
+
+</dd>
+<dt>        set_range(key, flags=0)</dt><dd><p>Identical to set() except that in the case of the BTree
+                access method, the returned key/data pair is the
+                smallest key greater than or equal to the specified
+                key (as determined by the comparison function),
+                permitting partial key matches and range searches.
+                <a href="api_c/dbc_get.html#DB_SET_RANGE">More info...</a></p>
+
+</dd>
+<dt>        set_recno(recno, flags=0)</dt><dd><p>Move the cursor to the specific numbered record of the
+                database, and return the associated key/data pair.
+                The underlying database must be of type Btree and it
+                must have been created with the DB_RECNUM flag.
+                <a href="api_c/dbc_get.html#DB_SET_RECNO">More info...</a></p>
+
+</dd>
+<dt>        set_both(key, data, flags=0)</dt><dd><p>See get_both().
+                <a href="api_c/dbc_get.html#DB_GET_BOTH">More info...</a></p>
+
+</dd></dl>
+
+<h3>DBTxn Methods</h3>
+<dl><dt>        abort()</dt><dd><p>Aborts the transaction
+                <a href="api_c/txn_abort.html">More info...</a></p>
+
+</dd>
+<dt>        commit(flags=0)</dt><dd><p>Ends the transaction, committing any changes to the
+                databases.
+                <a href="api_c/txn_commit.html">More info...</a></p>
+
+</dd>
+<dt>        id()</dt><dd><p>The txn_id function returns the unique transaction id
+                associated with the specified transaction.
+                <a href="api_c/txn_id.html">More info...</a></p>
+
+</dd>
+<dt>        prepare(gid)</dt><dd><p>Initiates the beginning of a two-phase commit.
+                Begining with BerkeleyDB 3.3 a global identifier
+                paramater is required, which is a value unique across
+                all processes involved in the commit.  It must be a
+                string of DB_XIDDATASIZE bytes.
+                <a href="api_c/txn_prepare.html">More info...</a></p>
+
+</dd></dl>
+
+<h3>DBLock</h3>
+<p>        The DBLock objects have no methods or attributes.  They are
+        just opaque handles to the lock in question.</p>
+
+
+
+
+<p><hr></p>
+
+<p>Document Version: $Id$</p>
+
+<p>This is a StructuredText document.  To see the original, <a href="bsddb3.txt">click
+here</a></p>
+
+<p></td></tr></table></body></html>
+</p>
+
+
