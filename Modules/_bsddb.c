@@ -2008,12 +2008,16 @@ DB_open(DBObject* self, PyObject* args, PyObject* kwargs)
         return NULL;
     }
 
-    if (txnobj) {
+#if (DBVER >= 41)
+    if (txn) {  /* Can't use 'txnobj' because could be 'txnobj==Py_None' */
         INSERT_IN_DOUBLE_LINKED_LIST_TXN(((DBTxnObject *)txnobj)->children_dbs,self);
         self->txn=(DBTxnObject *)txnobj;
     } else {
         self->txn=NULL;
     }
+#else
+    self->txn=NULL;
+#endif
 
     MYDB_BEGIN_ALLOW_THREADS;
 #if (DBVER >= 41)

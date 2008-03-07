@@ -15,6 +15,11 @@ except ImportError:
 
 
 class DBSequenceTest(unittest.TestCase):
+    import sys
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
     def setUp(self):
         self.int_32_max = 0x100000000
         self.homeDir = os.path.join(tempfile.gettempdir(), 'db_home%d'%os.getpid())
