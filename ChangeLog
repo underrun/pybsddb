@@ -1,3 +1,5 @@
+4.6.2:
+
 4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.
   * Environments, database handles and cursors are

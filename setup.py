@@ -308,7 +308,7 @@ This module provides a nearly complete wrapping
 of the Oracle/Sleepycat C API for the Database
 Environment, Database, Cursor, and Transaction
 objects, and each of these is exposed as a Python
-type in the bsddb3.db module.  The databse objects
+type in the bsddb3.db module.  The database objects
 can use various access methods: btree, hash, recno,
 and queue.  Please see the documents in the docs
 directory of the source distribution or at the
@@ -321,6 +321,7 @@ supported has been documented in the included docs.""",
       author = 'Jesus Cea, Robin Dunn, Gregory P. Smith, Andrew Kuchling, Barry Warsaw',
       author_email = 'pybsddb@argo.es',
       url = 'http://www.argo.es/~jcea/programacion/pybsddb.htm',
+      license = "MIT License",
 
       packages = ['bsddb3', 'bsddb3/tests'],
       package_dir = {'bsddb3': 'Lib/bsddb',
@@ -336,4 +337,17 @@ supported has been documented in the included docs.""",
                                extra_link_args = lflags_arg,
                                )],
       data_files = utils,
+      classifiers = [
+                    'License :: OSI Approved :: MIT License',
+                    'Development Status :: 5 - Production/Stable',
+                    'Intended Audience :: Developers',
+                    'Intended Audience :: Information Technology',
+                    'Natural Language :: English',
+                    'Natural Language :: Spanish',
+                    'Operating System :: OS Independent',
+                    'Programming Language :: Python',
+                    'Topic :: Database',
+                    'Topic :: Software Development',
+                    'Topic :: System :: Clustering',
+                    ],
       )
