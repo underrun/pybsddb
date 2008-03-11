@@ -30,5 +30,10 @@ Documentation Index
 
 .. toctree::
 
+  dbenv.rst
+  db.rst
+  dbcursor.rst
+  dbtxn.rst
+  dblock.rst
   history.rst
 
