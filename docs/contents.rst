@@ -1,4 +1,4 @@
-.. $Id: $
+.. $Id$
 
 =============================================
  Python Bindings for BerkeleyDB 3.3 thru 4.6
