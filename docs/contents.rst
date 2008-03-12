@@ -30,6 +30,7 @@ Documentation Index
 
 .. toctree::
 
+  introduction.rst
   dbenv.rst
   db.rst
   dbcursor.rst

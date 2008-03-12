@@ -1,4 +1,7 @@
 4.6.2:
+  * Move old documentation to ReST format. This is important for several
+    reasons, notably to be able to integrate the documentation "as is"
+    in python official docs (from Python 2.6).
 
 4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.
