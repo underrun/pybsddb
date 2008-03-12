@@ -9,7 +9,7 @@ DBCursor Methods
 
 .. function:: close()
 
-   Discards the cursor.  If the cursor is created within a transaction
+   Discards the cursor. If the cursor is created within a transaction
    then you *must* be sure to close the cursor before commiting the
    transaction.
    `More info...
@@ -56,11 +56,11 @@ DBCursor Methods
 
 .. function:: get(key, data, flags, dlen=-1, doff=-1)
 
-   Retrieves key/data pairs from the database using the cursor.  All the
+   Retrieves key/data pairs from the database using the cursor. All the
    specific functionalities of the get method are actually provided by
    the various methods below, which are the preferred way to fetch data
-   using the cursor.  These generic interfaces are only provided as an
-   inconvenience.  Partial data records are returned if dlen and doff
+   using the cursor. These generic interfaces are only provided as an
+   inconvenience. Partial data records are returned if dlen and doff
    are used in this method and in many of the specific methods below.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
@@ -125,7 +125,7 @@ C API.
 .. function:: get_both(key, data, flags=0)
 
    Like set() but positions the cursor to the record matching both key
-   and data.  (An alias for this is set_both, which makes more sense to
+   and data. (An alias for this is set_both, which makes more sense to
    me...)
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
@@ -133,7 +133,7 @@ C API.
 
 .. function:: get_recno()
 
-   Return the record number associated with the cursor.  The database
+   Return the record number associated with the cursor. The database
    must use the BTree access method and have been created with the
    DB_RECNUM flag.
    `More info...
@@ -194,7 +194,7 @@ C API.
 .. function:: set_recno(recno, flags=0, dlen=-1, doff=-1)
 
    Move the cursor to the specific numbered record of the database, and
-   return the associated key/data pair.  The underlying database must be
+   return the associated key/data pair. The underlying database must be
    of type Btree and it must have been created with the DB_RECNUM flag.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
@@ -202,7 +202,7 @@ C API.
 
 .. function:: set_both(key, data, flags=0)
 
-   See get_both().  The only difference in behaviour can be disabled
+   See get_both(). The only difference in behaviour can be disabled
    using set_get_returns_none(2).
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
