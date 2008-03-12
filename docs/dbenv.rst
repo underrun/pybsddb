@@ -264,49 +264,49 @@ DBEnv Methods
    following keys:
 
     +---------------+-------------------------------------+
-    | lastid        | Last allocated lock ID.             |
+    | lastid        | Last allocated lock ID              |
     +---------------+-------------------------------------+
-    | nmodes        | Number of lock modes.               |
+    | nmodes        | Number of lock modes                |
     +---------------+-------------------------------------+
-    | maxlocks      | Maximum number of locks possible.   |
+    | maxlocks      | Maximum number of locks possible    |
     +---------------+-------------------------------------+
-    | maxlockers    | Maximum number of lockerspossible.  |
+    | maxlockers    | Maximum number of lockers possible  |
     +---------------+-------------------------------------+
-    | maxobjects    | Maximum number of objects possible. |
+    | maxobjects    | Maximum number of objects possible  |
     +---------------+-------------------------------------+
-    | nlocks        | Number of current locks.            |
+    | nlocks        | Number of current locks             |
     +---------------+-------------------------------------+
-    | maxnlocks     | Maximum number of locks at once.    |
+    | maxnlocks     | Maximum number of locks at once     |
     +---------------+-------------------------------------+
-    | nlockers      | Number of current lockers.          |
+    | nlockers      | Number of current lockers           |
     +---------------+-------------------------------------+
-    | nobjects      | Number of current objects.          |
+    | nobjects      | Number of current objects           |
     +---------------+-------------------------------------+
-    | maxnobjects   | Maximum number of objects at once.  |
+    | maxnobjects   | Maximum number of objects at once   |
     +---------------+-------------------------------------+
-    | maxnlockers   | Maximum number of lockers at once.  |
+    | maxnlockers   | Maximum number of lockers at once   |
     +---------------+-------------------------------------+
-    | nrequests     | Total number of locks requested.    |
+    | nrequests     | Total number of locks requested     |
     +---------------+-------------------------------------+
-    | nreleases     | Total number of locks released.     |
+    | nreleases     | Total number of locks released      |
     +---------------+-------------------------------------+
     | nnowaits      | Total number of lock requests that  |
-    |               | failed because of DB_LOCK_NOWAIT.   |
+    |               | failed because of DB_LOCK_NOWAIT    |
     +---------------+-------------------------------------+
     | nconflicts    | Tot number of locks not immediately |
-    |               | available due to conflicts.         |
+    |               | available due to conflicts          |
     +---------------+-------------------------------------+
-    | ndeadlocks    | Number of deadlocks detected.       |
+    | ndeadlocks    | Number of deadlocks detected        |
     +---------------+-------------------------------------+
-    | regsize       | Size of the region.                 |
+    | regsize       | Size of the region                  |
     +---------------+-------------------------------------+
     | region_wait   | Number of times a thread of control |
     |               | was forced to wait before obtaining |
-    |               | the region lock.                    |
+    |               | the region lock                     |
     +---------------+-------------------------------------+
     | region_nowait | Number of times a thread of control |
     |               | was able to obtain the region lock  |
-    |               | without waiting.                    |
+    |               | without waiting                     |
     +---------------+-------------------------------------+
 
    `More info...
@@ -344,31 +344,31 @@ DBEnv Methods
     | time_ckp     | Time the last completed checkpoint finished |
     |              | (as the number of seconds since the Epoch,  |
     |              | returned by the IEEE/ANSI Std 1003.1 POSIX  |
-    |              | time interface).                            |
+    |              | time interface)                             |
     +--------------+---------------------------------------------+
-    | last_txnid   | Last transaction ID allocated.              |
+    | last_txnid   | Last transaction ID allocated               |
     +--------------+---------------------------------------------+
-    | maxtxns      | Max number of active transactions possible. |
+    | maxtxns      | Max number of active transactions possible  |
     +--------------+---------------------------------------------+
-    | nactive      | Number of transactions currently active.    |
+    | nactive      | Number of transactions currently active     |
     +--------------+---------------------------------------------+
-    | maxnactive   | Max number of active transactions at once.  |
+    | maxnactive   | Max number of active transactions at once   |
     +--------------+---------------------------------------------+
-    | nbegins      | Number of transactions that have begun.     |
+    | nbegins      | Number of transactions that have begun      |
     +--------------+---------------------------------------------+
-    | naborts      | Number of transactions that have aborted.   |
+    | naborts      | Number of transactions that have aborted    |
     +--------------+---------------------------------------------+
-    | ncommits     | Number of transactions that have committed. |
+    | ncommits     | Number of transactions that have committed  |
     +--------------+---------------------------------------------+
-    | regsize      | Size of the region.                         |
+    | regsize      | Size of the region                          |
     +--------------+---------------------------------------------+
     | region_wait  | Number of times that a thread of control    |
     |              | was forced to wait before obtaining the     |
-    |              | region lock.                                |
+    |              | region lock                                 |
     +--------------+---------------------------------------------+
     | region_nowait| Number of times that a thread of control    |
     |              | was able to obtain the region lock without  |
-    |              | waiting.                                    |
+    |              | waiting                                     |
     +--------------+---------------------------------------------+
 
    `More info...
