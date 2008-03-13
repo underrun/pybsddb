@@ -1139,7 +1139,6 @@ newDBSequenceObject(DBObject* mydb,  int flags)
     self->mydb = mydb;
     self->in_weakreflist = NULL;
 
-
     MYDB_BEGIN_ALLOW_THREADS;
     err = db_sequence_create(&self->sequence, self->mydb->db, flags);
     MYDB_END_ALLOW_THREADS;
@@ -4961,7 +4960,6 @@ DBSequence_get(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 
     RETURN_IF_ERR();
     return PyLong_FromLongLong(value);
-
 }
 
 static PyObject*
@@ -4980,6 +4978,10 @@ DBSequence_get_key(DBSequenceObject* self, PyObject* args)
     int err;
     DBT key;
     PyObject *retval = NULL;
+
+    if (!PyArg_ParseTuple(args,":get_key"))
+        return NULL;
+
     key.flags = DB_DBT_MALLOC;
     CHECK_SEQUENCE_NOT_CLOSED(self)
     MYDB_BEGIN_ALLOW_THREADS
@@ -5112,7 +5114,6 @@ DBSequence_set_flags(DBSequenceObject* self, PyObject* args)
 
     RETURN_IF_ERR();
     RETURN_NONE();
-
 }
 
 static PyObject*
