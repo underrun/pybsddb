@@ -2,6 +2,8 @@
   * Move old documentation to ReST format. This is important for several
     reasons, notably to be able to integrate the documentation "as is"
     in python official docs (from Python 2.6).
+  * DBSequence objects documented.
+  * DBSequence.get_key() didn't check for parameters. Fixed.
 
 4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.

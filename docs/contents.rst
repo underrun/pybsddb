@@ -36,5 +36,6 @@ Documentation Index
   dbcursor.rst
   dbtxn.rst
   dblock.rst
+  dbsequence.rst
   history.rst
 

@@ -73,6 +73,10 @@ The bsddb3.db extension module provides the following object types:
   in the database, but can be used for any syncronization task across
   all threads and processes that have the DBEnv open.
 
+- **DBSequence:** Sequences provide an arbitrary number of persistent
+  objects that return an increasing or decreasing sequence of integers.
+  Opening a sequence handle associates it with a record in a database.
+
 Exceptions Provided
 -------------------
 

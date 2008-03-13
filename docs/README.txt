@@ -1,5 +1,5 @@
 Documentation in ReST format. You can read them "as is", or you can
-process them first with Python "docutils" package.
+process it first with Python "docutils" package.
 
 The root document is "contents.rst".
 
