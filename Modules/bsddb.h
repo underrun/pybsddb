@@ -120,9 +120,9 @@ struct behaviourFlags {
 
 
 
-struct DBObject;         /* Forward declaration */
-struct DBCursorObject;   /* Forward declaration */
-struct DBTxnObject;      /* Forward declaration */
+struct DBObject;          /* Forward declaration */
+struct DBCursorObject;    /* Forward declaration */
+struct DBTxnObject;       /* Forward declaration */
 struct DBSequenceObject;  /* Forward declaration */
 
 typedef struct {
@@ -184,6 +184,7 @@ typedef struct DBTxnObject {
     struct DBTxnObject *sibling_next;
     struct DBTxnObject *children_txns;
     struct DBObject *children_dbs;
+    struct DBSequenceObject *children_sequences;
     struct DBCursorObject *children_cursors;
     PyObject        *in_weakreflist; /* List of weak references */
 } DBTxnObject;

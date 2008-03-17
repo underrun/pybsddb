@@ -1059,6 +1059,7 @@ newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, int flags)
     self->children_txns=NULL;
     self->children_dbs=NULL;
     self->children_cursors=NULL;
+    self->children_sequences=NULL;
 
     return self;
 }
@@ -4752,9 +4753,10 @@ static void _close_transaction_cursors(DBTxnObject* txn)
     }
 }
 
-static void _promote_transaction_dbs(DBTxnObject *txn)
+static void _promote_transaction_dbs_and_sequences(DBTxnObject *txn)
 {
     DBObject *db;
+    DBSequenceObject *dbs;
 
     while (txn->children_dbs) {
         db=txn->children_dbs;
@@ -4767,6 +4769,19 @@ static void _promote_transaction_dbs(DBTxnObject *txn)
             ** so nothing to do.
             */
             db->txn=NULL; 
+        }
+    }
+    while (txn->children_sequences) {
+        dbs=txn->children_sequences;
+        EXTRACT_FROM_DOUBLE_LINKED_LIST_TXN(dbs);
+        if (txn->parent_txn) {
+            INSERT_IN_DOUBLE_LINKED_LIST_TXN(txn->parent_txn->children_sequences,dbs);
+            dbs->txn=txn->parent_txn;
+        } else {
+            /* The sequence is already linked to its
+            ** parent db. Nothing to do.
+            */
+            dbs->txn=NULL;
         }
     }
 }
@@ -4803,7 +4818,7 @@ DBTxn_commit(DBTxnObject* self, PyObject* args)
 #endif
     MYDB_END_ALLOW_THREADS;
 
-    _promote_transaction_dbs(self);
+    _promote_transaction_dbs_and_sequences(self);
 
     RETURN_IF_ERR();
     RETURN_NONE();
@@ -4867,6 +4882,7 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
 static PyObject*
 DBTxn_abort_internal(DBTxnObject* self)
 {
+    PyObject *dummy;
     int err;
     DB_TXN *txn;
 
@@ -4881,8 +4897,13 @@ DBTxn_abort_internal(DBTxnObject* self)
     self->txn = NULL;   /* this DB_TXN is no longer valid after this call */
 
     _close_transaction_cursors(self);
+#if (DBVER >= 43)
+    while (self->children_sequences) {
+        dummy=DBSequence_close_internal(self->children_sequences,0,0);
+        Py_XDECREF(dummy);
+    }
+#endif
     while (self->children_dbs) {
-        PyObject *dummy;
         dummy=DB_close_internal(self->children_dbs,0);
         Py_XDECREF(dummy);
     }
@@ -5079,6 +5100,11 @@ DBSequence_open(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 
     CLEAR_DBT(key);
     RETURN_IF_ERR();
+
+    if (txn) {
+        INSERT_IN_DOUBLE_LINKED_LIST_TXN(((DBTxnObject *)txnobj)->children_sequences,self);
+        self->txn=(DBTxnObject *)txnobj;
+    }
 
     RETURN_NONE();
 }
