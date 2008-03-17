@@ -105,7 +105,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "4.6.1"
+#define PY_BSDDB_VERSION "4.6.2devel2"
 
 /* Python object definitions */
 
@@ -120,9 +120,10 @@ struct behaviourFlags {
 
 
 
-struct DBObject;       /* Forward declaration */
-struct DBCursorObject; /* Forward declaration */
-struct DBTxnObject;    /* Forward declaration */
+struct DBObject;         /* Forward declaration */
+struct DBCursorObject;   /* Forward declaration */
+struct DBTxnObject;      /* Forward declaration */
+struct DBSequenceObject;  /* Forward declaration */
 
 typedef struct {
     PyObject_HEAD
@@ -145,6 +146,9 @@ typedef struct DBObject {
     struct behaviourFlags moduleFlags;
     struct DBTxnObject *txn;
     struct DBCursorObject *children_cursors;
+#if (DBVER >=43)
+    struct DBSequenceObject *children_sequences;
+#endif
     struct DBObject **sibling_prev_p;
     struct DBObject *sibling_next;
     struct DBObject **sibling_prev_p_txn;
@@ -193,10 +197,15 @@ typedef struct {
 
 
 #if (DBVER >= 43)
-typedef struct {
+typedef struct DBSequenceObject {
     PyObject_HEAD
     DB_SEQUENCE*     sequence;
     DBObject*        mydb;
+    struct DBTxnObject *txn;
+    struct DBSequenceObject **sibling_prev_p;
+    struct DBSequenceObject *sibling_next;
+    struct DBSequenceObject **sibling_prev_p_txn;
+    struct DBSequenceObject *sibling_next_txn;
     PyObject        *in_weakreflist; /* List of weak references */
 } DBSequenceObject;
 staticforward PyTypeObject DBSequence_Type;

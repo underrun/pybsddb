@@ -105,6 +105,12 @@ class DBSequenceTest(unittest.TestCase):
                       'flags', 'cache_size', 'last_value', 'wait'):
             self.assertTrue(param in stat, "parameter %s isn't in stat info" % param)
 
+    def test_multiple_close(self):
+        self.seq = db.DBSequence(self.d)
+        self.seq.close()  # You can close a Sequence multiple times
+        self.seq.close()
+        self.seq.close()
+
 def test_suite():
     suite = unittest.TestSuite()
     if db.version() >= (4,3):

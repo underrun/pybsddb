@@ -836,6 +836,9 @@ newDBObject(DBEnvObject* arg, int flags)
     self->setflags = 0;
     self->myenvobj = NULL;
     self->children_cursors = NULL;
+#if (DBVER >=43)
+    self->children_sequences = NULL;
+#endif
 #if (DBVER >= 33)
     self->associateCallback = NULL;
     self->btCompareCallback = NULL;
@@ -1137,6 +1140,10 @@ newDBSequenceObject(DBObject* mydb,  int flags)
         return NULL;
     Py_INCREF(mydb);
     self->mydb = mydb;
+
+    INSERT_IN_DOUBLE_LINKED_LIST(self->mydb->children_sequences,self);
+    self->txn=NULL;
+
     self->in_weakreflist = NULL;
 
     MYDB_BEGIN_ALLOW_THREADS;
@@ -1151,10 +1158,20 @@ newDBSequenceObject(DBObject* mydb,  int flags)
     return self;
 }
 
+/* Forward declaration */
+static PyObject
+*DBSequence_close_internal(DBSequenceObject* self, int flags, int do_not_close);
 
 static void
 DBSequence_dealloc(DBSequenceObject* self)
 {
+    PyObject *dummy;
+
+    if (self->sequence != NULL) {
+        dummy=DBSequence_close_internal(self,0,0);
+        Py_XDECREF(dummy);
+    }
+
     if (self->in_weakreflist != NULL) {
         PyObject_ClearWeakRefs((PyObject *) self);
     }
@@ -1376,6 +1393,11 @@ DB_close_internal(DBObject* self, int flags)
         while(self->children_cursors) {
           dummy=DBC_close_internal(self->children_cursors);
           Py_XDECREF(dummy);
+        }
+
+        while(self->children_sequences) {
+            dummy=DBSequence_close_internal(self->children_sequences,0,0);
+            Py_XDECREF(dummy);
         }
 
         MYDB_BEGIN_ALLOW_THREADS;
@@ -4921,21 +4943,38 @@ DBTxn_id(DBTxnObject* self, PyObject* args)
 
 
 static PyObject*
-DBSequence_close(DBSequenceObject* self, PyObject* args)
+DBSequence_close_internal(DBSequenceObject* self, int flags, int do_not_close)
 {
-    int err, flags=0;
-    if (!PyArg_ParseTuple(args,"|i:close", &flags))
-        return NULL;
-    CHECK_SEQUENCE_NOT_CLOSED(self)
+    int err=0;
 
-    MYDB_BEGIN_ALLOW_THREADS
-    err = self->sequence->close(self->sequence, flags);
-    self->sequence = NULL;
-    MYDB_END_ALLOW_THREADS
+    if (self->sequence!=NULL) {
+        EXTRACT_FROM_DOUBLE_LINKED_LIST(self);
+        if (self->txn) {
+            EXTRACT_FROM_DOUBLE_LINKED_LIST_TXN(self);
+            self->txn=NULL;
+        }
 
-    RETURN_IF_ERR();
+        if (!do_not_close) {
+            MYDB_BEGIN_ALLOW_THREADS
+            err = self->sequence->close(self->sequence, flags);
+            MYDB_END_ALLOW_THREADS
+        }
+        self->sequence = NULL;
+
+        RETURN_IF_ERR();
+    }
 
     RETURN_NONE();
+}
+
+static PyObject*
+DBSequence_close(DBSequenceObject* self, PyObject* args)
+{
+    int flags=0;
+    if (!PyArg_ParseTuple(args,"|i:close", &flags))
+        return NULL;
+
+    return DBSequence_close_internal(self,flags,0);
 }
 
 static PyObject*
@@ -5047,6 +5086,7 @@ DBSequence_open(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 static PyObject*
 DBSequence_remove(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 {
+    PyObject *dummy;
     int err, flags = 0;
     PyObject *txnobj = NULL;
     DB_TXN *txn = NULL;
@@ -5063,6 +5103,9 @@ DBSequence_remove(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
     MYDB_BEGIN_ALLOW_THREADS
     err = self->sequence->remove(self->sequence, txn, flags);
     MYDB_END_ALLOW_THREADS
+
+    dummy=DBSequence_close_internal(self,flags,1);
+    Py_XDECREF(dummy);
 
     RETURN_IF_ERR();
     RETURN_NONE();

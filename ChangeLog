@@ -4,6 +4,10 @@
     in python official docs (from Python 2.6).
   * DBSequence objects documented.
   * DBSequence.get_key() didn't check for parameters. Fixed.
+  * If a DB is closed, its children DBSequences will be
+    closed also.
+  * To be consistent with other close methods, you can call
+    "DBSequence.close()" several times without error.
 
 4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.
