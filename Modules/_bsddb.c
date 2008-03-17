@@ -4625,6 +4625,23 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     MAKE_ENTRY(lock_wait);
 #endif
     MAKE_ENTRY(ndeadlocks);
+#if (DBVER >= 41)
+    MAKE_ENTRY(locktimeout);
+    MAKE_ENTRY(txntimeout);
+#endif
+#if (DBVER >= 40)
+    MAKE_ENTRY(nlocktimeouts);
+    MAKE_ENTRY(ntxntimeouts);
+#endif
+#if (DBVER >= 46)
+    MAKE_ENTRY(objs_wait);
+    MAKE_ENTRY(objs_nowait);
+    MAKE_ENTRY(lockers_wait);
+    MAKE_ENTRY(lockers_nowait);
+    MAKE_ENTRY(locks_wait);
+    MAKE_ENTRY(locks_nowait);
+    MAKE_ENTRY(hash_len);
+#endif
     MAKE_ENTRY(regsize);
     MAKE_ENTRY(region_wait);
     MAKE_ENTRY(region_nowait);
@@ -4740,6 +4757,7 @@ DBEnv_txn_stat(DBEnvObject* self, PyObject* args)
     MAKE_ENTRY(region_wait);
     MAKE_ENTRY(region_nowait);
 
+#undef MAKE_DB_LSN_ENTRY
 #undef MAKE_ENTRY
 #undef MAKE_TIME_T_ENTRY
     free(sp);

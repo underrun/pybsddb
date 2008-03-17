@@ -18,6 +18,7 @@
     "dbrename", "set_encrypt", "set_timeout", "set_shm_key",
     "lock_id_free", "set_tx_timestamp", "lsn_reset" and "log_stat".
   * Completed and documented "DBEnv.txn_stat()".
+  * Completed and documented "DBEnv.lock_stat()".
 
 4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.

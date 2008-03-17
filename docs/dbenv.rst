@@ -315,59 +315,97 @@ DBEnv Methods
    Returns a dictionary of locking subsystem statistics with the
    following keys:
 
-    +---------------+---------------------------------------------+
-    | id            | Last allocated lock ID.                     |
-    +---------------+---------------------------------------------+
-    | cur_maxid     | The current maximum unused locker ID.       |
-    +---------------+---------------------------------------------+
-    | nmodes        | Number of lock modes.                       |
-    +---------------+---------------------------------------------+
-    | maxlocks      | Maximum number of locks possible.           |
-    +---------------+---------------------------------------------+
-    | maxlockers    | Maximum number of lockers possible.         |
-    +---------------+---------------------------------------------+
-    | maxobjects    | Maximum number of objects possible.         |
-    +---------------+---------------------------------------------+
-    | nlocks        | Number of current locks.                    |
-    +---------------+---------------------------------------------+
-    | maxnlocks     | Maximum number of locks at once.            |
-    +---------------+---------------------------------------------+
-    | nlockers      | Number of current lockers.                  |
-    +---------------+---------------------------------------------+
-    | nobjects      | Number of current lock objects.             |
-    +---------------+---------------------------------------------+
-    | maxnobjects   | Maximum number of lock objects at once.     |
-    +---------------+---------------------------------------------+
-    | maxnlockers   | Maximum number of lockers at once.          |
-    +---------------+---------------------------------------------+
-    | nrequests     | Total number of locks requested.            |
-    +---------------+---------------------------------------------+
-    | nreleases     | Total number of locks released.             |
-    +---------------+---------------------------------------------+
-    | nupgrade      | Total number of locks upgraded.             |
-    +---------------+---------------------------------------------+
-    | ndowngrade    | Total number of locks downgraded.           |
-    +---------------+---------------------------------------------+
-    | lock_wait     | The number of lock requests not immediately |
-    |               | available due to conflicts, for which the   |
-    |               | thread of control waited.                   |
-    +---------------+---------------------------------------------+
-    | lock_nowait   | The number of lock requests not immediately | 
-    |               | available due to conflicts, for which the   |
-    |               | thread of control did not wait.             |
-    +---------------+---------------------------------------------+
-    | ndeadlocks    | Number of deadlocks.                        |
-    +---------------+---------------------------------------------+
-    | regsize       | Size of the region.                         |
-    +---------------+---------------------------------------------+
-    | region_wait   | Number of times a thread of control was     |
-    |               | forced to wait before obtaining the region  |
-    |               | lock.                                       |
-    +---------------+---------------------------------------------+
-    | region_nowait | Number of times a thread of control was     |
-    |               | able to obtain the region lock  without     |
-    |               | waiting.                                    |
-    +---------------+---------------------------------------------+
+    +----------------+---------------------------------------------+
+    | id             | Last allocated lock ID.                     |
+    +----------------+---------------------------------------------+
+    | cur_maxid      | The current maximum unused locker ID.       |
+    +----------------+---------------------------------------------+
+    | nmodes         | Number of lock modes.                       |
+    +----------------+---------------------------------------------+
+    | maxlocks       | Maximum number of locks possible.           |
+    +----------------+---------------------------------------------+
+    | maxlockers     | Maximum number of lockers possible.         |
+    +----------------+---------------------------------------------+
+    | maxobjects     | Maximum number of objects possible.         |
+    +----------------+---------------------------------------------+
+    | nlocks         | Number of current locks.                    |
+    +----------------+---------------------------------------------+
+    | maxnlocks      | Maximum number of locks at once.            |
+    +----------------+---------------------------------------------+
+    | nlockers       | Number of current lockers.                  |
+    +----------------+---------------------------------------------+
+    | nobjects       | Number of current lock objects.             |
+    +----------------+---------------------------------------------+
+    | maxnobjects    | Maximum number of lock objects at once.     |
+    +----------------+---------------------------------------------+
+    | maxnlockers    | Maximum number of lockers at once.          |
+    +----------------+---------------------------------------------+
+    | nrequests      | Total number of locks requested.            |
+    +----------------+---------------------------------------------+
+    | nreleases      | Total number of locks released.             |
+    +----------------+---------------------------------------------+
+    | nupgrade       | Total number of locks upgraded.             |
+    +----------------+---------------------------------------------+
+    | ndowngrade     | Total number of locks downgraded.           |
+    +----------------+---------------------------------------------+
+    | lock_wait      | The number of lock requests not immediately |
+    |                | available due to conflicts, for which the   |
+    |                | thread of control waited.                   |
+    +----------------+---------------------------------------------+
+    | lock_nowait    | The number of lock requests not immediately | 
+    |                | available due to conflicts, for which the   |
+    |                | thread of control did not wait.             |
+    +----------------+---------------------------------------------+
+    | ndeadlocks     | Number of deadlocks.                        |
+    +----------------+---------------------------------------------+
+    | locktimeout    | Lock timeout value.                         |
+    +----------------+---------------------------------------------+
+    | nlocktimeouts  | The number of lock requests that have timed |
+    |                | out.                                        |
+    +----------------+---------------------------------------------+
+    | txntimeout     | Transaction timeout value.                  |
+    +----------------+---------------------------------------------+
+    | ntxntimeouts   | The number of transactions that have timed  |
+    |                | out. This value is also a component of      |
+    |                | ndeadlocks, the total number of deadlocks   |
+    |                | detected.                                   |
+    +----------------+---------------------------------------------+
+    | objs_wait      | The number of requests to allocate or       |
+    |                | deallocate an object for which the thread   |
+    |                | of control waited.                          |
+    +----------------+---------------------------------------------+
+    | objs_nowait    | The number of requests to allocate or       |
+    |                | deallocate an object for which the thread   |
+    |                | of control did not wait.                    |
+    +----------------+---------------------------------------------+
+    | lockers_wait   | The number of requests to allocate or       |
+    |                | deallocate a locker for which the thread of |
+    |                | control waited.                             |
+    +----------------+---------------------------------------------+
+    | lockers_nowait | The number of requests to allocate or       |
+    |                | deallocate a locker for which the thread of |
+    |                | control did not wait.                       |
+    +----------------+---------------------------------------------+
+    | locks_wait     | The number of requests to allocate or       |
+    |                | deallocate a lock structure for which the   |
+    |                | thread of control waited.                   |
+    +----------------+---------------------------------------------+
+    | locks_nowait   | The number of requests to allocate or       |
+    |                | deallocate a lock structure for which the   |
+    |                | thread of control did not wait.             |
+    +----------------+---------------------------------------------+
+    | hash_len       | Maximum length of a lock hash bucket.       |
+    +----------------+---------------------------------------------+
+    | regsize        | Size of the region.                         |
+    +----------------+---------------------------------------------+
+    | region_wait    | Number of times a thread of control was     |
+    |                | forced to wait before obtaining the region  |
+    |                | lock.                                       |
+    +----------------+---------------------------------------------+
+    | region_nowait  | Number of times a thread of control was     |
+    |                | able to obtain the region lock  without     |
+    |                | waiting.                                    |
+    +----------------+---------------------------------------------+
 
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
