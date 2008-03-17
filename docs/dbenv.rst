@@ -409,6 +409,8 @@ DBEnv Methods
    keys:
 
     +--------------+---------------------------------------------+
+    | last_ckp     | The LSN of the last checkpoint.             |
+    +--------------+---------------------------------------------+
     | time_ckp     | Time the last completed checkpoint finished |
     |              | (as the number of seconds since the Epoch,  |
     |              | returned by the IEEE/ANSI Std 1003.1 POSIX  |
@@ -422,11 +424,24 @@ DBEnv Methods
     +--------------+---------------------------------------------+
     | maxnactive   | Max number of active transactions at once.  |
     +--------------+---------------------------------------------+
+    | nsnapshot    | The number of transactions on the snapshot  |
+    |              | list. These are transactions which modified |
+    |              | a database opened with DB_MULTIVERSION, and |
+    |              | which have committed or aborted, but the    |
+    |              | copies of pages they created are still in   |
+    |              | the cache.                                  |
+    +--------------+---------------------------------------------+
+    | maxnsnapshot | The maximum number of transactions on the   |
+    |              | snapshot list at any one time.              |
+    +--------------+---------------------------------------------+
     | nbegins      | Number of transactions that have begun.     |
     +--------------+---------------------------------------------+
     | naborts      | Number of transactions that have aborted.   |
     +--------------+---------------------------------------------+
     | ncommits     | Number of transactions that have committed. |
+    +--------------+---------------------------------------------+
+    | nrestores    | Number of transactions that have been       |
+    |              | restored.                                   |
     +--------------+---------------------------------------------+
     | regsize      | Size of the region.                         |
     +--------------+---------------------------------------------+

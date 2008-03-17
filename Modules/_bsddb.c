@@ -815,7 +815,16 @@ static void _addDb_seq_tToDict(PyObject* dict, char *name, db_seq_t value)
 }
 #endif
 
+#if (DBVER >= 40)
+static void _addDB_lsnToDict(PyObject* dict, char *name, DB_LSN value)
+{
+    PyObject *v = Py_BuildValue("(ll)",value.file,value.offset);
+    if (!v || PyDict_SetItemString(dict, name, v))
+        PyErr_Clear();
 
+    Py_XDECREF(v);
+}
+#endif
 
 /* --------------------------------------------------------------------- */
 /* Allocators and deallocators */
@@ -4588,6 +4597,10 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
 #if (DBVER < 41)
     MAKE_ENTRY(lastid);
 #endif
+#if (DBVER >=41)
+    MAKE_ENTRY(id);
+    MAKE_ENTRY(cur_maxid);
+#endif
     MAKE_ENTRY(nmodes);
     MAKE_ENTRY(maxlocks);
     MAKE_ENTRY(maxlockers);
@@ -4600,6 +4613,10 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     MAKE_ENTRY(maxnobjects);
     MAKE_ENTRY(nrequests);
     MAKE_ENTRY(nreleases);
+#if (DBVER >= 44)
+    MAKE_ENTRY(nupgrade);
+    MAKE_ENTRY(ndowngrade);
+#endif
 #if (DBVER < 44)
     MAKE_ENTRY(nnowaits);       /* these were renamed in 4.4 */
     MAKE_ENTRY(nconflicts);
@@ -4697,17 +4714,28 @@ DBEnv_txn_stat(DBEnvObject* self, PyObject* args)
         return NULL;
     }
 
-#define MAKE_ENTRY(name)  _addIntToDict(d, #name, sp->st_##name)
-#define MAKE_TIME_T_ENTRY(name)_addTimeTToDict(d, #name, sp->st_##name)
+#define MAKE_ENTRY(name)        _addIntToDict(d, #name, sp->st_##name)
+#define MAKE_TIME_T_ENTRY(name) _addTimeTToDict(d, #name, sp->st_##name)
+#define MAKE_DB_LSN_ENTRY(name) _addDB_lsnToDict(d, #name, sp->st_##name)
 
+#if (DBVER >= 40)
+    MAKE_DB_LSN_ENTRY(last_ckp);
+#endif
     MAKE_TIME_T_ENTRY(time_ckp);
     MAKE_ENTRY(last_txnid);
     MAKE_ENTRY(maxtxns);
     MAKE_ENTRY(nactive);
     MAKE_ENTRY(maxnactive);
+#if (DBVER >= 45)
+    MAKE_ENTRY(nsnapshot);
+    MAKE_ENTRY(maxnsnapshot);
+#endif
     MAKE_ENTRY(nbegins);
     MAKE_ENTRY(naborts);
     MAKE_ENTRY(ncommits);
+#if (DBVER >= 40)
+    MAKE_ENTRY(nrestores);
+#endif
     MAKE_ENTRY(regsize);
     MAKE_ENTRY(region_wait);
     MAKE_ENTRY(region_nowait);

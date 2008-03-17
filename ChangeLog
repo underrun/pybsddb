@@ -12,6 +12,11 @@
     automatically closed if the transaction is aborted. If the
     transaction is committed and it is actually a subtransaction, the
     sequence will be inherited by the parent transaction.
+  * Be sure "db_seq_t" and "long long" are compatible.
+  * Documented the already available DBEnv methods: "dbremove",
+    "dbrename", "set_encrypt", "set_timeout", "set_shm_key",
+    "lock_id_free", "set_tx_timestamp", "lsn_reset" and "log_stat".
+  * Completed and documented "DBEnv.txn_stat()".
 
 4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.
