@@ -12,7 +12,7 @@ DB Methods
    Constructor.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_create.html>`__
+   api_c/db_class.html>`__
 
 .. function:: append(data, txn=None)
 

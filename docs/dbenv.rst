@@ -19,7 +19,7 @@ DBEnv Methods
    Constructor.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_create.html>`__
+   api_c/env_class.html>`__
 
 .. function:: close(flags=0)
 
