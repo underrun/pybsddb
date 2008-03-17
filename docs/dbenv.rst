@@ -42,16 +42,61 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_remove.html>`__
 
+.. function:: dbremove(file, database=None, txn=None, flags=0)
+
+   Removes the database specified by the file and database parameters.
+   If no database is specified, the underlying file represented by file
+   is removed, incidentally removing all of the databases it contained.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_dbremove.html>`__
+
+.. function:: dbrename(file, database=None, newname, txn=None, flags=0)
+
+   Renames the database specified by the file and database parameters to
+   newname. If no database is specified, the underlying file represented
+   by file is renamed, incidentally renaming all of the databases it
+   contained.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_dbrename.html>`__
+
+.. function:: set_encrypt(passwd, flags=0)
+
+   Set the password used by the Berkeley DB library to perform
+   encryption and decryption.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_encrypt.html>`__
+
+.. function:: set_timeout(timeout, flags)
+
+   Sets timeout values for locks or transactions in the database
+   environment.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_timeout.html>`__
+
+.. function:: set_shm_key(key)
+
+   Specify a base segment ID for Berkeley DB environment shared memory
+   regions created in system memory on VxWorks or systems supporting
+   X/Open-style shared memory interfaces; for example, UNIX systems
+   supporting shmget(2) and related System V IPC interfaces.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_shm_key.html>`__
+
 .. function:: set_cachesize(gbytes, bytes, ncache=0)
 
-   Set the size of the shared memory buffer pool
+   Set the size of the shared memory buffer pool.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_cachesize.html>`__
 
 .. function:: set_data_dir(dir)
 
-   Set the environment data directory
+   Set the environment data directory.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_data_dir.html>`__
@@ -66,7 +111,7 @@ DBEnv Methods
 
 .. function:: set_tmp_dir(dir)
 
-   Set the directory to be used for temporary files
+   Set the directory to be used for temporary files.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_tmp_dir.html>`__
@@ -160,7 +205,7 @@ DBEnv Methods
 
 .. function:: set_lk_detect(mode)
 
-   Set the automatic deadlock detection mode
+   Set the automatic deadlock detection mode.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lk_detect.html>`__
@@ -238,7 +283,7 @@ DBEnv Methods
 
    Acquires a lock and returns a handle to it as a DBLock object. The
    locker parameter is an integer representing the entity doing the
-   locking, and obj is a string representing the item to be locked.
+   locking, and obj is an object representing the item to be locked.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/lock_get.html>`__
@@ -250,6 +295,13 @@ DBEnv Methods
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/lock_id.html>`__
+
+.. function:: lock_id_free(id)
+
+   Frees a locker ID allocated by the "dbenv.lock_id()" method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/lock_id_free.html>`__
 
 .. function:: lock_put(lock)
 
@@ -263,51 +315,59 @@ DBEnv Methods
    Returns a dictionary of locking subsystem statistics with the
    following keys:
 
-    +---------------+-------------------------------------+
-    | lastid        | Last allocated lock ID              |
-    +---------------+-------------------------------------+
-    | nmodes        | Number of lock modes                |
-    +---------------+-------------------------------------+
-    | maxlocks      | Maximum number of locks possible    |
-    +---------------+-------------------------------------+
-    | maxlockers    | Maximum number of lockers possible  |
-    +---------------+-------------------------------------+
-    | maxobjects    | Maximum number of objects possible  |
-    +---------------+-------------------------------------+
-    | nlocks        | Number of current locks             |
-    +---------------+-------------------------------------+
-    | maxnlocks     | Maximum number of locks at once     |
-    +---------------+-------------------------------------+
-    | nlockers      | Number of current lockers           |
-    +---------------+-------------------------------------+
-    | nobjects      | Number of current objects           |
-    +---------------+-------------------------------------+
-    | maxnobjects   | Maximum number of objects at once   |
-    +---------------+-------------------------------------+
-    | maxnlockers   | Maximum number of lockers at once   |
-    +---------------+-------------------------------------+
-    | nrequests     | Total number of locks requested     |
-    +---------------+-------------------------------------+
-    | nreleases     | Total number of locks released      |
-    +---------------+-------------------------------------+
-    | nnowaits      | Total number of lock requests that  |
-    |               | failed because of DB_LOCK_NOWAIT    |
-    +---------------+-------------------------------------+
-    | nconflicts    | Tot number of locks not immediately |
-    |               | available due to conflicts          |
-    +---------------+-------------------------------------+
-    | ndeadlocks    | Number of deadlocks detected        |
-    +---------------+-------------------------------------+
-    | regsize       | Size of the region                  |
-    +---------------+-------------------------------------+
-    | region_wait   | Number of times a thread of control |
-    |               | was forced to wait before obtaining |
-    |               | the region lock                     |
-    +---------------+-------------------------------------+
-    | region_nowait | Number of times a thread of control |
-    |               | was able to obtain the region lock  |
-    |               | without waiting                     |
-    +---------------+-------------------------------------+
+    +---------------+---------------------------------------------+
+    | id            | Last allocated lock ID.                     |
+    +---------------+---------------------------------------------+
+    | cur_maxid     | The current maximum unused locker ID.       |
+    +---------------+---------------------------------------------+
+    | nmodes        | Number of lock modes.                       |
+    +---------------+---------------------------------------------+
+    | maxlocks      | Maximum number of locks possible.           |
+    +---------------+---------------------------------------------+
+    | maxlockers    | Maximum number of lockers possible.         |
+    +---------------+---------------------------------------------+
+    | maxobjects    | Maximum number of objects possible.         |
+    +---------------+---------------------------------------------+
+    | nlocks        | Number of current locks.                    |
+    +---------------+---------------------------------------------+
+    | maxnlocks     | Maximum number of locks at once.            |
+    +---------------+---------------------------------------------+
+    | nlockers      | Number of current lockers.                  |
+    +---------------+---------------------------------------------+
+    | nobjects      | Number of current lock objects.             |
+    +---------------+---------------------------------------------+
+    | maxnobjects   | Maximum number of lock objects at once.     |
+    +---------------+---------------------------------------------+
+    | maxnlockers   | Maximum number of lockers at once.          |
+    +---------------+---------------------------------------------+
+    | nrequests     | Total number of locks requested.            |
+    +---------------+---------------------------------------------+
+    | nreleases     | Total number of locks released.             |
+    +---------------+---------------------------------------------+
+    | nupgrade      | Total number of locks upgraded.             |
+    +---------------+---------------------------------------------+
+    | ndowngrade    | Total number of locks downgraded.           |
+    +---------------+---------------------------------------------+
+    | lock_wait     | The number of lock requests not immediately |
+    |               | available due to conflicts, for which the   |
+    |               | thread of control waited.                   |
+    +---------------+---------------------------------------------+
+    | lock_nowait   | The number of lock requests not immediately | 
+    |               | available due to conflicts, for which the   |
+    |               | thread of control did not wait.             |
+    +---------------+---------------------------------------------+
+    | ndeadlocks    | Number of deadlocks.                        |
+    +---------------+---------------------------------------------+
+    | regsize       | Size of the region.                         |
+    +---------------+---------------------------------------------+
+    | region_wait   | Number of times a thread of control was     |
+    |               | forced to wait before obtaining the region  |
+    |               | lock.                                       |
+    +---------------+---------------------------------------------+
+    | region_nowait | Number of times a thread of control was     |
+    |               | able to obtain the region lock  without     |
+    |               | waiting.                                    |
+    +---------------+---------------------------------------------+
 
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
@@ -315,10 +375,18 @@ DBEnv Methods
 
 .. function:: set_tx_max(max)
 
-   Set the maximum number of active transactions
+   Set the maximum number of active transactions.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_tx_max.html>`__
+
+.. function:: set_tx_timestamp(timestamp)
+
+   Recover to the time specified by timestamp rather than to the most
+   current possible date.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_tx_timestamp.html>`__
 
 .. function:: txn_begin(parent=None, flags=0)
 
@@ -344,34 +412,120 @@ DBEnv Methods
     | time_ckp     | Time the last completed checkpoint finished |
     |              | (as the number of seconds since the Epoch,  |
     |              | returned by the IEEE/ANSI Std 1003.1 POSIX  |
-    |              | time interface)                             |
+    |              | time interface).                            |
     +--------------+---------------------------------------------+
-    | last_txnid   | Last transaction ID allocated               |
+    | last_txnid   | Last transaction ID allocated.              |
     +--------------+---------------------------------------------+
-    | maxtxns      | Max number of active transactions possible  |
+    | maxtxns      | Max number of active transactions possible. |
     +--------------+---------------------------------------------+
-    | nactive      | Number of transactions currently active     |
+    | nactive      | Number of transactions currently active.    |
     +--------------+---------------------------------------------+
-    | maxnactive   | Max number of active transactions at once   |
+    | maxnactive   | Max number of active transactions at once.  |
     +--------------+---------------------------------------------+
-    | nbegins      | Number of transactions that have begun      |
+    | nbegins      | Number of transactions that have begun.     |
     +--------------+---------------------------------------------+
-    | naborts      | Number of transactions that have aborted    |
+    | naborts      | Number of transactions that have aborted.   |
     +--------------+---------------------------------------------+
-    | ncommits     | Number of transactions that have committed  |
+    | ncommits     | Number of transactions that have committed. |
     +--------------+---------------------------------------------+
-    | regsize      | Size of the region                          |
+    | regsize      | Size of the region.                         |
     +--------------+---------------------------------------------+
     | region_wait  | Number of times that a thread of control    |
     |              | was forced to wait before obtaining the     |
-    |              | region lock                                 |
+    |              | region lock.                                |
     +--------------+---------------------------------------------+
     | region_nowait| Number of times that a thread of control    |
     |              | was able to obtain the region lock without  |
-    |              | waiting                                     |
+    |              | waiting.                                    |
     +--------------+---------------------------------------------+
 
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_stat.html>`__
+
+.. function:: lsn_reset(file=None,flags=0)
+
+   This method allows database files to be moved from one transactional
+   database environment to another.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_lsn_reset.html>`__
+
+.. function:: log_stat(flags=0)
+
+   Returns a dictionary of logging subsystem statistics with the
+   following keys:
+
+    +-------------------+---------------------------------------------+
+    | magic             | The magic number that identifies a file as  |
+    |                   | a log file.                                 |
+    +-------------------+---------------------------------------------+
+    | version           | The version of the log file type.           |
+    +-------------------+---------------------------------------------+
+    | mode              | The mode of any created log files.          |
+    +-------------------+---------------------------------------------+
+    | lg_bsize          | The in-memory log record cache size.        |
+    +-------------------+---------------------------------------------+
+    | lg_size           | The log file size.                          |
+    +-------------------+---------------------------------------------+
+    | record            | The number of records written to this log.  |
+    +-------------------+---------------------------------------------+
+    | w_mbytes          | The number of megabytes written to this     |
+    |                   | log.                                        |
+    +-------------------+---------------------------------------------+
+    | w_bytes           | The number of bytes over and above w_mbytes |
+    |                   | written to this log.                        |
+    +-------------------+---------------------------------------------+
+    | wc_mbytes         | The number of megabytes written to this log |
+    |                   | since the last checkpoint.                  |
+    +-------------------+---------------------------------------------+
+    | wc_bytes          | The number of bytes over and above          |
+    |                   | wc_mbytes written to this log since the     |
+    |                   | last checkpoint.                            |
+    +-------------------+---------------------------------------------+
+    | wcount            | The number of times the log has been        |
+    |                   | written to disk.                            |
+    +-------------------+---------------------------------------------+
+    | wcount_fill       | The number of times the log has been        |
+    |                   | written to disk because the in-memory log   |
+    |                   | record cache filled up.                     |
+    +-------------------+---------------------------------------------+
+    | rcount            | The number of times the log has been read   |
+    |                   | from disk.                                  |
+    +-------------------+---------------------------------------------+
+    | scount            | The number of times the log has been        |
+    |                   | flushed to disk.                            |
+    +-------------------+---------------------------------------------+
+    | cur_file          | The current log file number.                |
+    +-------------------+---------------------------------------------+
+    | cur_offset        | The byte offset in the current log file.    |
+    +-------------------+---------------------------------------------+
+    | disk_file         | The log file number of the last record      |
+    |                   | known to be on disk.                        |
+    +-------------------+---------------------------------------------+
+    | disk_offset       | The byte offset of the last record known to |
+    |                   | be on disk.                                 |
+    +-------------------+---------------------------------------------+
+    | maxcommitperflush | The maximum number of commits contained in  |
+    |                   | a single log flush.                         |
+    +-------------------+---------------------------------------------+
+    | mincommitperflush | The minimum number of commits contained in  |
+    |                   | a single log flush that contained a commit. |
+    +-------------------+---------------------------------------------+
+    | regsize           | The size of the log region, in bytes.       |
+    +-------------------+---------------------------------------------+
+    | region_wait       | The number of times that a thread of        |
+    |                   | control was forced to wait before obtaining |
+    |                   | the log region mutex.                       |
+    +-------------------+---------------------------------------------+
+    | region_nowait     | The number of times that a thread of        |
+    |                   | control was able to obtain the log region   |
+    |                   | mutex without waiting.                      |
+    +-------------------+---------------------------------------------+
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/log_stat.html>`__
+
+
 
