@@ -8,6 +8,10 @@
     closed also.
   * To be consistent with other close methods, you can call
     "DBSequence.close()" several times without error.
+  * If a Sequence is opened inside a transaction, it will be
+    automatically closed if the transaction is aborted. If the
+    transaction is committed and it is actually a subtransaction, the
+    sequence will be inherited by the parent transaction.
 
 4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.

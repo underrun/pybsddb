@@ -1396,10 +1396,12 @@ DB_close_internal(DBObject* self, int flags)
           Py_XDECREF(dummy);
         }
 
+#if (DBVER >= 43)
         while(self->children_sequences) {
             dummy=DBSequence_close_internal(self->children_sequences,0,0);
             Py_XDECREF(dummy);
         }
+#endif
 
         MYDB_BEGIN_ALLOW_THREADS;
         err = self->db->close(self->db, flags);
@@ -4756,7 +4758,9 @@ static void _close_transaction_cursors(DBTxnObject* txn)
 static void _promote_transaction_dbs_and_sequences(DBTxnObject *txn)
 {
     DBObject *db;
+#if (DBVER >= 43)
     DBSequenceObject *dbs;
+#endif
 
     while (txn->children_dbs) {
         db=txn->children_dbs;
@@ -4771,6 +4775,8 @@ static void _promote_transaction_dbs_and_sequences(DBTxnObject *txn)
             db->txn=NULL; 
         }
     }
+
+#if (DBVER >= 43)
     while (txn->children_sequences) {
         dbs=txn->children_sequences;
         EXTRACT_FROM_DOUBLE_LINKED_LIST_TXN(dbs);
@@ -4784,6 +4790,7 @@ static void _promote_transaction_dbs_and_sequences(DBTxnObject *txn)
             dbs->txn=NULL;
         }
     }
+#endif
 }
 
 
