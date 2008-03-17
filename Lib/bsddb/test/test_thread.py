@@ -116,6 +116,7 @@ class ConcurrentDataStoreBase(BaseThreadedTestCase):
             threads.append(rt)
 
         for t in threads:
+            t.setDaemon(True)
             t.start()
         for t in threads:
             t.join()
@@ -220,6 +221,7 @@ class SimpleThreadedBase(BaseThreadedTestCase):
             threads.append(rt)
 
         for t in threads:
+            t.setDaemon(True)
             t.start()
         for t in threads:
             t.join()
@@ -341,9 +343,11 @@ class ThreadedTransactionsBase(BaseThreadedTestCase):
             threads.append(rt)
 
         dt = Thread(target = self.deadlockThread)
+        dt.setDaemon(True)
         dt.start()
 
         for t in threads:
+            t.setDaemon(True)
             t.start()
         for t in threads:
             t.join()

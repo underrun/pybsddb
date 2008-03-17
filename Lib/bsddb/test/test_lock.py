@@ -89,6 +89,7 @@ class LockingTestCase(unittest.TestCase):
                               args=(1, db.DB_LOCK_WRITE)))
 
         for t in threads:
+            t.setDaemon(True)
             t.start()
         for t in threads:
             t.join()
