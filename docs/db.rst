@@ -23,11 +23,11 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_put.html#DB_APPEND>`__
 
-.. function:: associate(secondaryDB, callback, flags=0)
+.. function:: associate(secondaryDB, callback, txn=None, flags=0)
 
    Used to associate secondaryDB to act as a secondary index for this
-   (primary) database. The callback parameter should be a reference to
-   a Python callable object that will consruct and return the secondary
+   (primary) database. The callback parameter should be a reference to a
+   Python callable object that will construct and return the secondary
    key or DB_DONOTINDEX if the item should not be indexed. The
    parameters the callback will receive are the primaryKey and
    primaryData values.
@@ -98,6 +98,14 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_get.html>`__
 
+.. function:: pget(key, default=None, txn=None, flags=0, dlen=-1, doff=-1)
+
+   This method is available only on secondary databases. It will return
+   the primary key, given the secondary one, and associated data.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/db_get.html>`__
+
 .. function:: get_both(key, data, txn=None, flags=0)
 
    A convenient version of get() that automatically sets the DB_GET_BOTH
@@ -143,15 +151,16 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_key_range.html>`__
 
-.. function:: open(filename, dbname=None, dbtype=DB_UNKNOWN, flags=0, mode=0660)
+.. function:: open(filename, dbname=None, dbtype=DB_UNKNOWN, flags=0,
+mode=0660, txn=None)
 
-   Opens the database named dbname in the file named fileName. The
+   Opens the database named dbname in the file named filename. The
    dbname argument is optional and allows applications to have multiple
    logical databases in a single physical file. It is an error to
    attempt to open a second database in a file that was not initially
    created using a database name. In-memory databases never intended to
    be shared or preserved on disk may be created by setting both the
-   fileName and dbName arguments to None.
+   filename and dbname arguments to None.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_open.html>`__
@@ -180,6 +189,17 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_rename.html>`__
 
+.. function:: set_encrypt(passwd, flags=0)
+
+   Set the password used by the Berkeley DB library to perform
+   encryption and decryption. Because databases opened within Berkeley
+   DB environments use the password specified to the environment, it is
+   an error to attempt to set a password in a database created within an
+   environment.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/db_set_encrypt.html>`__
+ 
 .. function:: set_bt_compare(compareFunc)
 
    Set the B-Tree database comparison function. This can only be called
@@ -293,7 +313,7 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_q_extentsize.html>`__
 
-.. function:: stat(flags=0)
+.. function:: stat(flags=0, txn=None)
 
    Return a dictionary containing database statistics with the following
    keys.
@@ -302,50 +322,52 @@ DB Methods
 
         +-----------+-------------------------------------------------+
         | magic     | Magic number that identifies the file as a Hash |
-        |           | database                                        |
+        |           | database.                                       |
         +-----------+-------------------------------------------------+
-        | version   | Version of the Hash database                    |
+        | version   | Version of the Hash database.                   |
         +-----------+-------------------------------------------------+
-        | nkeys     | Number of unique keys in the database           |
+        | nkeys     | Number of unique keys in the database.          |
         +-----------+-------------------------------------------------+
-        | ndata     | Number of key/data pairs in the database        |
+        | ndata     | Number of key/data pairs in the database.       |
         +-----------+-------------------------------------------------+
-        | pagesize  | Underlying Hash database page (& bucket) size   |
+        | pagecnt   | The number of pages in the database.            |
+        +-----------+-------------------------------------------------+
+        | pagesize  | Underlying Hash database page (& bucket) size.  |
         +-----------+-------------------------------------------------+
         | nelem     | Estimated size of the hash table specified at   |
-        |           | database creation time                          |
+        |           | database creation time.                         |
         +-----------+-------------------------------------------------+
         | ffactor   | Desired fill factor (number of items per bucket)|
-        |           | specified at database creation time             |
+        |           | specified at database creation time.            |
         +-----------+-------------------------------------------------+
-        | buckets   | Number of hash buckets                          |
+        | buckets   | Number of hash buckets.                         |
         +-----------+-------------------------------------------------+
-        | free      | Number of pages on the free list                |
+        | free      | Number of pages on the free list.               |
         +-----------+-------------------------------------------------+
-        | bfree     | Number of bytes free on bucket pages            |
+        | bfree     | Number of bytes free on bucket pages.           |
         +-----------+-------------------------------------------------+
-        | bigpages  | Number of big key/data pages                    |
+        | bigpages  | Number of big key/data pages.                   |
         +-----------+-------------------------------------------------+
-        | big_bfree | Number of bytes free on big item pages          |
+        | big_bfree | Number of bytes free on big item pages.         |
         +-----------+-------------------------------------------------+
         | overflows | Number of overflow pages (overflow pages are    |
         |           | pages that contain items that did not fit in    |
-        |           | the main bucket page)                           |
+        |           | the main bucket page).                          |
         +-----------+-------------------------------------------------+
-        | ovfl_free | Number of bytes free on overflow pages          |
+        | ovfl_free | Number of bytes free on overflow pages.         |
         +-----------+-------------------------------------------------+
-        | dup       | Number of duplicate pages                       |
+        | dup       | Number of duplicate pages.                      |
         +-----------+-------------------------------------------------+
-        | dup_free  | Number of bytes free on duplicate pages         |
+        | dup_free  | Number of bytes free on duplicate pages.        |
         +-----------+-------------------------------------------------+
 
    For BTree and Recno databases:
 
         +-------------+-----------------------------------------------+
         | magic       | Magic number that identifies the file as a    |
-        |             | Btree database                                |
+        |             | Btree database.                               |
         +-------------+-----------------------------------------------+
-        | version     | Version of the Btree database                 |
+        | version     | Version of the Btree database.                |
         +-------------+-----------------------------------------------+
         | nkeys       | For the Btree Access Method, the number of    |
         |             | unique keys in the database.                  |
@@ -365,62 +387,66 @@ DB Methods
         |             | during deletion, the number of records may    |
         |             | include records that have been deleted.       |
         +-------------+-----------------------------------------------+
-        | pagesize    | Underlying database page size                 |
+        | pagecnt     | The number of pages in the database.          |
         +-------------+-----------------------------------------------+
-        | minkey      | Minimum keys per page                         |
+        | pagesize    | Underlying database page size.                |
         +-------------+-----------------------------------------------+
-        | re_len      | Length of fixed-length records                |
+        | minkey      | Minimum keys per page.                        |
         +-------------+-----------------------------------------------+
-        | re_pad      | Padding byte value for fixed-length records   |
+        | re_len      | Length of fixed-length records.               |
         +-------------+-----------------------------------------------+
-        | levels      | Number of levels in the database              |
+        | re_pad      | Padding byte value for fixed-length records.  |
         +-------------+-----------------------------------------------+
-        | int_pg      | Number of database internal pages             |
+        | levels      | Number of levels in the database.             |
         +-------------+-----------------------------------------------+
-        | leaf_pg     | Number of database leaf pages                 |
+        | int_pg      | Number of database internal pages.            |
         +-------------+-----------------------------------------------+
-        | dup_pg      | Number of database duplicate pages            |
+        | leaf_pg     | Number of database leaf pages.                |
         +-------------+-----------------------------------------------+
-        | over_pg     | Number of database overflow pages             |
+        | dup_pg      | Number of database duplicate pages.           |
         +-------------+-----------------------------------------------+
-        | free        | Number of pages on the free list              |
+        | over_pg     | Number of database overflow pages.            |
         +-------------+-----------------------------------------------+
-        | int_pgfree  | Num of bytes free in database internal pages  |
+        | empty_pg    | Number of empty database pages.               |
         +-------------+-----------------------------------------------+
-        | leaf_pgfree | Number of bytes free in database leaf pages   |
+        | free        | Number of pages on the free list.             |
         +-------------+-----------------------------------------------+
-        | dup_pgfree  | Num bytes free in database duplicate pages    |
+        | int_pgfree  | Num of bytes free in database internal pages. |
         +-------------+-----------------------------------------------+
-        | over_pgfree | Num of bytes free in database overflow pages  |
+        | leaf_pgfree | Number of bytes free in database leaf pages.  |
+        +-------------+-----------------------------------------------+
+        | dup_pgfree  | Num bytes free in database duplicate pages.   |
+        +-------------+-----------------------------------------------+
+        | over_pgfree | Num of bytes free in database overflow pages. |
         +-------------+-----------------------------------------------+
 
    For Queue databases:
 
         +-------------+-----------------------------------------------+
         | magic       | Magic number that identifies the file as a    |
-        |             | Queue database                                |
+        |             | Queue database.                               |
         +-------------+-----------------------------------------------+
-        | version     | Version of the Queue file type                |
+        | version     | Version of the Queue file type.               |
         +-------------+-----------------------------------------------+
-        | nkeys       | Number of records in the database             |
+        | nkeys       | Number of records in the database.            |
         +-------------+-----------------------------------------------+
-        | ndata       | Number of records in the database             |
+        | ndata       | Number of records in the database.            |
         +-------------+-----------------------------------------------+
-        | pagesize    | Underlying database page size                 |
+        | pagesize    | Underlying database page size.                |
         +-------------+-----------------------------------------------+
-        | pages       | Number of pages in the database               |
+        | extentsize  | Underlying database extent size, in pages.    |
         +-------------+-----------------------------------------------+
-        | re_len      | Length of the records                         |
+        | pages       | Number of pages in the database.              |
         +-------------+-----------------------------------------------+
-        | re_pad      | Padding byte value for the records            |
+        | re_len      | Length of the records.                        |
         +-------------+-----------------------------------------------+
-        | pgfree      | Number of bytes free in database pages        |
+        | re_pad      | Padding byte value for the records.           |
         +-------------+-----------------------------------------------+
-        | start       | Start offset                                  |
+        | pgfree      | Number of bytes free in database pages.       |
         +-------------+-----------------------------------------------+
-        | first_recno | First undeleted record in the database        |
+        | first_recno | First undeleted record in the database.       |
         +-------------+-----------------------------------------------+
-        | cur_recno   | Last allocated record number in the database  |
+        | cur_recno   | Last allocated record number in the database. |
         +-------------+-----------------------------------------------+
 
    `More info...

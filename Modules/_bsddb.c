@@ -2578,6 +2578,9 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_HASH_ENTRY(version);
         MAKE_HASH_ENTRY(nkeys);
         MAKE_HASH_ENTRY(ndata);
+#if (DBVER >= 46)
+        MAKE_HASH_ENTRY(pagecnt);
+#endif
         MAKE_HASH_ENTRY(pagesize);
 #if (DBVER < 41)
         MAKE_HASH_ENTRY(nelem);
@@ -2600,6 +2603,9 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_BT_ENTRY(version);
         MAKE_BT_ENTRY(nkeys);
         MAKE_BT_ENTRY(ndata);
+#if (DBVER >= 46)
+        MAKE_BT_ENTRY(pagecnt);
+#endif
         MAKE_BT_ENTRY(pagesize);
         MAKE_BT_ENTRY(minkey);
         MAKE_BT_ENTRY(re_len);
@@ -2609,6 +2615,9 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_BT_ENTRY(leaf_pg);
         MAKE_BT_ENTRY(dup_pg);
         MAKE_BT_ENTRY(over_pg);
+#if (DBVER >= 43)
+        MAKE_BT_ENTRY(empty_pg);
+#endif
         MAKE_BT_ENTRY(free);
         MAKE_BT_ENTRY(int_pgfree);
         MAKE_BT_ENTRY(leaf_pgfree);
@@ -2622,6 +2631,9 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_QUEUE_ENTRY(nkeys);
         MAKE_QUEUE_ENTRY(ndata);
         MAKE_QUEUE_ENTRY(pagesize);
+#if (DBVER > 40)
+        MAKE_QUEUE_ENTRY(extentsize);
+#endif
         MAKE_QUEUE_ENTRY(pages);
         MAKE_QUEUE_ENTRY(re_len);
         MAKE_QUEUE_ENTRY(re_pad);

@@ -19,6 +19,9 @@
     "lock_id_free", "set_tx_timestamp", "lsn_reset" and "log_stat".
   * Completed and documented "DBEnv.txn_stat()".
   * Completed and documented "DBEnv.lock_stat()".
+  * Documented the already available DB methods: "set_encrypt", "pget".
+  * Completed documentation of DB methods: "associate", "open".
+  * Completed and documented "DB.stat()".
 
 4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.
