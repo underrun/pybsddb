@@ -6163,6 +6163,10 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_NOPANIC);
 #endif
 
+#if (DBVER >= 41)
+    ADD_INT(d, DB_OVERWRITE);
+#endif
+
 #ifdef DB_REGISTER
     ADD_INT(d, DB_REGISTER);
 #endif
@@ -6179,11 +6183,16 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_CHKSUM);
 #endif
 
+#if (DBVER >= 44)
+    ADD_INT(d, DB_DSYNC_DB);
+#endif
+
 #if (DBVER >= 45)
     ADD_INT(d, DB_TXN_SNAPSHOT);
 #endif
 
 #if (DBVER >= 43)
+    ADD_INT(d, DB_DSYNC_LOG);
     ADD_INT(d, DB_LOG_INMEMORY);
     ADD_INT(d, DB_BUFFER_SMALL);
     ADD_INT(d, DB_SEQ_DEC);
