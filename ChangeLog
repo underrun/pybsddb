@@ -22,6 +22,9 @@
   * Documented the already available DB methods: "set_encrypt", "pget".
   * Completed documentation of DB methods: "associate", "open".
   * Completed and documented "DB.stat()".
+  * Documented the already available DBCursor methods: "pget" (several
+    flavours).
+  * Completed documentation of DBCursor methods: "consume", "join_item".
 
 4.6.1: (first release from Jesus Cea Avion)
   * 'egg' (setuptools) support.

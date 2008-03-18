@@ -66,6 +66,22 @@ DBCursor Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/dbc_get.html>`__
 
+.. function:: pget(flags, dlen=-1, doff=-1)
+
+   See pget(key, data, flags, dlen=-1, doff=-1) below.
+
+.. function:: pget(key, flags, dlen=-1, doff=-1)
+
+   See pget(key, data, flags, dlen=-1, doff=-1) below.
+
+.. function:: pget(key, data, flags, dlen=-1, doff=-1)
+
+   Similar to the already described get(). This method is available only
+   on secondary databases. It will return the primary key, given the
+   secondary one, and associated data
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/dbc_get.html>`__
 
 DBCursor Get Methods
 --------------------
@@ -113,7 +129,7 @@ C API.
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/dbc_get.html#DB_PREV>`__
 
-.. function:: consume(flags=0)
+.. function:: consume(flags=0, dlen=-1, doff=-1)
 
    For a database with the Queue access method, returns the record
    number and data from the first available record and deletes it from
@@ -140,7 +156,7 @@ C API.
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/dbc_get.html#DB_GET_RECNO>`__
 
-.. function:: join_item()
+.. function:: join_item(flags=0)
 
    For cursors returned from the DB.join method, returns the combined
    key value from the joined cursors.
