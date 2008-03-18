@@ -1,4 +1,5 @@
 4.6.2:
+  * Support for MVCC (MultiVersion Concurrency Control).
   * Move old documentation to ReST format. This is important for several
     reasons, notably to be able to integrate the documentation "as is"
     in python official docs (from Python 2.6).
