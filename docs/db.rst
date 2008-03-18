@@ -151,8 +151,7 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_key_range.html>`__
 
-.. function:: open(filename, dbname=None, dbtype=DB_UNKNOWN, flags=0,
-mode=0660, txn=None)
+.. function:: open(filename, dbname=None, dbtype=DB_UNKNOWN, flags=0, mode=0660, txn=None)
 
    Opens the database named dbname in the file named filename. The
    dbname argument is optional and allows applications to have multiple
