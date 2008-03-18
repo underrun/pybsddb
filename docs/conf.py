@@ -16,20 +16,15 @@ sys.path.append('tools/sphinxext')
 #extensions = ['sphinx.ext.refcounting', 'sphinx.ext.coverage']
 
 # General substitutions.
-#project = 'Python'
-#copyright = '1990-%s, Python Software Foundation' % time.strftime('%Y')
+project = 'PyBSDDB'
+copyright = '2008 Jesus Cea Avion'
 
 # The default replacements for |version| and |release|.
 #
 # The short X.Y version.
-# version = '2.6'
+version = '4.6.2'
 # The full version, including alpha/beta/rc tags.
-# release = '2.6a0'
-
-# We look for the Include/patchlevel.h file in the current Python source tree
-# and replace the values accordingly.
-#import patchlevel
-#version, release = patchlevel.get_version_info()
+release = '4.6.2devel6'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -87,4 +82,6 @@ html_use_smartypants = True
 
 # Output file base name for HTML help builder.
 #htmlhelp_basename = 'python' + release.replace('.', '')
+
+html_copy_source=False
 

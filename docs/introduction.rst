@@ -186,13 +186,6 @@ db/index.html>`__ on Oracle's website for more details of the
 functionality of each of these methods. The names of all the Python
 methods should be the same or similar to the names in the C API.
 
-This version of the documentation was originally based on Berkeley DB
-3.3. If you build the module with a different version of Berkeley DB
-then the items below and in the Oracle Berkeley DB docs may not be
-entirely accurate. Refer to the `Oracle Berkeley DB documentation
-<http://www.oracle.com/technology/documentation/berkeley-db/
-db/index.html>`__ for true details.
-
 **NOTE:** All the methods shown below having more than one keyword
 argument are actually implemented using keyword argument parsing, so you
 can use keywords to provide optional parameters as desired. Those that
