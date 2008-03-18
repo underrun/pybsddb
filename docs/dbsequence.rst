@@ -108,31 +108,30 @@ DBSequence Methods
 
    Returns a dictionary of sequence statistics with the following keys:
 
-     +------------+---------------------------------------------+
-     | wait       | The number of times a thread of control was |
-     |            | forced to wait on the handle mutex          |
-     +------------+---------------------------------------------+         
-     | nowait     | The number of times that a thread           |
-     |            | of control was able to obtain handle mutex  |
-     |            | without waiting                             |
-     +------------+---------------------------------------------+           
-     | current    | The current value of the sequence           |
-     |            | in the database                             |
-     +------------+---------------------------------------------+            
-     | value      | The current cached value of the sequence    |
-     +------------+---------------------------------------------+
-     | last_value | The last cached value of the sequence       |
-     +------------+---------------------------------------------+
-     | min        | The minimum permitted value of the sequence |
-     +------------+---------------------------------------------+
-     | max        | The maximum permitted value of the sequence |
-     +------------+---------------------------------------------+
-     | cache_size | The number of values that will be cached in |
-     |            | this handle                                 |
-     +------------+---------------------------------------------+               
-     | flags      | The flags value for the sequence            |               
-     +------------+---------------------------------------------+
-
+     +------------+----------------------------------------------+
+     | wait       | The number of times a thread of control was  |
+     |            | forced to wait on the handle mutex.          |
+     +------------+----------------------------------------------+         
+     | nowait     | The number of times that a thread            |
+     |            | of control was able to obtain handle mutex   |
+     |            | without waiting.                             |
+     +------------+----------------------------------------------+           
+     | current    | The current value of the sequence            |
+     |            | in the database.                             |
+     +------------+----------------------------------------------+            
+     | value      | The current cached value of the sequence.    |
+     +------------+----------------------------------------------+
+     | last_value | The last cached value of the sequence.       |
+     +------------+----------------------------------------------+
+     | min        | The minimum permitted value of the sequence. |
+     +------------+----------------------------------------------+
+     | max        | The maximum permitted value of the sequence. |
+     +------------+----------------------------------------------+
+     | cache_size | The number of values that will be cached in  |
+     |            | this handle.                                 |
+     +------------+----------------------------------------------+               
+     | flags      | The flags value for the sequence.            |               
+     +------------+----------------------------------------------+
 
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
@@ -151,15 +150,4 @@ DBSequence Methods
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/seq_set_range.html>`__
-
-
-
-
-
-
-
-
-
-
-
 
