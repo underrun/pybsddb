@@ -4,12 +4,6 @@
 import os
 import tempfile
 
-try:
-    from threading import Thread, currentThread
-    have_threads = 1
-except ImportError:
-    have_threads = 0
-
 import unittest
 from test_all import verbose
 

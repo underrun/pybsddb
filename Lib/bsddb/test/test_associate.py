@@ -419,6 +419,8 @@ class ThreadedAssociateTestCase(AssociateTestCase):
         t2 = Thread(target = self.writer2,
                     args = (d, ))
 
+        t1.setDaemon(True)
+        t2.setDaemon(True)
         t1.start()
         t2.start()
         t1.join()

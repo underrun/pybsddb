@@ -195,6 +195,13 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
             # force d.__del__ [DB_dealloc] to be called
             gc.collect()
 
+    if db.version() > (4,3,0) :
+        def test06_close_db_before_sequence(self):
+            d = db.DB()
+            d.open(self.filename, db.DB_BTREE, db.DB_CREATE | db.DB_THREAD, 0666)
+            dbs=db.DBSequence(d)
+            d.close()  # This "close" should close the child DBSequence also
+            dbs.close()  # If not closed, core dump (in BerkeleyDB 4.6.*)
 
 #----------------------------------------------------------------------
 

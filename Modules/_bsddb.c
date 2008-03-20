@@ -815,7 +815,16 @@ static void _addDb_seq_tToDict(PyObject* dict, char *name, db_seq_t value)
 }
 #endif
 
+#if (DBVER >= 40)
+static void _addDB_lsnToDict(PyObject* dict, char *name, DB_LSN value)
+{
+    PyObject *v = Py_BuildValue("(ll)",value.file,value.offset);
+    if (!v || PyDict_SetItemString(dict, name, v))
+        PyErr_Clear();
 
+    Py_XDECREF(v);
+}
+#endif
 
 /* --------------------------------------------------------------------- */
 /* Allocators and deallocators */
@@ -836,6 +845,9 @@ newDBObject(DBEnvObject* arg, int flags)
     self->setflags = 0;
     self->myenvobj = NULL;
     self->children_cursors = NULL;
+#if (DBVER >=43)
+    self->children_sequences = NULL;
+#endif
 #if (DBVER >= 33)
     self->associateCallback = NULL;
     self->btCompareCallback = NULL;
@@ -1056,6 +1068,7 @@ newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, int flags)
     self->children_txns=NULL;
     self->children_dbs=NULL;
     self->children_cursors=NULL;
+    self->children_sequences=NULL;
 
     return self;
 }
@@ -1137,8 +1150,11 @@ newDBSequenceObject(DBObject* mydb,  int flags)
         return NULL;
     Py_INCREF(mydb);
     self->mydb = mydb;
-    self->in_weakreflist = NULL;
 
+    INSERT_IN_DOUBLE_LINKED_LIST(self->mydb->children_sequences,self);
+    self->txn=NULL;
+
+    self->in_weakreflist = NULL;
 
     MYDB_BEGIN_ALLOW_THREADS;
     err = db_sequence_create(&self->sequence, self->mydb->db, flags);
@@ -1152,10 +1168,20 @@ newDBSequenceObject(DBObject* mydb,  int flags)
     return self;
 }
 
+/* Forward declaration */
+static PyObject
+*DBSequence_close_internal(DBSequenceObject* self, int flags, int do_not_close);
 
 static void
 DBSequence_dealloc(DBSequenceObject* self)
 {
+    PyObject *dummy;
+
+    if (self->sequence != NULL) {
+        dummy=DBSequence_close_internal(self,0,0);
+        Py_XDECREF(dummy);
+    }
+
     if (self->in_weakreflist != NULL) {
         PyObject_ClearWeakRefs((PyObject *) self);
     }
@@ -1378,6 +1404,13 @@ DB_close_internal(DBObject* self, int flags)
           dummy=DBC_close_internal(self->children_cursors);
           Py_XDECREF(dummy);
         }
+
+#if (DBVER >= 43)
+        while(self->children_sequences) {
+            dummy=DBSequence_close_internal(self->children_sequences,0,0);
+            Py_XDECREF(dummy);
+        }
+#endif
 
         MYDB_BEGIN_ALLOW_THREADS;
         err = self->db->close(self->db, flags);
@@ -2545,6 +2578,9 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_HASH_ENTRY(version);
         MAKE_HASH_ENTRY(nkeys);
         MAKE_HASH_ENTRY(ndata);
+#if (DBVER >= 46)
+        MAKE_HASH_ENTRY(pagecnt);
+#endif
         MAKE_HASH_ENTRY(pagesize);
 #if (DBVER < 41)
         MAKE_HASH_ENTRY(nelem);
@@ -2567,6 +2603,9 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_BT_ENTRY(version);
         MAKE_BT_ENTRY(nkeys);
         MAKE_BT_ENTRY(ndata);
+#if (DBVER >= 46)
+        MAKE_BT_ENTRY(pagecnt);
+#endif
         MAKE_BT_ENTRY(pagesize);
         MAKE_BT_ENTRY(minkey);
         MAKE_BT_ENTRY(re_len);
@@ -2576,6 +2615,9 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_BT_ENTRY(leaf_pg);
         MAKE_BT_ENTRY(dup_pg);
         MAKE_BT_ENTRY(over_pg);
+#if (DBVER >= 43)
+        MAKE_BT_ENTRY(empty_pg);
+#endif
         MAKE_BT_ENTRY(free);
         MAKE_BT_ENTRY(int_pgfree);
         MAKE_BT_ENTRY(leaf_pgfree);
@@ -2589,6 +2631,9 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_QUEUE_ENTRY(nkeys);
         MAKE_QUEUE_ENTRY(ndata);
         MAKE_QUEUE_ENTRY(pagesize);
+#if (DBVER > 40)
+        MAKE_QUEUE_ENTRY(extentsize);
+#endif
         MAKE_QUEUE_ENTRY(pages);
         MAKE_QUEUE_ENTRY(re_len);
         MAKE_QUEUE_ENTRY(re_pad);
@@ -4584,6 +4629,10 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
 #if (DBVER < 41)
     MAKE_ENTRY(lastid);
 #endif
+#if (DBVER >=41)
+    MAKE_ENTRY(id);
+    MAKE_ENTRY(cur_maxid);
+#endif
     MAKE_ENTRY(nmodes);
     MAKE_ENTRY(maxlocks);
     MAKE_ENTRY(maxlockers);
@@ -4596,6 +4645,10 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     MAKE_ENTRY(maxnobjects);
     MAKE_ENTRY(nrequests);
     MAKE_ENTRY(nreleases);
+#if (DBVER >= 44)
+    MAKE_ENTRY(nupgrade);
+    MAKE_ENTRY(ndowngrade);
+#endif
 #if (DBVER < 44)
     MAKE_ENTRY(nnowaits);       /* these were renamed in 4.4 */
     MAKE_ENTRY(nconflicts);
@@ -4604,6 +4657,23 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     MAKE_ENTRY(lock_wait);
 #endif
     MAKE_ENTRY(ndeadlocks);
+#if (DBVER >= 41)
+    MAKE_ENTRY(locktimeout);
+    MAKE_ENTRY(txntimeout);
+#endif
+#if (DBVER >= 40)
+    MAKE_ENTRY(nlocktimeouts);
+    MAKE_ENTRY(ntxntimeouts);
+#endif
+#if (DBVER >= 46)
+    MAKE_ENTRY(objs_wait);
+    MAKE_ENTRY(objs_nowait);
+    MAKE_ENTRY(lockers_wait);
+    MAKE_ENTRY(lockers_nowait);
+    MAKE_ENTRY(locks_wait);
+    MAKE_ENTRY(locks_nowait);
+    MAKE_ENTRY(hash_len);
+#endif
     MAKE_ENTRY(regsize);
     MAKE_ENTRY(region_wait);
     MAKE_ENTRY(region_nowait);
@@ -4693,21 +4763,33 @@ DBEnv_txn_stat(DBEnvObject* self, PyObject* args)
         return NULL;
     }
 
-#define MAKE_ENTRY(name)  _addIntToDict(d, #name, sp->st_##name)
-#define MAKE_TIME_T_ENTRY(name)_addTimeTToDict(d, #name, sp->st_##name)
+#define MAKE_ENTRY(name)        _addIntToDict(d, #name, sp->st_##name)
+#define MAKE_TIME_T_ENTRY(name) _addTimeTToDict(d, #name, sp->st_##name)
+#define MAKE_DB_LSN_ENTRY(name) _addDB_lsnToDict(d, #name, sp->st_##name)
 
+#if (DBVER >= 40)
+    MAKE_DB_LSN_ENTRY(last_ckp);
+#endif
     MAKE_TIME_T_ENTRY(time_ckp);
     MAKE_ENTRY(last_txnid);
     MAKE_ENTRY(maxtxns);
     MAKE_ENTRY(nactive);
     MAKE_ENTRY(maxnactive);
+#if (DBVER >= 45)
+    MAKE_ENTRY(nsnapshot);
+    MAKE_ENTRY(maxnsnapshot);
+#endif
     MAKE_ENTRY(nbegins);
     MAKE_ENTRY(naborts);
     MAKE_ENTRY(ncommits);
+#if (DBVER >= 40)
+    MAKE_ENTRY(nrestores);
+#endif
     MAKE_ENTRY(regsize);
     MAKE_ENTRY(region_wait);
     MAKE_ENTRY(region_nowait);
 
+#undef MAKE_DB_LSN_ENTRY
 #undef MAKE_ENTRY
 #undef MAKE_TIME_T_ENTRY
     free(sp);
@@ -4751,9 +4833,12 @@ static void _close_transaction_cursors(DBTxnObject* txn)
     }
 }
 
-static void _promote_transaction_dbs(DBTxnObject *txn)
+static void _promote_transaction_dbs_and_sequences(DBTxnObject *txn)
 {
     DBObject *db;
+#if (DBVER >= 43)
+    DBSequenceObject *dbs;
+#endif
 
     while (txn->children_dbs) {
         db=txn->children_dbs;
@@ -4768,6 +4853,22 @@ static void _promote_transaction_dbs(DBTxnObject *txn)
             db->txn=NULL; 
         }
     }
+
+#if (DBVER >= 43)
+    while (txn->children_sequences) {
+        dbs=txn->children_sequences;
+        EXTRACT_FROM_DOUBLE_LINKED_LIST_TXN(dbs);
+        if (txn->parent_txn) {
+            INSERT_IN_DOUBLE_LINKED_LIST_TXN(txn->parent_txn->children_sequences,dbs);
+            dbs->txn=txn->parent_txn;
+        } else {
+            /* The sequence is already linked to its
+            ** parent db. Nothing to do.
+            */
+            dbs->txn=NULL;
+        }
+    }
+#endif
 }
 
 
@@ -4802,7 +4903,7 @@ DBTxn_commit(DBTxnObject* self, PyObject* args)
 #endif
     MYDB_END_ALLOW_THREADS;
 
-    _promote_transaction_dbs(self);
+    _promote_transaction_dbs_and_sequences(self);
 
     RETURN_IF_ERR();
     RETURN_NONE();
@@ -4866,6 +4967,7 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
 static PyObject*
 DBTxn_abort_internal(DBTxnObject* self)
 {
+    PyObject *dummy;
     int err;
     DB_TXN *txn;
 
@@ -4880,8 +4982,13 @@ DBTxn_abort_internal(DBTxnObject* self)
     self->txn = NULL;   /* this DB_TXN is no longer valid after this call */
 
     _close_transaction_cursors(self);
+#if (DBVER >= 43)
+    while (self->children_sequences) {
+        dummy=DBSequence_close_internal(self->children_sequences,0,0);
+        Py_XDECREF(dummy);
+    }
+#endif
     while (self->children_dbs) {
-        PyObject *dummy;
         dummy=DB_close_internal(self->children_dbs,0);
         Py_XDECREF(dummy);
     }
@@ -4941,22 +5048,46 @@ DBTxn_id(DBTxnObject* self, PyObject* args)
 /* DBSequence methods */
 
 
+/*
+** Compile time sanity check
+** Beware: MAGIC CODE!
+*/
+typedef char db_seq_is_not_long_long [(sizeof(db_seq_t)==sizeof(long long))-1];
+
+
+static PyObject*
+DBSequence_close_internal(DBSequenceObject* self, int flags, int do_not_close)
+{
+    int err=0;
+
+    if (self->sequence!=NULL) {
+        EXTRACT_FROM_DOUBLE_LINKED_LIST(self);
+        if (self->txn) {
+            EXTRACT_FROM_DOUBLE_LINKED_LIST_TXN(self);
+            self->txn=NULL;
+        }
+
+        if (!do_not_close) {
+            MYDB_BEGIN_ALLOW_THREADS
+            err = self->sequence->close(self->sequence, flags);
+            MYDB_END_ALLOW_THREADS
+        }
+        self->sequence = NULL;
+
+        RETURN_IF_ERR();
+    }
+
+    RETURN_NONE();
+}
+
 static PyObject*
 DBSequence_close(DBSequenceObject* self, PyObject* args)
 {
-    int err, flags=0;
+    int flags=0;
     if (!PyArg_ParseTuple(args,"|i:close", &flags))
         return NULL;
-    CHECK_SEQUENCE_NOT_CLOSED(self)
 
-    MYDB_BEGIN_ALLOW_THREADS
-    err = self->sequence->close(self->sequence, flags);
-    self->sequence = NULL;
-    MYDB_END_ALLOW_THREADS
-
-    RETURN_IF_ERR();
-
-    RETURN_NONE();
+    return DBSequence_close_internal(self,flags,0);
 }
 
 static PyObject*
@@ -4981,7 +5112,6 @@ DBSequence_get(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 
     RETURN_IF_ERR();
     return PyLong_FromLongLong(value);
-
 }
 
 static PyObject*
@@ -5000,6 +5130,10 @@ DBSequence_get_key(DBSequenceObject* self, PyObject* args)
     int err;
     DBT key;
     PyObject *retval = NULL;
+
+    if (!PyArg_ParseTuple(args,":get_key"))
+        return NULL;
+
     key.flags = DB_DBT_MALLOC;
     CHECK_SEQUENCE_NOT_CLOSED(self)
     MYDB_BEGIN_ALLOW_THREADS
@@ -5059,12 +5193,18 @@ DBSequence_open(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
     CLEAR_DBT(key);
     RETURN_IF_ERR();
 
+    if (txn) {
+        INSERT_IN_DOUBLE_LINKED_LIST_TXN(((DBTxnObject *)txnobj)->children_sequences,self);
+        self->txn=(DBTxnObject *)txnobj;
+    }
+
     RETURN_NONE();
 }
 
 static PyObject*
 DBSequence_remove(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 {
+    PyObject *dummy;
     int err, flags = 0;
     PyObject *txnobj = NULL;
     DB_TXN *txn = NULL;
@@ -5081,6 +5221,9 @@ DBSequence_remove(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
     MYDB_BEGIN_ALLOW_THREADS
     err = self->sequence->remove(self->sequence, txn, flags);
     MYDB_END_ALLOW_THREADS
+
+    dummy=DBSequence_close_internal(self,flags,1);
+    Py_XDECREF(dummy);
 
     RETURN_IF_ERR();
     RETURN_NONE();
@@ -5132,7 +5275,6 @@ DBSequence_set_flags(DBSequenceObject* self, PyObject* args)
 
     RETURN_IF_ERR();
     RETURN_NONE();
-
 }
 
 static PyObject*
@@ -5815,6 +5957,9 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_CREATE);
     ADD_INT(d, DB_NOMMAP);
     ADD_INT(d, DB_THREAD);
+#if (DBVER >=45)
+    ADD_INT(d, DB_MULTIVERSION);
+#endif
 
     ADD_INT(d, DB_FORCE);
     ADD_INT(d, DB_INIT_CDB);
@@ -6042,6 +6187,10 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_NOPANIC);
 #endif
 
+#if (DBVER >= 41)
+    ADD_INT(d, DB_OVERWRITE);
+#endif
+
 #ifdef DB_REGISTER
     ADD_INT(d, DB_REGISTER);
 #endif
@@ -6069,6 +6218,14 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_LOG_ZERO);
 #endif
 
+#if (DBVER >= 44)
+    ADD_INT(d, DB_DSYNC_DB);
+#endif
+
+#if (DBVER >= 45)
+    ADD_INT(d, DB_TXN_SNAPSHOT);
+#endif
+
 #if (DBVER >= 43)
     ADD_INT(d, DB_BUFFER_SMALL);
     ADD_INT(d, DB_SEQ_DEC);
@@ -6078,6 +6235,7 @@ DL_EXPORT(void) init_bsddb(void)
 
 #if (DBVER >= 43) && (DBVER < 47)
     ADD_INT(d, DB_LOG_INMEMORY);
+    ADD_INT(d, DB_DSYNC_LOG);
 #endif
 
 #if (DBVER >= 41)
