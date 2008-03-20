@@ -221,7 +221,7 @@ if os.name == 'posix':
         pass
 
     # On Un*x, double check that no other built-in module pulls libdb in as a
-    # side-effect.  TBD: how/what to do on other platforms?
+    # side-effect. TBD: how/what to do on other platforms?
     fp = os.popen('ldd %s 2>&1' % sys.executable)
     results = fp.read()
     status = fp.close()
@@ -232,10 +232,10 @@ if os.name == 'posix':
         print """\
 \aWARNING:
 \tIt appears that the old bsddb module is staticly linked in the
-\tPython executable.  This will cause various random problems for
-\tbsddb3, up to and including segfaults.  Please rebuild your
+\tPython executable. This will cause various random problems for
+\tbsddb3, up to and including segfaults. Please rebuild your
 \tPython either with bsddb disabled, or with it built as a shared
-\tdynamic extension.  Watch out for other modules (e.g. dbm) that create
+\tdynamic extension. Watch out for other modules (e.g. dbm) that create
 \tdependencies in the python executable to libdb as a side effect."""
         st = raw_input("Build anyway? (yes/[no]) ")
         if st != "yes":
@@ -245,15 +245,15 @@ if os.name == 'posix':
 elif os.name == 'nt':
 
     # The default build of Berkeley DB for windows just leaves
-    # everything in the build dirs in the db source tree.  That means
+    # everything in the build dirs in the db source tree. That means
     # that we either have to hunt around to find it, (which would be
     # even more difficult than the mess above for Unix...) or we make
-    # the builder specify everything here.  Compounding the problem is
+    # the builder specify everything here. Compounding the problem is
     # version numbers in default path names, and different library
     # names for debug/release or dll/static.
     #
     # So to make things easier, I'm just going to exepect that the DB stuff
-    # has been moved to the ./db directory.  There's an updatedb.bat file to
+    # has been moved to the ./db directory. There's an updatedb.bat file to
     # help.
     #
     # You'll need to edit the project file that comes with Berkeley DB so it
@@ -308,15 +308,14 @@ This module provides a nearly complete wrapping
 of the Oracle/Sleepycat C API for the Database
 Environment, Database, Cursor, and Transaction
 objects, and each of these is exposed as a Python
-type in the bsddb3.db module.  The database objects
+type in the bsddb3.db module. The database objects
 can use various access methods: btree, hash, recno,
-and queue.  Please see the documents in the docs
+and queue. Please see the documents in the docs
 directory of the source distribution or at the
 website for more details on the types and methods
-provided.  The goal is the mirror most of the real
+provided. The goal is the mirror most of the real
 Berkeley DB API so fall back to the Oracle Berkeley DB
-documentation as appropriate.  Not everything API
-supported has been documented in the included docs.""",
+documentation as appropriate. """,
 
       author = 'Jesus Cea, Robin Dunn, Gregory P. Smith, Andrew Kuchling, Barry Warsaw',
       author_email = 'pybsddb@argo.es',
