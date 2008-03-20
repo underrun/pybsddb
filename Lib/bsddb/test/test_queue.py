@@ -90,7 +90,7 @@ class SimpleQueueTestCase(unittest.TestCase):
 
         assert len(d) == 0, \
                "if you see this message then you need to rebuild " \
-               "BerkeleyDB 3.1.17 with the patch in patches/qam_stat.diff"
+               "Berkeley DB 3.1.17 with the patch in patches/qam_stat.diff"
 
         d.close()
 

@@ -36,7 +36,7 @@
 /*
  * Handwritten code to wrap version 3.x of the Berkeley DB library,
  * written to replace a SWIG-generated file.  It has since been updated
- * to compile with BerkeleyDB versions 3.2 through 4.2.
+ * to compile with Berkeley DB versions 3.2 through 4.2.
  *
  * This module was started by Andrew Kuchling to remove the dependency
  * on SWIG in a package by Gregory P. Smith who based his work on a

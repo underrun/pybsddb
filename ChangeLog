@@ -4,7 +4,7 @@
   * Move old documentation to ReST format. This is important for several
     reasons, notably to be able to integrate the documentation "as is"
     in python official docs (from Python 2.6).
-  * Don't include BerkeleyDB documentation. Link to the online version.
+  * Don't include Berkeley DB documentation. Link to the online version.
   * DBSequence objects documented.
   * DBSequence.get_key() didn't check for parameters. Fixed.
   * If a DB is closed, its children DBSequences will be

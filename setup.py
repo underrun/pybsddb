@@ -178,7 +178,7 @@ if os.name == 'posix':
                     else:
                         if debug: print "db lib: ", dblib, "not found"
         except db_found:
-            print "Found BerkeleyDB %d.%d installation." % db_ver
+            print "Found Berkeley DB %d.%d installation." % db_ver
             print "  include files in", db_incdir
             print "  library files in", db_libdir
             print "  library name is lib"+dblib
@@ -187,7 +187,7 @@ if os.name == 'posix':
             incdir  = db_incdir
             libdir  = db_libdir
         else:
-            # this means BerkeleyDB could not be found
+            # this means Berkeley DB could not be found
             pass
 
     if BERKELEYDB_LIBDIR or BERKELEYDB_INCDIR:
@@ -195,7 +195,7 @@ if os.name == 'posix':
         incdir = BERKELEYDB_INCDIR or None
 
     if not BERKELEYDB_DIR and not incdir and not libdir:
-        print "Can't find a local BerkeleyDB installation."
+        print "Can't find a local Berkeley DB installation."
         print "(suggestion: try the --berkeley-db=/path/to/bsddb option)"
         sys.exit(1)
 
@@ -276,7 +276,7 @@ elif os.name == 'nt':
         ver = fullverstr[0] + fullverstr[2]   # 31 == 3.1, 32 == 3.2, etc.
     assert ver in ('33', '40', '41', '42', '43', '44', '45', '46'), (
         "pybsddb untested with this Berkeley DB version", ver)
-    print 'Detected BerkeleyDB version', ver, 'from db.h'
+    print 'Detected Berkeley DB version', ver, 'from db.h'
 
     if debug:
         libname = ['libdb%ssd' % ver]     # Debug, static
@@ -302,7 +302,7 @@ elif os.name == 'nt':
 # do the actual build, install, whatever...
 setup(name = 'bsddb3',
       version = VERSION,
-      description = 'Python interface for BerkeleyDB',
+      description = 'Python interface for Berkeley DB',
       long_description = """\
 This module provides a nearly complete wrapping
 of the Oracle/Sleepycat C API for the Database
@@ -314,7 +314,7 @@ and queue.  Please see the documents in the docs
 directory of the source distribution or at the
 website for more details on the types and methods
 provided.  The goal is the mirror most of the real
-BerkeleyDB API so fall back to the Oracle BerkeleyDB
+Berkeley DB API so fall back to the Oracle Berkeley DB
 documentation as appropriate.  Not everything API
 supported has been documented in the included docs.""",
 

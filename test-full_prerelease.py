@@ -2,7 +2,7 @@
 
 """
 This program checks all the matrix formed by
-several Python and BerkeleyDB versions.
+several Python and Berkeley DB versions.
 
 This code is only intented to be used by the
 maintainer, just before a pybsddb release, to
@@ -20,7 +20,7 @@ def do_matrix_check() :
   for py in python_versions :
     for bdb in berkeleydb_versions :
       print
-      print "*** Testing bindings for Python %s and BerkeleyDB %s" %(py,bdb)
+      print "*** Testing bindings for Python %s and Berkeley DB %s" %(py,bdb)
       ret=subprocess.call(["/usr/local/bin/python"+py,"setup.py", "-q", \
                        "--berkeley-db=/usr/local/BerkeleyDB."+bdb,"build", "-f"])
       if ret :

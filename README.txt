@@ -1,14 +1,14 @@
 README.txt
 bsddb3 v4.6.x
-http://pybsddb.sourceforge.net/
+http://www.argo.es/~jcea/programacion/pybsddb.htm
 2007-11-04
 --------------------------------
 
-This module is intended to be the definitive modern BerkeleyDB
+This module is intended to be the definitive modern Berkeley DB
 interface for Python.  It should be both backwards compatible with
 the earlier (circa Python 1.5 to 2.2) "bsddb" module in addition to
 providing access to the much more powerful interface found in
-BerkeleyDB 3.x and 4.x.
+Berkeley DB 3.x and 4.x.
 
 This module provides a nearly complete wrapping of the Oracle C API
 for the Database Environment, Database, Cursor, Transaction and Lock
@@ -35,7 +35,7 @@ known to pass its unit tests on these platforms:
 In addition we've run it on a several varieties of Linux and of course
 on Win32.
 
-This wrapper should be compatible with BerkeleyDB releases going back
+This wrapper should be compatible with Berkeley DB releases going back
 to 3.3 up to and including DB 4.6.  It should also be compatible
 with Python versions from 2.1 to Python 2.6.
 
@@ -58,9 +58,9 @@ fairly simple to get things ready to go.
    are indicated in the README then apply it to your Berkeley DB
    sources and rebuild it.
 
-1. First, make sure that you have a BerkeleyDB version >= 3.3 and
+1. First, make sure that you have a Berkeley DB version >= 3.3 and
    no later than 4.5 and that it is built and installed.  Setup.py will
-   detect a db3 or BerkeleyDB directory under either /usr/local or /usr
+   detect a db3 or Berkeley DB directory under either /usr/local or /usr
    in that order; this will catch installations from RPMs and most hand
    installations under Unix.  If setup.py can't find your libdb then you
    can give it a hint either in the environment (using the BERKELEYDB_DIR
@@ -90,11 +90,11 @@ fairly simple to get things ready to go.
 
    On some OSes distutils may not always use the correct compiler or
    linker flags.  One user reported having to add the "-lpthread" option
-   in order to link with BerkeleyDB that was compiled with threads on AIX.
+   in order to link with Berkeley DB that was compiled with threads on AIX.
 
 
    NOTE: My recommendation is to not rely on pre-built versions of
-   BerkeleyDB since on some systems there can be several versions
+   Berkeley DB since on some systems there can be several versions
    already installed and it's sometimes difficult to tell which you
    are linking with when building bsddb3.  Instead get the sources
    from http://www.sleepycat.com/ and build/install it yourself as a

@@ -127,7 +127,7 @@ class AssociateErrorTestCase(unittest.TestCase):
         secDB.open(self.filename, "secondary", db.DB_BTREE, db.DB_CREATE)
 
         # dupDB has been configured to allow duplicates, it can't
-        # associate with a secondary.  BerkeleyDB will return an error.
+        # associate with a secondary.  Berkeley DB will return an error.
         try:
             def f(a,b): return a+b
             dupDB.associate(secDB, f)
