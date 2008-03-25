@@ -548,7 +548,7 @@ class BasicTestCase(unittest.TestCase):
 
     def test06_Truncate(self):
         if db.version() < (3,3):
-            # truncate is a feature of BerkeleyDB 3.3 and above
+            # truncate is a feature of Berkeley DB 3.3 and above
             return
 
         d = self.d
@@ -707,7 +707,7 @@ class BasicTransactionTestCase(BasicTestCase):
 
     def test07_TxnTruncate(self):
         if db.version() < (3,3):
-            # truncate is a feature of BerkeleyDB 3.3 and above
+            # truncate is a feature of Berkeley DB 3.3 and above
             return
 
         d = self.d

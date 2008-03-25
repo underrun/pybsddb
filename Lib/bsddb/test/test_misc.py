@@ -93,7 +93,7 @@ class MiscTestCase(unittest.TestCase):
     def test_DB_set_flags_persists(self):
         if db.version() < (4,2):
             # The get_flags API required for this to work is only available
-            # in BerkeleyDB >= 4.2
+            # in Berkeley DB >= 4.2
             return
         try:
             db1 = db.DB()

@@ -201,7 +201,7 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
             d.open(self.filename, db.DB_BTREE, db.DB_CREATE | db.DB_THREAD, 0666)
             dbs=db.DBSequence(d)
             d.close()  # This "close" should close the child DBSequence also
-            dbs.close()  # If not closed, core dump (in BerkeleyDB 4.6.*)
+            dbs.close()  # If not closed, core dump (in Berkeley DB 4.6.*)
 
 #----------------------------------------------------------------------
 

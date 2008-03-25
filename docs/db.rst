@@ -205,7 +205,7 @@ DB Methods
    once before the database has been opened. compareFunc takes two
    arguments: (left key string, right key string) It must return a -1,
    0, 1 integer similar to cmp.  You can shoot your database in the
-   foot, beware!  Read the BerkeleyDB docs for the full details of
+   foot, beware!  Read the Berkeley DB docs for the full details of
    how the comparison function MUST behave.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/

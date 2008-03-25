@@ -80,7 +80,7 @@ The bsddb3.db extension module provides the following object types:
 Exceptions Provided
 -------------------
 
-The BerkeleyDB C API uses function return codes to signal various
+The Berkeley DB C API uses function return codes to signal various
 errors. The bsddb3.db module checks for these error codes and turns them
 into Python exceptions, allowing you to use familiar try:... except:...
 constructs and not have to bother with checking every method's return

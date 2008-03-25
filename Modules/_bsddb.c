@@ -36,7 +36,7 @@
 /*
  * Handwritten code to wrap version 3.x of the Berkeley DB library,
  * written to replace a SWIG-generated file.  It has since been updated
- * to compile with BerkeleyDB versions 3.2 through 4.2.
+ * to compile with Berkeley DB versions 3.2 through 4.2.
  *
  * This module was started by Andrew Kuchling to remove the dependency
  * on SWIG in a package by Gregory P. Smith who based his work on a
@@ -1460,7 +1460,7 @@ _DB_consume(DBObject* self, PyObject* args, PyObject* kwargs, int consume_flag)
     CLEAR_DBT(key);
     CLEAR_DBT(data);
     if (CHECK_DBFLAG(self, DB_THREAD)) {
-        /* Tell BerkeleyDB to malloc the return value (thread safe) */
+        /* Tell Berkeley DB to malloc the return value (thread safe) */
         data.flags = DB_DBT_MALLOC;
         key.flags = DB_DBT_MALLOC;
     }
@@ -1601,7 +1601,7 @@ DB_get(DBObject* self, PyObject* args, PyObject* kwargs)
 
     CLEAR_DBT(data);
     if (CHECK_DBFLAG(self, DB_THREAD)) {
-        /* Tell BerkeleyDB to malloc the return value (thread safe) */
+        /* Tell Berkeley DB to malloc the return value (thread safe) */
         data.flags = DB_DBT_MALLOC;
     }
     if (!add_partial_dbt(&data, dlen, doff)) {
@@ -1668,7 +1668,7 @@ DB_pget(DBObject* self, PyObject* args, PyObject* kwargs)
 
     CLEAR_DBT(data);
     if (CHECK_DBFLAG(self, DB_THREAD)) {
-        /* Tell BerkeleyDB to malloc the return value (thread safe) */
+        /* Tell Berkeley DB to malloc the return value (thread safe) */
         data.flags = DB_DBT_MALLOC;
     }
     if (!add_partial_dbt(&data, dlen, doff)) {
@@ -1816,7 +1816,7 @@ DB_get_both(DBObject* self, PyObject* args, PyObject* kwargs)
     orig_data = data.data;
 
     if (CHECK_DBFLAG(self, DB_THREAD)) {
-        /* Tell BerkeleyDB to malloc the return value (thread safe) */
+        /* Tell Berkeley DB to malloc the return value (thread safe) */
         /* XXX(nnorwitz): At least 4.4.20 and 4.5.20 require this flag. */
         data.flags = DB_DBT_MALLOC;
     }
@@ -2842,7 +2842,7 @@ redo_stat_for_length:
        so we can use any of them for the type cast */
     size = ((DB_BTREE_STAT*)sp)->bt_ndata;
 
-    /* A size of 0 could mean that BerkeleyDB no longer had the stat values cached.
+    /* A size of 0 could mean that Berkeley DB no longer had the stat values cached.
      * redo a full stat to make sure.
      *   Fixes SF python bug 1493322, pybsddb bug 1184012
      */
@@ -2878,7 +2878,7 @@ PyObject* DB_subscript(DBObject* self, PyObject* keyobj)
 
     CLEAR_DBT(data);
     if (CHECK_DBFLAG(self, DB_THREAD)) {
-        /* Tell BerkeleyDB to malloc the return value (thread safe) */
+        /* Tell Berkeley DB to malloc the return value (thread safe) */
         data.flags = DB_DBT_MALLOC;
     }
     MYDB_BEGIN_ALLOW_THREADS;
@@ -3888,7 +3888,7 @@ DBEnv_close_internal(DBEnvObject* self, int flags)
         err = self->db_env->close(self->db_env, flags);
         MYDB_END_ALLOW_THREADS;
         /* after calling DBEnv->close, regardless of error, this DBEnv
-         * may not be accessed again (BerkeleyDB docs). */
+         * may not be accessed again (Berkeley DB docs). */
         self->closed = 1;
         self->db_env = NULL;
         RETURN_IF_ERR();
@@ -5054,7 +5054,6 @@ DBTxn_id(DBTxnObject* self, PyObject* args)
 */
 typedef char db_seq_is_not_long_long [(sizeof(db_seq_t)==sizeof(long long))-1];
 
-
 static PyObject*
 DBSequence_close_internal(DBSequenceObject* self, int flags, int do_not_close)
 {
@@ -5949,7 +5948,7 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_RPCCLIENT);
 #else
     ADD_INT(d, DB_CLIENT);
-    /* allow apps to be written using DB_RPCCLIENT on older BerkeleyDB */
+    /* allow apps to be written using DB_RPCCLIENT on older Berkeley DB */
     _addIntToDict(d, "DB_RPCCLIENT", DB_CLIENT);
 #endif
     ADD_INT(d, DB_XA_CREATE);
@@ -6242,7 +6241,7 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_ENCRYPT_AES);
     ADD_INT(d, DB_AUTO_COMMIT);
 #else
-    /* allow berkeleydb 4.1 aware apps to run on older versions */
+    /* allow Berkeley DB 4.1 aware apps to run on older versions */
     _addIntToDict(d, "DB_AUTO_COMMIT", 0);
 #endif
 

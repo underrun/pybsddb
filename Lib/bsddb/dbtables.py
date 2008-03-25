@@ -13,7 +13,7 @@
 #   --  Gregory P. Smith <greg@krypto.org>
 
 # This provides a simple database table interface built on top of
-# the Python BerkeleyDB 3 interface.
+# the Python Berkeley DB 3 interface.
 #
 _cvsid = '$Id: dbtables.py 58758 2007-11-01 21:15:36Z gregory.p.smith $'
 
@@ -139,7 +139,7 @@ class bsdTableDB :
                  recover=0, dbflags=0):
         """bsdTableDB(filename, dbhome, create=0, truncate=0, mode=0600)
 
-        Open database name in the dbhome BerkeleyDB directory.
+        Open database name in the dbhome Berkeley DB directory.
         Use keyword arguments when calling this constructor.
         """
         self.db = None
