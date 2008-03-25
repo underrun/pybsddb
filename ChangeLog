@@ -1,3 +1,5 @@
+4.6.3:
+
 4.6.2:
   * Support for MVCC (MultiVersion Concurrency Control).
   * Support for DB_DSYNC_LOG, DB_DSYNC_DB and DB_OVERWRITE flags.
@@ -15,7 +17,8 @@
     automatically closed if the transaction is aborted. If the
     transaction is committed and it is actually a subtransaction, the
     sequence will be inherited by the parent transaction.
-  * Be sure "db_seq_t" and "long long" are compatible.
+  * Be sure "db_seq_t" and "long long" are compatible. **Disabled because
+    MS Windows issues to be investigated.**
   * Documented the already available DBEnv methods: "dbremove",
     "dbrename", "set_encrypt", "set_timeout", "set_shm_key",
     "lock_id_free", "set_tx_timestamp", "lsn_reset" and "log_stat".

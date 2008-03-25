@@ -5034,7 +5034,6 @@ DBTxn_id(DBTxnObject* self, PyObject* args)
 */
 typedef char db_seq_is_not_long_long [(sizeof(db_seq_t)==sizeof(long long))-1];
 
-
 static PyObject*
 DBSequence_close_internal(DBSequenceObject* self, int flags, int do_not_close)
 {
