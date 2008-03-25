@@ -1,4 +1,6 @@
 4.6.3:
+  * Solve a compilation warning when including "bsddb.h"
+    in other projects. (George Feinberg)
 
 4.6.2:
   * Support for MVCC (MultiVersion Concurrency Control).
