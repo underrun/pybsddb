@@ -1029,7 +1029,7 @@ DBEnv_dealloc(DBEnvObject* self)
 
 
 static DBTxnObject*
-newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, int flags)
+newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, DB_TXN *txn, int flags)
 {
     int err;
     DB_TXN *parent_txn=NULL;
@@ -1044,17 +1044,21 @@ newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, int flags)
         parent_txn=parent->txn;
     }
 
-    MYDB_BEGIN_ALLOW_THREADS;
+    if (txn) {
+        self->txn=txn;
+    } else {
+        MYDB_BEGIN_ALLOW_THREADS;
 #if (DBVER >= 40)
-    err = myenv->db_env->txn_begin(myenv->db_env, parent_txn, &(self->txn), flags);
+        err = myenv->db_env->txn_begin(myenv->db_env, parent_txn, &(self->txn), flags);
 #else
-    err = txn_begin(myenv->db_env, parent->txn, &(self_txn), flags);
+        err = txn_begin(myenv->db_env, parent->txn, &(self_txn), flags);
 #endif
-    MYDB_END_ALLOW_THREADS;
+        MYDB_END_ALLOW_THREADS;
 
-    if (makeDBError(err)) {
-        PyObject_Del(self);
-        return NULL;
+        if (makeDBError(err)) {
+            PyObject_Del(self);
+            return NULL;
+        }
     }
 
     self->parent_txn=parent;
@@ -4312,6 +4316,82 @@ DBEnv_set_tmp_dir(DBEnvObject* self, PyObject* args)
 }
 
 
+#if (DBVER >= 40)
+static PyObject*
+DBEnv_txn_recover(DBEnvObject* self, PyObject* args)
+{
+    int flags = DB_FIRST;
+    int err, i;
+    PyObject *list, *tuple, *gid, *txn;
+#define PREPLIST_LEN 1
+    DB_PREPLIST preplist[PREPLIST_LEN];
+    long retp;
+
+    if (!PyArg_ParseTuple(args, ":txn_recover"))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    list=PyList_New(0);
+    if (!list)
+        return NULL;
+    while (!0) {
+        MYDB_BEGIN_ALLOW_THREADS
+        err=self->db_env->txn_recover(self->db_env,
+                        preplist, PREPLIST_LEN, &retp, flags);
+#undef PREPLIST_LEN
+        MYDB_END_ALLOW_THREADS
+        if (err) {
+            Py_DECREF(list);
+            RETURN_IF_ERR();
+        }
+        if (!retp) break;
+        flags=DB_NEXT;  /* Prepare for next loop pass */
+        for (i=0; i<retp; i++) {
+            gid=PyString_FromStringAndSize((char *)(preplist[i].gid),
+                                DB_XIDDATASIZE);
+            if (!gid) {
+                Py_DECREF(list);
+                return NULL;
+            }
+            txn=(PyObject*)newDBTxnObject(self, NULL, preplist[i].txn, flags);
+            if (!txn) {
+                Py_DECREF(list);
+                Py_DECREF(gid);
+                return NULL;
+            }
+            tuple=PyTuple_New(2);
+            if (!tuple) {
+                Py_DECREF(list);
+                Py_DECREF(gid);
+                Py_DECREF(txn);
+                return NULL;
+            }
+            if (PyTuple_SetItem(tuple, 0, gid)) {
+                Py_DECREF(list);
+                Py_DECREF(gid);
+                Py_DECREF(txn);
+                Py_DECREF(tuple);
+                return NULL;
+            }
+            if (PyTuple_SetItem(tuple, 1, txn)) {
+                Py_DECREF(list);
+                Py_DECREF(txn);
+                Py_DECREF(tuple); /* This delete the "gid" also */
+                return NULL;
+            }
+            if (PyList_Append(list, tuple)) {
+                Py_DECREF(list);
+                Py_DECREF(tuple);/* This delete the "gid" and the "txn" also */
+                return NULL;
+            }
+            Py_DECREF(tuple);
+        }
+    }
+    return list;
+}
+#endif
+
 static PyObject*
 DBEnv_txn_begin(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -4328,7 +4408,7 @@ DBEnv_txn_begin(DBEnvObject* self, PyObject* args, PyObject* kwargs)
         return NULL;
     CHECK_ENV_NOT_CLOSED(self);
 
-    return (PyObject*)newDBTxnObject(self, (DBTxnObject *)txnobj, flags);
+    return (PyObject*)newDBTxnObject(self, (DBTxnObject *)txnobj, NULL, flags);
 }
 
 
@@ -5534,6 +5614,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"lsn_reset",       (PyCFunction)DBEnv_lsn_reset,        METH_VARARGS|METH_KEYWORDS},
 #endif
     {"set_get_returns_none",(PyCFunction)DBEnv_set_get_returns_none, METH_VARARGS},
+#if (DBVER >= 40)
+    {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_VARARGS},
+#endif
     {NULL,      NULL}       /* sentinel */
 };
 

@@ -580,11 +580,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/log_stat.html>`__
 
-.. function:: txn_recover(flags=0)
+.. function:: txn_recover()
 
    Returns a list of tuples (GID, TXN) of transactions prepared but
    still unresolved. This is used while doing environment recovery in an
    application using distributed transactions.
+
+   This method must be called only from a single thread.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_recover.html>`__
