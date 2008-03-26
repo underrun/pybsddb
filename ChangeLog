@@ -2,6 +2,11 @@
   * Provide "dbenv.txn_recover()" and "txn.discard()", for fully
     support recovery of distributed transactions.
   * Export "DB_XIDDATASIZE", for GID of distributed transactions.
+  * If "db_seq_t" and PY_LONG_LONG are not compatible, compiler
+    should show a warning while compiling, and the generated code
+    would be incorrect but safe to use. No crash. Added sanity
+    check in the testunit to verify this is not the case, and
+    the datatypes are 64 bit width in fact.
   * Solve a compilation warning when including "bsddb.h"
     in other projects. (George Feinberg)
 

@@ -39,7 +39,7 @@ DBTxn Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_prepare.html>`__
 
-.. function:: discard(flags=0)
+.. function:: discard()
 
    This method frees up all the per-process resources associated with
    the specified transaction, neither committing nor aborting the
