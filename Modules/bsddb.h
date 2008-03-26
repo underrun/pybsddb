@@ -179,6 +179,7 @@ typedef struct DBTxnObject {
     PyObject_HEAD
     DB_TXN*         txn;
     PyObject        *env;
+    int             flag_prepare;
     struct DBTxnObject *parent_txn;
     struct DBTxnObject **sibling_prev_p;
     struct DBTxnObject *sibling_next;

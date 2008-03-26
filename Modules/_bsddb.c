@@ -1076,6 +1076,7 @@ newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, DB_TXN *txn, int flags)
     self->children_dbs=NULL;
     self->children_cursors=NULL;
     self->children_sequences=NULL;
+    self->flag_prepare=0;
 
     return self;
 }
@@ -4322,8 +4323,9 @@ DBEnv_txn_recover(DBEnvObject* self, PyObject* args)
 {
     int flags = DB_FIRST;
     int err, i;
-    PyObject *list, *tuple, *gid, *txn;
-#define PREPLIST_LEN 1
+    PyObject *list, *tuple, *gid;
+    DBTxnObject *txn;
+#define PREPLIST_LEN 16
     DB_PREPLIST preplist[PREPLIST_LEN];
     long retp;
 
@@ -4354,12 +4356,13 @@ DBEnv_txn_recover(DBEnvObject* self, PyObject* args)
                 Py_DECREF(list);
                 return NULL;
             }
-            txn=(PyObject*)newDBTxnObject(self, NULL, preplist[i].txn, flags);
+            txn=newDBTxnObject(self, NULL, preplist[i].txn, flags);
             if (!txn) {
                 Py_DECREF(list);
                 Py_DECREF(gid);
                 return NULL;
             }
+            txn->flag_prepare=1;  /* Recover state */
             tuple=PyTuple_New(2);
             if (!tuple) {
                 Py_DECREF(list);
@@ -4374,7 +4377,7 @@ DBEnv_txn_recover(DBEnvObject* self, PyObject* args)
                 Py_DECREF(tuple);
                 return NULL;
             }
-            if (PyTuple_SetItem(tuple, 1, txn)) {
+            if (PyTuple_SetItem(tuple, 1, (PyObject *)txn)) {
                 Py_DECREF(list);
                 Py_DECREF(txn);
                 Py_DECREF(tuple); /* This delete the "gid" also */
@@ -4955,6 +4958,7 @@ DBTxn_commit(DBTxnObject* self, PyObject* args)
         Py_DECREF(t);
         return NULL;
     }
+    self->flag_prepare=0;
     txn = self->txn;
     self->txn = NULL;   /* this DB_TXN is no longer valid after this call */
 
@@ -4999,6 +5003,7 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
         Py_DECREF(t);
         return NULL;
     }
+    self->flag_prepare=1;  /* Prepare state */
     MYDB_BEGIN_ALLOW_THREADS;
 #if (DBVER >= 40)
     err = self->txn->prepare(self->txn, (u_int8_t*)gid);
@@ -5035,7 +5040,7 @@ static PyObject*
 DBTxn_abort_discard_internal(DBTxnObject* self, int discard)
 {
     PyObject *dummy;
-    int err;
+    int err=0;
     DB_TXN *txn;
 
     if (!self->txn) {
@@ -5065,17 +5070,24 @@ DBTxn_abort_discard_internal(DBTxnObject* self, int discard)
 
     MYDB_BEGIN_ALLOW_THREADS;
     if (discard) {
+        assert(!self->flag_prepare);
 #if (DBVER >= 40)
         err = txn->discard(txn,0);
 #else
         err = txn_discard(txn);
 #endif
     } else {
+        /*
+        ** If the transaction is in the "prepare" or "recover" state,
+        ** we better do not implicitly abort it.
+        */
+        if (!self->flag_prepare) {
 #if (DBVER >= 40)
-        err = txn->abort(txn);
+            err = txn->abort(txn);
 #else
-        err = txn_abort(txn);
+            err = txn_abort(txn);
 #endif
+        }
     }
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
@@ -5088,6 +5100,7 @@ DBTxn_abort(DBTxnObject* self, PyObject* args)
     if (!PyArg_ParseTuple(args, ":abort"))
         return NULL;
 
+    self->flag_prepare=0;
     _close_transaction_cursors(self);
 
     return DBTxn_abort_discard_internal(self,0);
@@ -5099,6 +5112,7 @@ DBTxn_discard(DBTxnObject* self, PyObject* args)
     if (!PyArg_ParseTuple(args, ":discard"))
         return NULL;
 
+    self->flag_prepare=0;
     _close_transaction_cursors(self);
 
     return DBTxn_abort_discard_internal(self,1);

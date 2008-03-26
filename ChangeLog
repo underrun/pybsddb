@@ -1,6 +1,9 @@
 4.6.3:
   * Provide "dbenv.txn_recover()" and "txn.discard()", for fully
     support recovery of distributed transactions.
+  * If a transaction is in "prepare" or "recover" state, we MUST NOT
+    abort it implicitly if the transaction goes out of scope, it is
+    garbaged collected, etc. Better to leak than sorry.
   * Export "DB_XIDDATASIZE", for GID of distributed transactions.
   * If "db_seq_t" and PY_LONG_LONG are not compatible, compiler
     should show a warning while compiling, and the generated code
