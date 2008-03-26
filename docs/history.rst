@@ -19,7 +19,7 @@ as maintainer.
 Jesus Cea Avion is the maintainer of this code since February 2008.
 
 This module is included in the standard python >= 2.3 distribution as
-the bsddb module.  The only reason you should look here is for
+the bsddb module. The only reason you should look here is for
 documentation or to get a more up to date version. The bsddb.db module
 aims to mirror much of the Berkeley DB C/C++ API. 
 

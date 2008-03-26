@@ -8,12 +8,12 @@ Introduction
 ------------
 
 This is a simple bit of documentation for the bsddb3.db Python extension
-module which wraps the Berkeley DB 3.x or 4.x C library.  The extension
+module which wraps the Berkeley DB 3.x or 4.x C library. The extension
 module is located in a Python package along with a few pure python
 modules.
 
 It is expected that this module will be used in the following general
-ways by different programmers in different situations.  The goals of
+ways by different programmers in different situations. The goals of
 this module are to allow all of these methods without making things too
 complex for the simple cases, and without leaving out funtionality
 needed by the complex cases.
@@ -39,7 +39,7 @@ needed by the complex cases.
 3. **Concurrent access dictionaries:** This refers to the ability to
    simultaneously have one writer and multiple readers of a DB (either
    in multiple threads or processes) and is implemented simply by
-   creating a DBEnv with certain flags.  No extra work is required to
+   creating a DBEnv with certain flags. No extra work is required to
    allow this access mode in bsddb3.
 
 4. **Advanced transactional data store:** This mode of use is where the
@@ -93,7 +93,7 @@ specified there to the name of the Python exception that will be raised.
 Simply refer to the table below.
 
 Each exception derives from the DBError exception class so if you just
-want to catch generic errors you can use DBError to do it.  Since
+want to catch generic errors you can use DBError to do it. Since
 DBNotFoundError is raised when a given key is not found in the database,
 DBNotFoundError also derives from the standard KeyError exception to
 help make a DB look and act like a dictionary.
@@ -173,9 +173,9 @@ Testing
 
 A full unit test suite is being developed to exercise the various object
 types, their methods and the various usage modes described in the
-introduction. "PyUnit":http://pyunit.sourceforge.net/ is used and the
-tests are structured such that they can be run unattended and automated.
-There are currently almost 300 test cases!  (March 2008)
+introduction. `PyUnit <http://pyunit.sourceforge.net/>`__ is used and
+the tests are structured such that they can be run unattended and
+automated. There are currently almost 300 test cases!  (March 2008)
 
 Reference
 ---------

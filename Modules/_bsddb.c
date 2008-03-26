@@ -5936,7 +5936,7 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_CREATE);
     ADD_INT(d, DB_NOMMAP);
     ADD_INT(d, DB_THREAD);
-#if (DBVER >=45)
+#if (DBVER >= 45)
     ADD_INT(d, DB_MULTIVERSION);
 #endif
 
@@ -5947,6 +5947,10 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_INIT_MPOOL);
     ADD_INT(d, DB_INIT_TXN);
     ADD_INT(d, DB_JOINENV);
+
+#if (DBVER >= 40)
+    ADD_INT(d, DB_XIDDATASIZE);
+#endif
 
     ADD_INT(d, DB_RECOVER);
     ADD_INT(d, DB_RECOVER_FATAL);

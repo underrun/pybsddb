@@ -1,4 +1,7 @@
 4.6.3:
+  * Provide "dbenv.txn_recover()" and "txn.discard()", for fully
+    support recovery of distributed transactions.
+  * Export "DB_XIDDATASIZE", for GID of distributed transactions.
   * Solve a compilation warning when including "bsddb.h"
     in other projects. (George Feinberg)
 

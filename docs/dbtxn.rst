@@ -39,4 +39,18 @@ DBTxn Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_prepare.html>`__
 
+.. function:: discard(txn, flags=0)
+
+   This method frees up all the per-process resources associated with
+   the specified transaction, neither committing nor aborting the
+   transaction. This call may be used only after calls to
+   "dbenv.txn_recover()" when there are multiple global transaction
+   managers recovering transactions in a single Berkeley DB environment.
+   Any transactions returned by "dbenv.txn_recover()" that are not
+   handled by the current global transaction manager should be discarded
+   using "txn.discard()".
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/txn_discard.html>`__
+
 
