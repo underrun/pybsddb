@@ -178,7 +178,7 @@ typedef struct DBCursorObject {
 typedef struct DBTxnObject {
     PyObject_HEAD
     DB_TXN*         txn;
-    PyObject        *env;
+    DBEnvObject*    env;
     int             flag_prepare;
     struct DBTxnObject *parent_txn;
     struct DBTxnObject **sibling_prev_p;

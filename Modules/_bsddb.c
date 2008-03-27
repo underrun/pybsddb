@@ -1061,14 +1061,15 @@ newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, DB_TXN *txn, int flags)
         }
     }
 
-    self->parent_txn=parent;
-    if (parent) {
+    if (parent_txn) { /* Can't use 'parent' because could be 'parent==Py_None' */
+        self->parent_txn=parent;
         Py_INCREF(parent);
         self->env = NULL;
         INSERT_IN_DOUBLE_LINKED_LIST(parent->children_txns,self);
     } else {
+        self->parent_txn=NULL;
         Py_INCREF(myenv);
-        self->env = (PyObject*)myenv;
+        self->env = myenv;
         INSERT_IN_DOUBLE_LINKED_LIST(myenv->children_txns,self);
     }
 
