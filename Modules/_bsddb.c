@@ -1026,7 +1026,7 @@ DBEnv_dealloc(DBEnvObject* self)
 
 
 static DBTxnObject*
-newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, int flags)
+newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, DB_TXN *txn, int flags)
 {
     int err;
     DB_TXN *parent_txn=NULL;
@@ -1041,27 +1041,32 @@ newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, int flags)
         parent_txn=parent->txn;
     }
 
-    MYDB_BEGIN_ALLOW_THREADS;
+    if (txn) {
+        self->txn=txn;
+    } else {
+        MYDB_BEGIN_ALLOW_THREADS;
 #if (DBVER >= 40)
-    err = myenv->db_env->txn_begin(myenv->db_env, parent_txn, &(self->txn), flags);
+        err = myenv->db_env->txn_begin(myenv->db_env, parent_txn, &(self->txn), flags);
 #else
-    err = txn_begin(myenv->db_env, parent->txn, &(self_txn), flags);
+        err = txn_begin(myenv->db_env, parent->txn, &(self_txn), flags);
 #endif
-    MYDB_END_ALLOW_THREADS;
+        MYDB_END_ALLOW_THREADS;
 
-    if (makeDBError(err)) {
-        PyObject_Del(self);
-        return NULL;
+        if (makeDBError(err)) {
+            PyObject_Del(self);
+            return NULL;
+        }
     }
 
-    self->parent_txn=parent;
-    if (parent) {
+    if (parent_txn) { /* Can't use 'parent' because could be 'parent==Py_None' */
+        self->parent_txn=parent;
         Py_INCREF(parent);
         self->env = NULL;
         INSERT_IN_DOUBLE_LINKED_LIST(parent->children_txns,self);
     } else {
+        self->parent_txn=NULL;
         Py_INCREF(myenv);
-        self->env = (PyObject*)myenv;
+        self->env = myenv;
         INSERT_IN_DOUBLE_LINKED_LIST(myenv->children_txns,self);
     }
 
@@ -1069,12 +1074,14 @@ newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, int flags)
     self->children_dbs=NULL;
     self->children_cursors=NULL;
     self->children_sequences=NULL;
+    self->flag_prepare=0;
 
     return self;
 }
 
 /* Forward declaration */
-static PyObject *DBTxn_abort_internal(DBTxnObject* self);
+static PyObject *
+DBTxn_abort_discard_internal(DBTxnObject* self, int discard);
 
 static void
 DBTxn_dealloc(DBTxnObject* self)
@@ -1082,10 +1089,13 @@ DBTxn_dealloc(DBTxnObject* self)
   PyObject *dummy;
 
     if (self->txn) {
-      dummy=DBTxn_abort_internal(self);
-      Py_XDECREF(dummy);
-      PyErr_Warn(PyExc_RuntimeWarning,
-          "DBTxn aborted in destructor.  No prior commit() or abort().");
+        int flag_prepare = self->flag_prepare;
+        dummy=DBTxn_abort_discard_internal(self,0);
+        Py_XDECREF(dummy);
+        if (!flag_prepare) {
+            PyErr_Warn(PyExc_RuntimeWarning,
+              "DBTxn aborted in destructor.  No prior commit() or abort().");
+        }
     }
 
     if (self->in_weakreflist != NULL) {
@@ -3232,7 +3242,7 @@ DBC_dup(DBCursorObject* self, PyObject* args)
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
 
-    return (PyObject*) newDBCursorObject(dbc, (DBTxnObject *)(self->dbc->txn), self->mydb);
+    return (PyObject*) newDBCursorObject(dbc, self->txn, self->mydb);
 }
 
 static PyObject*
@@ -3876,7 +3886,7 @@ DBEnv_close_internal(DBEnvObject* self, int flags)
 
     if (!self->closed) {      /* Don't close more than once */
         while(self->children_txns) {
-          dummy=DBTxn_abort_internal(self->children_txns);
+          dummy=DBTxn_abort_discard_internal(self->children_txns,0);
           Py_XDECREF(dummy);
         }
         while(self->children_dbs) {
@@ -4328,6 +4338,84 @@ DBEnv_set_tmp_dir(DBEnvObject* self, PyObject* args)
 }
 
 
+#if (DBVER >= 40)
+static PyObject*
+DBEnv_txn_recover(DBEnvObject* self, PyObject* args)
+{
+    int flags = DB_FIRST;
+    int err, i;
+    PyObject *list, *tuple, *gid;
+    DBTxnObject *txn;
+#define PREPLIST_LEN 16
+    DB_PREPLIST preplist[PREPLIST_LEN];
+    long retp;
+
+    if (!PyArg_ParseTuple(args, ":txn_recover"))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    list=PyList_New(0);
+    if (!list)
+        return NULL;
+    while (!0) {
+        MYDB_BEGIN_ALLOW_THREADS
+        err=self->db_env->txn_recover(self->db_env,
+                        preplist, PREPLIST_LEN, &retp, flags);
+#undef PREPLIST_LEN
+        MYDB_END_ALLOW_THREADS
+        if (err) {
+            Py_DECREF(list);
+            RETURN_IF_ERR();
+        }
+        if (!retp) break;
+        flags=DB_NEXT;  /* Prepare for next loop pass */
+        for (i=0; i<retp; i++) {
+            gid=PyString_FromStringAndSize((char *)(preplist[i].gid),
+                                DB_XIDDATASIZE);
+            if (!gid) {
+                Py_DECREF(list);
+                return NULL;
+            }
+            txn=newDBTxnObject(self, NULL, preplist[i].txn, flags);
+            if (!txn) {
+                Py_DECREF(list);
+                Py_DECREF(gid);
+                return NULL;
+            }
+            txn->flag_prepare=1;  /* Recover state */
+            tuple=PyTuple_New(2);
+            if (!tuple) {
+                Py_DECREF(list);
+                Py_DECREF(gid);
+                Py_DECREF(txn);
+                return NULL;
+            }
+            if (PyTuple_SetItem(tuple, 0, gid)) {
+                Py_DECREF(list);
+                Py_DECREF(gid);
+                Py_DECREF(txn);
+                Py_DECREF(tuple);
+                return NULL;
+            }
+            if (PyTuple_SetItem(tuple, 1, (PyObject *)txn)) {
+                Py_DECREF(list);
+                Py_DECREF(txn);
+                Py_DECREF(tuple); /* This delete the "gid" also */
+                return NULL;
+            }
+            if (PyList_Append(list, tuple)) {
+                Py_DECREF(list);
+                Py_DECREF(tuple);/* This delete the "gid" and the "txn" also */
+                return NULL;
+            }
+            Py_DECREF(tuple);
+        }
+    }
+    return list;
+}
+#endif
+
 static PyObject*
 DBEnv_txn_begin(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -4344,7 +4432,7 @@ DBEnv_txn_begin(DBEnvObject* self, PyObject* args, PyObject* kwargs)
         return NULL;
     CHECK_ENV_NOT_CLOSED(self);
 
-    return (PyObject*)newDBTxnObject(self, (DBTxnObject *)txnobj, flags);
+    return (PyObject*)newDBTxnObject(self, (DBTxnObject *)txnobj, NULL, flags);
 }
 
 
@@ -4683,6 +4771,24 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     return d;
 }
 
+#if (DBVER >= 40)
+static PyObject*
+DBEnv_log_flush(DBEnvObject* self, PyObject* args)
+{
+    int err;
+
+    if (!PyArg_ParseTuple(args, ":log_flush"))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS
+    err = self->db_env->log_flush(self->db_env, NULL);
+    MYDB_END_ALLOW_THREADS
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
 
 static PyObject*
 DBEnv_log_archive(DBEnvObject* self, PyObject* args)
@@ -4885,11 +4991,13 @@ DBTxn_commit(DBTxnObject* self, PyObject* args)
 
     if (!self->txn) {
         PyObject *t =  Py_BuildValue("(is)", 0, "DBTxn must not be used "
-                                     "after txn_commit or txn_abort");
+                                     "after txn_commit, txn_abort "
+                                     "or txn_discard");
         PyErr_SetObject(DBError, t);
         Py_DECREF(t);
         return NULL;
     }
+    self->flag_prepare=0;
     txn = self->txn;
     self->txn = NULL;   /* this DB_TXN is no longer valid after this call */
 
@@ -4928,11 +5036,13 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
 
     if (!self->txn) {
         PyObject *t = Py_BuildValue("(is)", 0,"DBTxn must not be used "
-                                    "after txn_commit or txn_abort");
+                                    "after txn_commit, txn_abort "
+                                    "or txn_discard");
         PyErr_SetObject(DBError, t);
         Py_DECREF(t);
         return NULL;
     }
+    self->flag_prepare=1;  /* Prepare state */
     MYDB_BEGIN_ALLOW_THREADS;
 #if (DBVER >= 40)
     err = self->txn->prepare(self->txn, (u_int8_t*)gid);
@@ -4950,7 +5060,8 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
 
     if (!self->txn) {
         PyObject *t = Py_BuildValue("(is)", 0, "DBTxn must not be used "
-                                    "after txn_commit or txn_abort");
+                                    "after txn_commit, txn_abort "
+                                    "or txn_discard");
         PyErr_SetObject(DBError, t);
         Py_DECREF(t);
         return NULL;
@@ -4965,15 +5076,16 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
 
 
 static PyObject*
-DBTxn_abort_internal(DBTxnObject* self)
+DBTxn_abort_discard_internal(DBTxnObject* self, int discard)
 {
     PyObject *dummy;
-    int err;
+    int err=0;
     DB_TXN *txn;
 
     if (!self->txn) {
         PyObject *t = Py_BuildValue("(is)", 0, "DBTxn must not be used "
-                                    "after txn_commit or txn_abort");
+                                    "after txn_commit, txn_abort "
+                                    "or txn_discard");
         PyErr_SetObject(DBError, t);
         Py_DECREF(t);
         return NULL;
@@ -4996,11 +5108,26 @@ DBTxn_abort_internal(DBTxnObject* self)
     EXTRACT_FROM_DOUBLE_LINKED_LIST(self);
 
     MYDB_BEGIN_ALLOW_THREADS;
+    if (discard) {
+        assert(!self->flag_prepare);
 #if (DBVER >= 40)
-    err = txn->abort(txn);
+        err = txn->discard(txn,0);
 #else
-    err = txn_abort(txn);
+        err = txn_discard(txn);
 #endif
+    } else {
+        /*
+        ** If the transaction is in the "prepare" or "recover" state,
+        ** we better do not implicitly abort it.
+        */
+        if (!self->flag_prepare) {
+#if (DBVER >= 40)
+            err = txn->abort(txn);
+#else
+            err = txn_abort(txn);
+#endif
+        }
+    }
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
     RETURN_NONE();
@@ -5012,9 +5139,22 @@ DBTxn_abort(DBTxnObject* self, PyObject* args)
     if (!PyArg_ParseTuple(args, ":abort"))
         return NULL;
 
+    self->flag_prepare=0;
     _close_transaction_cursors(self);
 
-    return DBTxn_abort_internal(self);
+    return DBTxn_abort_discard_internal(self,0);
+}
+
+static PyObject*
+DBTxn_discard(DBTxnObject* self, PyObject* args)
+{
+    if (!PyArg_ParseTuple(args, ":discard"))
+        return NULL;
+
+    self->flag_prepare=0;
+    _close_transaction_cursors(self);
+
+    return DBTxn_abort_discard_internal(self,1);
 }
 
 
@@ -5028,7 +5168,8 @@ DBTxn_id(DBTxnObject* self, PyObject* args)
 
     if (!self->txn) {
         PyObject *t = Py_BuildValue("(is)", 0, "DBTxn must not be used "
-                                    "after txn_commit or txn_abort");
+                                    "after txn_commit, txn_abort "
+                                    "or txn_discard");
         PyErr_SetObject(DBError, t);
         Py_DECREF(t);
         return NULL;
@@ -5047,12 +5188,6 @@ DBTxn_id(DBTxnObject* self, PyObject* args)
 /* --------------------------------------------------------------------- */
 /* DBSequence methods */
 
-
-/*
-** Compile time sanity check
-** Beware: MAGIC CODE!
-*/
-typedef char db_seq_is_not_long_long [(sizeof(db_seq_t)==sizeof(long long))-1];
 
 static PyObject*
 DBSequence_close_internal(DBSequenceObject* self, int flags, int do_not_close)
@@ -5152,13 +5287,15 @@ static PyObject*
 DBSequence_init_value(DBSequenceObject* self, PyObject* args)
 {
     int err;
-    db_seq_t value;
+    PY_LONG_LONG value;
+    db_seq_t value2;
     if (!PyArg_ParseTuple(args,"L:init_value", &value))
         return NULL;
     CHECK_SEQUENCE_NOT_CLOSED(self)
 
+    value2=value; /* If truncation, compiler should show a warning */
     MYDB_BEGIN_ALLOW_THREADS
-    err = self->sequence->initial_value(self->sequence, value);
+    err = self->sequence->initial_value(self->sequence, value2);
     MYDB_END_ALLOW_THREADS
 
     RETURN_IF_ERR();
@@ -5297,13 +5434,16 @@ static PyObject*
 DBSequence_set_range(DBSequenceObject* self, PyObject* args)
 {
     int err;
-    db_seq_t min, max;
+    PY_LONG_LONG min, max;
+    db_seq_t min2, max2;
     if (!PyArg_ParseTuple(args,"(LL):set_range", &min, &max))
         return NULL;
     CHECK_SEQUENCE_NOT_CLOSED(self)
 
+    min2=min;  /* If truncation, compiler should show a warning */
+    max2=max;
     MYDB_BEGIN_ALLOW_THREADS
-    err = self->sequence->set_range(self->sequence, min, max);
+    err = self->sequence->set_range(self->sequence, min2, max2);
     MYDB_END_ALLOW_THREADS
 
     RETURN_IF_ERR();
@@ -5314,16 +5454,19 @@ static PyObject*
 DBSequence_get_range(DBSequenceObject* self, PyObject* args)
 {
     int err;
-    db_seq_t min, max;
+    PY_LONG_LONG min, max;
+    db_seq_t min2, max2;
     if (!PyArg_ParseTuple(args,":get_range"))
         return NULL;
     CHECK_SEQUENCE_NOT_CLOSED(self)
 
     MYDB_BEGIN_ALLOW_THREADS
-    err = self->sequence->get_range(self->sequence, &min, &max);
+    err = self->sequence->get_range(self->sequence, &min2, &max2);
     MYDB_END_ALLOW_THREADS
 
     RETURN_IF_ERR();
+    min=min2;  /* If truncation, compiler should show a warning */
+    max=max2;
     return Py_BuildValue("(LL)", min, max);
 }
 
@@ -5521,12 +5664,18 @@ static PyMethodDef DBEnv_methods[] = {
     {"lock_stat",       (PyCFunction)DBEnv_lock_stat,        METH_VARARGS},
     {"log_archive",     (PyCFunction)DBEnv_log_archive,      METH_VARARGS},
 #if (DBVER >= 40)
+    {"log_flush",       (PyCFunction)DBEnv_log_flush,       METH_VARARGS},
+#endif
+#if (DBVER >= 40)
     {"log_stat",        (PyCFunction)DBEnv_log_stat,         METH_VARARGS},
 #endif
 #if (DBVER >= 44)
     {"lsn_reset",       (PyCFunction)DBEnv_lsn_reset,        METH_VARARGS|METH_KEYWORDS},
 #endif
     {"set_get_returns_none",(PyCFunction)DBEnv_set_get_returns_none, METH_VARARGS},
+#if (DBVER >= 40)
+    {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_VARARGS},
+#endif
     {NULL,      NULL}       /* sentinel */
 };
 
@@ -5534,6 +5683,7 @@ static PyMethodDef DBEnv_methods[] = {
 static PyMethodDef DBTxn_methods[] = {
     {"commit",          (PyCFunction)DBTxn_commit,      METH_VARARGS},
     {"prepare",         (PyCFunction)DBTxn_prepare,     METH_VARARGS},
+    {"discard",         (PyCFunction)DBTxn_discard,     METH_VARARGS},
     {"abort",           (PyCFunction)DBTxn_abort,       METH_VARARGS},
     {"id",              (PyCFunction)DBTxn_id,          METH_VARARGS},
     {NULL,      NULL}       /* sentinel */
@@ -5956,7 +6106,7 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_CREATE);
     ADD_INT(d, DB_NOMMAP);
     ADD_INT(d, DB_THREAD);
-#if (DBVER >=45)
+#if (DBVER >= 45)
     ADD_INT(d, DB_MULTIVERSION);
 #endif
 
@@ -5967,6 +6117,10 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_INIT_MPOOL);
     ADD_INT(d, DB_INIT_TXN);
     ADD_INT(d, DB_JOINENV);
+
+#if (DBVER >= 40)
+    ADD_INT(d, DB_XIDDATASIZE);
+#endif
 
     ADD_INT(d, DB_RECOVER);
     ADD_INT(d, DB_RECOVER_FATAL);

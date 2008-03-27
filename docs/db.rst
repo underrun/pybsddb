@@ -204,7 +204,7 @@ DB Methods
    Set the B-Tree database comparison function. This can only be called
    once before the database has been opened. compareFunc takes two
    arguments: (left key string, right key string) It must return a -1,
-   0, 1 integer similar to cmp.  You can shoot your database in the
+   0, 1 integer similar to cmp. You can shoot your database in the
    foot, beware!  Read the Berkeley DB docs for the full details of
    how the comparison function MUST behave.
    `More info...
@@ -519,7 +519,7 @@ able to specify a transaction object.
 
 .. function:: values(txn=None)
 
-   Return a list of all data values in the database.  Warning: this
+   Return a list of all data values in the database. Warning: this
    method traverses the entire database so it can possibly take a long
    time to complete.
 

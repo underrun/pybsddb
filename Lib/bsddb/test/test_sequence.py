@@ -105,6 +105,54 @@ class DBSequenceTest(unittest.TestCase):
                       'flags', 'cache_size', 'last_value', 'wait'):
             self.assertTrue(param in stat, "parameter %s isn't in stat info" % param)
 
+    if db.version() >= (4,7) :
+        # This code checks a crash solved in Berkeley DB 4.7
+        def test_stat_crash(self) :
+            d=db.DB()
+            d.open(None,dbtype=db.DB_HASH,flags=db.DB_CREATE)  # In RAM
+            seq = db.DBSequence(d, flags=0)
+            try :
+                seq.open(key='id', txn=None, flags=0)
+            except :
+                pass
+            else :
+                assert 0, "Where is my exception?"
+
+            try :
+                seq.stat()
+            except :
+                pass
+            else :
+                assert 0, "Where is my exception?"
+
+            d.close()
+
+    def test_64bits(self) :
+        value_plus=(1L<<63)-1
+        self.assertEquals(9223372036854775807L,value_plus)
+        value_minus=-1L<<63  # Two complement
+        self.assertEquals(-9223372036854775808L,value_minus)
+        if db.version() < (4,4):
+          # We don't use both extremes because it is
+          # problematic in Berkeley DB 4.3.
+          value_plus-=1
+          value_minus+=1
+        self.seq = db.DBSequence(self.d, flags=0)
+        self.assertEquals(None, self.seq.init_value(value_plus-1))
+        self.assertEquals(None, self.seq.open(key='id', txn=None,
+            flags=db.DB_CREATE))
+        self.assertEquals(value_plus-1, self.seq.get(1))
+        self.assertEquals(value_plus, self.seq.get(1))
+
+        self.seq.remove(txn=None, flags=0)
+
+        self.seq = db.DBSequence(self.d, flags=0)
+        self.assertEquals(None, self.seq.init_value(value_minus))
+        self.assertEquals(None, self.seq.open(key='id', txn=None,
+            flags=db.DB_CREATE))
+        self.assertEquals(value_minus, self.seq.get(1))
+        self.assertEquals(value_minus+1, self.seq.get(1))
+
     def test_multiple_close(self):
         self.seq = db.DBSequence(self.d)
         self.seq.close()  # You can close a Sequence multiple times

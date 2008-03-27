@@ -271,6 +271,15 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/log_archive.html>`__
 
+.. function:: log_flush()
+
+   Force log records to disk. Useful if the environment, database or
+   transactions are used as ACI, instead of ACID. For example, if the
+   environment is opened as DB_TXN_NOSYNC.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/log_flush.html>`__
+
 .. function:: lock_detect(atype, flags=0)
 
    Run one iteration of the deadlock detector, returns the number of
@@ -580,5 +589,14 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/log_stat.html>`__
 
+.. function:: txn_recover()
 
+   Returns a list of tuples (GID, TXN) of transactions prepared but
+   still unresolved. This is used while doing environment recovery in an
+   application using distributed transactions.
+
+   This method must be called only from a single thread.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/txn_recover.html>`__
 

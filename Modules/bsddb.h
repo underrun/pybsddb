@@ -105,7 +105,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "4.7.0devel3.1"
+#define PY_BSDDB_VERSION "4.7.0devel3.4"
 
 /* Python object definitions */
 
@@ -178,7 +178,8 @@ typedef struct DBCursorObject {
 typedef struct DBTxnObject {
     PyObject_HEAD
     DB_TXN*         txn;
-    PyObject        *env;
+    DBEnvObject*    env;
+    int             flag_prepare;
     struct DBTxnObject *parent_txn;
     struct DBTxnObject **sibling_prev_p;
     struct DBTxnObject *sibling_next;

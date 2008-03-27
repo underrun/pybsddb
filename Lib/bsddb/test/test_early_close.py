@@ -195,8 +195,37 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
             # force d.__del__ [DB_dealloc] to be called
             gc.collect()
 
+    def test06_close_txn_before_dup_cursor(self) :
+        dbenv = db.DBEnv()
+        dbenv.open(self.homeDir,db.DB_INIT_TXN | db.DB_INIT_MPOOL |
+                db.DB_INIT_LOG | db.DB_CREATE)
+        d = db.DB(dbenv)
+        txn = dbenv.txn_begin()
+        if db.version() < (4,1) :
+            d.open(self.filename, dbtype = db.DB_HASH, flags = db.DB_CREATE)
+        else :
+            d.open(self.filename, dbtype = db.DB_HASH, flags = db.DB_CREATE,
+                    txn=txn)
+        d.put("XXX", "yyy", txn=txn)
+        txn.commit()
+        txn = dbenv.txn_begin()
+        c1 = d.cursor(txn)
+        c2 = c1.dup()
+        self.assertEquals(("XXX", "yyy"), c1.first())
+        import warnings
+        # Not interested in warnings about implicit close.
+        warnings.simplefilter("ignore")
+        txn.commit()
+        warnings.resetwarnings()
+        try :
+            c2.first()
+        except db.DBCursorClosedError :
+            pass
+        else :
+            assert 0, "Where is my exception?"
+
     if db.version() > (4,3,0) :
-        def test06_close_db_before_sequence(self):
+        def test07_close_db_before_sequence(self):
             d = db.DB()
             d.open(self.filename, db.DB_BTREE, db.DB_CREATE | db.DB_THREAD, 0666)
             dbs=db.DBSequence(d)

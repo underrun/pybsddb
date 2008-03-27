@@ -1,4 +1,23 @@
 4.6.3:
+  * Implements "dbenv.log_flush()".
+  * Regression: bug when creating a transaction and its
+    parent is explicitly set to 'None'.
+  * Regression: bug when duplicationg cursors. Solved.
+  * Provide "dbenv.txn_recover()" and "txn.discard()", for fully
+    support recovery of distributed transactions. Any user of this
+    service should use Berkeley DB 4.5 or up.
+  * If a transaction is in "prepare" or "recover" state, we MUST NOT
+    abort it implicitly if the transaction goes out of scope, it is
+    garbaged collected, etc. Better to leak than sorry.
+  * In the previous case, we don't show any warning either.
+  * Export "DB_XIDDATASIZE", for GID of distributed transactions.
+  * If "db_seq_t" and PY_LONG_LONG are not compatible, compiler
+    should show a warning while compiling, and the generated code
+    would be incorrect but safe to use. No crash. Added sanity
+    check in the testunit to verify this is not the case, and
+    the datatypes are 64 bit width in fact.
+  * Solve a compilation warning when including "bsddb.h"
+    in other projects. (George Feinberg)
 
 4.6.2:
   * Support for MVCC (MultiVersion Concurrency Control).
