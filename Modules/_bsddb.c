@@ -1092,10 +1092,13 @@ DBTxn_dealloc(DBTxnObject* self)
   PyObject *dummy;
 
     if (self->txn) {
-      dummy=DBTxn_abort_discard_internal(self,0);
-      Py_XDECREF(dummy);
-      PyErr_Warn(PyExc_RuntimeWarning,
-          "DBTxn aborted in destructor.  No prior commit() or abort().");
+        int flag_prepare = self->flag_prepare;
+        dummy=DBTxn_abort_discard_internal(self,0);
+        Py_XDECREF(dummy);
+        if (!flag_prepare) {
+            PyErr_Warn(PyExc_RuntimeWarning,
+              "DBTxn aborted in destructor.  No prior commit() or abort().");
+        }
     }
 
     if (self->in_weakreflist != NULL) {

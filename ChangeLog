@@ -7,6 +7,7 @@
   * If a transaction is in "prepare" or "recover" state, we MUST NOT
     abort it implicitly if the transaction goes out of scope, it is
     garbaged collected, etc. Better to leak than sorry.
+  * In the previous case, we don't show any warning either.
   * Export "DB_XIDDATASIZE", for GID of distributed transactions.
   * If "db_seq_t" and PY_LONG_LONG are not compatible, compiler
     should show a warning while compiling, and the generated code
