@@ -1,4 +1,5 @@
 4.6.3:
+  * Regression: bug when duplicationg cursors. Solved.
   * Provide "dbenv.txn_recover()" and "txn.discard()", for fully
     support recovery of distributed transactions.
   * If a transaction is in "prepare" or "recover" state, we MUST NOT

@@ -3241,7 +3241,7 @@ DBC_dup(DBCursorObject* self, PyObject* args)
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
 
-    return (PyObject*) newDBCursorObject(dbc, (DBTxnObject *)(self->dbc->txn), self->mydb);
+    return (PyObject*) newDBCursorObject(dbc, self->txn, self->mydb);
 }
 
 static PyObject*
