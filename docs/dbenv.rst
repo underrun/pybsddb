@@ -595,7 +595,8 @@ DBEnv Methods
    still unresolved. This is used while doing environment recovery in an
    application using distributed transactions.
 
-   This method must be called only from a single thread.
+   This method must be called only from a single thread at a time. It
+   should be called after DBEnv recovery.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_recover.html>`__
