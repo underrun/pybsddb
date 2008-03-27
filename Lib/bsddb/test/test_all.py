@@ -60,6 +60,7 @@ def suite():
         'test_dbobj',
         'test_dbshelve',
         'test_dbtables',
+        'test_distributed_transactions',
         'test_early_close',
         'test_get_none',
         'test_join',

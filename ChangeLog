@@ -4,7 +4,8 @@
     parent is explicitly set to 'None'.
   * Regression: bug when duplicationg cursors. Solved.
   * Provide "dbenv.txn_recover()" and "txn.discard()", for fully
-    support recovery of distributed transactions.
+    support recovery of distributed transactions. Any user of this
+    service should use Berkeley DB 4.5 or up.
   * If a transaction is in "prepare" or "recover" state, we MUST NOT
     abort it implicitly if the transaction goes out of scope, it is
     garbaged collected, etc. Better to leak than sorry.
