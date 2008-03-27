@@ -128,24 +128,30 @@ class DBSequenceTest(unittest.TestCase):
             d.close()
 
     def test_64bits(self) :
+        value_plus=(1L<<63)-1
+        self.assertEquals(9223372036854775807L,value_plus)
+        value_minus=-1L<<63  # Two complement
+        self.assertEquals(-9223372036854775808L,value_minus)
+        if db.version() < (4,4):
+          # We don't use both extremes because it is
+          # problematic in Berkeley DB 4.3.
+          value_plus-=1
+          value_minus+=1
         self.seq = db.DBSequence(self.d, flags=0)
-        value=(1L<<63)-1
-        self.assertEquals(9223372036854775807L,value)
-        self.assertEquals(None, self.seq.init_value(value-1))
+        self.assertEquals(None, self.seq.init_value(value_plus-1))
         self.assertEquals(None, self.seq.open(key='id', txn=None,
             flags=db.DB_CREATE))
-        self.assertEquals(value-1, self.seq.get(1))
-        self.assertEquals(value, self.seq.get(1))
+        self.assertEquals(value_plus-1, self.seq.get(1))
+        self.assertEquals(value_plus, self.seq.get(1))
 
         self.seq.remove(txn=None, flags=0)
 
         self.seq = db.DBSequence(self.d, flags=0)
-        value=-1L<<63  # Two complement
-        self.assertEquals(None, self.seq.init_value(value))
+        self.assertEquals(None, self.seq.init_value(value_minus))
         self.assertEquals(None, self.seq.open(key='id', txn=None,
             flags=db.DB_CREATE))
-        self.assertEquals(value, self.seq.get(1))
-        self.assertEquals(value+1, self.seq.get(1))
+        self.assertEquals(value_minus, self.seq.get(1))
+        self.assertEquals(value_minus+1, self.seq.get(1))
 
     def test_multiple_close(self):
         self.seq = db.DBSequence(self.d)
