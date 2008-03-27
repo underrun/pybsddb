@@ -4754,6 +4754,24 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     return d;
 }
 
+#if (DBVER >= 40)
+static PyObject*
+DBEnv_log_flush(DBEnvObject* self, PyObject* args)
+{
+    int err;
+
+    if (!PyArg_ParseTuple(args, ":log_flush"))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS
+    err = self->db_env->log_flush(self->db_env, NULL);
+    MYDB_END_ALLOW_THREADS
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
 
 static PyObject*
 DBEnv_log_archive(DBEnvObject* self, PyObject* args)
@@ -5625,6 +5643,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"lock_put",        (PyCFunction)DBEnv_lock_put,         METH_VARARGS},
     {"lock_stat",       (PyCFunction)DBEnv_lock_stat,        METH_VARARGS},
     {"log_archive",     (PyCFunction)DBEnv_log_archive,      METH_VARARGS},
+#if (DBVER >= 40)
+    {"log_flush",       (PyCFunction)DBEnv_log_flush,       METH_VARARGS},
+#endif
 #if (DBVER >= 40)
     {"log_stat",        (PyCFunction)DBEnv_log_stat,         METH_VARARGS},
 #endif
