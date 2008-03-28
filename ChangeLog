@@ -1,4 +1,7 @@
 4.6.3:
+  * Move all the "assert" in the TestSuite to the version in the
+    framework. This is very convenient, for example, to generate the
+    final report, or better automation.
   * Implements "dbenv.log_flush()".
   * Regression: bug when creating a transaction and its
     parent is explicitly set to 'None'.

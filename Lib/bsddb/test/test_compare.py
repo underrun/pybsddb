@@ -236,7 +236,7 @@ class BtreeExceptionsTestCase (AbstractBtreeKeyCompareTestCase):
         self.createDB (my_compare)
         try:
             self.db.set_bt_compare (my_compare)
-            assert False, "this set should fail"
+            self.assert_(0, "this set should fail")
 
         except RuntimeError, msg:
             pass

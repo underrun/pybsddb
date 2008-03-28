@@ -111,19 +111,11 @@ class DBSequenceTest(unittest.TestCase):
             d=db.DB()
             d.open(None,dbtype=db.DB_HASH,flags=db.DB_CREATE)  # In RAM
             seq = db.DBSequence(d, flags=0)
-            try :
-                seq.open(key='id', txn=None, flags=0)
-            except :
-                pass
-            else :
-                assert 0, "Where is my exception?"
 
-            try :
-                seq.stat()
-            except :
-                pass
-            else :
-                assert 0, "Where is my exception?"
+            self.assertRaises(db.DBNotFoundError, seq.open,
+                    key='id', txn=None, flags=0)
+
+            self.assertRaises(db.DBNotFoundError, seq.stat)
 
             d.close()
 

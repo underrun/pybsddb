@@ -100,7 +100,7 @@ class DBTxn_distributed(unittest.TestCase):
         recovered_txns=self.dbenv.txn_recover()
         self.assertEquals(self.num_txns,len(recovered_txns))
         for gid,txn in recovered_txns :
-            assert gid in txns
+            self.assert_(gid in txns)
         del txn
         del recovered_txns
 

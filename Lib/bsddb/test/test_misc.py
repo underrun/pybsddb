@@ -41,9 +41,9 @@ class MiscTestCase(unittest.TestCase):
     def test02_db_home(self):
         env = db.DBEnv()
         # check for crash fixed when db_home is used before open()
-        assert env.db_home is None
+        self.assert_(env.db_home is None)
         env.open(self.homeDir, db.DB_CREATE)
-        assert self.homeDir == env.db_home
+        self.assertEqual(self.homeDir, env.db_home)
 
     def test03_repr_closed_db(self):
         db = hashopen(self.filename)

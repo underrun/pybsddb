@@ -91,15 +91,15 @@ class DBShelveTestCase(unittest.TestCase):
             print "keys:", k
             print "stats:", s
 
-        assert 0 == d.has_key(self.mk('bad key'))
-        assert 1 == d.has_key(self.mk('IA'))
-        assert 1 == d.has_key(self.mk('OA'))
+        self.assertEqual(0, d.has_key(self.mk('bad key')))
+        self.assertEqual(1, d.has_key(self.mk('IA')))
+        self.assertEqual(1, d.has_key(self.mk('OA')))
 
         d.delete(self.mk('IA'))
         del d[self.mk('OA')]
-        assert 0 == d.has_key(self.mk('IA'))
-        assert 0 == d.has_key(self.mk('OA'))
-        assert len(d) == l-2
+        self.assertEqual(0, d.has_key(self.mk('IA')))
+        self.assertEqual(0, d.has_key(self.mk('OA')))
+        self.assertEqual(len(d), l-2)
 
         values = []
         for key in d.keys():
@@ -110,29 +110,29 @@ class DBShelveTestCase(unittest.TestCase):
             self.checkrec(key, value)
 
         dbvalues = d.values()
-        assert len(dbvalues) == len(d.keys())
+        self.assertEqual(len(dbvalues), len(d.keys()))
         values.sort()
         dbvalues.sort()
-        assert values == dbvalues
+        self.assertEqual(values, dbvalues)
 
         items = d.items()
-        assert len(items) == len(values)
+        self.assertEqual(len(items), len(values))
 
         for key, value in items:
             self.checkrec(key, value)
 
-        assert d.get(self.mk('bad key')) == None
-        assert d.get(self.mk('bad key'), None) == None
-        assert d.get(self.mk('bad key'), 'a string') == 'a string'
-        assert d.get(self.mk('bad key'), [1, 2, 3]) == [1, 2, 3]
+        self.assertEqual(d.get(self.mk('bad key')), None)
+        self.assertEqual(d.get(self.mk('bad key'), None), None)
+        self.assertEqual(d.get(self.mk('bad key'), 'a string'), 'a string')
+        self.assertEqual(d.get(self.mk('bad key'), [1, 2, 3]), [1, 2, 3])
 
         d.set_get_returns_none(0)
         self.assertRaises(db.DBNotFoundError, d.get, self.mk('bad key'))
         d.set_get_returns_none(1)
 
         d.put(self.mk('new key'), 'new data')
-        assert d.get(self.mk('new key')) == 'new data'
-        assert d[self.mk('new key')] == 'new data'
+        self.assertEqual(d.get(self.mk('new key')), 'new data')
+        self.assertEqual(d[self.mk('new key')], 'new data')
 
 
 
@@ -156,7 +156,7 @@ class DBShelveTestCase(unittest.TestCase):
             rec = c.next()
         del c
 
-        assert count == len(d)
+        self.assertEqual(count, len(d))
 
         count = 0
         c = d.cursor()
@@ -169,7 +169,7 @@ class DBShelveTestCase(unittest.TestCase):
             self.checkrec(key, value)
             rec = c.prev()
 
-        assert count == len(d)
+        self.assertEqual(count, len(d))
 
         c.set(self.mk('SS'))
         key, value = c.current()
@@ -191,25 +191,25 @@ class DBShelveTestCase(unittest.TestCase):
         # override this in a subclass if the key type is different
         x = key[1]
         if key[0] == 'S':
-            assert type(value) == StringType
-            assert value == 10 * x
+            self.assertEqual(type(value), StringType)
+            self.assertEqual(value, 10 * x)
 
         elif key[0] == 'I':
-            assert type(value) == IntType
-            assert value == ord(x)
+            self.assertEqual(type(value), IntType)
+            self.assertEqual(value, ord(x))
 
         elif key[0] == 'L':
-            assert type(value) == ListType
-            assert value == [x] * 10
+            self.assertEqual(type(value), ListType)
+            self.assertEqual(value, [x] * 10)
 
         elif key[0] == 'O':
-            assert type(value) == InstanceType
-            assert value.S == 10 * x
-            assert value.I == ord(x)
-            assert value.L == [x] * 10
+            self.assertEqual(type(value), InstanceType)
+            self.assertEqual(value.S, 10 * x)
+            self.assertEqual(value.I, ord(x))
+            self.assertEqual(value.L, [x] * 10)
 
         else:
-            raise AssertionError, 'Unknown key type, fix the test'
+            self.assert_(0, 'Unknown key type, fix the test')
 
 #----------------------------------------------------------------------
 

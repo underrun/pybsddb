@@ -46,7 +46,7 @@ class CompatibilityTestCase(unittest.TestCase):
         if verbose:
             print '%s %s %s' % getTest
 
-        assert getTest[1] == 'quick', 'data mismatch!'
+        self.assertEqual(getTest[1], 'quick', 'data mismatch!')
 
         rv = f.set_location(3)
         if rv != (3, 'brown'):
@@ -119,13 +119,13 @@ class CompatibilityTestCase(unittest.TestCase):
             try:
                 rec = f.next()
             except KeyError:
-                assert rec == f.last(), 'Error, last <> last!'
+                self.assertEqual(rec, f.last(), 'Error, last <> last!')
                 f.previous()
                 break
             if verbose:
                 print rec
 
-        assert f.has_key('f'), 'Error, missing key!'
+        self.assert_(f.has_key('f'), 'Error, missing key!')
 
         # test that set_location() returns the next nearest key, value
         # on btree databases and raises KeyError on others.

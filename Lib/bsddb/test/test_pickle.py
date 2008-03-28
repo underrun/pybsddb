@@ -47,7 +47,7 @@ class pickleTestCase(unittest.TestCase):
         self.db = db.DB(self.env)
         self.db.open(self.db_name, db.DB_HASH, db.DB_CREATE)
         self.db.put('spam', 'eggs')
-        assert self.db['spam'] == 'eggs'
+        self.assertEqual(self.db['spam'], 'eggs')
         try:
             self.db.put('spam', 'ham', flags=db.DB_NOOVERWRITE)
         except db.DBError, egg:
