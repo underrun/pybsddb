@@ -23,7 +23,7 @@ try:
 except ImportError:
     from test import test_support
 
-from test_all import verbose
+from test_all import verbose, get_new_environment_path, get_new_database_path
 
 DASH = '-'
 
@@ -57,27 +57,24 @@ class BasicTestCase(unittest.TestCase):
 
     def setUp(self):
         if self.useEnv:
-            homeDir = os.path.join(tempfile.gettempdir(), 'db_home%d'%os.getpid())
-            self.homeDir = homeDir
-            test_support.rmtree(homeDir)
-            os.mkdir(homeDir)
+            self.homeDir=get_new_environment_path()
             try:
                 self.env = db.DBEnv()
                 self.env.set_lg_max(1024*1024)
                 self.env.set_tx_max(30)
                 self.env.set_tx_timestamp(int(time.time()))
                 self.env.set_flags(self.envsetflags, 1)
-                self.env.open(homeDir, self.envflags | db.DB_CREATE)
-                tempfile.tempdir = homeDir
+                self.env.open(self.homeDir, self.envflags | db.DB_CREATE)
+                tempfile.tempdir = self.homeDir
                 self.filename = os.path.split(tempfile.mktemp())[1]
                 tempfile.tempdir = None
             # Yes, a bare except is intended, since we're re-raising the exc.
             except:
-                test_support.rmtree(homeDir)
+                test_support.rmtree(self.homeDir)
                 raise
         else:
             self.env = None
-            self.filename = tempfile.mktemp()
+            self.filename = get_new_database_path()
 
         # create and open the DB
         self.d = db.DB(self.env)
@@ -99,13 +96,6 @@ class BasicTestCase(unittest.TestCase):
         if self.env is not None:
             self.env.close()
             test_support.rmtree(self.homeDir)
-            ## XXX(nnorwitz): is this comment stil valid?
-            ## Make a new DBEnv to remove the env files from the home dir.
-            ## (It can't be done while the env is open, nor after it has been
-            ## closed, so we make a new one to do it.)
-            #e = db.DBEnv()
-            #e.remove(self.homeDir)
-            #os.remove(os.path.join(self.homeDir, self.filename))
         else:
             os.remove(self.filename)
 

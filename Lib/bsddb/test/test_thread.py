@@ -29,7 +29,8 @@ except NameError:
         pass
 
 import unittest
-from test_all import verbose
+from test_all import verbose, get_new_environment_path, get_new_database_path
+
 
 try:
     # For Pythons w/distutils pybsddb
@@ -56,15 +57,10 @@ class BaseThreadedTestCase(unittest.TestCase):
         if verbose:
             dbutils._deadlock_VerboseFile = sys.stdout
 
-        homeDir = os.path.join(tempfile.gettempdir(), 'db_home%d'%os.getpid())
-        self.homeDir = homeDir
-        try:
-            os.mkdir(homeDir)
-        except OSError, e:
-            if e.errno != errno.EEXIST: raise
+        self.homeDir = get_new_environment_path()
         self.env = db.DBEnv()
         self.setEnvOpts()
-        self.env.open(homeDir, self.envflags | db.DB_CREATE)
+        self.env.open(self.homeDir, self.envflags | db.DB_CREATE)
 
         self.filename = self.__class__.__name__ + '.db'
         self.d = db.DB(self.env)

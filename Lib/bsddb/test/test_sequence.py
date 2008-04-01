@@ -13,6 +13,8 @@ try:
 except ImportError:
     from test import test_support
 
+from test_all import get_new_environment_path, get_new_database_path
+
 
 class DBSequenceTest(unittest.TestCase):
     import sys
@@ -22,11 +24,7 @@ class DBSequenceTest(unittest.TestCase):
 
     def setUp(self):
         self.int_32_max = 0x100000000
-        self.homeDir = os.path.join(tempfile.gettempdir(), 'db_home%d'%os.getpid())
-        try:
-            os.mkdir(self.homeDir)
-        except os.error:
-            pass
+        self.homeDir = get_new_environment_path()
         tempfile.tempdir = self.homeDir
         self.filename = os.path.split(tempfile.mktemp())[1]
         tempfile.tempdir = None

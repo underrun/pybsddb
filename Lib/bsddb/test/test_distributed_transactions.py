@@ -12,6 +12,8 @@ except ImportError:
     # For Python 2.3
     from bsddb import db
 
+from test_all import get_new_environment_path, get_new_database_path
+
 try:
     from bsddb3 import test_support
 except ImportError:
@@ -58,9 +60,7 @@ class DBTxn_distributed(unittest.TestCase):
                         db.DB_QUEUE, db.DB_CREATE | db.DB_THREAD, 0666)
 
     def setUp(self) :
-        self.homeDir = os.path.join(tempfile.gettempdir(), 'db_home%d'%os.getpid())
-        try: os.mkdir(self.homeDir)
-        except os.error: pass
+        self.homeDir = get_new_environment_path()
         tempfile.tempdir = self.homeDir
         self.filename = os.path.split(tempfile.mktemp())[1]
         tempfile.tempdir = None

@@ -15,6 +15,8 @@ except ImportError:
     # For Python 2.3
     from bsddb import db, dbshelve
 
+from test_all import get_new_environment_path, get_new_database_path
+
 try:
     from bsddb3 import test_support
 except ImportError:
@@ -57,23 +59,17 @@ class AbstractBtreeKeyCompareTestCase (unittest.TestCase):
 
     def setUp (self):
         self.filename = self.__class__.__name__ + '.db'
-        homeDir = os.path.join (tempfile.gettempdir(), 'db_home%d'%os.getpid())
-        self.homeDir = homeDir
-        try:
-            os.mkdir (homeDir)
-        except os.error:
-            pass
-
-        env = db.DBEnv ()
-        env.open (homeDir,
+        self.homeDir = get_new_environment_path()
+        env = db.DBEnv()
+        env.open (self.homeDir,
                   db.DB_CREATE | db.DB_INIT_MPOOL
                   | db.DB_INIT_LOCK | db.DB_THREAD)
         self.env = env
 
     def tearDown (self):
-        self.closeDB ()
+        self.closeDB()
         if self.env is not None:
-            self.env.close ()
+            self.env.close()
             self.env = None
         test_support.rmtree(self.homeDir)
 

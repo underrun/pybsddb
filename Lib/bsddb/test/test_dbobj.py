@@ -10,6 +10,8 @@ except ImportError:
     # For Python 2.3
     from bsddb import db, dbobj
 
+from test_all import get_new_environment_path, get_new_database_path
+
 try:
     from bsddb3 import test_support
 except ImportError:
@@ -23,10 +25,7 @@ class dbobjTestCase(unittest.TestCase):
     db_name = 'test-dbobj.db'
 
     def setUp(self):
-        homeDir = os.path.join(tempfile.gettempdir(), 'db_home%d'%os.getpid())
-        self.homeDir = homeDir
-        try: os.mkdir(homeDir)
-        except os.error: pass
+        self.homeDir = get_new_environment_path()
 
     def tearDown(self):
         if hasattr(self, 'db'):

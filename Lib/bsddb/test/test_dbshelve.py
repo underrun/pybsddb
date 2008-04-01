@@ -19,7 +19,8 @@ try:
 except ImportError:
     from test import test_support
 
-from test_all import verbose
+from test_all import verbose, get_new_environment_path, get_new_database_path
+
 
 
 #----------------------------------------------------------------------
@@ -35,6 +36,7 @@ class DataClass:
 
 class DBShelveTestCase(unittest.TestCase):
     def setUp(self):
+        self.homeDir = get_new_environment_path()
         self.filename = tempfile.mktemp()
         self.do_open()
 
@@ -246,12 +248,9 @@ class ThreadHashShelveTestCase(BasicShelveTestCase):
 
 class BasicEnvShelveTestCase(DBShelveTestCase):
     def do_open(self):
-        self.homeDir = homeDir = os.path.join(
-            tempfile.gettempdir(), 'db_home%d'%os.getpid())
-        try: os.mkdir(homeDir)
-        except os.error: pass
         self.env = db.DBEnv()
-        self.env.open(homeDir, self.envflags | db.DB_INIT_MPOOL | db.DB_CREATE)
+        self.env.open(self.homeDir,
+                self.envflags | db.DB_INIT_MPOOL | db.DB_CREATE)
 
         self.filename = os.path.split(self.filename)[1]
         self.d = dbshelve.DBShelf(self.env)

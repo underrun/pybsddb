@@ -12,6 +12,8 @@ except ImportError:
     # For Python 2.3
     from bsddb import db, dbshelve, hashopen
 
+from test_all import get_new_environment_path, get_new_database_path
+
 try:
     from bsddb3 import test_support
 except ImportError:
@@ -22,12 +24,7 @@ except ImportError:
 class MiscTestCase(unittest.TestCase):
     def setUp(self):
         self.filename = self.__class__.__name__ + '.db'
-        homeDir = os.path.join(tempfile.gettempdir(), 'db_home%d'%os.getpid())
-        self.homeDir = homeDir
-        try:
-            os.mkdir(homeDir)
-        except OSError:
-            pass
+        self.homeDir = get_new_environment_path()
 
     def tearDown(self):
         test_support.unlink(self.filename)
