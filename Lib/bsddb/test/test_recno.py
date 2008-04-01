@@ -27,6 +27,11 @@ letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 #----------------------------------------------------------------------
 
 class SimpleRecnoTestCase(unittest.TestCase):
+    import sys
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertFalse(self, expr, msg=None):
+            self.failIf(expr,msg=msg)
+
     def setUp(self):
         self.filename = get_new_database_path()
         self.homeDir = None

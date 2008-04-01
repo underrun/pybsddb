@@ -618,6 +618,11 @@ class BasicHashWithEnvTestCase(BasicWithEnvTestCase):
 #----------------------------------------------------------------------
 
 class BasicTransactionTestCase(BasicTestCase):
+    import sys
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
     dbopenflags = db.DB_THREAD | db.DB_AUTO_COMMIT
     useEnv = 1
     envflags = (db.DB_THREAD | db.DB_INIT_MPOOL | db.DB_INIT_LOCK |
