@@ -36,7 +36,6 @@ class DataClass:
 
 class DBShelveTestCase(unittest.TestCase):
     def setUp(self):
-        self.homeDir = get_new_environment_path()
         self.filename = tempfile.mktemp()
         self.do_open()
 
@@ -262,6 +261,10 @@ class BasicEnvShelveTestCase(DBShelveTestCase):
         self.env.close()
 
 
+    def setUp(self) :
+        self.homeDir = get_new_environment_path()
+        DBShelveTestCase.setUp(self)
+        
     def tearDown(self):
         self.do_close()
         test_support.rmtree(self.homeDir)
