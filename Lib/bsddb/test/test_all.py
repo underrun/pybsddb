@@ -42,7 +42,8 @@ def get_new_path(name) :
     get_new_path.mutex.acquire()
     try :
         import os
-        path=os.path.join(get_new_path.prefix, name+"_"+str(get_new_path.num))
+        path=os.path.join(get_new_path.prefix,
+                name+"_"+str(os.getpid())+"_"+str(get_new_path.num))
         get_new_path.num+=1
     finally :
         get_new_path.mutex.release()
