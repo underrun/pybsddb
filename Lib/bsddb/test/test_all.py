@@ -70,9 +70,18 @@ def get_new_database_path() :
 get_new_path.prefix="/tmp/z-Berkeley_DB"
 get_new_path.num=0
 
-import threading
-get_new_path.mutex=threading.Lock()
-del threading
+try :
+    import threading
+    get_new_path.mutex=threading.Lock()
+    del threading
+except ImportError:
+    class Lock(object) :
+        def acquire(self) :
+            pass
+        def release(self) :
+            pass
+    get_new_path.mutex=Lock()
+    del Lock
 
 
 
