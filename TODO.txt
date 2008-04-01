@@ -1,1 +1,6 @@
 * 20080327: Add a parameter to DBEnv.log_flush().
+
+* 20080402: If a prepared/recovered transaction is
+  garbaged collected, we leak transactions. Can we
+  call "discard" in a safe way?.
+
