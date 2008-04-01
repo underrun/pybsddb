@@ -1,5 +1,5 @@
 4.6.3:
-  * Be sure all DBEnv paths in the TestSuite are generated in a
+  * Be sure all DBEnv/DB paths in the TestSuite are generated in a
     way compatible with launching the tests in multiple
     threads/processes.
   * Move all the "assert" in the TestSuite to the version in the

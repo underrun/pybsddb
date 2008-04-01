@@ -14,14 +14,14 @@ except ImportError:
     # For Python 2.3
     from bsddb import db
 
-from test_all import verbose
+from test_all import verbose, get_new_database_path
 
 
 #----------------------------------------------------------------------
 
 class SimpleQueueTestCase(unittest.TestCase):
     def setUp(self):
-        self.filename = tempfile.mktemp()
+        self.filename = get_new_database_path()
 
     def tearDown(self):
         try:

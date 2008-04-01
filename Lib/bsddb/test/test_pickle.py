@@ -27,7 +27,6 @@ except ImportError:
 
 class pickleTestCase(unittest.TestCase):
     """Verify that DBError can be pickled and unpickled"""
-    db_home = 'db_home'
     db_name = 'test-dbobj.db'
 
     def setUp(self):

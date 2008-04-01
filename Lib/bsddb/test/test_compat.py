@@ -7,7 +7,8 @@ import os, string
 import unittest
 import tempfile
 
-from test_all import verbose
+from test_all import verbose, get_new_database_path
+
 
 try:
     # For Pythons w/distutils pybsddb
@@ -18,7 +19,7 @@ except ImportError:
 
 class CompatibilityTestCase(unittest.TestCase):
     def setUp(self):
-        self.filename = tempfile.mktemp()
+        self.filename = get_new_database_path()
 
     def tearDown(self):
         try:

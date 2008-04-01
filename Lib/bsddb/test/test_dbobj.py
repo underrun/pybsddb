@@ -21,7 +21,6 @@ except ImportError:
 
 class dbobjTestCase(unittest.TestCase):
     """Verify that dbobj.DB and dbobj.DBEnv work properly"""
-    db_home = 'db_home'
     db_name = 'test-dbobj.db'
 
     def setUp(self):

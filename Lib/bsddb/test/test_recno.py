@@ -7,7 +7,7 @@ import tempfile
 from pprint import pprint
 import unittest
 
-from test_all import verbose
+from test_all import verbose, get_new_environment_path, get_new_database_path
 
 try:
     # For Pythons w/distutils pybsddb
@@ -28,7 +28,7 @@ letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 class SimpleRecnoTestCase(unittest.TestCase):
     def setUp(self):
-        self.filename = tempfile.mktemp()
+        self.filename = get_new_database_path()
         self.homeDir = None
 
     def tearDown(self):
@@ -207,7 +207,7 @@ class SimpleRecnoTestCase(unittest.TestCase):
         just a line in the file, but you can set a different record delimiter
         if needed.
         """
-        homeDir = os.path.join(tempfile.gettempdir(), 'db_home%d'%os.getpid())
+        homeDir = get_new_environment_path()
         self.homeDir = homeDir
         source = os.path.join(homeDir, 'test_recno.txt')
         if not os.path.isdir(homeDir):

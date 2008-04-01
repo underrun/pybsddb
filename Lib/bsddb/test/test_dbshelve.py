@@ -36,7 +36,7 @@ class DataClass:
 
 class DBShelveTestCase(unittest.TestCase):
     def setUp(self):
-        self.filename = tempfile.mktemp()
+        self.filename = get_new_database_path()
         self.do_open()
 
     def tearDown(self):
