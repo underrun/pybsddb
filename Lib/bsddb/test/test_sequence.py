@@ -13,6 +13,8 @@ try:
 except ImportError:
     from test import test_support
 
+from test_all import get_new_environment_path, get_new_database_path
+
 
 class DBSequenceTest(unittest.TestCase):
     import sys
@@ -22,11 +24,7 @@ class DBSequenceTest(unittest.TestCase):
 
     def setUp(self):
         self.int_32_max = 0x100000000
-        self.homeDir = os.path.join(tempfile.gettempdir(), 'db_home%d'%os.getpid())
-        try:
-            os.mkdir(self.homeDir)
-        except os.error:
-            pass
+        self.homeDir = get_new_environment_path()
         tempfile.tempdir = self.homeDir
         self.filename = os.path.split(tempfile.mktemp())[1]
         tempfile.tempdir = None
@@ -111,19 +109,11 @@ class DBSequenceTest(unittest.TestCase):
             d=db.DB()
             d.open(None,dbtype=db.DB_HASH,flags=db.DB_CREATE)  # In RAM
             seq = db.DBSequence(d, flags=0)
-            try :
-                seq.open(key='id', txn=None, flags=0)
-            except :
-                pass
-            else :
-                assert 0, "Where is my exception?"
 
-            try :
-                seq.stat()
-            except :
-                pass
-            else :
-                assert 0, "Where is my exception?"
+            self.assertRaises(db.DBNotFoundError, seq.open,
+                    key='id', txn=None, flags=0)
+
+            self.assertRaises(db.DBNotFoundError, seq.stat)
 
             d.close()
 

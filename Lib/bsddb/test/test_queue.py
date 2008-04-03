@@ -14,14 +14,14 @@ except ImportError:
     # For Python 2.3
     from bsddb import db
 
-from test_all import verbose
+from test_all import verbose, get_new_database_path
 
 
 #----------------------------------------------------------------------
 
 class SimpleQueueTestCase(unittest.TestCase):
     def setUp(self):
-        self.filename = tempfile.mktemp()
+        self.filename = get_new_database_path()
 
     def tearDown(self):
         try:
@@ -48,14 +48,14 @@ class SimpleQueueTestCase(unittest.TestCase):
         for x in string.letters:
             d.append(x * 40)
 
-        assert len(d) == 52
+        self.assertEqual(len(d), 52)
 
         d.put(100, "some more data")
         d.put(101, "and some more ")
         d.put(75,  "out of order")
         d.put(1,   "replacement data")
 
-        assert len(d) == 55
+        self.assertEqual(len(d), 55)
 
         if verbose:
             print "before close" + '-' * 30
@@ -88,9 +88,9 @@ class SimpleQueueTestCase(unittest.TestCase):
             print "after consume loop" + '-' * 30
             pprint(d.stat())
 
-        assert len(d) == 0, \
+        self.assertEqual(len(d), 0, \
                "if you see this message then you need to rebuild " \
-               "Berkeley DB 3.1.17 with the patch in patches/qam_stat.diff"
+               "Berkeley DB 3.1.17 with the patch in patches/qam_stat.diff")
 
         d.close()
 
@@ -120,14 +120,14 @@ class SimpleQueueTestCase(unittest.TestCase):
         for x in string.letters:
             d.append(x * 40)
 
-        assert len(d) == 52
+        self.assertEqual(len(d), 52)
 
         d.put(100, "some more data")
         d.put(101, "and some more ")
         d.put(75,  "out of order")
         d.put(1,   "replacement data")
 
-        assert len(d) == 55
+        self.assertEqual(len(d), 55)
 
         if verbose:
             print "before close" + '-' * 30

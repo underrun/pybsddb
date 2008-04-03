@@ -105,7 +105,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "4.7.0devel3.4"
+#define PY_BSDDB_VERSION "4.7.0devel4.1"
 
 /* Python object definitions */
 
@@ -210,7 +210,6 @@ typedef struct DBSequenceObject {
     struct DBSequenceObject *sibling_next_txn;
     PyObject        *in_weakreflist; /* List of weak references */
 } DBSequenceObject;
-staticforward PyTypeObject DBSequence_Type;
 #endif
 
 

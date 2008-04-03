@@ -310,7 +310,10 @@ Environment, Database, Cursor, and Transaction
 objects, and each of these is exposed as a Python
 type in the bsddb3.db module. The database objects
 can use various access methods: btree, hash, recno,
-and queue. Please see the documents in the docs
+and queue. Complete support of Berkeley DB distributed
+transactions.
+
+Please see the documents in the docs
 directory of the source distribution or at the
 website for more details on the types and methods
 provided. The goal is the mirror most of the real

@@ -13,7 +13,7 @@ except ImportError:
 
 
 import unittest
-from test_all import verbose
+from test_all import verbose, get_new_environment_path, get_new_database_path
 
 try:
     # For Pythons w/distutils pybsddb
@@ -33,7 +33,7 @@ except ImportError:
 class LockingTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.homeDir = tempfile.mkdtemp('.test_lock')
+        self.homeDir = get_new_environment_path()
         self.env = db.DBEnv()
         self.env.open(self.homeDir, db.DB_THREAD | db.DB_INIT_MPOOL |
                                     db.DB_INIT_LOCK | db.DB_CREATE)
