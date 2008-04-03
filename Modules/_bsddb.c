@@ -6148,6 +6148,13 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_LOCK_MINWRITE);
 #endif
 
+#if (DBVER >= 40)
+    ADD_INT(d, DB_LOCK_EXPIRE);
+#endif
+#if (DBVER >= 43)
+    ADD_INT(d, DB_LOCK_MAXWRITE);
+#endif
+
 
 #if (DBVER >= 33)
     /* docs say to use zero instead */
