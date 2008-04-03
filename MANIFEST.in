@@ -12,6 +12,10 @@ recursive-include patches *.txt *.patch
 recursive-include extsrc _bsddb.c bsddb.h
 recursive-include test *.py
 
+prune docs/build
+prune docs/tools/docutils
+prune docs/tools/sphinx
+prune docs/tools/pygments
 prune old
 prune test/db_home
 prune test/bsddb3
