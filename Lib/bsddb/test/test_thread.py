@@ -99,7 +99,6 @@ class ConcurrentDataStoreBase(BaseThreadedTestCase):
         keys=range(self.records)
         import random
         random.shuffle(keys)
-        threads = []
         records_per_writer=self.records/self.writers
         readers_per_writer=self.readers/self.writers
         self.assertEqual(self.records,self.writers*records_per_writer)
@@ -199,8 +198,8 @@ class HashConcurrentDataStore(ConcurrentDataStoreBase):
 class SimpleThreadedBase(BaseThreadedTestCase):
     dbopenflags = db.DB_THREAD
     envflags    = db.DB_THREAD | db.DB_INIT_MPOOL | db.DB_INIT_LOCK
-    readers = 5
-    writers = 3
+    readers = 10
+    writers = 2
     records = 1000
 
     def setEnvOpts(self):
@@ -211,35 +210,53 @@ class SimpleThreadedBase(BaseThreadedTestCase):
             print '\n', '-=' * 30
             print "Running %s.test02_SimpleLocks..." % self.__class__.__name__
 
-        threads = []
-        for x in range(self.writers):
-            wt = Thread(target = self.writerThread,
-                        args = (self.d, self.records, x),
-                        name = 'writer %d' % x,
-                        )#verbose = verbose)
-            threads.append(wt)
+
+        keys=range(self.records)
+        import random
+        random.shuffle(keys)
+        records_per_writer=self.records/self.writers
+        readers_per_writer=self.readers/self.writers
+        self.assertEqual(self.records,self.writers*records_per_writer)
+        self.assertEqual(self.readers,self.writers*readers_per_writer)
+        self.assertTrue((records_per_writer%readers_per_writer)==0)
+
+        readers = []
         for x in range(self.readers):
             rt = Thread(target = self.readerThread,
                         args = (self.d, x),
                         name = 'reader %d' % x,
                         )#verbose = verbose)
-            threads.append(rt)
+            rt.setDaemon(True)
+            readers.append(rt)
 
-        for t in threads:
+        writers = []
+        for x in range(self.writers):
+            a=keys[records_per_writer*x:records_per_writer*(x+1)]
+            a.sort()
+            b=readers[readers_per_writer*x:readers_per_writer*(x+1)]
+            wt = Thread(target = self.writerThread,
+                        args = (self.d, a, b),
+                        name = 'writer %d' % x,
+                        )#verbose = verbose)
+            writers.append(wt)
+
+        for t in writers:
             t.setDaemon(True)
             t.start()
-        for t in threads:
+
+        for t in writers:
+            t.join()
+        for t in readers:
             t.join()
 
-    def writerThread(self, d, howMany, writerNum):
+    def writerThread(self, d, keys, readers):
         name = currentThread().getName()
-        start = howMany * writerNum
-        stop = howMany * (writerNum + 1) - 1
         if verbose:
             print "%s: creating records %d - %d" % (name, start, stop)
 
-        # create a bunch of records
-        for x in xrange(start, stop):
+        count=len(keys)/len(readers)
+        count2=count
+        for x in keys :
             key = '%04d' % x
             dbutils.DeadlockWrap(d.put, key, self.makeData(key),
                                  max_retries=12)
@@ -247,52 +264,28 @@ class SimpleThreadedBase(BaseThreadedTestCase):
             if verbose and x % 100 == 0:
                 print "%s: records %d - %d finished" % (name, start, x)
 
-            # do a bit or reading too
-            if random() <= 0.05:
-                for y in xrange(start, x):
-                    key = '%04d' % x
-                    data = dbutils.DeadlockWrap(d.get, key, max_retries=12)
-                    self.assertEqual(data, self.makeData(key))
-
-        # flush them
-        try:
-            dbutils.DeadlockWrap(d.sync, max_retries=12)
-        except db.DBIncompleteError, val:
-            if verbose:
-                print "could not complete sync()..."
-
-        # read them back, deleting a few
-        for x in xrange(start, stop):
-            key = '%04d' % x
-            data = dbutils.DeadlockWrap(d.get, key, max_retries=12)
-            if verbose and x % 100 == 0:
-                print "%s: fetched record (%s, %s)" % (name, key, data)
-            self.assertEqual(data, self.makeData(key))
-            if random() <= 0.10:
-                dbutils.DeadlockWrap(d.delete, key, max_retries=12)
-                if verbose:
-                    print "%s: deleted record %s" % (name, key)
+            count2-=1
+            if not count2 :
+                readers.pop().start()
+                count2=count
 
         if verbose:
             print "%s: thread finished" % name
 
     def readerThread(self, d, readerNum):
-        time.sleep(0.01 * readerNum)
         name = currentThread().getName()
 
-        for loop in range(5):
-            c = d.cursor()
-            count = 0
-            rec = dbutils.DeadlockWrap(c.first, max_retries=10)
-            while rec:
-                count += 1
-                key, data = rec
-                self.assertEqual(self.makeData(key), data)
-                rec = dbutils.DeadlockWrap(c.next, max_retries=10)
-            if verbose:
-                print "%s: found %d records" % (name, count)
-            c.close()
-            time.sleep(0.05)
+        c = d.cursor()
+        count = 0
+        rec = dbutils.DeadlockWrap(c.first, max_retries=10)
+        while rec:
+            count += 1
+            key, data = rec
+            self.assertEqual(self.makeData(key), data)
+            rec = dbutils.DeadlockWrap(c.next, max_retries=10)
+        if verbose:
+            print "%s: found %d records" % (name, count)
+        c.close()
 
         if verbose:
             print "%s: thread finished" % name

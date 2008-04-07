@@ -1,6 +1,6 @@
 4.6.4:
   * Improved performance and coverage of following tests: lock,
-    threaded ConcurrentDataStore.
+    threaded ConcurrentDataStore, threaded simple locks.
   * New exported flags: "DB_LOCK_EXPIRE" and "DB_LOCK_MAXWRITE".
 
 4.6.3:

@@ -278,11 +278,7 @@ class ImmediateTestRunner(unittest.TextTestRunner):
 
     def run(self, test):
         self._count = test.countTestCases()
-        import time
-        t=time.time()
-        ret=unittest.TextTestRunner.run(self, test)
-        print time.time()-t
-        return ret
+        return unittest.TextTestRunner.run(self, test)
 
 
 # setup list of directories to put on the path
