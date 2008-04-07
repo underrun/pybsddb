@@ -96,64 +96,74 @@ class ConcurrentDataStoreBase(BaseThreadedTestCase):
             print "Running %s.test01_1WriterMultiReaders..." % \
                   self.__class__.__name__
 
+        keys=range(self.records)
+        import random
+        random.shuffle(keys)
         threads = []
-        for x in range(self.writers):
-            wt = Thread(target = self.writerThread,
-                        args = (self.d, self.records, x),
-                        name = 'writer %d' % x,
-                        )#verbose = verbose)
-            threads.append(wt)
+        records_per_writer=self.records/self.writers
+        readers_per_writer=self.readers/self.writers
+        self.assertEqual(self.records,self.writers*records_per_writer)
+        self.assertEqual(self.readers,self.writers*readers_per_writer)
+        self.assertTrue((records_per_writer%readers_per_writer)==0)
+        readers = []
 
         for x in range(self.readers):
             rt = Thread(target = self.readerThread,
                         args = (self.d, x),
                         name = 'reader %d' % x,
                         )#verbose = verbose)
-            threads.append(rt)
+            rt.setDaemon(True)
+            readers.append(rt)
 
-        for t in threads:
+        writers=[]
+        for x in range(self.writers):
+            a=keys[records_per_writer*x:records_per_writer*(x+1)]
+            a.sort()
+            b=readers[readers_per_writer*x:readers_per_writer*(x+1)]
+            wt = Thread(target = self.writerThread,
+                        args = (self.d, a, b),
+                        name = 'writer %d' % x,
+                        )#verbose = verbose)
+            writers.append(wt)
+
+        for t in writers:
             t.setDaemon(True)
             t.start()
-        for t in threads:
+
+        for t in writers:
+            t.join()
+        for t in readers:
             t.join()
 
-    def writerThread(self, d, howMany, writerNum):
-        #time.sleep(0.01 * writerNum + 0.01)
+    def writerThread(self, d, keys, readers):
         name = currentThread().getName()
-        start = howMany * writerNum
-        stop = howMany * (writerNum + 1) - 1
         if verbose:
             print "%s: creating records %d - %d" % (name, start, stop)
 
-        for x in range(start, stop):
+        count=len(keys)/len(readers)
+        count2=count
+        for x in keys :
             key = '%04d' % x
             dbutils.DeadlockWrap(d.put, key, self.makeData(key),
                                  max_retries=12)
             if verbose and x % 100 == 0:
                 print "%s: records %d - %d finished" % (name, start, x)
 
+            count2-=1
+            if not count2 :
+                readers.pop().start()
+                count2=count
+
         if verbose:
             print "%s: finished creating records" % name
 
-##         # Each write-cursor will be exclusive, the only one that can update the DB...
-##         if verbose: print "%s: deleting a few records" % name
-##         c = d.cursor(flags = db.DB_WRITECURSOR)
-##         for x in range(10):
-##             key = int(random() * howMany) + start
-##             key = '%04d' % key
-##             if d.has_key(key):
-##                 c.set(key)
-##                 c.delete()
-
-##         c.close()
         if verbose:
             print "%s: thread finished" % name
 
     def readerThread(self, d, readerNum):
-        time.sleep(0.01 * readerNum)
         name = currentThread().getName()
 
-        for loop in range(5):
+        for i in xrange(5) :
             c = d.cursor()
             count = 0
             rec = c.first()
@@ -165,7 +175,6 @@ class ConcurrentDataStoreBase(BaseThreadedTestCase):
             if verbose:
                 print "%s: found %d records" % (name, count)
             c.close()
-            time.sleep(0.05)
 
         if verbose:
             print "%s: thread finished" % name

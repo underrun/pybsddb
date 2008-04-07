@@ -1,6 +1,7 @@
 4.6.4:
-  * Improve performance and coverage of following tests: lock.
-  * Export flags "DB_LOCK_EXPIRE" and "DB_LOCK_MAXWRITE".
+  * Improved performance and coverage of following tests: lock,
+    threaded ConcurrentDataStore.
+  * New exported flags: "DB_LOCK_EXPIRE" and "DB_LOCK_MAXWRITE".
 
 4.6.3:
   * Be sure all DBEnv/DB paths in the TestSuite are generated in a
