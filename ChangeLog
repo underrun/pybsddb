@@ -1,4 +1,5 @@
 4.6.4:
+  * Basic support for Berkeley DB Replication Manager.
   * Improved performance and coverage of following tests: lock,
     threaded ConcurrentDataStore, threaded simple locks, threaded
     transactions.

@@ -4907,6 +4907,117 @@ DBEnv_set_get_returns_none(DBEnvObject* self, PyObject* args)
 
 
 /* --------------------------------------------------------------------- */
+/* REPLICATION METHODS: Replication Manager */
+
+#if (DBVER >= 45)
+static PyObject*
+DBEnv_repmgr_start(DBEnvObject* self, PyObject* args, PyObject*
+        kwargs)
+{
+    int err;
+    int nthreads, flags;
+    static char* kwnames[] = {"nthreads","flags", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                "ii:repmgr_start", kwnames, &nthreads, &flags))
+    {
+	    return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_start(self->db_env, nthreads, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_repmgr_set_local_site(DBEnvObject* self, PyObject* args, PyObject*
+        kwargs)
+{
+    int err;
+    char *host = NULL;
+    int port;
+    int flags = 0;
+    static char* kwnames[] = {"flags", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                "si|i:repmgr_set_local_site", kwnames, &host, &port, &flags))
+    {
+	    return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_set_local_site(self->db_env, host, port, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_repmgr_add_remote_site(DBEnvObject* self, PyObject* args, PyObject*
+        kwargs)
+{
+    int err;
+    char *host = NULL;
+    int port;
+    int flags = 0;
+    int eidp;
+    static char* kwnames[] = {"flags", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                "si|i:repmgr_add_remote_site", kwnames, &host, &port, &flags))
+    {
+	    return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_add_remote_site(self->db_env, host, port, &eidp, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyInt_FromLong(eidp);
+}
+
+static PyObject*
+DBEnv_repmgr_set_ack_policy(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int ack_policy;
+
+    if (!PyArg_ParseTuple(args, "i:repmgr_set_ack_policy", &ack_policy))
+    {
+	    return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_set_ack_policy(self->db_env, ack_policy);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_repmgr_get_ack_policy(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int ack_policy;
+
+    if (!PyArg_ParseTuple(args, ":repmgr_get_ack_policy"))
+    {
+	    return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_get_ack_policy(self->db_env, &ack_policy);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyInt_FromLong(ack_policy);
+}
+#endif
+
+
+
+/* --------------------------------------------------------------------- */
 /* DBTxn methods */
 
 
@@ -5656,6 +5767,18 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 40)
     {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_VARARGS},
 #endif
+#if (DBVER >= 45)
+    {"repmgr_start", (PyCFunction)DBEnv_repmgr_start,
+        METH_VARARGS|METH_KEYWORDS},
+    {"repmgr_set_local_site", (PyCFunction)DBEnv_repmgr_set_local_site,
+        METH_VARARGS|METH_KEYWORDS},
+    {"repmgr_add_remote_site", (PyCFunction)DBEnv_repmgr_add_remote_site, 
+        METH_VARARGS|METH_KEYWORDS},
+    {"repmgr_set_ack_policy", (PyCFunction)DBEnv_repmgr_set_ack_policy,
+        METH_VARARGS},
+    {"repmgr_get_ack_policy", (PyCFunction)DBEnv_repmgr_get_ack_policy,
+        METH_VARARGS},
+#endif
     {NULL,      NULL}       /* sentinel */
 };
 
@@ -6352,6 +6475,16 @@ DL_EXPORT(void) init_bsddb(void)
 
 #if (DBVER >= 45)
     ADD_INT(d, DB_TXN_SNAPSHOT);
+#endif
+
+#if (DBVER >= 45)
+    ADD_INT(d, DB_REPMGR_PEER);
+    ADD_INT(d, DB_REPMGR_ACKS_ALL);
+    ADD_INT(d, DB_REPMGR_ACKS_ALL_PEERS);
+    ADD_INT(d, DB_REPMGR_ACKS_NONE);
+    ADD_INT(d, DB_REPMGR_ACKS_ONE);
+    ADD_INT(d, DB_REPMGR_ACKS_ONE_PEER);
+    ADD_INT(d, DB_REPMGR_ACKS_QUORUM);
 #endif
 
 #if (DBVER >= 43)
