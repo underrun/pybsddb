@@ -1,4 +1,3 @@
-=======
 """TestCases for distributed transactions.
 """
 

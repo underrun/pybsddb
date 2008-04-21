@@ -1,3 +1,16 @@
+4.6.4:
+  * Basic support for Berkeley DB Replication Manager.
+  * Support for a few replication calls, for benefice of Berkeley DB
+    Replication Manager: "DB_ENV->rep_set_priority",
+    "DB_ENV->rep_get_priority", "DB_ENV->rep_set_nsites",
+    "DB_ENV->rep_get_nsites", "DB_ENV->rep_set_timeout",
+    "DB_ENV->rep_get_timeout".
+  * Export flags related to replication timeouts.
+  * Improved performance and coverage of following tests: lock,
+    threaded ConcurrentDataStore, threaded simple locks, threaded
+    transactions.
+  * New exported flags: "DB_LOCK_EXPIRE" and "DB_LOCK_MAXWRITE".
+
 4.6.3:
   * Be sure all DBEnv/DB paths in the TestSuite are generated in a
     way compatible with launching the tests in multiple

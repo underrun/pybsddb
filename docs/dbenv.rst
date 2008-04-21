@@ -601,3 +601,88 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_recover.html>`__
 
+.. function:: repmgr_start(nthreads, flags)
+
+   Starts the replication manager.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_start.html>`__
+
+.. function:: repmgr_set_local_site(host, port, flags=0)
+
+   Specifies the host identification string and port number for the
+   local system.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_local_site.html>`__
+
+.. function:: repmgr_add_remote_site(host, port, flags=0)
+
+   Adds a new replication site to the replication manager's list of
+   known sites. It is not necessary for all sites in a replication group
+   to know about all other sites in the group.
+
+   Method returns the environment ID assigned to the remote site.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_remote_site.html>`__
+
+.. function:: repmgr_set_ack_policy(ack_policy)
+
+   Specifies how master and client sites will handle acknowledgment of
+   replication messages which are necessary for "permanent" records.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_ack_policy.html>`__
+
+.. function:: repmgr_get_ack_policy()
+
+   Returns the replication manager's client acknowledgment policy.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_ack_policy.html>`__
+
+.. function:: rep_set_nsites(nsites)
+
+   Specifies the total number of sites in a replication group.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_nsites.html>`__
+
+.. function:: rep_get_nsites()
+
+   Returns the total number of sites in the replication group.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_nsites.html>`__
+
+.. function:: rep_set_priority(priority)
+
+   Specifies the database environment's priority in replication group
+   elections. The priority must be a positive integer, or 0 if this
+   environment cannot be a replication group master.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_priority.html>`__
+
+.. function:: rep_get_priority()
+
+   Returns the database environment priority.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_priority.html>`__
+
+.. function:: rep_set_timeout(which, timeout)
+
+   Specifies a variety of replication timeout values.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_timeout.html>`__
+
+.. function:: rep_get_timeout(which)
+
+   Returns the timeout value for the specified *which* parameter.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_timeout.html>`__
+

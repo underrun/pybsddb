@@ -190,6 +190,8 @@ class ImmediateTestResult(unittest._TextTestResult):
             self._maxWidth -= len('xxxx/xxxx (xxx.x%): ') + 1
 
     def stopTest(self, test):
+        import time
+        print time.time()-self._time
         if gc.garbage:
             print test
             print gc.garbage
@@ -204,6 +206,9 @@ class ImmediateTestResult(unittest._TextTestResult):
         errlist.append((test, tb))
 
     def startTest(self, test):
+        import time
+        self._time=time.time()
+
         if self._progress:
             self.stream.write('\r%4d' % (self.testsRun + 1))
             if self._count:

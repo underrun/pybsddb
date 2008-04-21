@@ -1,6 +1,18 @@
 * 20080327: Add a parameter to DBEnv.log_flush().
 
-* 20080402: If a prepared/recovered transaction is
-  garbaged collected, we leak transactions. Can we
-  call "discard" in a safe way?.
+* 20080402: If a prepared/recovered transaction is garbaged collected,
+  we leak transactions. Can we call "discard" in a safe way?.
+
+* 20080403: If an exception is raised in a thread in the TestSuite, we
+  pass the test. Bad!.
+
+* 20080403: Write a test for MVCC.
+
+* 20080403: We should recreate the test data directory in every
+  execution, and delete it when finished.
+
+* 20080403: "txn_stat" provides a list of active transactions. Export it
+  to Python.
+
+* 20080421: Write tests for Replication Manager.
 
