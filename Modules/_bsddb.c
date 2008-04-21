@@ -4907,6 +4907,114 @@ DBEnv_set_get_returns_none(DBEnvObject* self, PyObject* args)
 
 
 /* --------------------------------------------------------------------- */
+/* REPLICATION METHODS: Base Replication */
+
+#if (DBVER >= 40)
+static PyObject*
+DBEnv_rep_set_nsites(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int nsites;
+
+    if (!PyArg_ParseTuple(args, "i:rep_set_nsites", &nsites)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_set_nsites(self->db_env, nsites);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_rep_get_nsites(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int nsites;
+
+    if (!PyArg_ParseTuple(args, ":rep_get_nsites")) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_get_nsites(self->db_env, &nsites);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyInt_FromLong(nsites);
+}
+
+static PyObject*
+DBEnv_rep_set_priority(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int priority;
+
+    if (!PyArg_ParseTuple(args, "i:rep_set_priority", &priority)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_set_priority(self->db_env, priority);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_rep_get_priority(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int priority;
+
+    if (!PyArg_ParseTuple(args, ":rep_get_priority")) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_get_priority(self->db_env, &priority);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyInt_FromLong(priority);
+}
+
+static PyObject*
+DBEnv_rep_set_timeout(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int which, timeout;
+
+    if (!PyArg_ParseTuple(args, "ii:rep_set_timeout", &which, &timeout)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_set_timeout(self->db_env, which, timeout);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_rep_get_timeout(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int which;
+    u_int32_t timeout;
+
+    if (!PyArg_ParseTuple(args, "i:rep_get_timeout", &which)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_get_timeout(self->db_env, which, &timeout);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyInt_FromLong(timeout);
+}
+#endif
+
+/* --------------------------------------------------------------------- */
 /* REPLICATION METHODS: Replication Manager */
 
 #if (DBVER >= 45)
@@ -4936,10 +5044,10 @@ DBEnv_repmgr_set_local_site(DBEnvObject* self, PyObject* args, PyObject*
         kwargs)
 {
     int err;
-    char *host = NULL;
+    char *host;
     int port;
     int flags = 0;
-    static char* kwnames[] = {"flags", NULL};
+    static char* kwnames[] = {"host", "port", "flags", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                 "si|i:repmgr_set_local_site", kwnames, &host, &port, &flags))
@@ -4959,11 +5067,11 @@ DBEnv_repmgr_add_remote_site(DBEnvObject* self, PyObject* args, PyObject*
         kwargs)
 {
     int err;
-    char *host = NULL;
+    char *host;
     int port;
     int flags = 0;
     int eidp;
-    static char* kwnames[] = {"flags", NULL};
+    static char* kwnames[] = {"host", "port", "flags", NULL};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                 "si|i:repmgr_add_remote_site", kwnames, &host, &port, &flags))
@@ -5767,6 +5875,14 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 40)
     {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_VARARGS},
 #endif
+#if (DBVER >= 40)
+    {"rep_set_nsites", (PyCFunction)DBEnv_rep_set_nsites, METH_VARARGS},
+    {"rep_get_nsites", (PyCFunction)DBEnv_rep_get_nsites, METH_VARARGS},
+    {"rep_set_priority", (PyCFunction)DBEnv_rep_set_priority, METH_VARARGS},
+    {"rep_get_priority", (PyCFunction)DBEnv_rep_get_priority, METH_VARARGS},
+    {"rep_set_timeout", (PyCFunction)DBEnv_rep_set_timeout, METH_VARARGS},
+    {"rep_get_timeout", (PyCFunction)DBEnv_rep_get_timeout, METH_VARARGS},
+#endif
 #if (DBVER >= 45)
     {"repmgr_start", (PyCFunction)DBEnv_repmgr_start,
         METH_VARARGS|METH_KEYWORDS},
@@ -6475,6 +6591,21 @@ DL_EXPORT(void) init_bsddb(void)
 
 #if (DBVER >= 45)
     ADD_INT(d, DB_TXN_SNAPSHOT);
+#endif
+
+#if (DBVER >= 40)
+    ADD_INT(d, DB_REP_MASTER);
+    ADD_INT(d, DB_REP_CLIENT);
+    ADD_INT(d, DB_REP_ELECTION);
+
+    ADD_INT(d, DB_REP_ACK_TIMEOUT);
+    ADD_INT(d, DB_REP_CONNECTION_RETRY);
+    ADD_INT(d, DB_REP_ELECTION_TIMEOUT);
+    ADD_INT(d, DB_REP_ELECTION_RETRY);
+#if (DBVER >= 46)
+    ADD_INT(d, DB_REP_CHECKPOINT_DELAY);
+    ADD_INT(d, DB_REP_FULL_ELECTION_TIMEOUT);
+#endif
 #endif
 
 #if (DBVER >= 45)
