@@ -46,16 +46,29 @@ class DBReplicationManager(unittest.TestCase):
         self.dbenvClient.rep_set_nsites(2)
         self.dbenvMaster.rep_set_priority(10)
         self.dbenvClient.rep_set_priority(0)
+
+        self.dbenvMaster.repmgr_set_ack_policy(db.DB_REPMGR_ACKS_ALL)
+        self.dbenvClient.repmgr_set_ack_policy(db.DB_REPMGR_ACKS_ALL)
+
         self.dbenvMaster.repmgr_start(1, db.DB_REP_MASTER);
         self.dbenvClient.repmgr_start(1, db.DB_REP_CLIENT);
 
-        self.assertEqual(self.dbenvMaster.rep_get_nsites(),2)
-        self.assertEqual(self.dbenvClient.rep_get_nsites(),2)
-        self.assertEqual(self.dbenvMaster.rep_get_priority(),10)
-        self.assertEqual(self.dbenvClient.rep_get_priority(),0)
+        self.assertEquals(self.dbenvMaster.rep_get_nsites(),2)
+        self.assertEquals(self.dbenvClient.rep_get_nsites(),2)
+        self.assertEquals(self.dbenvMaster.rep_get_priority(),10)
+        self.assertEquals(self.dbenvClient.rep_get_priority(),0)
+        self.assertEquals(self.dbenvMaster.repmgr_get_ack_policy(),
+                db.DB_REPMGR_ACKS_ALL)
+        self.assertEquals(self.dbenvClient.repmgr_get_ack_policy(),
+                db.DB_REPMGR_ACKS_ALL)
+
+        #self.dbenvMaster.set_verbose(db.DB_VERB_REPLICATION, True)
+        #self.dbenvMaster.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
+        #self.dbenvClient.set_verbose(db.DB_VERB_REPLICATION, True)
+        #self.dbenvClient.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
 
         self.dbMaster = db.DB(self.dbenvMaster)
-        self.dbClient = db.DB(self.dbenvClient)
+        #self.dbClient = db.DB(self.dbenvClient)
 
     def tearDown(self):
         self.dbClient.close()
@@ -71,14 +84,29 @@ class DBReplicationManager(unittest.TestCase):
         txn.commit()
 
         import time,os.path
-        timeout=time.time()+1
+        timeout=time.time()+10
         while (time.time()<timeout) and \
-          not os.path.exists(os.path.join(self.homeDirClient,"test")) :
-            pass
+          not (os.path.exists(os.path.join(self.homeDirClient,"test"))) :
+              time.sleep(0.01)
 
-        txn=self.dbenvClient.txn_begin()
-        self.dbClient.open("test", db.DB_HASH, 0, 0666, txn=txn)
-        txn.commit()
+        timeout=time.time()+10
+        while (time.time()<timeout) and \
+                (os.path.exists(os.path.join(self.homeDirClient,"__db.rep.init"))):
+                    time.sleep(0.01)
+
+        self.dbClient=db.DB(self.dbenvClient)
+        while True :
+            txn=self.dbenvClient.txn_begin()
+            try :
+                self.dbClient.open("test", db.DB_HASH, 0, 0666, txn=txn)
+            except db.DBRepHandleDeadError :
+                txn.abort()
+                self.dbClient.close()
+                self.dbClient=db.DB(self.dbenvClient)
+                continue
+
+            txn.commit()
+            break
 
         txn=self.dbenvMaster.txn_begin()
         self.dbMaster.put("ABC", "123", txn=txn)
@@ -88,7 +116,15 @@ class DBReplicationManager(unittest.TestCase):
         v=None
         while (time.time()<timeout) and (v==None) :
             v=self.dbClient.get("ABC")
-        self.assertEquals("123",v)
+        self.assertEquals("123", v)
+
+        txn=self.dbenvMaster.txn_begin()
+        self.dbMaster.delete("ABC", txn=txn)
+        txn.commit()
+        timeout=time.time()+1
+        while (time.time()<timeout) and (v!=None) :
+            v=self.dbClient.get("ABC")
+        self.assertEquals(None, v)
 
 #----------------------------------------------------------------------
 

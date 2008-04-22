@@ -5,7 +5,12 @@
     "DB_ENV->rep_get_priority", "DB_ENV->rep_set_nsites",
     "DB_ENV->rep_get_nsites", "DB_ENV->rep_set_timeout",
     "DB_ENV->rep_get_timeout".
+  * Implemented "DB_ENV->set_event_notify" and related flags.
   * Export flags related to replication timeouts.
+  * Export "DBRepHandleDeadError" exception.
+  * Implemented "DB_ENV->set_verbose", "DB_ENV->get_verbose"
+    and related flags.
+  * Implemented "DB_ENV->get_lg_max".
   * Improved performance and coverage of following tests: lock,
     threaded ConcurrentDataStore, threaded simple locks, threaded
     transactions.

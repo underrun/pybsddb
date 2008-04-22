@@ -14,5 +14,7 @@
 * 20080403: "txn_stat" provides a list of active transactions. Export it
   to Python.
 
-* 20080421: Write tests for Replication Manager.
+* 20080422: The test for Replication Manager is slow and depends
+  of undocumented features in Berkeley DB (the file "__db.rep.init"):
+  http://forums.oracle.com/forums/thread.jspa?messageID=2479938&#2479938
 

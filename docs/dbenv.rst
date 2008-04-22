@@ -196,6 +196,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lg_max.html>`__
 
+.. function:: get_lg_max(size)
+
+   Returns the maximum log file size.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_lg_max.html>`__
+
 .. function:: set_lg_regionmax(size)
 
    Set the maximum size of a single region in the log, in bytes.
@@ -601,6 +608,36 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_recover.html>`__
 
+.. function:: set_verbose(which, onoff)
+
+   Turns specific additional informational and debugging messages in the
+   Berkeley DB message output on and off. To see the additional
+   messages, verbose messages must also be configured for the
+   application.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_verbose.html>`__
+
+.. function:: get_verbose(which)
+
+   Returns whether the specified *which* parameter is currently set or
+   not.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_verbose.html>`__
+
+.. function:: set_event_notify(eventFunc)
+
+   Configures a callback function which is called to notify the process
+   of specific Berkeley DB events.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_event_notify.html>`__
+
+
+DBEnv Replication Manager Methods
+---------------------------------
+
 .. function:: repmgr_start(nthreads, flags)
 
    Starts the replication manager.
@@ -641,6 +678,10 @@ DBEnv Methods
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/repmgr_ack_policy.html>`__
+
+
+DBEnv Replication Methods
+-------------------------
 
 .. function:: rep_set_nsites(nsites)
 
@@ -685,4 +726,5 @@ DBEnv Methods
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/rep_timeout.html>`__
+
 

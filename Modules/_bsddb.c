@@ -186,6 +186,10 @@ static PyObject* DBFileExistsError;     /* EEXIST */
 static PyObject* DBNoSuchFileError;     /* ENOENT */
 static PyObject* DBPermissionsError;    /* EPERM  */
 
+#if (DBVER >= 40)
+static PyObject* DBRepHandleDeadError;  /* DB_REP_HANDLE_DEAD */
+#endif
+
 #if (DBVER < 43)
 #define	DB_BUFFER_SMALL		ENOMEM
 #endif
@@ -638,6 +642,10 @@ static int makeDBError(int err)
         case ENOENT:  errObj = DBNoSuchFileError;   break;
         case EPERM :  errObj = DBPermissionsError;  break;
 
+#if (DBVER >= 40)
+        case DB_REP_HANDLE_DEAD : errObj = DBRepHandleDeadError; break;
+#endif
+
         default:      errObj = DBError;             break;
     }
 
@@ -994,6 +1002,10 @@ newDBEnvObject(int flags)
     self->children_txns = NULL;
     self->in_weakreflist = NULL;
 
+#if (DBVER >= 40)
+    self->event_notifyCallback = NULL;
+#endif
+
     MYDB_BEGIN_ALLOW_THREADS;
     err = db_env_create(&self->db_env, flags);
     MYDB_END_ALLOW_THREADS;
@@ -1003,6 +1015,7 @@ newDBEnvObject(int flags)
     }
     else {
         self->db_env->set_errcall(self->db_env, _db_errorCallback);
+        self->db_env->app_private=self;
     }
     return self;
 }
@@ -1019,6 +1032,11 @@ DBEnv_dealloc(DBEnvObject* self)
       dummy=DBEnv_close_internal(self,0);
       Py_XDECREF(dummy);
     }
+
+#if (DBVER >= 40)
+    Py_XDECREF(self->event_notifyCallback);
+    self->event_notifyCallback = NULL;
+#endif
 
     if (self->in_weakreflist != NULL) {
         PyObject_ClearWeakRefs((PyObject *) self);
@@ -2216,7 +2234,7 @@ _default_cmp(const DBT *leftKey,
 }
 
 static int
-_db_compareCallback(DB* db, 
+_db_compareCallback(DB* db,
 		    const DBT *leftKey,
 		    const DBT *rightKey)
 {
@@ -4178,6 +4196,23 @@ DBEnv_set_lg_max(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+static PyObject*
+DBEnv_get_lg_max(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    u_int32_t lg_max;
+
+    if (!PyArg_ParseTuple(args, ":get_lg_max"))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_lg_max(self->db_env, &lg_max);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyInt_FromLong(lg_max);
+}
+
 
 #if (DBVER >= 33)
 static PyObject*
@@ -4904,6 +4939,108 @@ DBEnv_set_get_returns_none(DBEnvObject* self, PyObject* args)
     self->moduleFlags.cursorSetReturnsNone = (flags >= 2);
     return PyInt_FromLong(oldValue);
 }
+
+#if (DBVER >= 40)
+static PyObject*
+DBEnv_set_verbose(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int which, onoff;
+
+    if (!PyArg_ParseTuple(args, "ii:set_verbose", &which, &onoff)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_verbose(self->db_env, which, onoff);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_get_verbose(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int which;
+    int verbose;
+
+    if (!PyArg_ParseTuple(args, "i:get_verbose", &which)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_verbose(self->db_env, which, &verbose);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyBool_FromLong(verbose);
+}
+#endif
+
+#if (DBVER >= 40)
+static void
+_dbenv_event_notifyCallback(DB_ENV* db_env, u_int32_t event, void *event_info)
+{
+    DBEnvObject *dbenv;
+    PyObject* callback;
+    PyObject* args;
+    PyObject* result = NULL;
+
+    MYDB_BEGIN_BLOCK_THREADS;
+    dbenv = (DBEnvObject *)db_env->app_private;
+    callback = dbenv->event_notifyCallback;
+    if (callback) {
+        if (event == DB_EVENT_REP_NEWMASTER) {
+            args = Py_BuildValue("(Oii)", dbenv, event, *((int *)event_info));
+        } else {
+            args = Py_BuildValue("(OiO)", dbenv, event, Py_None);
+        }
+        if (!args) {
+            result = PyEval_CallObject(callback, args);
+        }
+        if ((!args) || (!result)) {
+            PyErr_Print();
+        }
+        Py_XDECREF(args);
+        Py_XDECREF(result);
+    }
+    MYDB_END_BLOCK_THREADS;
+}
+
+static PyObject*
+DBEnv_set_event_notify(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    PyObject *notifyFunc;
+
+    if (!PyArg_ParseTuple(args, "O:set_event_notify", &notifyFunc)) {
+	    return NULL;
+    }
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    if (!PyCallable_Check(notifyFunc)) {
+	    makeTypeError("Callable", notifyFunc);
+	    return NULL;
+    }
+
+    Py_XDECREF(self->event_notifyCallback);
+    Py_INCREF(notifyFunc);
+    self->event_notifyCallback = notifyFunc;
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_event_notify(self->db_env, _dbenv_event_notifyCallback);
+    MYDB_END_ALLOW_THREADS;
+
+    if (err) {
+	    Py_DECREF(notifyFunc);
+	    self->event_notifyCallback = NULL;
+    }
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
 
 
 /* --------------------------------------------------------------------- */
@@ -5836,6 +5973,7 @@ static PyMethodDef DBEnv_methods[] = {
     {"set_lg_bsize",    (PyCFunction)DBEnv_set_lg_bsize,     METH_VARARGS},
     {"set_lg_dir",      (PyCFunction)DBEnv_set_lg_dir,       METH_VARARGS},
     {"set_lg_max",      (PyCFunction)DBEnv_set_lg_max,       METH_VARARGS},
+    {"get_lg_max",      (PyCFunction)DBEnv_get_lg_max,       METH_VARARGS},
 #if (DBVER >= 33)
     {"set_lg_regionmax",(PyCFunction)DBEnv_set_lg_regionmax, METH_VARARGS},
 #endif
@@ -5874,6 +6012,13 @@ static PyMethodDef DBEnv_methods[] = {
     {"set_get_returns_none",(PyCFunction)DBEnv_set_get_returns_none, METH_VARARGS},
 #if (DBVER >= 40)
     {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_VARARGS},
+#endif
+#if (DBVER >= 40)
+    {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
+    {"set_verbose",     (PyCFunction)DBEnv_set_verbose,       METH_VARARGS},
+#endif
+#if (DBVER >= 40)
+    {"set_event_notify", (PyCFunction)DBEnv_set_event_notify, METH_VARARGS},
 #endif
 #if (DBVER >= 40)
     {"rep_set_nsites", (PyCFunction)DBEnv_rep_set_nsites, METH_VARARGS},
@@ -6594,6 +6739,27 @@ DL_EXPORT(void) init_bsddb(void)
 #endif
 
 #if (DBVER >= 40)
+    ADD_INT(d, DB_VERB_DEADLOCK);
+    ADD_INT(d, DB_VERB_FILEOPS);
+    ADD_INT(d, DB_VERB_FILEOPS_ALL);
+    ADD_INT(d, DB_VERB_RECOVERY);
+    ADD_INT(d, DB_VERB_REGISTER);
+    ADD_INT(d, DB_VERB_REPLICATION);
+    ADD_INT(d, DB_VERB_WAITSFOR);
+#endif
+
+#if (DBVER >= 40)
+    ADD_INT(d, DB_EVENT_PANIC);
+    ADD_INT(d, DB_EVENT_REP_CLIENT);
+    ADD_INT(d, DB_EVENT_REP_ELECTED);
+    ADD_INT(d, DB_EVENT_REP_MASTER);
+    ADD_INT(d, DB_EVENT_REP_NEWMASTER);
+    ADD_INT(d, DB_EVENT_REP_PERM_FAILED);
+    ADD_INT(d, DB_EVENT_REP_STARTUPDONE);
+    ADD_INT(d, DB_EVENT_WRITE_FAILED);
+#endif
+
+#if (DBVER >= 40)
     ADD_INT(d, DB_REP_MASTER);
     ADD_INT(d, DB_REP_CLIENT);
     ADD_INT(d, DB_REP_ELECTION);
@@ -6706,6 +6872,10 @@ DL_EXPORT(void) init_bsddb(void)
     MAKE_EX(DBFileExistsError);
     MAKE_EX(DBNoSuchFileError);
     MAKE_EX(DBPermissionsError);
+
+#if (DBVER >= 40)
+    MAKE_EX(DBRepHandleDeadError);
+#endif
 
 #undef MAKE_EX
 
