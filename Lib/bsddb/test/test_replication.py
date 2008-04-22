@@ -31,12 +31,15 @@ class DBReplicationManager(unittest.TestCase):
         self.dbenvMaster = db.DBEnv()
         self.dbenvClient = db.DBEnv()
 
+        # Must use "DB_THREAD" because the Replication Manager will
+        # be executed in other threads but will use the same environment.
+        # http://forums.oracle.com/forums/thread.jspa?threadID=645788&tstart=0
         self.dbenvMaster.open(self.homeDirMaster, db.DB_CREATE | db.DB_INIT_TXN
                 | db.DB_INIT_LOG | db.DB_INIT_MPOOL | db.DB_INIT_LOCK |
-                db.DB_INIT_REP, 0666)
+                db.DB_INIT_REP | db.DB_THREAD, 0666)
         self.dbenvClient.open(self.homeDirClient, db.DB_CREATE | db.DB_INIT_TXN
                 | db.DB_INIT_LOG | db.DB_INIT_MPOOL | db.DB_INIT_LOCK |
-                db.DB_INIT_REP, 0666)
+                db.DB_INIT_REP | db.DB_THREAD, 0666)
 
         self.dbenvMaster.repmgr_set_local_site("127.0.0.1",46117)
         self.dbenvClient.repmgr_set_local_site("127.0.0.1",46118)
@@ -67,18 +70,24 @@ class DBReplicationManager(unittest.TestCase):
         #self.dbenvClient.set_verbose(db.DB_VERB_REPLICATION, True)
         #self.dbenvClient.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
 
-        self.dbMaster = db.DB(self.dbenvMaster)
-        #self.dbClient = db.DB(self.dbenvClient)
+        self.dbMaster = self.dbClient = None
 
     def tearDown(self):
-        self.dbClient.close()
-        self.dbMaster.close()
+        if self.dbClient :
+          self.dbClient.close()
+        if self.dbMaster :
+          self.dbMaster.close()
         self.dbenvClient.close()
         self.dbenvMaster.close()
         test_support.rmtree(self.homeDirClient)
         test_support.rmtree(self.homeDirMaster)
 
     def test01_basic_replication(self) :
+        # We must sleep before creating the DB handle.
+        # If not, the "txn.commit()" will take a full second.
+        import time
+        time.sleep(0.1)
+        self.dbMaster=db.DB(self.dbenvMaster)
         txn=self.dbenvMaster.txn_begin()
         self.dbMaster.open("test", db.DB_HASH, db.DB_CREATE, 0666, txn=txn)
         txn.commit()
@@ -87,18 +96,19 @@ class DBReplicationManager(unittest.TestCase):
         timeout=time.time()+10
         while (time.time()<timeout) and \
           not (os.path.exists(os.path.join(self.homeDirClient,"test"))) :
-              time.sleep(0.01)
+            time.sleep(0.01)
 
         timeout=time.time()+10
         while (time.time()<timeout) and \
-                (os.path.exists(os.path.join(self.homeDirClient,"__db.rep.init"))):
-                    time.sleep(0.01)
+          (os.path.exists(os.path.join(self.homeDirClient,"__db.rep.init"))):
+            time.sleep(0.01)
 
         self.dbClient=db.DB(self.dbenvClient)
         while True :
             txn=self.dbenvClient.txn_begin()
             try :
-                self.dbClient.open("test", db.DB_HASH, 0, 0666, txn=txn)
+                self.dbClient.open("test", db.DB_HASH, flags=db.DB_RDONLY,
+                        mode=0666, txn=txn)
             except db.DBRepHandleDeadError :
                 txn.abort()
                 self.dbClient.close()
@@ -115,7 +125,9 @@ class DBReplicationManager(unittest.TestCase):
         timeout=time.time()+1
         v=None
         while (time.time()<timeout) and (v==None) :
-            v=self.dbClient.get("ABC")
+            txn=self.dbenvClient.txn_begin()
+            v=self.dbClient.get("ABC", txn=txn)
+            txn.commit()
         self.assertEquals("123", v)
 
         txn=self.dbenvMaster.txn_begin()
@@ -123,7 +135,9 @@ class DBReplicationManager(unittest.TestCase):
         txn.commit()
         timeout=time.time()+1
         while (time.time()<timeout) and (v!=None) :
-            v=self.dbClient.get("ABC")
+            txn=self.dbenvClient.txn_begin()
+            v=self.dbClient.get("ABC", txn=txn)
+            txn.commit()
         self.assertEquals(None, v)
 
 #----------------------------------------------------------------------

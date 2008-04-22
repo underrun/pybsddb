@@ -16,5 +16,5 @@
 
 * 20080422: The test for Replication Manager is slow and depends
   of undocumented features in Berkeley DB (the file "__db.rep.init"):
-  http://forums.oracle.com/forums/thread.jspa?messageID=2479938&#2479938
+  http://forums.oracle.com/forums/thread.jspa?threadID=645788&tstart=0
 
