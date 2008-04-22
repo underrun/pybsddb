@@ -4999,7 +4999,7 @@ _dbenv_event_notifyCallback(DB_ENV* db_env, u_int32_t event, void *event_info)
         } else {
             args = Py_BuildValue("(OiO)", dbenv, event, Py_None);
         }
-        if (!args) {
+        if (args) {
             result = PyEval_CallObject(callback, args);
         }
         if ((!args) || (!result)) {

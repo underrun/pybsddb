@@ -36,10 +36,23 @@ class DBReplicationManager(unittest.TestCase):
         # http://forums.oracle.com/forums/thread.jspa?threadID=645788&tstart=0
         self.dbenvMaster.open(self.homeDirMaster, db.DB_CREATE | db.DB_INIT_TXN
                 | db.DB_INIT_LOG | db.DB_INIT_MPOOL | db.DB_INIT_LOCK |
-                db.DB_INIT_REP | db.DB_THREAD, 0666)
+                db.DB_INIT_REP | db.DB_RECOVER | db.DB_THREAD, 0666)
         self.dbenvClient.open(self.homeDirClient, db.DB_CREATE | db.DB_INIT_TXN
                 | db.DB_INIT_LOG | db.DB_INIT_MPOOL | db.DB_INIT_LOCK |
-                db.DB_INIT_REP | db.DB_THREAD, 0666)
+                db.DB_INIT_REP | db.DB_RECOVER | db.DB_THREAD, 0666)
+
+
+        self.confirmed_master=self.client_startupdone=False
+        def confirmed_master(a,b,c) :
+            if b==db.DB_EVENT_REP_MASTER :
+                self.confirmed_master=True
+
+        def client_startupdone(a,b,c) :
+            if b==db.DB_EVENT_REP_STARTUPDONE :
+                self.client_startupdone=True
+
+        self.dbenvMaster.set_event_notify(confirmed_master)
+        self.dbenvClient.set_event_notify(client_startupdone)
 
         self.dbenvMaster.repmgr_set_local_site("127.0.0.1",46117)
         self.dbenvClient.repmgr_set_local_site("127.0.0.1",46118)
@@ -72,6 +85,10 @@ class DBReplicationManager(unittest.TestCase):
 
         self.dbMaster = self.dbClient = None
 
+        import time
+        while not (self.confirmed_master and self.client_startupdone) :
+            time.sleep(0.001)
+
     def tearDown(self):
         if self.dbClient :
           self.dbClient.close()
@@ -83,10 +100,6 @@ class DBReplicationManager(unittest.TestCase):
         test_support.rmtree(self.homeDirMaster)
 
     def test01_basic_replication(self) :
-        # We must sleep before creating the DB handle.
-        # If not, the "txn.commit()" will take a full second.
-        import time
-        time.sleep(0.1)
         self.dbMaster=db.DB(self.dbenvMaster)
         txn=self.dbenvMaster.txn_begin()
         self.dbMaster.open("test", db.DB_HASH, db.DB_CREATE, 0666, txn=txn)
@@ -96,11 +109,6 @@ class DBReplicationManager(unittest.TestCase):
         timeout=time.time()+10
         while (time.time()<timeout) and \
           not (os.path.exists(os.path.join(self.homeDirClient,"test"))) :
-            time.sleep(0.01)
-
-        timeout=time.time()+10
-        while (time.time()<timeout) and \
-          (os.path.exists(os.path.join(self.homeDirClient,"__db.rep.init"))):
             time.sleep(0.01)
 
         self.dbClient=db.DB(self.dbenvClient)
