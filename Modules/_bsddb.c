@@ -4977,7 +4977,7 @@ DBEnv_get_verbose(DBEnvObject* self, PyObject* args)
 }
 #endif
 
-#if (DBVER >= 40)
+#if (DBVER >= 45)
 static void
 _dbenv_event_notifyCallback(DB_ENV* db_env, u_int32_t event, void *event_info)
 {
@@ -5006,7 +5006,9 @@ _dbenv_event_notifyCallback(DB_ENV* db_env, u_int32_t event, void *event_info)
     }
     MYDB_END_BLOCK_THREADS;
 }
+#endif
 
+#if (DBVER >= 45)
 static PyObject*
 DBEnv_set_event_notify(DBEnvObject* self, PyObject* args)
 {
@@ -5046,7 +5048,7 @@ DBEnv_set_event_notify(DBEnvObject* self, PyObject* args)
 /* --------------------------------------------------------------------- */
 /* REPLICATION METHODS: Base Replication */
 
-#if (DBVER >= 40)
+#if (DBVER >= 45)
 static PyObject*
 DBEnv_rep_set_nsites(DBEnvObject* self, PyObject* args)
 {
@@ -6017,10 +6019,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
     {"set_verbose",     (PyCFunction)DBEnv_set_verbose,       METH_VARARGS},
 #endif
-#if (DBVER >= 40)
+#if (DBVER >= 45)
     {"set_event_notify", (PyCFunction)DBEnv_set_event_notify, METH_VARARGS},
 #endif
-#if (DBVER >= 40)
+#if (DBVER >= 45)
     {"rep_set_nsites", (PyCFunction)DBEnv_rep_set_nsites, METH_VARARGS},
     {"rep_get_nsites", (PyCFunction)DBEnv_rep_get_nsites, METH_VARARGS},
     {"rep_set_priority", (PyCFunction)DBEnv_rep_set_priority, METH_VARARGS},
@@ -6750,7 +6752,7 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_VERB_WAITSFOR);
 #endif
 
-#if (DBVER >= 40)
+#if (DBVER >= 45)
     ADD_INT(d, DB_EVENT_PANIC);
     ADD_INT(d, DB_EVENT_REP_CLIENT);
 #if (DBVER >= 46)
@@ -6768,12 +6770,14 @@ DL_EXPORT(void) init_bsddb(void)
 #if (DBVER >= 40)
     ADD_INT(d, DB_REP_MASTER);
     ADD_INT(d, DB_REP_CLIENT);
+#if (DBVER >= 45)
     ADD_INT(d, DB_REP_ELECTION);
 
     ADD_INT(d, DB_REP_ACK_TIMEOUT);
     ADD_INT(d, DB_REP_CONNECTION_RETRY);
     ADD_INT(d, DB_REP_ELECTION_TIMEOUT);
     ADD_INT(d, DB_REP_ELECTION_RETRY);
+#endif
 #if (DBVER >= 46)
     ADD_INT(d, DB_REP_CHECKPOINT_DELAY);
     ADD_INT(d, DB_REP_FULL_ELECTION_TIMEOUT);
