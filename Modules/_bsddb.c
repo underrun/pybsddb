@@ -186,7 +186,7 @@ static PyObject* DBFileExistsError;     /* EEXIST */
 static PyObject* DBNoSuchFileError;     /* ENOENT */
 static PyObject* DBPermissionsError;    /* EPERM  */
 
-#if (DBVER >= 40)
+#if (DBVER >= 42)
 static PyObject* DBRepHandleDeadError;  /* DB_REP_HANDLE_DEAD */
 #endif
 
@@ -642,7 +642,7 @@ static int makeDBError(int err)
         case ENOENT:  errObj = DBNoSuchFileError;   break;
         case EPERM :  errObj = DBPermissionsError;  break;
 
-#if (DBVER >= 40)
+#if (DBVER >= 42)
         case DB_REP_HANDLE_DEAD : errObj = DBRepHandleDeadError; break;
 #endif
 
@@ -4196,6 +4196,7 @@ DBEnv_set_lg_max(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_lg_max(DBEnvObject* self, PyObject* args)
 {
@@ -4212,6 +4213,7 @@ DBEnv_get_lg_max(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     return PyInt_FromLong(lg_max);
 }
+#endif
 
 
 #if (DBVER >= 33)
@@ -4958,6 +4960,7 @@ DBEnv_set_verbose(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_verbose(DBEnvObject* self, PyObject* args)
 {
@@ -4975,6 +4978,7 @@ DBEnv_get_verbose(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     return PyBool_FromLong(verbose);
 }
+#endif
 #endif
 
 #if (DBVER >= 45)
@@ -5975,7 +5979,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"set_lg_bsize",    (PyCFunction)DBEnv_set_lg_bsize,     METH_VARARGS},
     {"set_lg_dir",      (PyCFunction)DBEnv_set_lg_dir,       METH_VARARGS},
     {"set_lg_max",      (PyCFunction)DBEnv_set_lg_max,       METH_VARARGS},
+#if (DBVER >= 42)
     {"get_lg_max",      (PyCFunction)DBEnv_get_lg_max,       METH_VARARGS},
+#endif
 #if (DBVER >= 33)
     {"set_lg_regionmax",(PyCFunction)DBEnv_set_lg_regionmax, METH_VARARGS},
 #endif
@@ -6016,8 +6022,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_VARARGS},
 #endif
 #if (DBVER >= 40)
-    {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
     {"set_verbose",     (PyCFunction)DBEnv_set_verbose,       METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
+#endif
 #endif
 #if (DBVER >= 45)
     {"set_event_notify", (PyCFunction)DBEnv_set_event_notify, METH_VARARGS},
@@ -6885,7 +6893,7 @@ DL_EXPORT(void) init_bsddb(void)
     MAKE_EX(DBNoSuchFileError);
     MAKE_EX(DBPermissionsError);
 
-#if (DBVER >= 40)
+#if (DBVER >= 42)
     MAKE_EX(DBRepHandleDeadError);
 #endif
 
