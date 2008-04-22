@@ -638,6 +638,14 @@ DBEnv Methods
 DBEnv Replication Manager Methods
 ---------------------------------
 
+This module automates many of the tasks needed to provide replication
+abilities in a Berkeley DB system. The module is fairly limited, but
+enough in many cases. Users more demanding must use the *full* Base
+Replication API.
+
+This module requires POSIX support, so you must compile Berkeley DB with
+it if you want to be able to use the Replication Manager.
+
 .. function:: repmgr_start(nthreads, flags)
 
    Starts the replication manager.
