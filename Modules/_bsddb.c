@@ -6747,7 +6747,9 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_VERB_FILEOPS_ALL);
 #endif
     ADD_INT(d, DB_VERB_RECOVERY);
+#if (DBVER >= 44)
     ADD_INT(d, DB_VERB_REGISTER);
+#endif
     ADD_INT(d, DB_VERB_REPLICATION);
     ADD_INT(d, DB_VERB_WAITSFOR);
 #endif
