@@ -6740,8 +6740,10 @@ DL_EXPORT(void) init_bsddb(void)
 
 #if (DBVER >= 40)
     ADD_INT(d, DB_VERB_DEADLOCK);
+#if (DBVER >= 46)
     ADD_INT(d, DB_VERB_FILEOPS);
     ADD_INT(d, DB_VERB_FILEOPS_ALL);
+#endif
     ADD_INT(d, DB_VERB_RECOVERY);
     ADD_INT(d, DB_VERB_REGISTER);
     ADD_INT(d, DB_VERB_REPLICATION);
@@ -6751,10 +6753,14 @@ DL_EXPORT(void) init_bsddb(void)
 #if (DBVER >= 40)
     ADD_INT(d, DB_EVENT_PANIC);
     ADD_INT(d, DB_EVENT_REP_CLIENT);
+#if (DBVER >= 46)
     ADD_INT(d, DB_EVENT_REP_ELECTED);
+#endif
     ADD_INT(d, DB_EVENT_REP_MASTER);
     ADD_INT(d, DB_EVENT_REP_NEWMASTER);
+#if (DBVER >= 46)
     ADD_INT(d, DB_EVENT_REP_PERM_FAILED);
+#endif
     ADD_INT(d, DB_EVENT_REP_STARTUPDONE);
     ADD_INT(d, DB_EVENT_WRITE_FAILED);
 #endif
