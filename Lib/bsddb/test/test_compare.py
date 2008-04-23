@@ -4,7 +4,6 @@ TestCases for python DB Btree key comparison function.
 
 import sys, os, re
 import test_all
-import tempfile
 from cStringIO import StringIO
 
 import unittest

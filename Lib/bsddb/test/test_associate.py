@@ -3,7 +3,6 @@ TestCases for DB.associate.
 """
 
 import sys, os, string
-import tempfile
 import time
 from pprint import pprint
 

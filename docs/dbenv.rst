@@ -640,7 +640,7 @@ DBEnv Replication Manager Methods
 
 This module automates many of the tasks needed to provide replication
 abilities in a Berkeley DB system. The module is fairly limited, but
-enough in many cases. Users more demanding must use the *full* Base
+enough in many cases. Users more demanding must use the **full** Base
 Replication API.
 
 This module requires POSIX support, so you must compile Berkeley DB with

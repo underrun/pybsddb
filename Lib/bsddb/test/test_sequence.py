@@ -1,6 +1,5 @@
 import unittest
 import os
-import tempfile
 
 try:
     # For Pythons w/distutils pybsddb
@@ -25,9 +24,7 @@ class DBSequenceTest(unittest.TestCase):
     def setUp(self):
         self.int_32_max = 0x100000000
         self.homeDir = get_new_environment_path()
-        tempfile.tempdir = self.homeDir
-        self.filename = os.path.split(tempfile.mktemp())[1]
-        tempfile.tempdir = None
+        self.filename = "test"
 
         self.dbenv = db.DBEnv()
         self.dbenv.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL, 0666)

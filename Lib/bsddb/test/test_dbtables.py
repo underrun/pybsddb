@@ -21,13 +21,11 @@
 # $Id: test_dbtables.py 58532 2007-10-18 07:56:54Z gregory.p.smith $
 
 import os, re
-import tempfile
 try:
     import cPickle
     pickle = cPickle
 except ImportError:
     import pickle
-import tempfile
 
 import unittest
 from test_all import verbose, get_new_environment_path, get_new_database_path

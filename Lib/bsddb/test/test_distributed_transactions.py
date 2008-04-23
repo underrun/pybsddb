@@ -2,7 +2,6 @@
 """
 
 import os
-import tempfile
 import unittest
 
 try:
@@ -61,9 +60,7 @@ class DBTxn_distributed(unittest.TestCase):
 
     def setUp(self) :
         self.homeDir = get_new_environment_path()
-        tempfile.tempdir = self.homeDir
-        self.filename = os.path.split(tempfile.mktemp())[1]
-        tempfile.tempdir = None
+        self.filename = "test"
         return self._create_env(must_open_db=True)
 
     def _destroy_env(self):
