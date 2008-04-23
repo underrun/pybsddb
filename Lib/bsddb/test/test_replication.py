@@ -84,9 +84,18 @@ class DBReplicationManager(unittest.TestCase):
 
         self.dbMaster = self.dbClient = None
 
+        # The timeout is necessary in BDB 4.5, since DB_EVENT_REP_STARTUPDONE
+        # is not generated if the master has no new transactions.
+        # This is solved in BDB 4.6 (#15542).
         import time
-        while not (self.confirmed_master and self.client_startupdone) :
+        timeout = time.time()+2
+        while (time.time()<timeout) and not (self.confirmed_master and self.client_startupdone) :
             time.sleep(0.001)
+        if db.version() >= (4,6) :
+          self.assertTrue(time.time()<timeout)
+        else :
+          self.assertTrue(time.time()>=timeout)
+        
 
     def tearDown(self):
         if self.dbClient :
@@ -152,7 +161,16 @@ class DBReplicationManager(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     if db.version() >= (4,5) :
-        suite.addTest(unittest.makeSuite(DBReplicationManager))
+        dbenv = db.DBEnv()
+        try :
+            dbenv.repmgr_get_ack_policy()
+            ReplicationManager_available=True
+        except :
+            ReplicationManager_available=False
+        dbenv.close()
+        del dbenv
+        if ReplicationManager_available :
+            suite.addTest(unittest.makeSuite(DBReplicationManager))
     return suite
 
 
