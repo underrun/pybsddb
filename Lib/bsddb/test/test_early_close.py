@@ -3,7 +3,6 @@ is closed before its DB objects.
 """
 
 import os
-import tempfile
 import unittest
 
 try:
@@ -37,9 +36,7 @@ else:
 class DBEnvClosedEarlyCrash(unittest.TestCase):
     def setUp(self):
         self.homeDir = get_new_environment_path()
-        tempfile.tempdir = self.homeDir
-        self.filename = os.path.split(tempfile.mktemp())[1]
-        tempfile.tempdir = None
+        self.filename = "test"
 
     def tearDown(self):
         test_support.rmtree(self.homeDir)
@@ -92,8 +89,10 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
         self.assertRaises(db.DBError, c.next)
 
     def test03_close_db_before_dbcursor_without_env(self):
+        import os.path
+        path=os.path.join(self.homeDir,self.filename)
         d = db.DB()
-        d.open(self.filename, db.DB_BTREE, db.DB_CREATE | db.DB_THREAD, 0666)
+        d.open(path, db.DB_BTREE, db.DB_CREATE | db.DB_THREAD, 0666)
 
         d.put("test","this is a test")
         d.put("test2","another test")
@@ -188,8 +187,10 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
 
     if db.version() > (4,3,0) :
         def test07_close_db_before_sequence(self):
+            import os.path
+            path=os.path.join(self.homeDir,self.filename)
             d = db.DB()
-            d.open(self.filename, db.DB_BTREE, db.DB_CREATE | db.DB_THREAD, 0666)
+            d.open(path, db.DB_BTREE, db.DB_CREATE | db.DB_THREAD, 0666)
             dbs=db.DBSequence(d)
             d.close()  # This "close" should close the child DBSequence also
             dbs.close()  # If not closed, core dump (in Berkeley DB 4.6.*)

@@ -3,7 +3,6 @@ TestCases for checking set_get_returns_none.
 """
 
 import os, string
-import tempfile
 import unittest
 
 try:

@@ -2,7 +2,6 @@
 """
 
 import os
-import tempfile
 
 import unittest
 from test_all import verbose

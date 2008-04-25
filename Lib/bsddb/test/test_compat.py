@@ -5,7 +5,6 @@ regression test suite.
 
 import os, string
 import unittest
-import tempfile
 
 from test_all import verbose, get_new_database_path
 

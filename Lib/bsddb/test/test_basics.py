@@ -6,7 +6,6 @@ various DB flags, etc.
 import os
 import errno
 import string
-import tempfile
 from pprint import pprint
 import unittest
 import time
@@ -65,9 +64,7 @@ class BasicTestCase(unittest.TestCase):
                 self.env.set_tx_timestamp(int(time.time()))
                 self.env.set_flags(self.envsetflags, 1)
                 self.env.open(self.homeDir, self.envflags | db.DB_CREATE)
-                tempfile.tempdir = self.homeDir
-                self.filename = os.path.split(tempfile.mktemp())[1]
-                tempfile.tempdir = None
+                self.filename = "test"
             # Yes, a bare except is intended, since we're re-raising the exc.
             except:
                 test_support.rmtree(self.homeDir)

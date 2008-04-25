@@ -6,7 +6,6 @@ try:
 except ImportError:
     cPickle = None
 import unittest
-import tempfile
 
 try:
     # For Pythons w/distutils pybsddb

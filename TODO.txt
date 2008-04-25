@@ -14,5 +14,3 @@
 * 20080403: "txn_stat" provides a list of active transactions. Export it
   to Python.
 
-* 20080421: Write tests for Replication Manager.
-

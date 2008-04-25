@@ -1,7 +1,6 @@
 
 import os, string
 import unittest
-import tempfile
 
 try:
     # For Pythons w/distutils pybsddb

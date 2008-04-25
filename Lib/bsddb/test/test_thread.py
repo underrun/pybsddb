@@ -5,7 +5,6 @@ import os
 import sys
 import time
 import errno
-import tempfile
 from random import random
 
 try:
@@ -52,6 +51,11 @@ class BaseThreadedTestCase(unittest.TestCase):
     dbopenflags  = 0
     dbsetflags   = 0
     envflags     = 0
+
+    import sys
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
 
     def setUp(self):
         if verbose:

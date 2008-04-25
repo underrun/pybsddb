@@ -2,7 +2,6 @@
 TestCases for testing the locking sub-system.
 """
 
-import tempfile
 import time
 
 try:

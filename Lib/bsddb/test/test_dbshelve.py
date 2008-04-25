@@ -3,7 +3,7 @@ TestCases for checking dbShelve objects.
 """
 
 import os, string
-import tempfile, random
+import random
 from types import *
 import unittest
 

@@ -191,7 +191,7 @@ class ImmediateTestResult(unittest._TextTestResult):
 
     def stopTest(self, test):
         import time
-        print time.time()-self._time
+        #print time.time()-self._time
         if gc.garbage:
             print test
             print gc.garbage
