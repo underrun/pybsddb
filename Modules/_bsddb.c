@@ -5296,8 +5296,13 @@ DBEnv_repmgr_site_list(DBEnvObject* self, PyObject* args)
             free(listp);
             return NULL;
         }
+#if (PY_VERSION_HEX >= 0x02040000)
         tuple=Py_BuildValue("(sII)", listp[countp].host,
                 listp[countp].port, listp[countp].status);
+#else
+        tuple=Py_BuildValue("(sii)", listp[countp].host,
+                listp[countp].port, listp[countp].status);
+#endif
         if(!tuple) {
             Py_DECREF(key);
             Py_DECREF(stats);
@@ -5315,7 +5320,9 @@ DBEnv_repmgr_site_list(DBEnvObject* self, PyObject* args)
     free(listp);
     return stats;
 }
+#endif
 
+#if (DBVER >= 46)
 static PyObject*
 DBEnv_repmgr_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
 {
@@ -6161,6 +6168,8 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS},
     {"repmgr_site_list", (PyCFunction)DBEnv_repmgr_site_list,
         METH_VARARGS},
+#endif
+#if (DBVER >= 46)
     {"repmgr_stat", (PyCFunction)DBEnv_repmgr_stat,
         METH_VARARGS|METH_KEYWORDS},
     {"repmgr_stat_print", (PyCFunction)DBEnv_repmgr_stat_print,

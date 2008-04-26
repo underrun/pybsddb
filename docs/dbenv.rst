@@ -692,12 +692,12 @@ it if you want to be able to use the Replication Manager.
    Returns a dictionary with the status of the sites currently known by
    the replication manager.
    
-   The keys are the Environment ID assigned by he replication manager.
+   The keys are the Environment ID assigned by the replication manager.
    This is the same value that is passed to the application's event
    notification function for the DB_EVENT_REP_NEWMASTER event. 
 
    The values are tuples containing the hostname, the TCP/IP port number
-   and the status.
+   and the link status.
 
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/

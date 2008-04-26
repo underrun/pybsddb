@@ -45,7 +45,6 @@ class DBReplicationManager(unittest.TestCase):
                 | db.DB_INIT_LOG | db.DB_INIT_MPOOL | db.DB_INIT_LOCK |
                 db.DB_INIT_REP | db.DB_RECOVER | db.DB_THREAD, 0666)
 
-
         self.confirmed_master=self.client_startupdone=False
         def confirmed_master(a,b,c) :
             if b==db.DB_EVENT_REP_MASTER :
@@ -101,12 +100,23 @@ class DBReplicationManager(unittest.TestCase):
         else :
           self.assertTrue(time.time()>=timeout)
 
-        self.assertEquals(self.dbenvMaster.repmgr_site_list(), \
-                {0:('127.0.0.1', 46118, db.DB_REPMGR_CONNECTED)})
-        self.assertEquals(self.dbenvClient.repmgr_site_list(), \
-                {0:('127.0.0.1', 46117, db.DB_REPMGR_CONNECTED)})
-        d = self.dbenvMaster.repmgr_stat(flags=db.DB_STAT_CLEAR);
-        self.assertTrue("msgs_queued" in d)
+        d = self.dbenvMaster.repmgr_site_list()
+        self.assertEquals(len(d), 1)
+        self.assertEquals(d[0][0], "127.0.0.1")
+        self.assertEquals(d[0][1], 46118)
+        self.assertTrue((d[0][2]==db.DB_REPMGR_CONNECTED) or \
+                (d[0][2]==db.DB_REPMGR_DISCONNECTED))
+
+        d = self.dbenvClient.repmgr_site_list()
+        self.assertEquals(len(d), 1)
+        self.assertEquals(d[0][0], "127.0.0.1")
+        self.assertEquals(d[0][1], 46117)
+        self.assertTrue((d[0][2]==db.DB_REPMGR_CONNECTED) or \
+                (d[0][2]==db.DB_REPMGR_DISCONNECTED))
+
+        if db.version() >= (4,6) :
+            d = self.dbenvMaster.repmgr_stat(flags=db.DB_STAT_CLEAR);
+            self.assertTrue("msgs_queued" in d)
 
     def tearDown(self):
         if self.dbClient :
