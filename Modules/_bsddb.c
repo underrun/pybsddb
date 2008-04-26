@@ -5264,6 +5264,56 @@ DBEnv_repmgr_get_ack_policy(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     return PyInt_FromLong(ack_policy);
 }
+
+static PyObject*
+DBEnv_repmgr_site_list(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    unsigned int countp;
+    DB_REPMGR_SITE *listp;
+    PyObject *stats, *key, *tuple;
+
+    if (!PyArg_ParseTuple(args, ":repmgr_site_list"))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_site_list(self->db_env, &countp, &listp);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+
+    stats=PyDict_New();
+    if (stats == NULL) {
+        free(listp);
+        return NULL;
+    }
+
+    for(;countp--;) {
+        key=PyInt_FromLong(listp[countp].eid);
+        if(!key) {
+            Py_DECREF(stats);
+            free(listp);
+            return NULL;
+        }
+        tuple=Py_BuildValue("(sII)", listp[countp].host,
+                listp[countp].port, listp[countp].status);
+        if(!tuple) {
+            Py_DECREF(key);
+            Py_DECREF(stats);
+            free(listp);
+            return NULL;
+        }
+        if(PyDict_SetItem(stats, key, tuple)) {
+            Py_DECREF(key);
+            Py_DECREF(tuple);
+            Py_DECREF(stats);
+            free(listp);
+            return NULL;
+        }
+    }
+    return stats;
+}
 #endif
 
 
@@ -6043,12 +6093,13 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS|METH_KEYWORDS},
     {"repmgr_set_local_site", (PyCFunction)DBEnv_repmgr_set_local_site,
         METH_VARARGS|METH_KEYWORDS},
-    {"repmgr_add_remote_site", (PyCFunction)DBEnv_repmgr_add_remote_site, 
+    {"repmgr_add_remote_site", (PyCFunction)DBEnv_repmgr_add_remote_site,
         METH_VARARGS|METH_KEYWORDS},
     {"repmgr_set_ack_policy", (PyCFunction)DBEnv_repmgr_set_ack_policy,
         METH_VARARGS},
     {"repmgr_get_ack_policy", (PyCFunction)DBEnv_repmgr_get_ack_policy,
         METH_VARARGS},
+    {"repmgr_site_list", (PyCFunction)DBEnv_repmgr_site_list, METH_VARARGS},
 #endif
     {NULL,      NULL}       /* sentinel */
 };
@@ -6802,6 +6853,8 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_REPMGR_ACKS_ONE);
     ADD_INT(d, DB_REPMGR_ACKS_ONE_PEER);
     ADD_INT(d, DB_REPMGR_ACKS_QUORUM);
+    ADD_INT(d, DB_REPMGR_CONNECTED);
+    ADD_INT(d, DB_REPMGR_DISCONNECTED);
 #endif
 
 #if (DBVER >= 43)

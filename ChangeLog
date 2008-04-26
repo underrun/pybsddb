@@ -1,3 +1,7 @@
+4.6.5:
+  * Completing Berkeley DB Replication Manager support:
+    "DB_ENV->repmgr_site_list" and related flags.
+
 4.6.4:
   * Basic support for Berkeley DB Replication Manager.
   * Support for a few replication calls, for benefice of Berkeley DB

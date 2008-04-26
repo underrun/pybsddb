@@ -100,7 +100,11 @@ class DBReplicationManager(unittest.TestCase):
           self.assertTrue(time.time()<timeout)
         else :
           self.assertTrue(time.time()>=timeout)
-        
+
+        self.assertEquals(self.dbenvMaster.repmgr_site_list(), \
+                {0:('127.0.0.1', 46118, db.DB_REPMGR_CONNECTED)})
+        self.assertEquals(self.dbenvClient.repmgr_site_list(), \
+                {0:('127.0.0.1', 46117, db.DB_REPMGR_CONNECTED)})
 
     def tearDown(self):
         if self.dbClient :

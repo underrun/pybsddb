@@ -14,3 +14,5 @@
 * 20080403: "txn_stat" provides a list of active transactions. Export it
   to Python.
 
+* 20080426: Verify that "DB_ENV->set_event_notify" follows the API.
+

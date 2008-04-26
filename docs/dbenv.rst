@@ -687,6 +687,14 @@ it if you want to be able to use the Replication Manager.
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/repmgr_ack_policy.html>`__
 
+.. function:: repmgr_site_list()
+
+   Returns a dictionary with the status of the sites currently known by
+   the replication manager.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_site_list.html>`__
+
 
 DBEnv Replication Methods
 -------------------------
