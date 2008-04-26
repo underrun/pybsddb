@@ -691,9 +691,61 @@ it if you want to be able to use the Replication Manager.
 
    Returns a dictionary with the status of the sites currently known by
    the replication manager.
+   
+   The keys are the Environment ID assigned by he replication manager.
+   This is the same value that is passed to the application's event
+   notification function for the DB_EVENT_REP_NEWMASTER event. 
+
+   The values are tuples containing the hostname, the TCP/IP port number
+   and the status.
+
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/repmgr_site_list.html>`__
+
+.. function:: repmgr_stat(flags=0)
+
+   Returns a dictionary with the replication manager statistics. Keys
+   are:
+
+   +-----------------+-------------------------------------------------+
+   | perm_failed     | The number of times a message critical for      |
+   |                 | maintaining database integrity (for example, a  |
+   |                 | transaction commit), originating at this site,  |
+   |                 | did not receive sufficient acknowledgement from |
+   |                 | clients, according to the configured            |
+   |                 | acknowledgement policy and acknowledgement      |
+   |                 | timeout.                                        |
+   +-----------------+-------------------------------------------------+
+   | msgs_queued     | The number of outgoing messages which could not |
+   |                 | be transmitted immediately, due to a full       |
+   |                 | network buffer, and had to be queued for later  |
+   |                 | delivery.                                       |
+   +-----------------+-------------------------------------------------+
+   | msgs_dropped    | The number of outgoing messages that were       |
+   |                 | completely dropped, because the outgoing        |
+   |                 | message queue was full. (Berkeley DB            |
+   |                 | replication is tolerant of dropped messages,    |
+   |                 | and will automatically request retransmission   |
+   |                 | of any missing messages as needed.)             |
+   +-----------------+-------------------------------------------------+
+   | connection_drop | The number of times an existing TCP/IP          |
+   |                 | connection failed.                              |
+   +-----------------+-------------------------------------------------+
+   | connect_fail    | The number of times an attempt to open a new    |
+   |                 | TCP/IP connection failed.                       |
+   +-----------------+-------------------------------------------------+
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_stat.html>`__
+
+.. function:: repmgr_stat_print(flags=0)
+
+   Displays the replication manager statistical information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_stat.html>`__
 
 
 DBEnv Replication Methods

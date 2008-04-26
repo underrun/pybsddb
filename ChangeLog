@@ -1,6 +1,7 @@
 4.6.5:
-  * Completing Berkeley DB Replication Manager support:
+  * Complete the Berkeley DB Replication Manager support:
     "DB_ENV->repmgr_site_list" and related flags.
+    "DB_ENV->repmgr_stat", "DB_ENV->repmgr_stat_print" and related flags.
 
 4.6.4:
   * Basic support for Berkeley DB Replication Manager.

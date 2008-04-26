@@ -105,6 +105,8 @@ class DBReplicationManager(unittest.TestCase):
                 {0:('127.0.0.1', 46118, db.DB_REPMGR_CONNECTED)})
         self.assertEquals(self.dbenvClient.repmgr_site_list(), \
                 {0:('127.0.0.1', 46117, db.DB_REPMGR_CONNECTED)})
+        d = self.dbenvMaster.repmgr_stat(flags=db.DB_STAT_CLEAR);
+        self.assertTrue("msgs_queued" in d)
 
     def tearDown(self):
         if self.dbClient :

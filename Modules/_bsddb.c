@@ -5312,10 +5312,70 @@ DBEnv_repmgr_site_list(DBEnvObject* self, PyObject* args)
             return NULL;
         }
     }
+    free(listp);
+    return stats;
+}
+
+static PyObject*
+DBEnv_repmgr_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:repmgr_stat_print",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_stat_print(self->db_env, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_repmgr_stat(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    DB_REPMGR_STAT *statp;
+    PyObject *stats;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:repmgr_stat",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_stat(self->db_env, &statp, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+
+    stats=PyDict_New();
+    if (stats == NULL) {
+        free(statp);
+        return NULL;
+    }
+
+#define MAKE_ENTRY(name)  _addIntToDict(stats, #name, statp->st_##name)
+
+    MAKE_ENTRY(perm_failed);
+    MAKE_ENTRY(msgs_queued);
+    MAKE_ENTRY(msgs_dropped);
+    MAKE_ENTRY(connection_drop);
+    MAKE_ENTRY(connect_fail);
+
+#undef MAKE_ENTRY
+
+    free(statp);
     return stats;
 }
 #endif
-
 
 
 /* --------------------------------------------------------------------- */
@@ -6099,7 +6159,12 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS},
     {"repmgr_get_ack_policy", (PyCFunction)DBEnv_repmgr_get_ack_policy,
         METH_VARARGS},
-    {"repmgr_site_list", (PyCFunction)DBEnv_repmgr_site_list, METH_VARARGS},
+    {"repmgr_site_list", (PyCFunction)DBEnv_repmgr_site_list,
+        METH_VARARGS},
+    {"repmgr_stat", (PyCFunction)DBEnv_repmgr_stat,
+        METH_VARARGS|METH_KEYWORDS},
+    {"repmgr_stat_print", (PyCFunction)DBEnv_repmgr_stat_print,
+        METH_VARARGS|METH_KEYWORDS},
 #endif
     {NULL,      NULL}       /* sentinel */
 };
@@ -6855,6 +6920,8 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_REPMGR_ACKS_QUORUM);
     ADD_INT(d, DB_REPMGR_CONNECTED);
     ADD_INT(d, DB_REPMGR_DISCONNECTED);
+    ADD_INT(d, DB_STAT_CLEAR);
+    ADD_INT(d, DB_STAT_ALL);
 #endif
 
 #if (DBVER >= 43)
