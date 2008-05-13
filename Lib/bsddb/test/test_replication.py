@@ -96,9 +96,9 @@ class DBReplicationManager(unittest.TestCase):
         while (time.time()<timeout) and not (self.confirmed_master and self.client_startupdone) :
             time.sleep(0.001)
         if db.version() >= (4,6) :
-          self.assertTrue(time.time()<timeout)
+            self.assertTrue(time.time()<timeout)
         else :
-          self.assertTrue(time.time()>=timeout)
+            self.assertTrue(time.time()>=timeout)
 
         d = self.dbenvMaster.repmgr_site_list()
         self.assertEquals(len(d), 1)
@@ -120,9 +120,9 @@ class DBReplicationManager(unittest.TestCase):
 
     def tearDown(self):
         if self.dbClient :
-          self.dbClient.close()
+            self.dbClient.close()
         if self.dbMaster :
-          self.dbMaster.close()
+            self.dbMaster.close()
         self.dbenvClient.close()
         self.dbenvMaster.close()
         test_support.rmtree(self.homeDirClient)

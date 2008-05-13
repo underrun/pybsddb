@@ -120,10 +120,10 @@ class DBSequenceTest(unittest.TestCase):
         value_minus=-1L<<63  # Two complement
         self.assertEquals(-9223372036854775808L,value_minus)
         if db.version() < (4,4):
-          # We don't use both extremes because it is
-          # problematic in Berkeley DB 4.3.
-          value_plus-=1
-          value_minus+=1
+            # We don't use both extremes because it is
+            # problematic in Berkeley DB 4.3.
+            value_plus-=1
+            value_minus+=1
         self.seq = db.DBSequence(self.d, flags=0)
         self.assertEquals(None, self.seq.init_value(value_plus-1))
         self.assertEquals(None, self.seq.open(key='id', txn=None,
