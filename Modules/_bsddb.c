@@ -50,7 +50,7 @@
  *
  * Gregory P. Smith <greg@krypto.org> was once again the maintainer.
  *
- * Since January 2008, new maintainer is Jesus Cea <jcea@argo.es>.
+ * Since January 2008, new maintainer is Jesus Cea <jcea@jcea.es>.
  * Jesus Cea licenses this code to PSF under a Contributor Agreement.
  *
  * Use the pybsddb-users@lists.sf.net mailing list for all questions.
