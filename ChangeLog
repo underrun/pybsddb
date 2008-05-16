@@ -2,6 +2,7 @@
   * Complete the Berkeley DB Replication Manager support:
     "DB_ENV->repmgr_site_list" and related flags.
     "DB_ENV->repmgr_stat", "DB_ENV->repmgr_stat_print" and related flags.
+  * Solved an old crash when building with debug python. (Neal Norwitz)
 
 4.6.4:
   * Basic support for Berkeley DB Replication Manager.
