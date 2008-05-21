@@ -133,42 +133,6 @@ from distutils.util import get_platform
 PROGRAM = sys.argv[0]
 PLAT_SPEC = "%s-%s" % (get_platform(), sys.version[0:3])
 
-# For Python's earlier than 2.2.2
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
-
-# For Python's earlier than 2.3
-try:
-    import tempfile
-    import errno
-    tempfile.mkdtemp
-except AttributeError:
-    # taken from more recent python tempfile.mkdtemp()
-    def tempfile_mkdtemp(suffix='', dir=None):
-        if dir is None:
-            dir = tempfile.gettempdir()
-
-        names = [tempfile.gettempprefix()]
-
-        for name in names:
-            file = os.path.join(dir, name + suffix)
-            try:
-                os.mkdir(file, 0700)
-                return file
-            except OSError, e:
-                if e.errno == errno.EEXIST:
-                    continue # try again
-                raise
-
-        raise IOError, (errno.EEXIST, "No usable temporary directory name found")
-
-    # add the method
-    tempfile.mkdtemp = tempfile_mkdtemp
-
-
 class ImmediateTestResult(unittest._TextTestResult):
 
     __super_init = unittest._TextTestResult.__init__
