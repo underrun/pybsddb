@@ -4129,6 +4129,26 @@ DBEnv_set_flags(DBEnvObject* self, PyObject* args)
 }
 
 
+#if (DBVER >= 47)
+static PyObject*
+DBEnv_log_set_config(DBEnvObject* self, PyObject* args)
+{
+    int err, flags=0, onoff=0;
+
+    if (!PyArg_ParseTuple(args, "ii:set_flags",
+                          &flags, &onoff))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->log_set_config(self->db_env, flags, onoff);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif /* DBVER >= 47 */
+
+
 static PyObject*
 DBEnv_set_data_dir(DBEnvObject* self, PyObject* args)
 {
@@ -4779,8 +4799,13 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     MAKE_ENTRY(objs_nowait);
     MAKE_ENTRY(lockers_wait);
     MAKE_ENTRY(lockers_nowait);
+#if (DBVER >= 47)
+    MAKE_ENTRY(lock_wait);
+    MAKE_ENTRY(lock_nowait);
+#else
     MAKE_ENTRY(locks_wait);
     MAKE_ENTRY(locks_nowait);
+#endif
     MAKE_ENTRY(hash_len);
 #endif
     MAKE_ENTRY(regsize);
@@ -6118,6 +6143,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"set_cachesize",   (PyCFunction)DBEnv_set_cachesize,    METH_VARARGS},
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,     METH_VARARGS},
     {"set_flags",       (PyCFunction)DBEnv_set_flags,        METH_VARARGS},
+#if (DBVER >= 47)
+    {"log_set_config",  (PyCFunction)DBEnv_log_set_config,   METH_VARARGS},
+#endif
     {"set_lg_bsize",    (PyCFunction)DBEnv_set_lg_bsize,     METH_VARARGS},
     {"set_lg_dir",      (PyCFunction)DBEnv_set_lg_dir,       METH_VARARGS},
     {"set_lg_max",      (PyCFunction)DBEnv_set_lg_max,       METH_VARARGS},
@@ -6788,6 +6816,7 @@ DL_EXPORT(void) init_bsddb(void)
 #if (DBVER < 45)
     ADD_INT(d, DB_CACHED_COUNTS);
 #endif
+
 #if (DBVER >= 41)
     _addIntToDict(d, "DB_CHECKPOINT", 0);
 #else
@@ -6886,12 +6915,23 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_TIME_NOTGRANTED);
     ADD_INT(d, DB_TXN_NOT_DURABLE);
     ADD_INT(d, DB_TXN_WRITE_NOSYNC);
-    ADD_INT(d, DB_LOG_AUTOREMOVE);
-    ADD_INT(d, DB_DIRECT_LOG);
     ADD_INT(d, DB_DIRECT_DB);
     ADD_INT(d, DB_INIT_REP);
     ADD_INT(d, DB_ENCRYPT);
     ADD_INT(d, DB_CHKSUM);
+#endif
+
+#if (DBVER >= 42) && (DBVER < 47)
+    ADD_INT(d, DB_LOG_AUTOREMOVE);
+    ADD_INT(d, DB_DIRECT_LOG);
+#endif
+
+#if (DBVER >= 47)
+    ADD_INT(d, DB_LOG_DIRECT);
+    ADD_INT(d, DB_LOG_DSYNC);
+    ADD_INT(d, DB_LOG_IN_MEMORY);
+    ADD_INT(d, DB_LOG_AUTO_REMOVE);
+    ADD_INT(d, DB_LOG_ZERO);
 #endif
 
 #if (DBVER >= 44)
@@ -6963,12 +7003,15 @@ DL_EXPORT(void) init_bsddb(void)
 #endif
 
 #if (DBVER >= 43)
-    ADD_INT(d, DB_DSYNC_LOG);
-    ADD_INT(d, DB_LOG_INMEMORY);
     ADD_INT(d, DB_BUFFER_SMALL);
     ADD_INT(d, DB_SEQ_DEC);
     ADD_INT(d, DB_SEQ_INC);
     ADD_INT(d, DB_SEQ_WRAP);
+#endif
+
+#if (DBVER >= 43) && (DBVER < 47)
+    ADD_INT(d, DB_LOG_INMEMORY);
+    ADD_INT(d, DB_DSYNC_LOG);
 #endif
 
 #if (DBVER >= 41)
