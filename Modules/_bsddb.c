@@ -6932,10 +6932,6 @@ DL_EXPORT(void) init_bsddb(void)
 #endif
 
 #if (DBVER >= 40)
-    ADD_INT(d, DB_RPCCLIENT);
-#endif
-
-#if (DBVER >= 40)
     ADD_INT(d, DB_REP_MASTER);
     ADD_INT(d, DB_REP_CLIENT);
 #if (DBVER >= 45)
