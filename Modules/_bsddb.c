@@ -95,7 +95,7 @@
 #include "bsddb.h"
 #undef COMPILING_BSDDB_C
 
-static char *rcs_id = "$Id$";
+static char *rcs_id = "$Id: _bsddb.c 464 2008-05-21 19:01:43Z jcea $";
 
 /* --------------------------------------------------------------------- */
 /* Various macro definitions */
@@ -4133,9 +4133,9 @@ DBEnv_set_flags(DBEnvObject* self, PyObject* args)
 static PyObject*
 DBEnv_log_set_config(DBEnvObject* self, PyObject* args)
 {
-    int err, flags=0, onoff=0;
+    int err, flags, onoff;
 
-    if (!PyArg_ParseTuple(args, "ii:set_flags",
+    if (!PyArg_ParseTuple(args, "ii:log_set_config",
                           &flags, &onoff))
         return NULL;
     CHECK_ENV_NOT_CLOSED(self);

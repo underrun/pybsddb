@@ -294,6 +294,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/log_flush.html>`__
 
+.. function:: log_set_config(flags, onoff)
+
+   Configures the Berkeley DB logging subsystem.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_log_set_config.html>`__
+
 .. function:: lock_detect(atype, flags=0)
 
    Run one iteration of the deadlock detector, returns the number of

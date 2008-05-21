@@ -1,5 +1,6 @@
 4.7.0:
   * Support for Berkeley DB 4.7.
+  * Support "DB_ENV->log_set_config", and related flags.
   * Complete the Berkeley DB Replication Manager support:
     "DB_ENV->repmgr_site_list" and related flags.
     "DB_ENV->repmgr_stat", "DB_ENV->repmgr_stat_print" and related flags.
