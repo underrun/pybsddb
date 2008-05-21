@@ -114,7 +114,7 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
         dbs=[db.DB(dbenv) for i in xrange(16)]
         cursors=[]
         for i in dbs :
-          i.open(self.filename, db.DB_BTREE, db.DB_CREATE | db.DB_THREAD, 0666)
+            i.open(self.filename, db.DB_BTREE, db.DB_CREATE | db.DB_THREAD, 0666)
 
         dbs[10].put("test","this is a test")
         dbs[10].put("test2","another test")
@@ -122,12 +122,12 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
         self.assertEqual(dbs[4].get("test"), "this is a test", "put!=get")
 
         for i in dbs :
-          cursors.extend([i.cursor() for j in xrange(32)])
+            cursors.extend([i.cursor() for j in xrange(32)])
 
         for i in dbs[::3] :
-          i.close()
+            i.close()
         for i in cursors[::3] :
-          i.close()
+            i.close()
 
     # Check for missing exception in DB! (after DB close)
         self.assertRaises(db.DBError, dbs[9].get, "test")

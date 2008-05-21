@@ -14,3 +14,8 @@
 * 20080403: "txn_stat" provides a list of active transactions. Export it
   to Python.
 
+* 20080426: Verify that "DB_ENV->set_event_notify" follows the API.
+
+* 20080521: Write a test for "DB_ENV->set_rpc_server". This test would be
+  called if there is a concrete environment variable defined, for example.
+

@@ -21,6 +21,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_class.html>`__
 
+.. function:: set_rpc_server(host, cl_timeout=0, sv_timeout=0)
+
+   Establishes a connection for this dbenv to a RPC server.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_rpc_server.html>`__
+
 .. function:: close(flags=0)
 
    Close the database environment, freeing resources.
@@ -192,6 +199,13 @@ DBEnv Methods
 .. function:: set_lg_max(size)
 
    Set the maximum size of a single file in the log, in bytes.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_lg_max.html>`__
+
+.. function:: get_lg_max(size)
+
+   Returns the maximum log file size.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lg_max.html>`__
@@ -601,6 +615,36 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_recover.html>`__
 
+.. function:: set_verbose(which, onoff)
+
+   Turns specific additional informational and debugging messages in the
+   Berkeley DB message output on and off. To see the additional
+   messages, verbose messages must also be configured for the
+   application.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_verbose.html>`__
+
+.. function:: get_verbose(which)
+
+   Returns whether the specified *which* parameter is currently set or
+   not.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_verbose.html>`__
+
+.. function:: set_event_notify(eventFunc)
+
+   Configures a callback function which is called to notify the process
+   of specific Berkeley DB events.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_event_notify.html>`__
+
+
+DBEnv Replication Manager Methods
+---------------------------------
+
 This module automates many of the tasks needed to provide replication
 abilities in a Berkeley DB system. The module is fairly limited, but
 enough in many cases. Users more demanding must use the **full** Base
@@ -650,6 +694,70 @@ it if you want to be able to use the Replication Manager.
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/repmgr_ack_policy.html>`__
 
+.. function:: repmgr_site_list()
+
+   Returns a dictionary with the status of the sites currently known by
+   the replication manager.
+   
+   The keys are the Environment ID assigned by the replication manager.
+   This is the same value that is passed to the application's event
+   notification function for the DB_EVENT_REP_NEWMASTER event. 
+
+   The values are tuples containing the hostname, the TCP/IP port number
+   and the link status.
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_site_list.html>`__
+
+.. function:: repmgr_stat(flags=0)
+
+   Returns a dictionary with the replication manager statistics. Keys
+   are:
+
+   +-----------------+-------------------------------------------------+
+   | perm_failed     | The number of times a message critical for      |
+   |                 | maintaining database integrity (for example, a  |
+   |                 | transaction commit), originating at this site,  |
+   |                 | did not receive sufficient acknowledgement from |
+   |                 | clients, according to the configured            |
+   |                 | acknowledgement policy and acknowledgement      |
+   |                 | timeout.                                        |
+   +-----------------+-------------------------------------------------+
+   | msgs_queued     | The number of outgoing messages which could not |
+   |                 | be transmitted immediately, due to a full       |
+   |                 | network buffer, and had to be queued for later  |
+   |                 | delivery.                                       |
+   +-----------------+-------------------------------------------------+
+   | msgs_dropped    | The number of outgoing messages that were       |
+   |                 | completely dropped, because the outgoing        |
+   |                 | message queue was full. (Berkeley DB            |
+   |                 | replication is tolerant of dropped messages,    |
+   |                 | and will automatically request retransmission   |
+   |                 | of any missing messages as needed.)             |
+   +-----------------+-------------------------------------------------+
+   | connection_drop | The number of times an existing TCP/IP          |
+   |                 | connection failed.                              |
+   +-----------------+-------------------------------------------------+
+   | connect_fail    | The number of times an attempt to open a new    |
+   |                 | TCP/IP connection failed.                       |
+   +-----------------+-------------------------------------------------+
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_stat.html>`__
+
+.. function:: repmgr_stat_print(flags=0)
+
+   Displays the replication manager statistical information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/repmgr_stat.html>`__
+
+
+DBEnv Replication Methods
+-------------------------
+
 .. function:: rep_set_nsites(nsites)
 
    Specifies the total number of sites in a replication group.
@@ -693,4 +801,5 @@ it if you want to be able to use the Replication Manager.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/rep_timeout.html>`__
+
 

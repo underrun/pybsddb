@@ -320,16 +320,16 @@ provided. The goal is the mirror most of the real
 Berkeley DB API so fall back to the Oracle Berkeley DB
 documentation as appropriate.
 
-`Homepage <http://www.argo.es/~jcea/programacion/
+`Homepage <http://www.jcea.es/programacion/
 pybsddb.htm>`__ --
-`Documentation <http://www.argo.es/~jcea/programacion/
+`Documentation <http://www.jcea.es/programacion/
 pybsddb_doc/>`__ --
 `Mailing List <http://mailman.argo.es/listinfo/pybsddb>`__
 """,
 
       author = 'Jesus Cea, Robin Dunn, Gregory P. Smith, Andrew Kuchling, Barry Warsaw',
       author_email = 'pybsddb@argo.es',
-      url = 'http://www.argo.es/~jcea/programacion/pybsddb.htm',
+      url = 'http://www.jcea.es/programacion/pybsddb.htm',
       license = "MIT License",
 
       packages = ['bsddb3', 'bsddb3/tests'],

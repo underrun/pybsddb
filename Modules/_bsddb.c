@@ -50,7 +50,7 @@
  *
  * Gregory P. Smith <greg@krypto.org> was once again the maintainer.
  *
- * Since January 2008, new maintainer is Jesus Cea <jcea@argo.es>.
+ * Since January 2008, new maintainer is Jesus Cea <jcea@jcea.es>.
  * Jesus Cea licenses this code to PSF under a Contributor Agreement.
  *
  * Use the pybsddb-users@lists.sf.net mailing list for all questions.
@@ -186,6 +186,10 @@ static PyObject* DBFileExistsError;     /* EEXIST */
 static PyObject* DBNoSuchFileError;     /* ENOENT */
 static PyObject* DBPermissionsError;    /* EPERM  */
 
+#if (DBVER >= 42)
+static PyObject* DBRepHandleDeadError;  /* DB_REP_HANDLE_DEAD */
+#endif
+
 #if (DBVER < 43)
 #define	DB_BUFFER_SMALL		ENOMEM
 #endif
@@ -209,7 +213,7 @@ staticforward PyTypeObject DB_Type, DBCursor_Type, DBEnv_Type, DBTxn_Type, DBLoc
 staticforward PyTypeObject DBSequence_Type;
 #endif
 
-#ifndef Py_Type
+#ifndef Py_TYPE
 /* for compatibility with Python 2.5 and earlier */
 #define Py_TYPE(ob)              (((PyObject*)(ob))->ob_type)
 #endif
@@ -638,6 +642,10 @@ static int makeDBError(int err)
         case ENOENT:  errObj = DBNoSuchFileError;   break;
         case EPERM :  errObj = DBPermissionsError;  break;
 
+#if (DBVER >= 42)
+        case DB_REP_HANDLE_DEAD : errObj = DBRepHandleDeadError; break;
+#endif
+
         default:      errObj = DBError;             break;
     }
 
@@ -895,7 +903,7 @@ newDBObject(DBEnvObject* arg, int flags)
             Py_DECREF(self->myenvobj);
             self->myenvobj = NULL;
         }
-        PyObject_Del(self);
+        Py_DECREF(self);
         self = NULL;
     }
     return self;
@@ -994,15 +1002,20 @@ newDBEnvObject(int flags)
     self->children_txns = NULL;
     self->in_weakreflist = NULL;
 
+#if (DBVER >= 40)
+    self->event_notifyCallback = NULL;
+#endif
+
     MYDB_BEGIN_ALLOW_THREADS;
     err = db_env_create(&self->db_env, flags);
     MYDB_END_ALLOW_THREADS;
     if (makeDBError(err)) {
-        PyObject_Del(self);
+        Py_DECREF(self);
         self = NULL;
     }
     else {
         self->db_env->set_errcall(self->db_env, _db_errorCallback);
+        self->db_env->app_private=self;
     }
     return self;
 }
@@ -1020,6 +1033,11 @@ DBEnv_dealloc(DBEnvObject* self)
       Py_XDECREF(dummy);
     }
 
+#if (DBVER >= 40)
+    Py_XDECREF(self->event_notifyCallback);
+    self->event_notifyCallback = NULL;
+#endif
+
     if (self->in_weakreflist != NULL) {
         PyObject_ClearWeakRefs((PyObject *) self);
     }
@@ -1032,20 +1050,27 @@ static DBTxnObject*
 newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, DB_TXN *txn, int flags)
 {
     int err;
-    DB_TXN *parent_txn=NULL;
+    DB_TXN *parent_txn = NULL;
 
     DBTxnObject* self = PyObject_New(DBTxnObject, &DBTxn_Type);
     if (self == NULL)
         return NULL;
 
     self->in_weakreflist = NULL;
+    self->children_txns = NULL;
+    self->children_dbs = NULL;
+    self->children_cursors = NULL;
+    self->children_sequences = NULL;
+    self->flag_prepare = 0;
+    self->parent_txn = NULL;
+    self->env = NULL;
 
     if (parent && ((PyObject *)parent!=Py_None)) {
-        parent_txn=parent->txn;
+        parent_txn = parent->txn;
     }
 
     if (txn) {
-        self->txn=txn;
+        self->txn = txn;
     } else {
         MYDB_BEGIN_ALLOW_THREADS;
 #if (DBVER >= 40)
@@ -1056,28 +1081,23 @@ newDBTxnObject(DBEnvObject* myenv, DBTxnObject *parent, DB_TXN *txn, int flags)
         MYDB_END_ALLOW_THREADS;
 
         if (makeDBError(err)) {
-            PyObject_Del(self);
+            Py_DECREF(self);
             return NULL;
         }
     }
 
-    if (parent_txn) { /* Can't use 'parent' because could be 'parent==Py_None' */
-        self->parent_txn=parent;
+    /* Can't use 'parent' because could be 'parent==Py_None' */
+    if (parent_txn) {
+        self->parent_txn = parent;
         Py_INCREF(parent);
         self->env = NULL;
-        INSERT_IN_DOUBLE_LINKED_LIST(parent->children_txns,self);
+        INSERT_IN_DOUBLE_LINKED_LIST(parent->children_txns, self);
     } else {
-        self->parent_txn=NULL;
+        self->parent_txn = NULL;
         Py_INCREF(myenv);
         self->env = myenv;
-        INSERT_IN_DOUBLE_LINKED_LIST(myenv->children_txns,self);
+        INSERT_IN_DOUBLE_LINKED_LIST(myenv->children_txns, self);
     }
-
-    self->children_txns=NULL;
-    self->children_dbs=NULL;
-    self->children_cursors=NULL;
-    self->children_sequences=NULL;
-    self->flag_prepare=0;
 
     return self;
 }
@@ -1133,7 +1153,7 @@ newDBLockObject(DBEnvObject* myenv, u_int32_t locker, DBT* obj,
 #endif
     MYDB_END_ALLOW_THREADS;
     if (makeDBError(err)) {
-        PyObject_Del(self);
+        Py_DECREF(self);
         self = NULL;
     }
 
@@ -1165,7 +1185,7 @@ newDBSequenceObject(DBObject* mydb,  int flags)
     self->mydb = mydb;
 
     INSERT_IN_DOUBLE_LINKED_LIST(self->mydb->children_sequences,self);
-    self->txn=NULL;
+    self->txn = NULL;
 
     self->in_weakreflist = NULL;
 
@@ -1173,8 +1193,7 @@ newDBSequenceObject(DBObject* mydb,  int flags)
     err = db_sequence_create(&self->sequence, self->mydb->db, flags);
     MYDB_END_ALLOW_THREADS;
     if (makeDBError(err)) {
-        Py_DECREF(self->mydb);
-        PyObject_Del(self);
+        Py_DECREF(self);
         self = NULL;
     }
 
@@ -2216,7 +2235,7 @@ _default_cmp(const DBT *leftKey,
 }
 
 static int
-_db_compareCallback(DB* db, 
+_db_compareCallback(DB* db,
 		    const DBT *leftKey,
 		    const DBT *rightKey)
 {
@@ -4198,6 +4217,25 @@ DBEnv_set_lg_max(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_lg_max(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    u_int32_t lg_max;
+
+    if (!PyArg_ParseTuple(args, ":get_lg_max"))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_lg_max(self->db_env, &lg_max);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyInt_FromLong(lg_max);
+}
+#endif
+
 
 #if (DBVER >= 33)
 static PyObject*
@@ -4930,11 +4968,141 @@ DBEnv_set_get_returns_none(DBEnvObject* self, PyObject* args)
     return PyInt_FromLong(oldValue);
 }
 
+#if (DBVER >= 40)
+static PyObject*
+DBEnv_set_rpc_server(DBEnvObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err;
+    char *host;
+    long cl_timeout=0, sv_timeout=0;
+
+    static char* kwnames[] = { "host", "cl_timeout", "sv_timeout", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|ll:set_rpc_server", kwnames,
+                                     &host, &cl_timeout, &sv_timeout))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_rpc_server(self->db_env, NULL, host, cl_timeout,
+            sv_timeout, 0);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
+
+#if (DBVER >= 40)
+static PyObject*
+DBEnv_set_verbose(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int which, onoff;
+
+    if (!PyArg_ParseTuple(args, "ii:set_verbose", &which, &onoff)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_verbose(self->db_env, which, onoff);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_verbose(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int which;
+    int verbose;
+
+    if (!PyArg_ParseTuple(args, "i:get_verbose", &which)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_verbose(self->db_env, which, &verbose);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyBool_FromLong(verbose);
+}
+#endif
+#endif
+
+#if (DBVER >= 45)
+static void
+_dbenv_event_notifyCallback(DB_ENV* db_env, u_int32_t event, void *event_info)
+{
+    DBEnvObject *dbenv;
+    PyObject* callback;
+    PyObject* args;
+    PyObject* result = NULL;
+
+    MYDB_BEGIN_BLOCK_THREADS;
+    dbenv = (DBEnvObject *)db_env->app_private;
+    callback = dbenv->event_notifyCallback;
+    if (callback) {
+        if (event == DB_EVENT_REP_NEWMASTER) {
+            args = Py_BuildValue("(Oii)", dbenv, event, *((int *)event_info));
+        } else {
+            args = Py_BuildValue("(OiO)", dbenv, event, Py_None);
+        }
+        if (args) {
+            result = PyEval_CallObject(callback, args);
+        }
+        if ((!args) || (!result)) {
+            PyErr_Print();
+        }
+        Py_XDECREF(args);
+        Py_XDECREF(result);
+    }
+    MYDB_END_BLOCK_THREADS;
+}
+#endif
+
+#if (DBVER >= 45)
+static PyObject*
+DBEnv_set_event_notify(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    PyObject *notifyFunc;
+
+    if (!PyArg_ParseTuple(args, "O:set_event_notify", &notifyFunc)) {
+	    return NULL;
+    }
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    if (!PyCallable_Check(notifyFunc)) {
+	    makeTypeError("Callable", notifyFunc);
+	    return NULL;
+    }
+
+    Py_XDECREF(self->event_notifyCallback);
+    Py_INCREF(notifyFunc);
+    self->event_notifyCallback = notifyFunc;
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_event_notify(self->db_env, _dbenv_event_notifyCallback);
+    MYDB_END_ALLOW_THREADS;
+
+    if (err) {
+	    Py_DECREF(notifyFunc);
+	    self->event_notifyCallback = NULL;
+    }
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
+
 
 /* --------------------------------------------------------------------- */
 /* REPLICATION METHODS: Base Replication */
 
-#if (DBVER >= 40)
+#if (DBVER >= 45)
 static PyObject*
 DBEnv_rep_set_nsites(DBEnvObject* self, PyObject* args)
 {
@@ -5146,8 +5314,125 @@ DBEnv_repmgr_get_ack_policy(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     return PyInt_FromLong(ack_policy);
 }
+
+static PyObject*
+DBEnv_repmgr_site_list(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    unsigned int countp;
+    DB_REPMGR_SITE *listp;
+    PyObject *stats, *key, *tuple;
+
+    if (!PyArg_ParseTuple(args, ":repmgr_site_list"))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_site_list(self->db_env, &countp, &listp);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+
+    stats=PyDict_New();
+    if (stats == NULL) {
+        free(listp);
+        return NULL;
+    }
+
+    for(;countp--;) {
+        key=PyInt_FromLong(listp[countp].eid);
+        if(!key) {
+            Py_DECREF(stats);
+            free(listp);
+            return NULL;
+        }
+#if (PY_VERSION_HEX >= 0x02040000)
+        tuple=Py_BuildValue("(sII)", listp[countp].host,
+                listp[countp].port, listp[countp].status);
+#else
+        tuple=Py_BuildValue("(sii)", listp[countp].host,
+                listp[countp].port, listp[countp].status);
+#endif
+        if(!tuple) {
+            Py_DECREF(key);
+            Py_DECREF(stats);
+            free(listp);
+            return NULL;
+        }
+        if(PyDict_SetItem(stats, key, tuple)) {
+            Py_DECREF(key);
+            Py_DECREF(tuple);
+            Py_DECREF(stats);
+            free(listp);
+            return NULL;
+        }
+    }
+    free(listp);
+    return stats;
+}
 #endif
 
+#if (DBVER >= 46)
+static PyObject*
+DBEnv_repmgr_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:repmgr_stat_print",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_stat_print(self->db_env, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_repmgr_stat(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    DB_REPMGR_STAT *statp;
+    PyObject *stats;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:repmgr_stat",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_stat(self->db_env, &statp, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+
+    stats=PyDict_New();
+    if (stats == NULL) {
+        free(statp);
+        return NULL;
+    }
+
+#define MAKE_ENTRY(name)  _addIntToDict(stats, #name, statp->st_##name)
+
+    MAKE_ENTRY(perm_failed);
+    MAKE_ENTRY(msgs_queued);
+    MAKE_ENTRY(msgs_dropped);
+    MAKE_ENTRY(connection_drop);
+    MAKE_ENTRY(connect_fail);
+
+#undef MAKE_ENTRY
+
+    free(statp);
+    return stats;
+}
+#endif
 
 
 /* --------------------------------------------------------------------- */
@@ -5864,6 +6149,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"set_lg_bsize",    (PyCFunction)DBEnv_set_lg_bsize,     METH_VARARGS},
     {"set_lg_dir",      (PyCFunction)DBEnv_set_lg_dir,       METH_VARARGS},
     {"set_lg_max",      (PyCFunction)DBEnv_set_lg_max,       METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_lg_max",      (PyCFunction)DBEnv_get_lg_max,       METH_VARARGS},
+#endif
 #if (DBVER >= 33)
     {"set_lg_regionmax",(PyCFunction)DBEnv_set_lg_regionmax, METH_VARARGS},
 #endif
@@ -5904,6 +6192,19 @@ static PyMethodDef DBEnv_methods[] = {
     {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_VARARGS},
 #endif
 #if (DBVER >= 40)
+    {"set_rpc_server",  (PyCFunction)DBEnv_set_rpc_server,
+        METH_VARARGS||METH_KEYWORDS},
+#endif
+#if (DBVER >= 40)
+    {"set_verbose",     (PyCFunction)DBEnv_set_verbose,       METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
+#endif
+#endif
+#if (DBVER >= 45)
+    {"set_event_notify", (PyCFunction)DBEnv_set_event_notify, METH_VARARGS},
+#endif
+#if (DBVER >= 45)
     {"rep_set_nsites", (PyCFunction)DBEnv_rep_set_nsites, METH_VARARGS},
     {"rep_get_nsites", (PyCFunction)DBEnv_rep_get_nsites, METH_VARARGS},
     {"rep_set_priority", (PyCFunction)DBEnv_rep_set_priority, METH_VARARGS},
@@ -5916,12 +6217,20 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS|METH_KEYWORDS},
     {"repmgr_set_local_site", (PyCFunction)DBEnv_repmgr_set_local_site,
         METH_VARARGS|METH_KEYWORDS},
-    {"repmgr_add_remote_site", (PyCFunction)DBEnv_repmgr_add_remote_site, 
+    {"repmgr_add_remote_site", (PyCFunction)DBEnv_repmgr_add_remote_site,
         METH_VARARGS|METH_KEYWORDS},
     {"repmgr_set_ack_policy", (PyCFunction)DBEnv_repmgr_set_ack_policy,
         METH_VARARGS},
     {"repmgr_get_ack_policy", (PyCFunction)DBEnv_repmgr_get_ack_policy,
         METH_VARARGS},
+    {"repmgr_site_list", (PyCFunction)DBEnv_repmgr_site_list,
+        METH_VARARGS},
+#endif
+#if (DBVER >= 46)
+    {"repmgr_stat", (PyCFunction)DBEnv_repmgr_stat,
+        METH_VARARGS|METH_KEYWORDS},
+    {"repmgr_stat_print", (PyCFunction)DBEnv_repmgr_stat_print,
+        METH_VARARGS|METH_KEYWORDS},
 #endif
     {NULL,      NULL}       /* sentinel */
 };
@@ -6634,14 +6943,45 @@ DL_EXPORT(void) init_bsddb(void)
 #endif
 
 #if (DBVER >= 40)
+    ADD_INT(d, DB_VERB_DEADLOCK);
+#if (DBVER >= 46)
+    ADD_INT(d, DB_VERB_FILEOPS);
+    ADD_INT(d, DB_VERB_FILEOPS_ALL);
+#endif
+    ADD_INT(d, DB_VERB_RECOVERY);
+#if (DBVER >= 44)
+    ADD_INT(d, DB_VERB_REGISTER);
+#endif
+    ADD_INT(d, DB_VERB_REPLICATION);
+    ADD_INT(d, DB_VERB_WAITSFOR);
+#endif
+
+#if (DBVER >= 45)
+    ADD_INT(d, DB_EVENT_PANIC);
+    ADD_INT(d, DB_EVENT_REP_CLIENT);
+#if (DBVER >= 46)
+    ADD_INT(d, DB_EVENT_REP_ELECTED);
+#endif
+    ADD_INT(d, DB_EVENT_REP_MASTER);
+    ADD_INT(d, DB_EVENT_REP_NEWMASTER);
+#if (DBVER >= 46)
+    ADD_INT(d, DB_EVENT_REP_PERM_FAILED);
+#endif
+    ADD_INT(d, DB_EVENT_REP_STARTUPDONE);
+    ADD_INT(d, DB_EVENT_WRITE_FAILED);
+#endif
+
+#if (DBVER >= 40)
     ADD_INT(d, DB_REP_MASTER);
     ADD_INT(d, DB_REP_CLIENT);
+#if (DBVER >= 45)
     ADD_INT(d, DB_REP_ELECTION);
 
     ADD_INT(d, DB_REP_ACK_TIMEOUT);
     ADD_INT(d, DB_REP_CONNECTION_RETRY);
     ADD_INT(d, DB_REP_ELECTION_TIMEOUT);
     ADD_INT(d, DB_REP_ELECTION_RETRY);
+#endif
 #if (DBVER >= 46)
     ADD_INT(d, DB_REP_CHECKPOINT_DELAY);
     ADD_INT(d, DB_REP_FULL_ELECTION_TIMEOUT);
@@ -6656,6 +6996,10 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_REPMGR_ACKS_ONE);
     ADD_INT(d, DB_REPMGR_ACKS_ONE_PEER);
     ADD_INT(d, DB_REPMGR_ACKS_QUORUM);
+    ADD_INT(d, DB_REPMGR_CONNECTED);
+    ADD_INT(d, DB_REPMGR_DISCONNECTED);
+    ADD_INT(d, DB_STAT_CLEAR);
+    ADD_INT(d, DB_STAT_ALL);
 #endif
 
 #if (DBVER >= 43)
@@ -6749,6 +7093,10 @@ DL_EXPORT(void) init_bsddb(void)
     MAKE_EX(DBFileExistsError);
     MAKE_EX(DBNoSuchFileError);
     MAKE_EX(DBPermissionsError);
+
+#if (DBVER >= 42)
+    MAKE_EX(DBRepHandleDeadError);
+#endif
 
 #undef MAKE_EX
 

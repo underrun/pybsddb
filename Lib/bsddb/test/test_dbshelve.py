@@ -264,7 +264,7 @@ class BasicEnvShelveTestCase(DBShelveTestCase):
     def setUp(self) :
         self.homeDir = get_new_environment_path()
         DBShelveTestCase.setUp(self)
-        
+
     def tearDown(self):
         self.do_close()
         test_support.rmtree(self.homeDir)
