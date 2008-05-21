@@ -4945,6 +4945,30 @@ DBEnv_set_get_returns_none(DBEnvObject* self, PyObject* args)
 
 #if (DBVER >= 40)
 static PyObject*
+DBEnv_set_rpc_server(DBEnvObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err;
+    char *host;
+    long cl_timeout=0, sv_timeout=0;
+
+    static char* kwnames[] = { "host", "cl_timeout", "sv_timeout", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|ll:set_rpc_server", kwnames,
+                                     &host, &cl_timeout, &sv_timeout))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_rpc_server(self->db_env, NULL, host, cl_timeout,
+            sv_timeout, 0);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
+
+#if (DBVER >= 40)
+static PyObject*
 DBEnv_set_verbose(DBEnvObject* self, PyObject* args)
 {
     int err;
@@ -6140,6 +6164,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_VARARGS},
 #endif
 #if (DBVER >= 40)
+    {"set_rpc_server",  (PyCFunction)DBEnv_set_rpc_server,
+        METH_VARARGS||METH_KEYWORDS},
+#endif
+#if (DBVER >= 40)
     {"set_verbose",     (PyCFunction)DBEnv_set_verbose,       METH_VARARGS},
 #if (DBVER >= 42)
     {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
@@ -6901,6 +6929,10 @@ DL_EXPORT(void) init_bsddb(void)
 #endif
     ADD_INT(d, DB_EVENT_REP_STARTUPDONE);
     ADD_INT(d, DB_EVENT_WRITE_FAILED);
+#endif
+
+#if (DBVER >= 40)
+    ADD_INT(d, DB_RPCCLIENT);
 #endif
 
 #if (DBVER >= 40)

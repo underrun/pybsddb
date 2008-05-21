@@ -21,6 +21,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_class.html>`__
 
+.. function:: set_rpc_server(host, cl_timeout=0, sv_timeout=0)
+
+   Establishes a connection for this dbenv to a RPC server.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_rpc_server.html>`__
+
 .. function:: close(flags=0)
 
    Close the database environment, freeing resources.
