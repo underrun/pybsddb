@@ -4761,8 +4761,13 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     MAKE_ENTRY(objs_nowait);
     MAKE_ENTRY(lockers_wait);
     MAKE_ENTRY(lockers_nowait);
+#if (DBVER >= 47)
+    MAKE_ENTRY(lock_wait);
+    MAKE_ENTRY(lock_nowait);
+#else
     MAKE_ENTRY(locks_wait);
     MAKE_ENTRY(locks_nowait);
+#endif
     MAKE_ENTRY(hash_len);
 #endif
     MAKE_ENTRY(regsize);
