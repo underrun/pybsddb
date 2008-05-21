@@ -5124,7 +5124,11 @@ static PyObject*
 DBEnv_rep_get_nsites(DBEnvObject* self, PyObject* args)
 {
     int err;
+#if (DBVER >= 47)
+    u_int32_t nsites;
+#else
     int nsites;
+#endif
 
     if (!PyArg_ParseTuple(args, ":rep_get_nsites")) {
         return NULL;
@@ -5158,7 +5162,11 @@ static PyObject*
 DBEnv_rep_get_priority(DBEnvObject* self, PyObject* args)
 {
     int err;
+#if (DBVER >= 47)
+    u_int32_t priority;
+#else
     int priority;
+#endif
 
     if (!PyArg_ParseTuple(args, ":rep_get_priority")) {
         return NULL;
