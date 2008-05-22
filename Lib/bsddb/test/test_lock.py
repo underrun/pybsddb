@@ -62,8 +62,7 @@ class LockingTestCase(unittest.TestCase):
         self.env.lock_put(lock)
         if verbose:
             print "Released lock: %s" % lock
-        if db.version() >= (4,0):
-            self.env.lock_id_free(anID)
+        self.env.lock_id_free(anID)
 
 
     def test02_threaded(self):
@@ -132,9 +131,8 @@ class LockingTestCase(unittest.TestCase):
         self.env.lock_put(lock)
         t.join()
 
-        if db.version() >= (4,0):
-            self.env.lock_id_free(anID)
-            self.env.lock_id_free(anID2)
+        self.env.lock_id_free(anID)
+        self.env.lock_id_free(anID2)
 
         if db.version() >= (4,6):
             self.assertTrue(deadlock_detection.count>0)
@@ -159,8 +157,7 @@ class LockingTestCase(unittest.TestCase):
             if verbose:
                 print "%s: Released %s lock: %s" % (name, lt, lock)
 
-        if db.version() >= (4,0):
-            self.env.lock_id_free(anID)
+        self.env.lock_id_free(anID)
 
 
 #----------------------------------------------------------------------

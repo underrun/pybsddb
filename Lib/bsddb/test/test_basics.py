@@ -677,12 +677,11 @@ class BasicTransactionTestCase(BasicTestCase):
         except db.DBIncompleteError:
             pass
 
-        if db.version() >= (4,0):
-            statDict = self.env.log_stat(0);
-            self.assert_(statDict.has_key('magic'))
-            self.assert_(statDict.has_key('version'))
-            self.assert_(statDict.has_key('cur_file'))
-            self.assert_(statDict.has_key('region_nowait'))
+        statDict = self.env.log_stat(0);
+        self.assert_(statDict.has_key('magic'))
+        self.assert_(statDict.has_key('version'))
+        self.assert_(statDict.has_key('cur_file'))
+        self.assert_(statDict.has_key('region_nowait'))
 
         # must have at least one log file present:
         logs = self.env.log_archive(db.DB_ARCH_ABS | db.DB_ARCH_LOG)
