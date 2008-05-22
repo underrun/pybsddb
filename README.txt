@@ -1,5 +1,9 @@
+THIS DOCUMENT NEEDS TO BE UPDATED. THE INFO IT CONTAINS 
+IS STILL VALUABLE, SO USE YOUR BRAIN :-)
+
+
 README.txt
-bsddb3 v4.6.x
+bsddb3 v4.7.x
 http://www.argo.es/~jcea/programacion/pybsddb.htm
 2007-11-04
 --------------------------------
@@ -8,7 +12,7 @@ This module is intended to be the definitive modern Berkeley DB
 interface for Python.  It should be both backwards compatible with
 the earlier (circa Python 1.5 to 2.2) "bsddb" module in addition to
 providing access to the much more powerful interface found in
-Berkeley DB 3.x and 4.x.
+Berkeley DB 4.x.
 
 This module provides a nearly complete wrapping of the Oracle C API
 for the Database Environment, Database, Cursor, Transaction and Lock
@@ -36,7 +40,7 @@ In addition we've run it on a several varieties of Linux and of course
 on Win32.
 
 This wrapper should be compatible with Berkeley DB releases going back
-to 3.3 up to and including DB 4.6.  It should also be compatible
+to 4.0 up to and including DB 4.7.  It should also be compatible
 with Python versions from 2.1 to Python 2.6.
 
 
@@ -58,8 +62,8 @@ fairly simple to get things ready to go.
    are indicated in the README then apply it to your Berkeley DB
    sources and rebuild it.
 
-1. First, make sure that you have a Berkeley DB version >= 3.3 and
-   no later than 4.5 and that it is built and installed.  Setup.py will
+1. First, make sure that you have a Berkeley DB version >= 4.0 and
+   no later than 4.7 and that it is built and installed.  Setup.py will
    detect a db3 or Berkeley DB directory under either /usr/local or /usr
    in that order; this will catch installations from RPMs and most hand
    installations under Unix.  If setup.py can't find your libdb then you

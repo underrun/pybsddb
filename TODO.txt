@@ -22,3 +22,5 @@
 * 20080522: Think about changing the library name to "berkeleydb". See
   http://mailman.argo.es/pipermail/pybsddb/2008-March/000019.html
 
+* 20080522: Update the "README.txt" document.
+
