@@ -435,24 +435,23 @@ class ThreadedAssociateRecnoTestCase(ShelveAssociateTestCase):
 def test_suite():
     suite = unittest.TestSuite()
 
-    if db.version() >= (3, 3, 11):
-        suite.addTest(unittest.makeSuite(AssociateErrorTestCase))
+    suite.addTest(unittest.makeSuite(AssociateErrorTestCase))
 
-        suite.addTest(unittest.makeSuite(AssociateHashTestCase))
-        suite.addTest(unittest.makeSuite(AssociateBTreeTestCase))
-        suite.addTest(unittest.makeSuite(AssociateRecnoTestCase))
+    suite.addTest(unittest.makeSuite(AssociateHashTestCase))
+    suite.addTest(unittest.makeSuite(AssociateBTreeTestCase))
+    suite.addTest(unittest.makeSuite(AssociateRecnoTestCase))
 
-        if db.version() >= (4, 1):
-            suite.addTest(unittest.makeSuite(AssociateBTreeTxnTestCase))
+    if db.version() >= (4, 1):
+        suite.addTest(unittest.makeSuite(AssociateBTreeTxnTestCase))
 
-        suite.addTest(unittest.makeSuite(ShelveAssociateHashTestCase))
-        suite.addTest(unittest.makeSuite(ShelveAssociateBTreeTestCase))
-        suite.addTest(unittest.makeSuite(ShelveAssociateRecnoTestCase))
+    suite.addTest(unittest.makeSuite(ShelveAssociateHashTestCase))
+    suite.addTest(unittest.makeSuite(ShelveAssociateBTreeTestCase))
+    suite.addTest(unittest.makeSuite(ShelveAssociateRecnoTestCase))
 
-        if have_threads:
-            suite.addTest(unittest.makeSuite(ThreadedAssociateHashTestCase))
-            suite.addTest(unittest.makeSuite(ThreadedAssociateBTreeTestCase))
-            suite.addTest(unittest.makeSuite(ThreadedAssociateRecnoTestCase))
+    if have_threads:
+        suite.addTest(unittest.makeSuite(ThreadedAssociateHashTestCase))
+        suite.addTest(unittest.makeSuite(ThreadedAssociateBTreeTestCase))
+        suite.addTest(unittest.makeSuite(ThreadedAssociateRecnoTestCase))
 
     return suite
 

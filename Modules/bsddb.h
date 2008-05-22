@@ -156,11 +156,9 @@ typedef struct DBObject {
     struct DBObject *sibling_next;
     struct DBObject **sibling_prev_p_txn;
     struct DBObject *sibling_next_txn;
-#if (DBVER >= 33)
     PyObject*       associateCallback;
     PyObject*       btCompareCallback;
     int             primaryDBType;
-#endif
     PyObject        *in_weakreflist; /* List of weak references */
 } DBObject;
 

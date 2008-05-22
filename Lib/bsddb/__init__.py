@@ -33,7 +33,7 @@
 #----------------------------------------------------------------------
 
 
-"""Support for Berkeley DB 3.3 through 4.6 with a simple interface.
+"""Support for Berkeley DB 4.0 through 4.7 with a simple interface.
 
 For the full featured object oriented interface use the bsddb.db module
 instead.  It mirrors the Oracle Berkeley DB C API.
@@ -393,8 +393,6 @@ def _checkflag(flag, file):
 try:
     import thread
     del thread
-    if db.version() < (3, 3, 0):
-        db.DB_THREAD = 0
 except ImportError:
     db.DB_THREAD = 0
 
