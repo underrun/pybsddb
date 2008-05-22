@@ -306,12 +306,13 @@ setup(name = 'bsddb3',
       long_description = """\
 This module provides a nearly complete wrapping
 of the Oracle/Sleepycat C API for the Database
-Environment, Database, Cursor, and Transaction
+Environment, Database, Cursor, Sequence and Transaction
 objects, and each of these is exposed as a Python
 type in the bsddb3.db module. The database objects
 can use various access methods: btree, hash, recno,
 and queue. Complete support of Berkeley DB distributed
-transactions.
+transactions. Complete support for Berkeley DB
+Replication Manager.
 
 Please see the documents in the docs
 directory of the source distribution or at the
