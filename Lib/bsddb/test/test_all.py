@@ -72,6 +72,9 @@ import os, os.path
 get_new_path.prefix=os.path.join(os.sep,"tmp","z-Berkeley_DB")
 get_new_path.num=0
 
+def get_test_path_prefix() :
+  return get_new_path.prefix
+
 def set_test_path_prefix(path) :
   get_new_path.prefix=path
 
