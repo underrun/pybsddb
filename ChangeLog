@@ -1,6 +1,7 @@
 4.7.1:
   * Get rid of Berkeley DB 3.3 support. Rationale:
     http://mailman.argo.es/pipermail/pybsddb/2008-March/000019.html
+  * Better integration between Python test framework and bsddb3.
   * Improved Python 3.0 support in the C code.
   * Iteration over the database, using the legacy interface, now
     raises a RuntimeError if the database changes while iterating.
