@@ -9,6 +9,10 @@
   * Create "set_private()" and "get_private()" methods for DB and DBEnv
     objects, to allow applications to link an arbitrary object to
     a DB/DBEnv. Useful for callbacks.
+  * Support some more base replication calls: "DB_ENV->rep_start",
+    "DB_ENV->rep_sync", "DB_ENV->rep_set_config", "DB_ENV->rep_get_config",
+    "DB_ENV->rep_set_limit", "DB_ENV->rep_get_limit",
+    "DB_ENV->sep_set_request", "DB_ENV->rep_get_request",
 
 4.7.0:
   * Support for Berkeley DB 4.7.

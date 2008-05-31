@@ -773,6 +773,89 @@ it if you want to be able to use the Replication Manager.
 DBEnv Replication Methods
 -------------------------
 
+.. function:: rep_start(flags, cdata=None)
+
+   Configures the database environment as a client or master in a group
+   of replicated database environments.
+
+   The DB_ENV->rep_start method is not called by most replication
+   applications. It should only be called by applications implementing
+   their own network transport layer, explicitly holding replication
+   group elections and handling replication messages outside of the
+   replication manager framework.
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_start.html>`__
+
+.. function:: rep_sync()
+
+   Forces master synchronization to begin for this client. This method
+   is the other half of setting the DB_REP_CONF_DELAYCLIENT flag via the
+   DB_ENV->rep_set_config method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_sync.html>`__
+
+.. function:: rep_set_config(which, onoff)
+
+   Configures the Berkeley DB replication subsystem.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_config.html>`__
+
+.. function:: rep_get_config(which)
+
+   Returns whether the specified which parameter is currently set or
+   not.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_config.html>`__
+
+.. function:: rep_set_limit(bytes)
+
+   Sets a byte-count limit on the amount of data that will be
+   transmitted from a site in response to a single message processed by
+   the DB_ENV->rep_process_message method. The limit is not a hard
+   limit, and the record that exceeds the limit is the last record to be
+   sent.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_limit.html>`__
+
+.. function:: rep_get_limit()
+
+   Gets a byte-count limit on the amount of data that will be
+   transmitted from a site in response to a single message processed by
+   the DB_ENV->rep_process_message method. The limit is not a hard
+   limit, and the record that exceeds the limit is the last record to be
+   sent.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_limit.html>`__
+
+.. function:: rep_set_request(minimum, maximum)
+
+   Sets a threshold for the minimum and maximum time that a client
+   waits before requesting retransmission of a missing message.
+   Specifically, if the client detects a gap in the sequence of incoming
+   log records or database pages, Berkeley DB will wait for at least min
+   microseconds before requesting retransmission of the missing record.
+   Berkeley DB will double that amount before requesting the same
+   missing record again, and so on, up to a maximum threshold of max
+   microseconds.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_request.html>`__
+
+.. function:: rep_get_request()
+
+   Returns a tuple with the minimum and maximum number of microseconds a
+   client waits before requesting retransmission.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_request.html>`__
+
 .. function:: rep_set_nsites(nsites)
 
    Specifies the total number of sites in a replication group.

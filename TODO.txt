@@ -24,3 +24,6 @@
 
 * 20080522: Update the "README.txt" document.
 
+* 20080531: "DB_ENV->rep_set_limit" and "DB_ENV->rep_get_limit", support
+  for long values.
+

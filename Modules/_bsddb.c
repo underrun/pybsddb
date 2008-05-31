@@ -5056,6 +5056,154 @@ DBEnv_set_event_notify(DBEnvObject* self, PyObject* args)
 /* --------------------------------------------------------------------- */
 /* REPLICATION METHODS: Base Replication */
 
+static PyObject*
+DBEnv_rep_set_request(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    unsigned int minimum, maximum;
+
+    if (!PyArg_ParseTuple(args,"II:rep_set_request", &minimum, &maximum))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_set_request(self->db_env, minimum, maximum);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_rep_get_request(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    u_int32_t minimum, maximum;
+
+    if (!PyArg_ParseTuple(args, ":rep_get_request")) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_get_request(self->db_env, &minimum, &maximum);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return Py_BuildValue("II", minimum, maximum);
+}
+
+static PyObject*
+DBEnv_rep_set_limit(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int limit;
+
+    if (!PyArg_ParseTuple(args,"i:rep_set_limit", &limit))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_set_limit(self->db_env, 0, limit);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_rep_get_limit(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    u_int32_t gbytes, bytes;
+
+    if (!PyArg_ParseTuple(args, ":rep_get_limit")) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_get_limit(self->db_env, &gbytes, &bytes);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyInt_FromLong(bytes);
+}
+
+static PyObject*
+DBEnv_rep_set_config(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int which;
+    int onoff;
+
+    if (!PyArg_ParseTuple(args,"ii:rep_set_config", &which, &onoff))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_set_config(self->db_env, which, onoff);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_rep_get_config(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int which;
+    int onoff;
+
+    if (!PyArg_ParseTuple(args, "i:rep_get_config", &which)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_get_config(self->db_env, which, &onoff);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyBool_FromLong(onoff);
+}
+
+static PyObject*
+DBEnv_rep_start(DBEnvObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err;
+    PyObject *cdata_py = Py_None;
+    DBT cdata;
+    int flags;
+    static char* kwnames[] = {"flags","cdata", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                "i|O:rep_start", kwnames, &flags, &cdata_py))
+    {
+	    return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+
+    if (!make_dbt(cdata_py, &cdata))
+        return NULL;
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_start(self->db_env, cdata.size ? &cdata : NULL,
+            flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_rep_sync(DBEnvObject* self, PyObject* args)
+{
+    int err;
+
+    if (!PyArg_ParseTuple(args, ":rep_sync")) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_sync(self->db_env, 0);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+
 #if (DBVER >= 45)
 static PyObject*
 DBEnv_rep_set_nsites(DBEnvObject* self, PyObject* args)
@@ -6100,6 +6248,15 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
     {"set_private",     (PyCFunction)DBEnv_set_private,       METH_VARARGS},
     {"get_private",     (PyCFunction)DBEnv_get_private,       METH_VARARGS},
+    {"rep_start",       (PyCFunction)DBEnv_rep_start,
+        METH_VARARGS|METH_KEYWORDS},
+    {"rep_set_config",  (PyCFunction)DBEnv_rep_set_config,    METH_VARARGS},
+    {"rep_get_config",  (PyCFunction)DBEnv_rep_get_config,    METH_VARARGS},
+    {"rep_set_limit",   (PyCFunction)DBEnv_rep_set_limit,     METH_VARARGS},
+    {"rep_get_limit",   (PyCFunction)DBEnv_rep_get_limit,     METH_VARARGS},
+    {"rep_set_request", (PyCFunction)DBEnv_rep_set_request,   METH_VARARGS},
+    {"rep_get_request", (PyCFunction)DBEnv_rep_get_request,   METH_VARARGS},
+    {"rep_sync",        (PyCFunction)DBEnv_rep_sync,          METH_VARARGS},
 #if (DBVER >= 45)
     {"set_event_notify", (PyCFunction)DBEnv_set_event_notify, METH_VARARGS},
 #endif
