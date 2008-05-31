@@ -115,7 +115,7 @@ class _iter_mixin(UserDict.DictMixin):
             except _bsddb.DBCursorClosedError:
                 # the database was modified during iteration.  abort.
                 pass
-# When Python 2.3 not supported in bsddb3, we can change this for "finally"
+# When Python 2.3 not supported in bsddb3, we can change this to "finally"
         except :
             self._in_iter -= 1
             raise
@@ -158,7 +158,7 @@ class _iter_mixin(UserDict.DictMixin):
             except _bsddb.DBCursorClosedError:
                 # the database was modified during iteration.  abort.
                 pass
-# When Python 2.3 not supported in bsddb3, we can change this for "finally"
+# When Python 2.3 not supported in bsddb3, we can change this to "finally"
         except :
             self._in_iter -= 1
             raise
