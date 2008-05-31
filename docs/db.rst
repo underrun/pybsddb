@@ -106,6 +106,14 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_get.html>`__
 
+.. function:: set_private(object)
+
+   Link an arbitrary object to the DB.
+
+.. function:: get_private()
+
+   Give the object linked to the DB.
+
 .. function:: get_both(key, data, txn=None, flags=0)
 
    A convenient version of get() that automatically sets the DB_GET_BOTH

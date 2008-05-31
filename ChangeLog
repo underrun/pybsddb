@@ -6,6 +6,9 @@
   * Iteration over the database, using the legacy interface, now
     raises a RuntimeError if the database changes while iterating.
     http://bugs.python.org/issue2669 - gregory.p.smith
+  * Create "set_private()" and "get_private()" methods for DB and DBEnv
+    objects, to allow applications to link an arbitrary object to
+    a DB/DBEnv. Useful for callbacks.
 
 4.7.0:
   * Support for Berkeley DB 4.7.

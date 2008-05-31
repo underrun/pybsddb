@@ -864,6 +864,8 @@ newDBObject(DBEnvObject* arg, int flags)
     self->associateCallback = NULL;
     self->btCompareCallback = NULL;
     self->primaryDBType = 0;
+    Py_INCREF(Py_None);
+    self->private = Py_None;
     self->in_weakreflist = NULL;
 
     /* keep a reference to our python DBEnv object */
@@ -996,6 +998,8 @@ newDBEnvObject(int flags)
     self->moduleFlags.cursorSetReturnsNone = DEFAULT_CURSOR_SET_RETURNS_NONE;
     self->children_dbs = NULL;
     self->children_txns = NULL;
+    Py_INCREF(Py_None);
+    self->private = Py_None;
     self->in_weakreflist = NULL;
     self->event_notifyCallback = NULL;
 
@@ -1687,7 +1691,7 @@ DB_pget(DBObject* self, PyObject* args, PyObject* kwargs)
 
     CLEAR_DBT(pkey);
     pkey.flags = DB_DBT_MALLOC;
-    
+
     MYDB_BEGIN_ALLOW_THREADS;
     err = self->db->pget(self->db, txn, &key, &pkey, &data, flags);
     MYDB_END_ALLOW_THREADS;
@@ -1739,7 +1743,7 @@ DB_pget(DBObject* self, PyObject* args, PyObject* kwargs)
         }
         Py_DECREF(dataObj);
         Py_DECREF(pkeyObj);
-	FREE_DBT(pkey);
+        FREE_DBT(pkey);
         FREE_DBT(data);
     }
     FREE_DBT(key);
@@ -1804,7 +1808,6 @@ DB_get_both(DBObject* self, PyObject* args, PyObject* kwargs)
     void *orig_data;
     DB_TXN *txn = NULL;
     static char* kwnames[] = { "key", "data", "txn", "flags", NULL };
-
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO|Oi:get_both", kwnames,
                                      &keyobj, &dataobj, &txnobj, &flags))
@@ -2165,6 +2168,31 @@ DB_rename(DBObject* self, PyObject* args)
 
 
 static PyObject*
+DB_get_private(DBObject* self, PyObject* args)
+{
+    if (!PyArg_ParseTuple(args,":get_private"))
+        return NULL;
+    /* We can give out the private field even if db is closed */
+    Py_INCREF(self->private);
+    return self->private;
+}
+
+static PyObject*
+DB_set_private(DBObject* self, PyObject* args)
+{
+    PyObject *private;
+
+    if (!PyArg_ParseTuple(args,"O:set_private",&private))
+        return NULL;
+    /* We can set the private field even if db is closed */
+    Py_DECREF(self->private);
+    Py_INCREF(private);
+    self->private = private;
+    RETURN_NONE();
+}
+
+
+static PyObject*
 DB_set_bt_minkey(DBObject* self, PyObject* args)
 {
     int err, minkey;
@@ -2180,16 +2208,16 @@ DB_set_bt_minkey(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-static int 
+static int
 _default_cmp(const DBT *leftKey,
 	     const DBT *rightKey)
 {
   int res;
   int lsize = leftKey->size, rsize = rightKey->size;
 
-  res = memcmp(leftKey->data, rightKey->data, 
+  res = memcmp(leftKey->data, rightKey->data,
 	       lsize < rsize ? lsize : rsize);
-  
+
   if (res == 0) {
       if (lsize < rsize) {
 	  res = -1;
@@ -2243,7 +2271,7 @@ _db_compareCallback(DB* db,
 	    PyErr_Print();
 	    res = _default_cmp(leftKey, rightKey);
 	}
-    
+
 	Py_XDECREF(args);
 	Py_XDECREF(result);
 
@@ -2269,7 +2297,7 @@ DB_set_bt_compare(DBObject* self, PyObject* args)
 	return NULL;
     }
 
-    /* 
+    /*
      * Perform a test call of the comparator function with two empty
      * string objects here.  verify that it returns an int (0).
      * err if not.
@@ -4873,6 +4901,31 @@ DBEnv_set_get_returns_none(DBEnvObject* self, PyObject* args)
 }
 
 static PyObject*
+DBEnv_get_private(DBEnvObject* self, PyObject* args)
+{
+    if (!PyArg_ParseTuple(args,":get_private"))
+        return NULL;
+    /* We can give out the private field even if dbenv is closed */
+    Py_INCREF(self->private);
+    return self->private;
+}
+
+static PyObject*
+DBEnv_set_private(DBEnvObject* self, PyObject* args)
+{
+    PyObject *private;
+
+    if (!PyArg_ParseTuple(args,"O:set_private",&private))
+        return NULL;
+    /* We can set the private field even if dbenv is closed */
+    Py_DECREF(self->private);
+    Py_INCREF(private);
+    self->private = private;
+    RETURN_NONE();
+}
+
+
+static PyObject*
 DBEnv_set_rpc_server(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
     int err;
@@ -5935,7 +5988,9 @@ static PyMethodDef DB_methods[] = {
     {"set_re_len",      (PyCFunction)DB_set_re_len,     METH_VARARGS},
     {"set_re_pad",      (PyCFunction)DB_set_re_pad,     METH_VARARGS},
     {"set_re_source",   (PyCFunction)DB_set_re_source,  METH_VARARGS},
-    {"set_q_extentsize",(PyCFunction)DB_set_q_extentsize,METH_VARARGS},
+    {"set_q_extentsize",(PyCFunction)DB_set_q_extentsize, METH_VARARGS},
+    {"set_private",     (PyCFunction)DB_set_private,    METH_VARARGS},
+    {"get_private",     (PyCFunction)DB_get_private,    METH_VARARGS},
     {"stat",            (PyCFunction)DB_stat,           METH_VARARGS|METH_KEYWORDS},
     {"sync",            (PyCFunction)DB_sync,           METH_VARARGS},
     {"truncate",        (PyCFunction)DB_truncate,       METH_VARARGS|METH_KEYWORDS},
@@ -6042,6 +6097,8 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 42)
     {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
 #endif
+    {"set_private",     (PyCFunction)DBEnv_set_private,       METH_VARARGS},
+    {"get_private",     (PyCFunction)DBEnv_get_private,       METH_VARARGS},
 #if (DBVER >= 45)
     {"set_event_notify", (PyCFunction)DBEnv_set_event_notify, METH_VARARGS},
 #endif

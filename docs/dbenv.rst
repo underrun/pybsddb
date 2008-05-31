@@ -180,6 +180,14 @@ DBEnv Methods
 
    The previous setting is returned.
 
+.. function:: set_private(object)
+
+   Link an arbitrary object to the DBEnv.
+
+.. function:: get_private()
+
+   Give the object linked to the DBEnv.
+   
 .. function:: set_lg_bsize(size)
 
    Set the size of the in-memory log buffer, in bytes.

@@ -947,6 +947,36 @@ class HashMultiDBTestCase(BasicMultiDBTestCase):
     envflags = db.DB_THREAD | db.DB_INIT_MPOOL | db.DB_INIT_LOCK
 
 
+class PrivateObject(unittest.TestCase) :
+    def tearDown(self) :
+        del self.obj
+
+    def test01_None(self) :
+        self.assertEqual(self.obj.get_private(), None)
+
+    def test02_assigment(self) :
+        a = "example of private object"
+        self.obj.set_private(a)
+        b = self.obj.get_private()
+        self.assertTrue(a is b)  # Object identity
+
+    def test03_leak(self) :
+        import sys
+        a = "example of private object"
+        refcount = sys.getrefcount(a)
+        self.obj.set_private(a)
+        self.assertEqual(refcount+1, sys.getrefcount(a))
+        self.obj.set_private(None)
+        self.assertEqual(refcount, sys.getrefcount(a))
+
+class DBEnvPrivateObject(PrivateObject) :
+    def setUp(self) :
+        self.obj = db.DBEnv()
+
+class DBPrivateObject(PrivateObject) :
+    def setUp(self) :
+        self.obj = db.DB()
+
 #----------------------------------------------------------------------
 #----------------------------------------------------------------------
 
@@ -970,6 +1000,8 @@ def test_suite():
     suite.addTest(unittest.makeSuite(HashDUPWithThreadTestCase))
     suite.addTest(unittest.makeSuite(BTreeMultiDBTestCase))
     suite.addTest(unittest.makeSuite(HashMultiDBTestCase))
+    suite.addTest(unittest.makeSuite(DBEnvPrivateObject))
+    suite.addTest(unittest.makeSuite(DBPrivateObject))
 
     return suite
 
