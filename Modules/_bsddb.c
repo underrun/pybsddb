@@ -5067,7 +5067,9 @@ DBEnv_rep_process_message(DBEnvObject* self, PyObject* args)
     PyObject *control_py, *rec_py;
     DBT control, rec;
     int envid;
+#if (DBVER >= 42)
     DB_LSN lsn;
+#endif
 
     if (!PyArg_ParseTuple(args, "OOi:rep_process_message", &control_py,
                 &rec_py, &envid))
@@ -5080,23 +5082,37 @@ DBEnv_rep_process_message(DBEnvObject* self, PyObject* args)
         return NULL;
 
     MYDB_BEGIN_ALLOW_THREADS;
+#if (DBVER >= 46)
     err = self->db_env->rep_process_message(self->db_env, &control, &rec,
             envid, &lsn);
+#else
+#if (DBVER >= 42)
+    err = self->db_env->rep_process_message(self->db_env, &control, &rec,
+            &envid, &lsn);
+#else
+    err = self->db_env->rep_process_message(self->db_env, &control, &rec,
+            &envid);
+#endif
+#endif
     MYDB_END_ALLOW_THREADS;
     switch (err) {
         case DB_REP_DUPMASTER :
         case DB_REP_HOLDELECTION :
+#if (DBVER >= 44)
         case DB_REP_IGNORE :
         case DB_REP_JOIN_FAILURE :
+#endif
             return Py_BuildValue("(iO)", err, Py_None);
             break;
         case DB_REP_NEWSITE :
             return Py_BuildValue("(is#)", err, rec.data, rec.size);
             break;
+#if (DBVER >= 42)
         case DB_REP_NOTPERM :
         case DB_REP_ISPERM :
             return Py_BuildValue("(i(ll))", err, lsn.file, lsn.offset);
             break;
+#endif
     }
     RETURN_IF_ERR();
     return Py_BuildValue("(OO)", Py_None, Py_None);
@@ -5133,6 +5149,20 @@ _DBEnv_rep_transportCallback(DB_ENV* db_env, const DBT* control, const DBT* rec,
     return ret;
 }
 
+#if (DBVER <= 41)
+static int
+_DBEnv_rep_transportCallbackOLD(DB_ENV* db_env, const DBT* control, const DBT* rec,
+        int envid, u_int32_t flags)
+{
+    DB_LSN lsn;
+
+    lsn.file = -1;  /* Dummy values */
+    lsn.offset = -1;
+    return _DBEnv_rep_transportCallback(db_env, control, rec, &lsn, envid,
+            flags);
+}
+#endif
+
 static PyObject*
 DBEnv_rep_set_transport(DBEnvObject* self, PyObject* args)
 {
@@ -5149,8 +5179,18 @@ DBEnv_rep_set_transport(DBEnvObject* self, PyObject* args)
     }
 
     MYDB_BEGIN_ALLOW_THREADS;
+#if (DBVER >=45)
     err = self->db_env->rep_set_transport(self->db_env, envid,
             &_DBEnv_rep_transportCallback);
+#else
+#if (DBVER >= 42)
+    err = self->db_env->set_rep_transport(self->db_env, envid,
+            &_DBEnv_rep_transportCallback);
+#else
+    err = self->db_env->set_rep_transport(self->db_env, envid,
+            &_DBEnv_rep_transportCallbackOLD);
+#endif
+#endif
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
 
@@ -7137,11 +7177,15 @@ DL_EXPORT(void) init_bsddb(void)
 
     ADD_INT(d, DB_REP_DUPMASTER);
     ADD_INT(d, DB_REP_HOLDELECTION);
+#if (DBVER >= 44)
     ADD_INT(d, DB_REP_IGNORE);
-    ADD_INT(d, DB_REP_ISPERM);
     ADD_INT(d, DB_REP_JOIN_FAILURE);
-    ADD_INT(d, DB_REP_NEWSITE);
+#endif
+#if (DBVER >= 42)
+    ADD_INT(d, DB_REP_ISPERM);
     ADD_INT(d, DB_REP_NOTPERM);
+#endif
+    ADD_INT(d, DB_REP_NEWSITE);
 
     ADD_INT(d, DB_REP_MASTER);
     ADD_INT(d, DB_REP_CLIENT);
