@@ -956,22 +956,30 @@ class PrivateObject(unittest.TestCase) :
     def tearDown(self) :
         del self.obj
 
-    def test01_None(self) :
+    def test01_DefaultIsNone(self) :
         self.assertEqual(self.obj.get_private(), None)
 
-    def test02_assigment(self) :
+    def test02_assignment(self) :
         a = "example of private object"
         self.obj.set_private(a)
         b = self.obj.get_private()
         self.assertTrue(a is b)  # Object identity
 
-    def test03_leak(self) :
+    def test03_leak_assignment(self) :
         import sys
         a = "example of private object"
         refcount = sys.getrefcount(a)
         self.obj.set_private(a)
         self.assertEqual(refcount+1, sys.getrefcount(a))
         self.obj.set_private(None)
+        self.assertEqual(refcount, sys.getrefcount(a))
+
+    def test04_leak_GC(self) :
+        import sys
+        a = "example of private object"
+        refcount = sys.getrefcount(a)
+        self.obj.set_private(a)
+        self.obj = None
         self.assertEqual(refcount, sys.getrefcount(a))
 
 class DBEnvPrivateObject(PrivateObject) :

@@ -937,6 +937,7 @@ DB_dealloc(DBObject* self)
         Py_DECREF(self->btCompareCallback);
         self->btCompareCallback = NULL;
     }
+    Py_DECREF(self->private);
     PyObject_Del(self);
 }
 
@@ -1036,7 +1037,7 @@ DBEnv_dealloc(DBEnvObject* self)
     if (self->in_weakreflist != NULL) {
         PyObject_ClearWeakRefs((PyObject *) self);
     }
-
+    Py_DECREF(self->private);
     PyObject_Del(self);
 }
 
