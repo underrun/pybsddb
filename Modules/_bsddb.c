@@ -1001,6 +1001,8 @@ newDBEnvObject(int flags)
     self->children_txns = NULL;
     Py_INCREF(Py_None);
     self->private = Py_None;
+    Py_INCREF(Py_None);
+    self->rep_transport = Py_None;
     self->in_weakreflist = NULL;
     self->event_notifyCallback = NULL;
 
@@ -1038,6 +1040,7 @@ DBEnv_dealloc(DBEnvObject* self)
         PyObject_ClearWeakRefs((PyObject *) self);
     }
     Py_DECREF(self->private);
+    Py_DECREF(self->rep_transport);
     PyObject_Del(self);
 }
 
@@ -5056,6 +5059,107 @@ DBEnv_set_event_notify(DBEnvObject* self, PyObject* args)
 /* --------------------------------------------------------------------- */
 /* REPLICATION METHODS: Base Replication */
 
+
+static PyObject*
+DBEnv_rep_process_message(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    PyObject *control_py, *rec_py;
+    DBT control, rec;
+    int envid;
+    DB_LSN lsn;
+
+    if (!PyArg_ParseTuple(args, "OOi:rep_process_message", &control_py,
+                &rec_py, &envid))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    if (!make_dbt(control_py, &control))
+        return NULL;
+    if (!make_dbt(rec_py, &rec))
+        return NULL;
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_process_message(self->db_env, &control, &rec,
+            envid, &lsn);
+    MYDB_END_ALLOW_THREADS;
+    switch (err) {
+        case DB_REP_DUPMASTER :
+        case DB_REP_HOLDELECTION :
+        case DB_REP_IGNORE :
+        case DB_REP_JOIN_FAILURE :
+            return Py_BuildValue("(iO)", err, Py_None);
+            break;
+        case DB_REP_NEWSITE :
+            return Py_BuildValue("(is#)", err, rec.data, rec.size);
+            break;
+        case DB_REP_NOTPERM :
+        case DB_REP_ISPERM :
+            return Py_BuildValue("(i(ll))", err, lsn.file, lsn.offset);
+            break;
+    }
+    RETURN_IF_ERR();
+    return Py_BuildValue("(OO)", Py_None, Py_None);
+}
+
+static int
+_DBEnv_rep_transportCallback(DB_ENV* db_env, const DBT* control, const DBT* rec,
+        const DB_LSN *lsn, int envid, u_int32_t flags)
+{
+    DBEnvObject *dbenv;
+    PyObject* rep_transport;
+    PyObject* args;
+    PyObject* result = NULL;
+    int ret=0;
+
+    MYDB_BEGIN_BLOCK_THREADS;
+    dbenv = (DBEnvObject *)db_env->app_private;
+    rep_transport = dbenv->rep_transport;
+
+    args = Py_BuildValue("(Os#s#(ll)iI)", dbenv,
+            control->data, control->size,
+            rec->data, rec->size, lsn->file, lsn->offset, envid, flags);
+    if (args) {
+        result = PyEval_CallObject(rep_transport, args);
+    }
+
+    if ((!args) || (!result)) {
+        PyErr_Print();
+        ret = -1;
+    }
+    Py_XDECREF(args);
+    Py_XDECREF(result);
+    MYDB_END_BLOCK_THREADS;
+    return ret;
+}
+
+static PyObject*
+DBEnv_rep_set_transport(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int envid;
+    PyObject *rep_transport;
+
+    if (!PyArg_ParseTuple(args, "iO:rep_set_transport", &envid, &rep_transport))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+    if (!PyCallable_Check(rep_transport)) {
+        makeTypeError("Callable", rep_transport);
+        return NULL;
+    }
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_set_transport(self->db_env, envid,
+            &_DBEnv_rep_transportCallback);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+
+    Py_DECREF(self->rep_transport);
+    Py_INCREF(rep_transport);
+    self->rep_transport = rep_transport;
+    RETURN_NONE();
+}
+
 #if (DBVER >= 47)
 static PyObject*
 DBEnv_rep_set_request(DBEnvObject* self, PyObject* args)
@@ -5163,6 +5267,25 @@ DBEnv_rep_get_config(DBEnvObject* self, PyObject* args)
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
     return PyBool_FromLong(onoff);
+}
+#endif
+
+#if (DBVER >= 46)
+static PyObject*
+DBEnv_rep_elect(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    u_int32_t nsites, nvotes;
+
+    if (!PyArg_ParseTuple(args, "II:rep_elect", &nsites, &nvotes)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_elect(self->db_env, nvotes, nvotes, 0);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
 }
 #endif
 
@@ -6258,6 +6381,12 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_private",     (PyCFunction)DBEnv_get_private,       METH_VARARGS},
     {"rep_start",       (PyCFunction)DBEnv_rep_start,
         METH_VARARGS|METH_KEYWORDS},
+    {"rep_set_transport", (PyCFunction)DBEnv_rep_set_transport, METH_VARARGS},
+    {"rep_process_message", (PyCFunction)DBEnv_rep_process_message,
+        METH_VARARGS},
+#if (DBVER >= 46)
+    {"rep_elect",       (PyCFunction)DBEnv_rep_elect,         METH_VARARGS},
+#endif
 #if (DBVER >= 44)
     {"rep_set_config",  (PyCFunction)DBEnv_rep_set_config,    METH_VARARGS},
     {"rep_get_config",  (PyCFunction)DBEnv_rep_get_config,    METH_VARARGS},
@@ -7005,6 +7134,14 @@ DL_EXPORT(void) init_bsddb(void)
     ADD_INT(d, DB_EVENT_REP_STARTUPDONE);
     ADD_INT(d, DB_EVENT_WRITE_FAILED);
 #endif
+
+    ADD_INT(d, DB_REP_DUPMASTER);
+    ADD_INT(d, DB_REP_HOLDELECTION);
+    ADD_INT(d, DB_REP_IGNORE);
+    ADD_INT(d, DB_REP_ISPERM);
+    ADD_INT(d, DB_REP_JOIN_FAILURE);
+    ADD_INT(d, DB_REP_NEWSITE);
+    ADD_INT(d, DB_REP_NOTPERM);
 
     ADD_INT(d, DB_REP_MASTER);
     ADD_INT(d, DB_REP_CLIENT);

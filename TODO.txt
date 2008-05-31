@@ -27,3 +27,5 @@
 * 20080531: "DB_ENV->rep_set_limit" and "DB_ENV->rep_get_limit", support
   for long values.
 
+* 20080531: "DB_ENV->rep_elect" only works in BDB 4.7, with current code.
+

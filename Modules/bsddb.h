@@ -105,7 +105,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "4.7.1devel7"
+#define PY_BSDDB_VERSION "4.7.1devel9"
 
 /* Python object definitions */
 
@@ -135,6 +135,7 @@ typedef struct {
     struct DBObject *children_dbs;
     struct DBTxnObject *children_txns;
     PyObject        *private;
+    PyObject        *rep_transport;
     PyObject        *in_weakreflist; /* List of weak references */
 } DBEnvObject;
 

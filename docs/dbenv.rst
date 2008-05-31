@@ -773,6 +773,32 @@ it if you want to be able to use the Replication Manager.
 DBEnv Replication Methods
 -------------------------
 
+.. function:: rep_elect(nsites, nvotes)
+
+   Holds an election for the master of a replication group.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_elect.html>`__
+
+.. function:: rep_set_transport(envid, transportFunc)
+
+   Initializes the communication infrastructure for a database
+   environment participating in a replicated application.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_transport.html>`__
+
+.. function:: rep_process_messsage(control, rec, envid)
+
+   Processes an incoming replication message sent by a member of the
+   replication group to the local database environment.
+
+   Returns a two element tuple.
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_message.html>`__
+
 .. function:: rep_start(flags, cdata=None)
 
    Configures the database environment as a client or master in a group

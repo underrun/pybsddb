@@ -12,7 +12,10 @@
   * Support some more base replication calls: "DB_ENV->rep_start",
     "DB_ENV->rep_sync", "DB_ENV->rep_set_config", "DB_ENV->rep_get_config",
     "DB_ENV->rep_set_limit", "DB_ENV->rep_get_limit",
-    "DB_ENV->sep_set_request", "DB_ENV->rep_get_request",
+    "DB_ENV->rep_set_request", "DB_ENV->rep_get_request".
+  * Support more base replication calls:  "DB_ENV->rep_elect",
+    "DB_ENV->rep_set_transport" and "DB_ENV->rep_process_message". 
+    Support also related flags.
 
 4.7.0:
   * Support for Berkeley DB 4.7.
