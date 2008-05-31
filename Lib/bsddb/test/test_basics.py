@@ -948,6 +948,11 @@ class HashMultiDBTestCase(BasicMultiDBTestCase):
 
 
 class PrivateObject(unittest.TestCase) :
+    import sys
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
     def tearDown(self) :
         del self.obj
 

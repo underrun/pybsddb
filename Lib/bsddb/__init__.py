@@ -115,8 +115,12 @@ class _iter_mixin(UserDict.DictMixin):
             except _bsddb.DBCursorClosedError:
                 # the database was modified during iteration.  abort.
                 pass
-        finally:
+# When Python 2.3 not supported in bsddb3, we can change this for "finally"
+        except :
             self._in_iter -= 1
+            raise
+
+        self._in_iter -= 1
 
     def iteritems(self):
         if not self.db:
@@ -154,8 +158,12 @@ class _iter_mixin(UserDict.DictMixin):
             except _bsddb.DBCursorClosedError:
                 # the database was modified during iteration.  abort.
                 pass
-        finally:
+# When Python 2.3 not supported in bsddb3, we can change this for "finally"
+        except :
             self._in_iter -= 1
+            raise
+
+        self._in_iter -= 1
 
 
 class _DBWithCursor(_iter_mixin):
