@@ -5056,6 +5056,7 @@ DBEnv_set_event_notify(DBEnvObject* self, PyObject* args)
 /* --------------------------------------------------------------------- */
 /* REPLICATION METHODS: Base Replication */
 
+#if (DBVER >= 47)
 static PyObject*
 DBEnv_rep_set_request(DBEnvObject* self, PyObject* args)
 {
@@ -5089,7 +5090,9 @@ DBEnv_rep_get_request(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     return Py_BuildValue("II", minimum, maximum);
 }
+#endif
 
+#if (DBVER >= 45)
 static PyObject*
 DBEnv_rep_set_limit(DBEnvObject* self, PyObject* args)
 {
@@ -5123,7 +5126,9 @@ DBEnv_rep_get_limit(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     return PyInt_FromLong(bytes);
 }
+#endif
 
+#if (DBVER >= 44)
 static PyObject*
 DBEnv_rep_set_config(DBEnvObject* self, PyObject* args)
 {
@@ -5159,6 +5164,7 @@ DBEnv_rep_get_config(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     return PyBool_FromLong(onoff);
 }
+#endif
 
 static PyObject*
 DBEnv_rep_start(DBEnvObject* self, PyObject* args, PyObject* kwargs)
@@ -5187,6 +5193,7 @@ DBEnv_rep_start(DBEnvObject* self, PyObject* args, PyObject* kwargs)
     RETURN_NONE();
 }
 
+#if (DBVER >= 44)
 static PyObject*
 DBEnv_rep_sync(DBEnvObject* self, PyObject* args)
 {
@@ -5202,6 +5209,7 @@ DBEnv_rep_sync(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+#endif
 
 
 #if (DBVER >= 45)
@@ -6250,13 +6258,19 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_private",     (PyCFunction)DBEnv_get_private,       METH_VARARGS},
     {"rep_start",       (PyCFunction)DBEnv_rep_start,
         METH_VARARGS|METH_KEYWORDS},
+#if (DBVER >= 44)
     {"rep_set_config",  (PyCFunction)DBEnv_rep_set_config,    METH_VARARGS},
     {"rep_get_config",  (PyCFunction)DBEnv_rep_get_config,    METH_VARARGS},
+    {"rep_sync",        (PyCFunction)DBEnv_rep_sync,          METH_VARARGS},
+#endif
+#if (DBVER >= 45)
     {"rep_set_limit",   (PyCFunction)DBEnv_rep_set_limit,     METH_VARARGS},
     {"rep_get_limit",   (PyCFunction)DBEnv_rep_get_limit,     METH_VARARGS},
+#endif
+#if (DBVER >= 47)
     {"rep_set_request", (PyCFunction)DBEnv_rep_set_request,   METH_VARARGS},
     {"rep_get_request", (PyCFunction)DBEnv_rep_get_request,   METH_VARARGS},
-    {"rep_sync",        (PyCFunction)DBEnv_rep_sync,          METH_VARARGS},
+#endif
 #if (DBVER >= 45)
     {"set_event_notify", (PyCFunction)DBEnv_set_event_notify, METH_VARARGS},
 #endif
