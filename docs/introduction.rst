@@ -1,14 +1,14 @@
 .. $Id$
 
 ==============================================
-Berkeley DB 3.x & 4.x Python Extension Package
+Berkeley DB 4.x Python Extension Package
 ==============================================
 
 Introduction
 ------------
 
 This is a simple bit of documentation for the bsddb3.db Python extension
-module which wraps the Berkeley DB 3.x or 4.x C library. The extension
+module which wraps the Berkeley DB 4.x C library. The extension
 module is located in a Python package along with a few pure python
 modules.
 
