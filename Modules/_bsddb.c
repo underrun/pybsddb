@@ -5041,6 +5041,12 @@ DBEnv_set_event_notify(DBEnvObject* self, PyObject* args)
     Py_INCREF(notifyFunc);
     self->event_notifyCallback = notifyFunc;
 
+    /* This is to workaround a problem with un-initialized threads (see
+       comment in DB_associate) */
+#ifdef WITH_THREAD
+    PyEval_InitThreads();
+#endif
+
     MYDB_BEGIN_ALLOW_THREADS;
     err = self->db_env->set_event_notify(self->db_env, _dbenv_event_notifyCallback);
     MYDB_END_ALLOW_THREADS;
