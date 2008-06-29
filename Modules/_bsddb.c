@@ -5102,6 +5102,10 @@ DBEnv_rep_process_message(DBEnvObject* self, PyObject* args)
 #endif
     MYDB_END_ALLOW_THREADS;
     switch (err) {
+        case DB_REP_NEWMASTER :
+          return Py_BuildValue("(iO)", envid, Py_None);
+          break;
+
         case DB_REP_DUPMASTER :
         case DB_REP_HOLDELECTION :
 #if (DBVER >= 44)

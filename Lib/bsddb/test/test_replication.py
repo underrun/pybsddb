@@ -224,7 +224,9 @@ class DBBaseReplication(unittest.TestCase):
             self.c2m.put((control, rec, envid))
 
         self.dbenvMaster.rep_set_transport(0,m2c)
+        self.dbenvMaster.rep_set_priority(10)
         self.dbenvClient.rep_set_transport(1,c2m)
+        self.dbenvClient.rep_set_priority(0)
 
         #self.dbenvMaster.set_verbose(db.DB_VERB_REPLICATION, True)
         #self.dbenvMaster.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
@@ -266,10 +268,7 @@ class DBBaseReplication(unittest.TestCase):
         timeout = time.time()+2
         while (time.time()<timeout) and not (self.confirmed_master and self.client_startupdone) :
             time.sleep(0.02)
-        if db.version() >= (4,6) :
-            self.assertTrue(time.time()<timeout)
-        else :
-            self.assertTrue(time.time()>=timeout)
+        self.assertTrue(time.time()<timeout)
 
     def tearDown(self):
         if self.dbClient :
@@ -339,6 +338,9 @@ class DBBaseReplication(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     if db.version() >= (4,5) :
+        if have_threads :
+            suite.addTest(unittest.makeSuite(DBBaseReplication))
+
         dbenv = db.DBEnv()
         try :
             dbenv.repmgr_get_ack_policy()
@@ -349,9 +351,6 @@ def test_suite():
         del dbenv
         if ReplicationManager_available :
             suite.addTest(unittest.makeSuite(DBReplicationManager))
-
-        if have_threads :
-            suite.addTest(unittest.makeSuite(DBBaseReplication))
 
     return suite
 
