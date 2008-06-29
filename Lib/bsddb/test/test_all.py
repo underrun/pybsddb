@@ -16,6 +16,13 @@ try:
 except ImportError:
     from test import test_support
 
+try:
+    from threading import Thread, currentThread
+    del Thread, currentThread
+    have_threads = True
+except ImportError:
+    have_threads = False
+
 verbose = 0
 if 'verbose' in sys.argv:
     verbose = 1
@@ -81,11 +88,11 @@ def set_test_path_prefix(path) :
 def remove_test_path_directory() :
     test_support.rmtree(get_new_path.prefix)
 
-try :
+if have_threads :
     import threading
     get_new_path.mutex=threading.Lock()
     del threading
-except ImportError:
+else :
     class Lock(object) :
         def acquire(self) :
             pass

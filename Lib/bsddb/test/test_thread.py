@@ -16,19 +16,16 @@ except NameError:
 DASH = '-'
 
 try:
-    from threading import Thread, currentThread
-    have_threads = True
-except ImportError:
-    have_threads = False
-
-try:
     WindowsError
 except NameError:
     class WindowsError(Exception):
         pass
 
 import unittest
-from test_all import verbose, get_new_environment_path, get_new_database_path
+from test_all import verbose, have_threads, get_new_environment_path, get_new_database_path
+
+if have_threads :
+    from threading import Thread, currentThread
 
 
 try:

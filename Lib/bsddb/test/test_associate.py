@@ -6,14 +6,8 @@ import sys, os, string
 import time
 from pprint import pprint
 
-try:
-    from threading import Thread, currentThread
-    have_threads = 1
-except ImportError:
-    have_threads = 0
-
 import unittest
-from test_all import verbose, get_new_environment_path
+from test_all import verbose, have_threads, get_new_environment_path
 
 try:
     # For Pythons w/distutils pybsddb
