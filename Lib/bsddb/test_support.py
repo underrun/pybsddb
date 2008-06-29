@@ -29,14 +29,14 @@ def rmtree(path):
 
 def find_unused_port(family=socket.AF_INET, socktype=socket.SOCK_STREAM):
     tempsock = socket.socket(family, socktype)
-    port = bind_port(tempsock)
+    port = bind_port(tempsock, family=family, socktype=socktype)
     tempsock.close()
     del tempsock
     return port
 
 HOST = 'localhost'
-def bind_port(sock, host=HOST):
-    if sock.family == socket.AF_INET and sock.type == socket.SOCK_STREAM:
+def bind_port(sock, family, socktype, host=HOST):
+    if family == socket.AF_INET and type == socket.SOCK_STREAM:
         if hasattr(socket, 'SO_REUSEADDR'):
             if sock.getsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR) == 1:
                 raise TestFailed("tests should never set the SO_REUSEADDR "   \

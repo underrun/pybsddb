@@ -5138,7 +5138,13 @@ _DBEnv_rep_transportCallback(DB_ENV* db_env, const DBT* control, const DBT* rec,
     dbenv = (DBEnvObject *)db_env->app_private;
     rep_transport = dbenv->rep_transport;
 
-    args = Py_BuildValue("(Os#s#(ll)iI)", dbenv,
+    args = Py_BuildValue(
+#if (PY_VERSION_HEX >= 0x02040000)
+            "(Os#s#(ll)iI)",
+#else
+            "(Os#s#(ll)ii)",
+#endif
+            dbenv,
             control->data, control->size,
             rec->data, rec->size, lsn->file, lsn->offset, envid, flags);
     if (args) {
@@ -5238,7 +5244,11 @@ DBEnv_rep_get_request(DBEnvObject* self, PyObject* args)
     err = self->db_env->rep_get_request(self->db_env, &minimum, &maximum);
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
+#if (PY_VERSION_HEX >= 0x02040000)
     return Py_BuildValue("II", minimum, maximum);
+#else
+    return Py_BuildValue("ii", minimum, maximum);
+#endif
 }
 #endif
 

@@ -37,6 +37,6 @@
   the underlying python version doesn't have it. Because a bug in the
   test code, this version is used always, even if this python version
   has "test_support". This is actually useful, because current test
-  code uses features of "test_support" that are not available in
+  code uses features in "test_support" that are not available in
   previous python versions.
   
