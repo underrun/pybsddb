@@ -33,3 +33,10 @@
   The right thing to do would be tweak the different replication timeout
   values to avoid the race condition.
 
+* 20080629: The testsuite implements a "test_support" module, used when
+  the underlying python version doesn't have it. Because a bug in the
+  test code, this version is used always, even if this python version
+  has "test_support". This is actually useful, because current test
+  code uses features of "test_support" that are not available in
+  previous python versions.
+  
