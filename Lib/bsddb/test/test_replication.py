@@ -201,12 +201,12 @@ class DBBaseReplication(unittest.TestCase):
 
         self.confirmed_master=self.client_startupdone=False
         def confirmed_master(a,b,c) :
-            if b==db.DB_EVENT_REP_MASTER :
-                self.confirmed_master=True
+            if (b == db.DB_EVENT_REP_MASTER) or (b == db.DB_EVENT_REP_ELECTED) :
+                self.confirmed_master = True
 
         def client_startupdone(a,b,c) :
-            if b==db.DB_EVENT_REP_STARTUPDONE :
-                self.client_startupdone=True
+            if b == db.DB_EVENT_REP_STARTUPDONE :
+                self.client_startupdone = True
 
         self.dbenvMaster.set_event_notify(confirmed_master)
         self.dbenvClient.set_event_notify(client_startupdone)
@@ -218,35 +218,66 @@ class DBBaseReplication(unittest.TestCase):
         # There are only two nodes, so we don't need to
         # do any routing decision
         def m2c(dbenv, control, rec, lsnp, envid, flags) :
-            self.m2c.put((control, rec, envid))
+            self.m2c.put((control, rec))
 
         def c2m(dbenv, control, rec, lsnp, envid, flags) :
-            self.c2m.put((control, rec, envid))
+            self.c2m.put((control, rec))
 
-        self.dbenvMaster.rep_set_transport(0,m2c)
+        self.dbenvMaster.rep_set_transport(13,m2c)
         self.dbenvMaster.rep_set_priority(10)
-        self.dbenvClient.rep_set_transport(1,c2m)
+        self.dbenvClient.rep_set_transport(3,c2m)
         self.dbenvClient.rep_set_priority(0)
 
+        self.assertEquals(self.dbenvMaster.rep_get_priority(),10)
+        self.assertEquals(self.dbenvClient.rep_get_priority(),0)
+
+        (minimum, maximum) = self.dbenvClient.rep_get_request()
+        self.dbenvClient.rep_set_request(minimum-1, maximum+1)
+        self.assertEqual(self.dbenvClient.rep_get_request(),
+                (minimum-1, maximum+1))
         #self.dbenvMaster.set_verbose(db.DB_VERB_REPLICATION, True)
         #self.dbenvMaster.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
         #self.dbenvClient.set_verbose(db.DB_VERB_REPLICATION, True)
         #self.dbenvClient.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
 
-        self.dbenvMaster.rep_start(flags=db.DB_REP_MASTER)
+        # Get ready to hold an election
+        #self.dbenvMaster.rep_start(flags=db.DB_REP_MASTER)
+        self.dbenvMaster.rep_start(flags=db.DB_REP_CLIENT)
         self.dbenvClient.rep_start(flags=db.DB_REP_CLIENT)
+        self.master_doing_election=[False]
+        self.client_doing_election=[False]
 
-        def thread_do(env, q) :
+        def thread_do(env, q, envid, election_status, must_be_master) :
             while True :
                 v=q.get()
                 if v == None : return
-                env.rep_process_message(v[0],v[1],v[2])
+                r = env.rep_process_message(v[0],v[1],envid)
+                if must_be_master and self.confirmed_master :
+                    self.dbenvMaster.rep_start(flags = db.DB_REP_MASTER)
+                    must_be_master = False
+
+                if r[0] == db.DB_REP_HOLDELECTION :
+                    def elect() :
+                        while True :
+                            try :
+                                env.rep_elect(2, 1)
+                                election_status[0] = False
+                                break
+                            except db.DBRepUnavailError :
+                                pass
+                    if not election_status[0] and not self.confirmed_master :
+                        election_status[0] = True
+                        t=Thread(target=elect)
+                        t.setDaemon(True)
+                        t.start()
 
         def thread_master() :
-            return thread_do(self.dbenvMaster, self.c2m)
+            return thread_do(self.dbenvMaster, self.c2m, 3,
+                    self.master_doing_election, True)
 
         def thread_client() :
-            return thread_do(self.dbenvClient, self.m2c)
+            return thread_do(self.dbenvClient, self.m2c, 13,
+                    self.client_doing_election, False)
 
         from threading import Thread
         t_m=Thread(target=thread_master)
@@ -259,6 +290,17 @@ class DBBaseReplication(unittest.TestCase):
         self.t_m = t_m
         self.t_c = t_c
 
+        self.dbenvMaster.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
+        self.dbenvClient.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
+        self.client_doing_election[0] = True
+        while True :
+            try :
+                self.dbenvClient.rep_elect(2, 1)
+                self.client_doing_election[0] = False
+                break
+            except db.DBRepUnavailError :
+                pass
+
         self.dbMaster = self.dbClient = None
 
         # The timeout is necessary in BDB 4.5, since DB_EVENT_REP_STARTUPDONE
@@ -269,6 +311,7 @@ class DBBaseReplication(unittest.TestCase):
         while (time.time()<timeout) and not (self.confirmed_master and self.client_startupdone) :
             time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
+
 
     def tearDown(self):
         if self.dbClient :
