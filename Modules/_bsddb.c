@@ -199,6 +199,8 @@ static PyObject* DBPermissionsError;    /* EPERM  */
 static PyObject* DBRepHandleDeadError;  /* DB_REP_HANDLE_DEAD */
 #endif
 
+static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
+
 #if (DBVER < 43)
 #define	DB_BUFFER_SMALL		ENOMEM
 #endif
@@ -649,6 +651,8 @@ static int makeDBError(int err)
 #if (DBVER >= 42)
         case DB_REP_HANDLE_DEAD : errObj = DBRepHandleDeadError; break;
 #endif
+
+        case DB_REP_UNAVAIL : errObj = DBRepUnavailError; break;
 
         default:      errObj = DBError;             break;
     }
@@ -7327,6 +7331,8 @@ DL_EXPORT(void) init_bsddb(void)
 #if (DBVER >= 42)
     MAKE_EX(DBRepHandleDeadError);
 #endif
+
+    MAKE_EX(DBRepUnavailError);
 
 #undef MAKE_EX
 
