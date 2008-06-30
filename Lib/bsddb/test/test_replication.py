@@ -58,6 +58,25 @@ class DBReplicationManager(unittest.TestCase):
         self.dbenvMaster.set_event_notify(confirmed_master)
         self.dbenvClient.set_event_notify(client_startupdone)
 
+        #self.dbenvMaster.set_verbose(db.DB_VERB_REPLICATION, True)
+        #self.dbenvMaster.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
+        #self.dbenvClient.set_verbose(db.DB_VERB_REPLICATION, True)
+        #self.dbenvClient.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
+
+        self.dbMaster = self.dbClient = None
+
+
+    def tearDown(self):
+        if self.dbClient :
+            self.dbClient.close()
+        if self.dbMaster :
+            self.dbMaster.close()
+        self.dbenvClient.close()
+        self.dbenvMaster.close()
+        test_support.rmtree(self.homeDirClient)
+        test_support.rmtree(self.homeDirMaster)
+
+    def test01_basic_replication(self) :
         master_port = test_support.find_unused_port()
         self.dbenvMaster.repmgr_set_local_site("127.0.0.1", master_port)
         client_port = test_support.find_unused_port()
@@ -84,16 +103,10 @@ class DBReplicationManager(unittest.TestCase):
         self.assertEquals(self.dbenvClient.repmgr_get_ack_policy(),
                 db.DB_REPMGR_ACKS_ALL)
 
-        #self.dbenvMaster.set_verbose(db.DB_VERB_REPLICATION, True)
-        #self.dbenvMaster.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
-        #self.dbenvClient.set_verbose(db.DB_VERB_REPLICATION, True)
-        #self.dbenvClient.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
-
-        self.dbMaster = self.dbClient = None
-
         # The timeout is necessary in BDB 4.5, since DB_EVENT_REP_STARTUPDONE
         # is not generated if the master has no new transactions.
         # This is solved in BDB 4.6 (#15542).
+        import time
         timeout = time.time()+2
         while (time.time()<timeout) and not (self.confirmed_master and self.client_startupdone) :
             time.sleep(0.02)
@@ -120,17 +133,6 @@ class DBReplicationManager(unittest.TestCase):
             d = self.dbenvMaster.repmgr_stat(flags=db.DB_STAT_CLEAR);
             self.assertTrue("msgs_queued" in d)
 
-    def tearDown(self):
-        if self.dbClient :
-            self.dbClient.close()
-        if self.dbMaster :
-            self.dbMaster.close()
-        self.dbenvClient.close()
-        self.dbenvMaster.close()
-        test_support.rmtree(self.homeDirClient)
-        test_support.rmtree(self.homeDirMaster)
-
-    def test01_basic_replication(self) :
         self.dbMaster=db.DB(self.dbenvMaster)
         txn=self.dbenvMaster.txn_begin()
         self.dbMaster.open("test", db.DB_HASH, db.DB_CREATE, 0666, txn=txn)
@@ -179,27 +181,9 @@ class DBReplicationManager(unittest.TestCase):
             txn.commit()
         self.assertEquals(None, v)
 
-class DBBaseReplication(unittest.TestCase):
-    import sys
-    if sys.version_info[:3] < (2, 4, 0):
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-
+class DBBaseReplication(DBReplicationManager):
     def setUp(self) :
-        self.homeDirMaster = get_new_environment_path()
-        self.homeDirClient = get_new_environment_path()
-
-        self.dbenvMaster = db.DBEnv()
-        self.dbenvClient = db.DBEnv()
-
-        self.dbenvMaster.open(self.homeDirMaster, db.DB_CREATE | db.DB_INIT_TXN
-                | db.DB_INIT_LOG | db.DB_INIT_MPOOL | db.DB_INIT_LOCK |
-                db.DB_INIT_REP | db.DB_RECOVER | db.DB_THREAD, 0666)
-        self.dbenvClient.open(self.homeDirClient, db.DB_CREATE | db.DB_INIT_TXN
-                | db.DB_INIT_LOG | db.DB_INIT_MPOOL | db.DB_INIT_LOCK |
-                db.DB_INIT_REP | db.DB_RECOVER | db.DB_THREAD, 0666)
-
-        self.confirmed_master=self.client_startupdone=False
+        DBReplicationManager.setUp(self)
         def confirmed_master(a,b,c) :
             if (b == db.DB_EVENT_REP_MASTER) or (b == db.DB_EVENT_REP_ELECTED) :
                 self.confirmed_master = True
@@ -240,77 +224,27 @@ class DBBaseReplication(unittest.TestCase):
         #self.dbenvClient.set_verbose(db.DB_VERB_REPLICATION, True)
         #self.dbenvClient.set_verbose(db.DB_VERB_FILEOPS_ALL, True)
 
-        # Get ready to hold an election
-        #self.dbenvMaster.rep_start(flags=db.DB_REP_MASTER)
-        self.dbenvMaster.rep_start(flags=db.DB_REP_CLIENT)
-        self.dbenvClient.rep_start(flags=db.DB_REP_CLIENT)
-        self.master_doing_election=[False]
-        self.client_doing_election=[False]
-
-        def thread_do(env, q, envid, election_status, must_be_master) :
-            while True :
-                v=q.get()
-                if v == None : return
-                r = env.rep_process_message(v[0],v[1],envid)
-                if must_be_master and self.confirmed_master :
-                    self.dbenvMaster.rep_start(flags = db.DB_REP_MASTER)
-                    must_be_master = False
-
-                if r[0] == db.DB_REP_HOLDELECTION :
-                    def elect() :
-                        while True :
-                            try :
-                                env.rep_elect(2, 1)
-                                election_status[0] = False
-                                break
-                            except db.DBRepUnavailError :
-                                pass
-                    if not election_status[0] and not self.confirmed_master :
-                        election_status[0] = True
-                        t=Thread(target=elect)
-                        t.setDaemon(True)
-                        t.start()
-
         def thread_master() :
-            return thread_do(self.dbenvMaster, self.c2m, 3,
+            return self.thread_do(self.dbenvMaster, self.c2m, 3,
                     self.master_doing_election, True)
 
         def thread_client() :
-            return thread_do(self.dbenvClient, self.m2c, 13,
+            return self.thread_do(self.dbenvClient, self.m2c, 13,
                     self.client_doing_election, False)
 
         from threading import Thread
         t_m=Thread(target=thread_master)
         t_m.setDaemon(True)
-        t_m.start()
         t_c=Thread(target=thread_client)
         t_c.setDaemon(True)
-        t_c.start()
 
         self.t_m = t_m
         self.t_c = t_c
 
-        self.dbenvMaster.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
-        self.dbenvClient.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
-        self.client_doing_election[0] = True
-        while True :
-            try :
-                self.dbenvClient.rep_elect(2, 1)
-                self.client_doing_election[0] = False
-                break
-            except db.DBRepUnavailError :
-                pass
-
         self.dbMaster = self.dbClient = None
 
-        # The timeout is necessary in BDB 4.5, since DB_EVENT_REP_STARTUPDONE
-        # is not generated if the master has no new transactions.
-        # This is solved in BDB 4.6 (#15542).
-        import time
-        timeout = time.time()+2
-        while (time.time()<timeout) and not (self.confirmed_master and self.client_startupdone) :
-            time.sleep(0.02)
-        self.assertTrue(time.time()<timeout)
+        self.master_doing_election=[False]
+        self.client_doing_election=[False]
 
 
     def tearDown(self):
@@ -328,6 +262,33 @@ class DBBaseReplication(unittest.TestCase):
         test_support.rmtree(self.homeDirMaster)
 
     def test01_basic_replication(self) :
+        self.dbenvMaster.rep_start(flags=db.DB_REP_MASTER)
+        self.dbenvClient.rep_start(flags=db.DB_REP_CLIENT)
+
+        def thread_do(env, q, envid, election_status, must_be_master) :
+            while True :
+                v=q.get()
+                if v == None : return
+                env.rep_process_message(v[0], v[1], envid)
+
+        self.thread_do = thread_do
+
+        self.t_m.start()
+        self.t_c.start()
+
+        # The timeout is necessary in BDB 4.5, since DB_EVENT_REP_STARTUPDONE
+        # is not generated if the master has no new transactions.
+        # This is solved in BDB 4.6 (#15542).
+        import time
+        timeout = time.time()+2
+        while (time.time()<timeout) and not (self.confirmed_master and
+                self.client_startupdone) :
+           time.sleep(0.02)
+        if db.version() >= (4,6) :
+            self.assertTrue(time.time()<timeout)
+        else :
+            self.assertTrue(time.time()>=timeout)
+
         self.dbMaster=db.DB(self.dbenvMaster)
         txn=self.dbenvMaster.txn_begin()
         self.dbMaster.open("test", db.DB_HASH, db.DB_CREATE, 0666, txn=txn)
@@ -376,14 +337,60 @@ class DBBaseReplication(unittest.TestCase):
             txn.commit()
         self.assertEquals(None, v)
 
+    def test02_master_election(self) :
+        # Get ready to hold an election
+        #self.dbenvMaster.rep_start(flags=db.DB_REP_MASTER)
+        self.dbenvMaster.rep_start(flags=db.DB_REP_CLIENT)
+        self.dbenvClient.rep_start(flags=db.DB_REP_CLIENT)
+
+        def thread_do(env, q, envid, election_status, must_be_master) :
+            while True :
+                v=q.get()
+                if v == None : return
+                r = env.rep_process_message(v[0],v[1],envid)
+                if must_be_master and self.confirmed_master :
+                    self.dbenvMaster.rep_start(flags = db.DB_REP_MASTER)
+                    must_be_master = False
+
+                if r[0] == db.DB_REP_HOLDELECTION :
+                    def elect() :
+                        while True :
+                            try :
+                                env.rep_elect(2, 1)
+                                election_status[0] = False
+                                break
+                            except db.DBRepUnavailError :
+                                pass
+                    if not election_status[0] and not self.confirmed_master :
+                        from threading import Thread
+                        election_status[0] = True
+                        t=Thread(target=elect)
+                        t.setDaemon(True)
+                        t.start()
+
+        self.thread_do = thread_do
+
+        self.t_m.start()
+        self.t_c.start()
+
+        self.dbenvMaster.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
+        self.dbenvClient.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
+        self.client_doing_election[0] = True
+        while True :
+            try :
+                self.dbenvClient.rep_elect(2, 1)
+                self.client_doing_election[0] = False
+                break
+            except db.DBRepUnavailError :
+                pass
+
+        self.assertTrue(self.confirmed_master)
+
 #----------------------------------------------------------------------
 
 def test_suite():
     suite = unittest.TestSuite()
     if db.version() >= (4,5) :
-        if have_threads :
-            suite.addTest(unittest.makeSuite(DBBaseReplication))
-
         dbenv = db.DBEnv()
         try :
             dbenv.repmgr_get_ack_policy()
@@ -394,6 +401,9 @@ def test_suite():
         del dbenv
         if ReplicationManager_available :
             suite.addTest(unittest.makeSuite(DBReplicationManager))
+
+        if have_threads :
+            suite.addTest(unittest.makeSuite(DBBaseReplication))
 
     return suite
 
