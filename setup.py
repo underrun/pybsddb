@@ -312,7 +312,8 @@ type in the bsddb3.db module. The database objects
 can use various access methods: btree, hash, recno,
 and queue. Complete support of Berkeley DB distributed
 transactions. Complete support for Berkeley DB
-Replication Manager.
+Replication Manager. Complete support for Berkeley DB
+Base Replication. Support for RPC.
 
 Please see the documents in the docs
 directory of the source distribution or at the
