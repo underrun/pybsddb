@@ -88,6 +88,27 @@ class DBReplicationManager(unittest.TestCase):
         self.dbenvMaster.rep_set_priority(10)
         self.dbenvClient.rep_set_priority(0)
 
+        self.dbenvMaster.rep_set_timeout(db.DB_REP_CONNECTION_RETRY,100123)
+        self.dbenvClient.rep_set_timeout(db.DB_REP_CONNECTION_RETRY,100321)
+        self.assertEquals(self.dbenvMaster.rep_get_timeout(
+            db.DB_REP_CONNECTION_RETRY), 100123)
+        self.assertEquals(self.dbenvClient.rep_get_timeout(
+            db.DB_REP_CONNECTION_RETRY), 100321)
+
+        self.dbenvMaster.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 100234)
+        self.dbenvClient.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 100432)
+        self.assertEquals(self.dbenvMaster.rep_get_timeout(
+            db.DB_REP_ELECTION_TIMEOUT), 100234)
+        self.assertEquals(self.dbenvClient.rep_get_timeout(
+            db.DB_REP_ELECTION_TIMEOUT), 100432)
+
+        self.dbenvMaster.rep_set_timeout(db.DB_REP_ELECTION_RETRY, 100345)
+        self.dbenvClient.rep_set_timeout(db.DB_REP_ELECTION_RETRY, 100543)
+        self.assertEquals(self.dbenvMaster.rep_get_timeout(
+            db.DB_REP_ELECTION_RETRY), 100345)
+        self.assertEquals(self.dbenvClient.rep_get_timeout(
+            db.DB_REP_ELECTION_RETRY), 100543)
+
         self.dbenvMaster.repmgr_set_ack_policy(db.DB_REPMGR_ACKS_ALL)
         self.dbenvClient.repmgr_set_ack_policy(db.DB_REPMGR_ACKS_ALL)
 
@@ -110,10 +131,7 @@ class DBReplicationManager(unittest.TestCase):
         timeout = time.time()+2
         while (time.time()<timeout) and not (self.confirmed_master and self.client_startupdone) :
             time.sleep(0.02)
-        if db.version() >= (4,6) :
-            self.assertTrue(time.time()<timeout)
-        else :
-            self.assertTrue(time.time()>=timeout)
+        self.assertTrue(time.time()<timeout)
 
         d = self.dbenvMaster.repmgr_site_list()
         self.assertEquals(len(d), 1)

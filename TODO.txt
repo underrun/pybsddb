@@ -27,11 +27,7 @@
 * 20080531: "DB_ENV->rep_set_limit" and "DB_ENV->rep_get_limit", support
   for long values.
 
-* 20080531: "DB_ENV->rep_elect" only works in BDB 4.7, with current code.
-
-* 20080629: Timeout value in the test_replication code is a workaround.
-  The right thing to do would be tweak the different replication timeout
-  values to avoid the race condition.
+* 20080531: "DB_ENV->rep_elect" only works in BDB>=4.6, with current code.
 
 * 20080629: The testsuite implements a "test_support" module, used when
   the underlying python version doesn't have it. Because a bug in the
