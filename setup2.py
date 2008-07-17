@@ -298,6 +298,9 @@ elif os.name == 'nt':
              ("bsddb3/test", glob.glob("test/*.py"))
              ]
 
+version_suffix = ""
+if sys.version_info[0] > 2 :
+    version_suffix = "3"
 
 # do the actual build, install, whatever...
 setup(name = 'bsddb3',
@@ -335,8 +338,8 @@ pybsddb_doc/>`__ --
       license = "MIT License",
 
       packages = ['bsddb3', 'bsddb3/tests'],
-      package_dir = {'bsddb3': 'Lib/bsddb',
-                     'bsddb3/tests': 'Lib/bsddb/test'},
+      package_dir = {'bsddb3': 'Lib%s/bsddb' %version_suffix,
+                     'bsddb3/tests': 'Lib%s/bsddb/test' %version_suffix},
       ext_modules = [Extension('bsddb3._pybsddb',
                                sources = ['Modules/_bsddb.c'],
                                depends = ['Modules/bsddb.h'],
