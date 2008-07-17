@@ -45,4 +45,5 @@ def make2to3(path_from, path_to) :
     return bool(retcode)
 
 make2to3("setup2.py", "setup3.py")
+make2to3("test2.py", "test3.py")
 make2to3("Lib", "Lib3")
