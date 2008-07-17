@@ -4,11 +4,20 @@ import sys, os
 refactor_path="/usr/local/lib/python3.0/"
 
 def make2to3(path_from, path_to) :
+    if os.path.isdir(path_from) :
+        if path_from.endswith(".svn") : return
+        try :
+            os.mkdir(path_to)
+        except :
+            pass
+        for i in os.listdir(path_from) :
+            make2to3(path_from+"/"+i,path_to+"/"+i)
+
     cwd = os.getcwd()
     if os.path.exists(path_to) and \
         (os.stat(path_from).st_ctime < os.stat(path_to).st_ctime) :
-            return True
-    print "Converting", path_to
+            return
+    print "*** Converting", path_to
     if path_from[0] != "/" :
         path_from = cwd+"/"+path_from
     if path_to[0] != "/" :
@@ -24,12 +33,16 @@ def make2to3(path_from, path_to) :
         os.remove(path_to)
         raise
 
-    os.remove(path_to+".bak")
+    try :
+        os.remove(path_to+".bak")
+    except :
+        pass
 
     if retcode :
+        os.remove(path_to)
         print "ERROR!"
 
-    return not bool(retcode)
+    return bool(retcode)
 
-print make2to3("setup2.py", "setup3.py")
-
+make2to3("setup2.py", "setup3.py")
+make2to3("Lib", "Lib3")
