@@ -6893,16 +6893,16 @@ bsddb_version(PyObject* self, PyObject* args)
 
 
 /* List of functions defined in the module */
-
 static PyMethodDef bsddb_methods[] = {
     {"DB",          (PyCFunction)DB_construct,          METH_VARARGS | METH_KEYWORDS },
     {"DBEnv",       (PyCFunction)DBEnv_construct,       METH_VARARGS},
-#if (DBVER >= 43)    
+#if (DBVER >= 43)
     {"DBSequence",  (PyCFunction)DBSequence_construct,  METH_VARARGS | METH_KEYWORDS },
-#endif    
+#endif
     {"version",     (PyCFunction)bsddb_version,         METH_VARARGS, bsddb_version_doc},
     {NULL,      NULL}       /* sentinel */
 };
+
 
 /* API structure */
 static BSDDB_api bsddb_api;
@@ -6920,7 +6920,28 @@ static BSDDB_api bsddb_api;
 #define MODULE_NAME_MAX_LEN     11
 static char _bsddbModuleName[MODULE_NAME_MAX_LEN+1] = "_bsddb";
 
-DL_EXPORT(void) init_bsddb(void)
+#if (PY_VERSION_HEX >= 0x03000000)
+static struct PyModuleDef bsddbmodule = {
+    PyModuleDef_HEAD_INIT,
+    _bsddbModuleName,   /* Name of module */
+    NULL,               /* module documentation, may be NULL */
+    -1,                 /* size of per-interpreter state of the module,
+                            or -1 if the module keeps state in global variables. */
+    bsddb_methods,
+    NULL,   /* Reload */
+    NULL,   /* Traverse */
+    NULL,   /* Clear */
+    NULL    /* Free */
+};
+#endif
+
+
+#if (PY_VERSION_HEX < 0x03000000)
+DL_EXPORT(void)
+#else
+PyMODINIT_FUNC
+#endif
+init_bsddb(void)
 {
     PyObject* m;
     PyObject* d;
@@ -6947,9 +6968,13 @@ DL_EXPORT(void) init_bsddb(void)
 #endif
 
     /* Create the module and add the functions */
+#if (PY_VERSION_HEX < 0x03000000)
     m = Py_InitModule(_bsddbModuleName, bsddb_methods);
+#else
+    m=PyModule_Create(&bsddbmodule);
+#endif
     if (m == NULL)
-    	return;
+    	return NULL;
 
     /* Add some symbolic constants to the module */
     d = PyModule_GetDict(m);
@@ -7413,13 +7438,19 @@ DL_EXPORT(void) init_bsddb(void)
         PyErr_Print();
         Py_FatalError("can't initialize module _bsddb");
     }
+    return m;
 }
 
 /* allow this module to be named _pybsddb so that it can be installed
  * and imported on top of python >= 2.3 that includes its own older
  * copy of the library named _bsddb without importing the old version. */
-DL_EXPORT(void) init_pybsddb(void)
+#if (PY_VERSION_HEX < 0x03000000)
+DL_EXPORT(void)
+#else
+PyMODINIT_FUNC
+#endif
+init_pybsddb(void)
 {
     strncpy(_bsddbModuleName, "_pybsddb", MODULE_NAME_MAX_LEN);
-    init_bsddb();
+    return init_bsddb();
 }
