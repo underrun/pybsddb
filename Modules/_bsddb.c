@@ -6594,8 +6594,12 @@ DBSequence_getattr(DBSequenceObject* self, char *name)
 #endif
 
 statichere PyTypeObject DB_Type = {
+#if (PY_VERSION_HEX < 0x03000000)
     PyObject_HEAD_INIT(NULL)
     0,                  /*ob_size*/
+#else
+    PyVarObject_HEAD_INIT(NULL, 0)
+#endif
     "DB",               /*tp_name*/
     sizeof(DBObject),   /*tp_basicsize*/
     0,                  /*tp_itemsize*/
@@ -6615,7 +6619,11 @@ statichere PyTypeObject DB_Type = {
     0,  		/* tp_getattro */
     0,                  /* tp_setattro */
     0,			/* tp_as_buffer */
+#if (PY_VERSION_HEX < 0x03000000)
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_WEAKREFS,      /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT,      /* tp_flags */
+#endif
     0,                  /* tp_doc */
     0,		        /* tp_traverse */
     0,			/* tp_clear */
@@ -6625,8 +6633,12 @@ statichere PyTypeObject DB_Type = {
 
 
 statichere PyTypeObject DBCursor_Type = {
+#if (PY_VERSION_HEX < 0x03000000)
     PyObject_HEAD_INIT(NULL)
     0,                  /*ob_size*/
+#else
+    PyVarObject_HEAD_INIT(NULL, 0)
+#endif
     "DBCursor",         /*tp_name*/
     sizeof(DBCursorObject),  /*tp_basicsize*/
     0,                  /*tp_itemsize*/
@@ -6646,7 +6658,11 @@ statichere PyTypeObject DBCursor_Type = {
     0,  		/* tp_getattro */
     0,                  /* tp_setattro */
     0,			/* tp_as_buffer */
+#if (PY_VERSION_HEX < 0x03000000)
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_WEAKREFS,      /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT,      /* tp_flags */
+#endif
     0,                  /* tp_doc */
     0,		        /* tp_traverse */
     0,			/* tp_clear */
@@ -6656,8 +6672,12 @@ statichere PyTypeObject DBCursor_Type = {
 
 
 statichere PyTypeObject DBEnv_Type = {
+#if (PY_VERSION_HEX < 0x03000000)
     PyObject_HEAD_INIT(NULL)
-    0,          /*ob_size*/
+    0,                  /*ob_size*/
+#else
+    PyVarObject_HEAD_INIT(NULL, 0)
+#endif
     "DBEnv",            /*tp_name*/
     sizeof(DBEnvObject),    /*tp_basicsize*/
     0,          /*tp_itemsize*/
@@ -6677,7 +6697,11 @@ statichere PyTypeObject DBEnv_Type = {
     0,  		/* tp_getattro */
     0,                  /* tp_setattro */
     0,			/* tp_as_buffer */
+#if (PY_VERSION_HEX < 0x03000000)
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_WEAKREFS,      /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT,      /* tp_flags */
+#endif
     0,                  /* tp_doc */
     0,		        /* tp_traverse */
     0,			/* tp_clear */
@@ -6686,8 +6710,12 @@ statichere PyTypeObject DBEnv_Type = {
 };
 
 statichere PyTypeObject DBTxn_Type = {
+#if (PY_VERSION_HEX < 0x03000000)
     PyObject_HEAD_INIT(NULL)
-    0,          /*ob_size*/
+    0,                  /*ob_size*/
+#else
+    PyVarObject_HEAD_INIT(NULL, 0)
+#endif
     "DBTxn",    /*tp_name*/
     sizeof(DBTxnObject),  /*tp_basicsize*/
     0,          /*tp_itemsize*/
@@ -6707,7 +6735,11 @@ statichere PyTypeObject DBTxn_Type = {
     0,  		/* tp_getattro */
     0,                  /* tp_setattro */
     0,			/* tp_as_buffer */
+#if (PY_VERSION_HEX < 0x03000000)
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_WEAKREFS,      /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT,      /* tp_flags */
+#endif
     0,                  /* tp_doc */
     0,		        /* tp_traverse */
     0,			/* tp_clear */
@@ -6717,8 +6749,12 @@ statichere PyTypeObject DBTxn_Type = {
 
 
 statichere PyTypeObject DBLock_Type = {
+#if (PY_VERSION_HEX < 0x03000000)
     PyObject_HEAD_INIT(NULL)
-    0,          /*ob_size*/
+    0,                  /*ob_size*/
+#else
+    PyVarObject_HEAD_INIT(NULL, 0)
+#endif
     "DBLock",   /*tp_name*/
     sizeof(DBLockObject),  /*tp_basicsize*/
     0,          /*tp_itemsize*/
@@ -6738,7 +6774,11 @@ statichere PyTypeObject DBLock_Type = {
     0,  		/* tp_getattro */
     0,                  /* tp_setattro */
     0,			/* tp_as_buffer */
+#if (PY_VERSION_HEX < 0x03000000)
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_WEAKREFS,      /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT,      /* tp_flags */
+#endif
     0,                  /* tp_doc */
     0,		        /* tp_traverse */
     0,			/* tp_clear */
@@ -6748,8 +6788,12 @@ statichere PyTypeObject DBLock_Type = {
 
 #if (DBVER >= 43)
 statichere PyTypeObject DBSequence_Type = {
+#if (PY_VERSION_HEX < 0x03000000)
     PyObject_HEAD_INIT(NULL)
-    0,          /*ob_size*/
+    0,                  /*ob_size*/
+#else
+    PyVarObject_HEAD_INIT(NULL, 0)
+#endif
     "DBSequence",                   /*tp_name*/
     sizeof(DBSequenceObject),       /*tp_basicsize*/
     0,          /*tp_itemsize*/
@@ -6769,7 +6813,11 @@ statichere PyTypeObject DBSequence_Type = {
     0,  		/* tp_getattro */
     0,          /* tp_setattro */
     0,			/* tp_as_buffer */
+#if (PY_VERSION_HEX < 0x03000000)
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_WEAKREFS,      /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT,      /* tp_flags */
+#endif
     0,          /* tp_doc */
     0,		    /* tp_traverse */
     0,			/* tp_clear */
