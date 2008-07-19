@@ -6973,8 +6973,13 @@ init_bsddb(void)
 #else
     m=PyModule_Create(&bsddbmodule);
 #endif
-    if (m == NULL)
+    if (m == NULL) {
+#if (PY_VERSION_HEX < 0x03000000)
+        return;
+#else
     	return NULL;
+#endif
+    }
 
     /* Add some symbolic constants to the module */
     d = PyModule_GetDict(m);
@@ -7438,7 +7443,11 @@ init_bsddb(void)
         PyErr_Print();
         Py_FatalError("can't initialize module _bsddb");
     }
+#if (PY_VERSION_HEX < 0x03000000)
+    return;
+#else
     return m;
+#endif
 }
 
 /* allow this module to be named _pybsddb so that it can be installed
@@ -7452,5 +7461,10 @@ PyMODINIT_FUNC
 init_pybsddb(void)
 {
     strncpy(_bsddbModuleName, "_pybsddb", MODULE_NAME_MAX_LEN);
+#if (PY_VERSION_HEX < 0x03000000)
+    init_bsddb();
+#else
     return init_bsddb();
+#endif
 }
+
