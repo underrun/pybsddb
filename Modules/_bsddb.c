@@ -880,6 +880,7 @@ newDBObject(DBEnvObject* arg, int flags)
     self->flags = 0;
     self->setflags = 0;
     self->myenvobj = NULL;
+    self->db = NULL;
     self->children_cursors = NULL;
 #if (DBVER >=43)
     self->children_sequences = NULL;

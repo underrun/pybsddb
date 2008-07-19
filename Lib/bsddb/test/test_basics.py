@@ -990,6 +990,11 @@ class DBPrivateObject(PrivateObject) :
     def setUp(self) :
         self.obj = db.DB()
 
+class CrashAndBurn(unittest.TestCase) :
+    def test01_OpenCrash(self) :
+        self.assertRaises(db.DBError, db.DB, None, 29.515)
+
+
 #----------------------------------------------------------------------
 #----------------------------------------------------------------------
 
@@ -1015,6 +1020,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(HashMultiDBTestCase))
     suite.addTest(unittest.makeSuite(DBEnvPrivateObject))
     suite.addTest(unittest.makeSuite(DBPrivateObject))
+    suite.addTest(unittest.makeSuite(CrashAndBurn))
 
     return suite
 
