@@ -6939,11 +6939,10 @@ static struct PyModuleDef bsddbmodule = {
 
 
 #if (PY_VERSION_HEX < 0x03000000)
-DL_EXPORT(void)
+DL_EXPORT(void) init_bsddb(void)
 #else
-PyMODINIT_FUNC
+PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #endif
-init_bsddb(void)
 {
     PyObject* m;
     PyObject* d;
@@ -7448,7 +7447,9 @@ init_bsddb(void)
     /* Check for errors */
     if (PyErr_Occurred()) {
         PyErr_Print();
-        Py_FatalError("can't initialize module _bsddb");
+        Py_FatalError("can't initialize module _bsddb/_pybsddb");
+        Py_DECREF(m);
+        m = NULL;
     }
 #if (PY_VERSION_HEX < 0x03000000)
     return;
@@ -7461,17 +7462,16 @@ init_bsddb(void)
  * and imported on top of python >= 2.3 that includes its own older
  * copy of the library named _bsddb without importing the old version. */
 #if (PY_VERSION_HEX < 0x03000000)
-DL_EXPORT(void)
+DL_EXPORT(void) init_pybsddb(void)
 #else
-PyMODINIT_FUNC
+PyMODINIT_FUNC PyInit__pybsddb(void)  /* Note the two underscores */
 #endif
-init_pybsddb(void)
 {
     strncpy(_bsddbModuleName, "_pybsddb", MODULE_NAME_MAX_LEN);
 #if (PY_VERSION_HEX < 0x03000000)
     init_bsddb();
 #else
-    return init_bsddb();
+    return PyInit__bsddb();   /* Note the two underscores */
 #endif
 }
 
