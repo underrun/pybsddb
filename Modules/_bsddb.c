@@ -219,7 +219,16 @@ static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 #define DEFAULT_CURSOR_SET_RETURNS_NONE         1   /* 0 in pybsddb < 4.2, python < 2.4 */
 
 
-staticforward PyTypeObject DB_Type, DBCursor_Type, DBEnv_Type, DBTxn_Type, DBLock_Type;
+/* See comment in Python 2.6 "object.h" */
+#ifndef staticforward
+#define staticforward static
+#endif
+#ifndef statichere
+#define statichere static
+#endif
+
+staticforward PyTypeObject DB_Type, DBCursor_Type, DBEnv_Type, DBTxn_Type,
+              DBLock_Type;
 #if (DBVER >= 43)
 staticforward PyTypeObject DBSequence_Type;
 #endif
