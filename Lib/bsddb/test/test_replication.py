@@ -413,7 +413,7 @@ class DBBaseReplication(DBReplicationManager):
 
 def test_suite():
     suite = unittest.TestSuite()
-    if db.version() >= (4,5) :
+    if db.version() >= (4, 6) :
         dbenv = db.DBEnv()
         try :
             dbenv.repmgr_get_ack_policy()

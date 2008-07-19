@@ -301,10 +301,7 @@ class DBBaseReplication(DBReplicationManager):
         while (time.time()<timeout) and not (self.confirmed_master and
                 self.client_startupdone) :
            time.sleep(0.02)
-        if db.version() >= (4,6) :
-            self.assertTrue(time.time()<timeout)
-        else :
-            self.assertTrue(time.time()>=timeout)
+        self.assertTrue(time.time()<timeout)
 
         self.dbMaster=db.DB(self.dbenvMaster)
         txn=self.dbenvMaster.txn_begin()
@@ -416,7 +413,7 @@ class DBBaseReplication(DBReplicationManager):
 
 def test_suite():
     suite = unittest.TestSuite()
-    if db.version() >= (4,5) :
+    if db.version() >= (4, 6) :
         dbenv = db.DBEnv()
         try :
             dbenv.repmgr_get_ack_policy()
