@@ -301,10 +301,7 @@ class DBBaseReplication(DBReplicationManager):
         while (time.time()<timeout) and not (self.confirmed_master and
                 self.client_startupdone) :
            time.sleep(0.02)
-        if db.version() >= (4,6) :
-            self.assertTrue(time.time()<timeout)
-        else :
-            self.assertTrue(time.time()>=timeout)
+        self.assertTrue(time.time()<timeout)
 
         self.dbMaster=db.DB(self.dbenvMaster)
         txn=self.dbenvMaster.txn_begin()
