@@ -7,9 +7,11 @@ import unittest
 try:
     # For Pythons w/distutils pybsddb
     from bsddb3 import db
+    import bsddb3 as bsddb
 except ImportError:
     # For Python 2.3
     from bsddb import db
+    import bsddb
 
 try:
     from bsddb3 import test_support
@@ -40,6 +42,8 @@ def print_versions():
     print 'bsddb.db.version():   %s' % (db.version(), )
     print 'bsddb.db.__version__: %s' % db.__version__
     print 'bsddb.db.cvsid:       %s' % db.cvsid
+    print 'py module:            %s' % bsddb.__file__
+    print 'extension module:     %s' % bsddb._bsddb.__file__
     print 'python version:       %s' % sys.version
     print 'My pid:               %s' % os.getpid()
     print '-=' * 38

@@ -132,6 +132,10 @@ from distutils.util import get_platform
 
 PROGRAM = sys.argv[0]
 PLAT_SPEC = "%s-%s" % (get_platform(), sys.version[0:3])
+# This hack copied from distutils.command.build.  Too bad distutils
+# doesn't export its build/ directory naming scheme as a library function.
+if hasattr(sys, 'gettotalrefcount'):
+    PLAT_SPEC += '-pydebug'
 
 class ImmediateTestResult(unittest._TextTestResult):
 
