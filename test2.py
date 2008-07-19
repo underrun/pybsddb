@@ -328,7 +328,9 @@ def find_tests(rx):
     # pathinit is a global created in main()
     prefix = pathinit.libdir
     finder = TestFileFinder(prefix)
-    os.path.walk(prefix, finder.visit, rx)
+    for root, dirs, files in os.walk(prefix) :
+        if len(files) :
+            finder.visit(rx, root, files)
     return finder.files
 
 
@@ -425,7 +427,9 @@ def remove_stale_bytecode(arg, dirname, names):
 def main(module_filter, test_filter):
     global pathinit
 
-    os.path.walk(os.curdir, remove_stale_bytecode, None)
+    for root, dirs, files in os.walk(os.curdir) :
+        if len(files) :
+            remove_stale_bytecode(None, root, files)
 
     # Get the log.ini file from the current directory instead of possibly
     # buried in the build directory.  XXX This isn't perfect because if
