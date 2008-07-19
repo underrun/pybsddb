@@ -29,30 +29,30 @@ storage.
 
 #------------------------------------------------------------------------
 
-import cPickle
+import pickle
 import db
 import sys
 
 #At version 2.3 cPickle switched to using protocol instead of bin and
 #DictMixin was added
 if sys.version_info[:3] >= (2, 3, 0):
-    HIGHEST_PROTOCOL = cPickle.HIGHEST_PROTOCOL
+    HIGHEST_PROTOCOL = pickle.HIGHEST_PROTOCOL
 # In python 2.3.*, "cPickle.dumps" accepts no
 # named parameters. "pickle.dumps" accepts them,
 # so this seems a bug.
     if sys.version_info[:3] < (2, 4, 0):
         def _dumps(object, protocol):
-            return cPickle.dumps(object, protocol)
+            return pickle.dumps(object, protocol)
     else :
         def _dumps(object, protocol):
-            return cPickle.dumps(object, protocol=protocol)
+            return pickle.dumps(object, protocol=protocol)
 
     from UserDict import DictMixin
 
 else:
     HIGHEST_PROTOCOL = None
     def _dumps(object, protocol):
-        return cPickle.dumps(object, bin=protocol)
+        return pickle.dumps(object, bin=protocol)
     class DictMixin: pass
 
 #------------------------------------------------------------------------
@@ -129,7 +129,7 @@ class DBShelf(DictMixin):
 
     def __getitem__(self, key):
         data = self.db[key]
-        return cPickle.loads(data)
+        return pickle.loads(data)
 
 
     def __setitem__(self, key, value):
@@ -173,7 +173,7 @@ class DBShelf(DictMixin):
         newitems = []
 
         for k, v in items:
-            newitems.append( (k, cPickle.loads(v)) )
+            newitems.append( (k, pickle.loads(v)) )
         return newitems
 
     def values(self, txn=None):
@@ -182,7 +182,7 @@ class DBShelf(DictMixin):
         else:
             values = list(self.db.values())
 
-        return list(map(cPickle.loads, values))
+        return list(map(pickle.loads, values))
 
     #-----------------------------------
     # Other methods
@@ -199,7 +199,7 @@ class DBShelf(DictMixin):
 
     def associate(self, secondaryDB, callback, flags=0):
         def _shelf_callback(priKey, priData, realCallback=callback):
-            data = cPickle.loads(priData)
+            data = pickle.loads(priData)
             return realCallback(priKey, data)
         return self.db.associate(secondaryDB, _shelf_callback, flags)
 
@@ -212,15 +212,15 @@ class DBShelf(DictMixin):
         # off.
         data = self.db.get(*args, **kw)
         try:
-            return cPickle.loads(data)
-        except (TypeError, cPickle.UnpicklingError):
+            return pickle.loads(data)
+        except (TypeError, pickle.UnpicklingError):
             return data  # we may be getting the default value, or None,
                          # so it doesn't need unpickled.
 
     def get_both(self, key, value, txn=None, flags=0):
         data = _dumps(value, self.protocol)
         data = self.db.get(key, data, txn, flags)
-        return cPickle.loads(data)
+        return pickle.loads(data)
 
 
     def cursor(self, txn=None, flags=0):
@@ -331,7 +331,7 @@ class DBShelfCursor:
             return None
         else:
             key, data = rec
-            return key, cPickle.loads(data)
+            return key, pickle.loads(data)
 
     #----------------------------------------------
     # Methods allowed to pass-through to self.dbc

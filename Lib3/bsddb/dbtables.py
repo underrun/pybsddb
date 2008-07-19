@@ -23,7 +23,7 @@ import copy
 import random
 import struct
 from types import ListType, StringType
-import cPickle as pickle
+import pickle as pickle
 
 try:
     # For Pythons w/distutils pybsddb

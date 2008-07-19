@@ -2,9 +2,9 @@
 import os
 import pickle
 try:
-    import cPickle
+    import pickle
 except ImportError:
-    cPickle = None
+    pickle = None
 import unittest
 
 try:
@@ -14,7 +14,7 @@ except ImportError as e:
     # For Python 2.3
     from bsddb import db
 
-from test_all import get_new_environment_path, get_new_database_path
+from .test_all import get_new_environment_path, get_new_database_path
 
 try:
     from bsddb3 import test_support
@@ -62,9 +62,9 @@ class pickleTestCase(unittest.TestCase):
     def test01_pickle_DBError(self):
         self._base_test_pickle_DBError(pickle=pickle)
 
-    if cPickle:
+    if pickle:
         def test02_cPickle_DBError(self):
-            self._base_test_pickle_DBError(pickle=cPickle)
+            self._base_test_pickle_DBError(pickle=pickle)
 
 #----------------------------------------------------------------------
 

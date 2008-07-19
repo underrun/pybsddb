@@ -4,7 +4,7 @@
 import os
 
 import unittest
-from test_all import verbose
+from .test_all import verbose
 
 try:
     # For Pythons w/distutils pybsddb
@@ -13,7 +13,7 @@ except ImportError:
     # For Python 2.3
     from bsddb import db, dbshelve
 
-from test_all import get_new_environment_path, get_new_database_path
+from .test_all import get_new_environment_path, get_new_database_path
 
 try:
     from bsddb3 import test_support
