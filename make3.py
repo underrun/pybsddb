@@ -12,6 +12,7 @@ def make2to3(path_from, path_to) :
             pass
         for i in os.listdir(path_from) :
             make2to3(path_from+"/"+i,path_to+"/"+i)
+        return
 
     cwd = os.getcwd()
     if os.path.exists(path_to) and \
