@@ -339,8 +339,10 @@ staticforward PyTypeObject DBSequence_Type;
     if ((nonNull) == NULL) {          \
         PyObject *errTuple = NULL;    \
         errTuple = Py_BuildValue("(is)", 0, #name " object has been closed"); \
-        PyErr_SetObject((pyErrObj), errTuple);  \
-	Py_DECREF(errTuple);          \
+        if (errTuple) { \
+            PyErr_SetObject((pyErrObj), errTuple);  \
+            Py_DECREF(errTuple);          \
+        } \
         return NULL;                  \
     }
 
@@ -687,9 +689,13 @@ static int makeDBError(int err)
         }
         _db_errmsg[0] = 0;
 
-	errTuple = Py_BuildValue("(is)", err, errTxt);
+        errTuple = Py_BuildValue("(is)", err, errTxt);
+        if (errTuple == NULL) {
+            Py_DECREF(errObj);
+            return !0;
+        }
         PyErr_SetObject(errObj, errTuple);
-	Py_DECREF(errTuple);
+        Py_DECREF(errTuple);
     }
 
     return ((errObj != NULL) || exceptionRaised);
@@ -2067,8 +2073,10 @@ DB_open(DBObject* self, PyObject* args, PyObject* kwargs)
     if (NULL == self->db) {
         PyObject *t = Py_BuildValue("(is)", 0,
                                 "Cannot call open() twice for DB object");
-        PyErr_SetObject(DBError, t);
-        Py_DECREF(t);
+        if (t) {
+            PyErr_SetObject(DBError, t);
+            Py_DECREF(t);
+        }
         return NULL;
     }
 
@@ -2868,8 +2876,10 @@ Py_ssize_t DB_length(PyObject* _self)
 
     if (self->db == NULL) {
         PyObject *t = Py_BuildValue("(is)", 0, "DB object has been closed");
-        PyErr_SetObject(DBError, t);
-        Py_DECREF(t);
+        if (t) {
+            PyErr_SetObject(DBError, t);
+            Py_DECREF(t);
+        }
         return -1;
     }
 
@@ -2958,8 +2968,10 @@ DB_ass_sub(DBObject* self, PyObject* keyobj, PyObject* dataobj)
 
     if (self->db == NULL) {
         PyObject *t = Py_BuildValue("(is)", 0, "DB object has been closed");
-        PyErr_SetObject(DBError, t);
-        Py_DECREF(t);
+        if (t) {
+            PyErr_SetObject(DBError, t);
+            Py_DECREF(t);
+        }
         return -1;
     }
 
@@ -5840,8 +5852,10 @@ DBTxn_commit(DBTxnObject* self, PyObject* args)
         PyObject *t =  Py_BuildValue("(is)", 0, "DBTxn must not be used "
                                      "after txn_commit, txn_abort "
                                      "or txn_discard");
-        PyErr_SetObject(DBError, t);
-        Py_DECREF(t);
+        if (t) {
+            PyErr_SetObject(DBError, t);
+            Py_DECREF(t);
+        }
         return NULL;
     }
     self->flag_prepare=0;
@@ -5880,8 +5894,10 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
         PyObject *t = Py_BuildValue("(is)", 0,"DBTxn must not be used "
                                     "after txn_commit, txn_abort "
                                     "or txn_discard");
-        PyErr_SetObject(DBError, t);
-        Py_DECREF(t);
+        if (t) {
+            PyErr_SetObject(DBError, t);
+            Py_DECREF(t);
+        }
         return NULL;
     }
     self->flag_prepare=1;  /* Prepare state */
@@ -5904,8 +5920,10 @@ DBTxn_abort_discard_internal(DBTxnObject* self, int discard)
         PyObject *t = Py_BuildValue("(is)", 0, "DBTxn must not be used "
                                     "after txn_commit, txn_abort "
                                     "or txn_discard");
-        PyErr_SetObject(DBError, t);
-        Py_DECREF(t);
+        if (t) {
+            PyErr_SetObject(DBError, t);
+            Py_DECREF(t);
+        }
         return NULL;
     }
     txn = self->txn;
@@ -5980,8 +5998,10 @@ DBTxn_id(DBTxnObject* self, PyObject* args)
         PyObject *t = Py_BuildValue("(is)", 0, "DBTxn must not be used "
                                     "after txn_commit, txn_abort "
                                     "or txn_discard");
-        PyErr_SetObject(DBError, t);
-        Py_DECREF(t);
+        if (t) {
+            PyErr_SetObject(DBError, t);
+            Py_DECREF(t);
+        }
         return NULL;
     }
     MYDB_BEGIN_ALLOW_THREADS;
