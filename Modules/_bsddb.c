@@ -3122,7 +3122,12 @@ _DB_make_list(DBObject* self, DB_TXN* txn, int type)
             list = NULL;
             goto done;
         }
-        PyList_Append(list, item);
+        if (PyList_Append(list, item)) {
+            Py_DECREF(list);
+            Py_DECREF(item);
+            list = NULL;
+            goto done;
+        }
         Py_DECREF(item);
     }
 
@@ -4846,7 +4851,12 @@ DBEnv_log_archive(DBEnvObject* self, PyObject* args)
                 list = NULL;
                 break;
             }
-            PyList_Append(list, item);
+            if (PyList_Append(list, item)) {
+                Py_DECREF(list);
+                list = NULL;
+                Py_DECREF(item);
+                break;
+            }
             Py_DECREF(item);
         }
         free(log_list_start);

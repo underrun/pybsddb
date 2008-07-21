@@ -27,8 +27,6 @@
 * 20080531: "DB_ENV->rep_set_limit" and "DB_ENV->rep_get_limit", support
   for long values.
 
-* 20080531: "DB_ENV->rep_elect" only works in BDB>=4.6, with current code.
-
 * 20080629: The testsuite implements a "test_support" module, used when
   the underlying python version doesn't have it. Because a bug in the
   test code, this version is used always, even if this python version
@@ -36,5 +34,8 @@
   code uses features in "test_support" that are not available in
   previous python versions.
 
-* BaseReplication is not usable in BDB 4.5.
+* The test for crash documented in http://bugs.python.org/issue3307 is
+  disabled because it prints a error message to screen. Solve this
+  and reenable the test. This would require "set_errfile" implementation.
+
 
