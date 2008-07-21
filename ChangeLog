@@ -7,6 +7,9 @@
     STINNER Victor - http://bugs.python.org/issue3307
   * Improve internal error checking, as suggested by Neal Norwitz
     when reviewing commit 63207 in Python SVN.
+  * Routines without parameters should be defined so, as
+    suggested by Neal Norwitz when reviewing commit 63207 in Python SVN.
+    The resulting code is (marginally) faster, smaller and clearer.
 
 4.7.1:
   * Workaround a problem with un-initialized threads with the

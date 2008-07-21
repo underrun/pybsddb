@@ -34,8 +34,9 @@
   code uses features in "test_support" that are not available in
   previous python versions.
 
-* The test for crash documented in http://bugs.python.org/issue3307 is
-  disabled because it prints a error message to screen. Solve this
-  and reenable the test. This would require "set_errfile" implementation.
+* 20080720: The test for crash documented in http://bugs.python.org/issue3307
+  is disabled because it prints a error message to screen. Solve this and
+  reenable the test. This would require "set_errfile" implementation.
 
+* 20080721: When we drop Python 2.3 support, we should user "PyTuple_Pack".
 
