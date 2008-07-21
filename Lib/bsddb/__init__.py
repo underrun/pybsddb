@@ -73,9 +73,16 @@ error = db.DBError  # So bsddb.error will mean something...
 
 import sys, os
 
-import UserDict
 from weakref import ref
-class _iter_mixin(UserDict.DictMixin):
+
+if sys.version_info[0:2] <= (2, 5) :
+    import UserDict
+    MutableMapping = UserDict.DictMixin
+else :
+    import collections
+    MutableMapping = collections.MutableMapping
+
+class _iter_mixin(MutableMapping):
     def _make_iter_cursor(self):
         cur = _DeadlockWrap(self.db.cursor)
         key = id(cur)
