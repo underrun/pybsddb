@@ -7326,6 +7326,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     DBError = NULL;     /* used in MAKE_EX so that it derives from nothing */
     MAKE_EX(DBError);
 
+#if (PY_VERSION_HEX < 0x03000000)
     /* Some magic to make DBNotFoundError and DBKeyEmptyError derive
      * from both DBError and KeyError, since the API only supports
      * using one base class. */
@@ -7336,6 +7337,26 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     DBNotFoundError = PyDict_GetItemString(d, "DBNotFoundError");
     DBKeyEmptyError = PyDict_GetItemString(d, "DBKeyEmptyError");
     PyDict_DelItemString(d, "KeyError");
+#else
+    /* Since Python 2.5, PyErr_NewException() accepts a tuple, to be able to
+    ** derive from several classes. We use this new API only for Python 3.0,
+    ** though.
+    */
+    {
+        PyObject* bases;
+
+        bases = PyTuple_Pack(2, DBError, PyExc_KeyError);
+
+#define MAKE_EX2(name)   name = PyErr_NewException(PYBSDDB_EXCEPTION_BASE #name, bases, NULL); \
+                         PyDict_SetItemString(d, #name, name)
+        MAKE_EX2(DBNotFoundError);
+        MAKE_EX2(DBKeyEmptyError);
+
+#undef MAKE_EX2
+
+        Py_XDECREF(bases);
+    }
+#endif
 
 
 #if !INCOMPLETE_IS_WARNING
