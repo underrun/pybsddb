@@ -7,12 +7,6 @@ import time
 import errno
 from random import random
 
-try:
-    True, False
-except NameError:
-    True = 1
-    False = 0
-
 DASH = '-'
 
 try:

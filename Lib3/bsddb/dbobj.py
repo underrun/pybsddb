@@ -21,13 +21,24 @@
 # added to _bsddb.c.
 #
 
-import db
+import sys
+absolute_import = (sys.version_info[0] >= 3)
+if absolute_import :
+    # Because this syntaxis is not valid before Python 2.5
+    exec("from . import db")
+else :
+    from . import db
 
-try:
-    from UserDict import DictMixin
-except ImportError:
-    # DictMixin is new in Python 2.3
-    class DictMixin: pass
+if sys.version_info[0:2] <= (2, 5) :
+    try:
+        from UserDict import DictMixin
+    except ImportError:
+        # DictMixin is new in Python 2.3
+        class DictMixin: pass
+    MutableMapping = DictMixin
+else :
+    import collections
+    MutableMapping = collections.MutableMapping
 
 class DBEnv:
     def __init__(self, *args, **kwargs):
@@ -112,7 +123,7 @@ class DBEnv:
             return self._cobj.lsn_reset(*args, **kwargs)
 
 
-class DB(DictMixin):
+class DB(MutableMapping):
     def __init__(self, dbenv, *args, **kwargs):
         # give it the proper DBEnv C object that its expecting
         self._cobj = db.DB(*(dbenv._cobj,) + args, **kwargs)

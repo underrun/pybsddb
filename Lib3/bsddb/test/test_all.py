@@ -7,9 +7,11 @@ import unittest
 try:
     # For Pythons w/distutils pybsddb
     from bsddb3 import db
+    import bsddb3 as bsddb
 except ImportError:
     # For Python 2.3
     from bsddb import db
+    import bsddb
 
 try:
     from bsddb3 import test_support
@@ -40,6 +42,8 @@ def print_versions():
     print('bsddb.db.version():   %s' % (db.version(), ))
     print('bsddb.db.__version__: %s' % db.__version__)
     print('bsddb.db.cvsid:       %s' % db.cvsid)
+    print('py module:            %s' % bsddb.__file__)
+    print('extension module:     %s' % bsddb._bsddb.__file__)
     print('python version:       %s' % sys.version)
     print('My pid:               %s' % os.getpid())
     print('-=' * 38)
@@ -111,8 +115,12 @@ class PrintInfoFakeTest(unittest.TestCase):
 # This little hack is for when this module is run as main and all the
 # other modules import it so they will still be able to get the right
 # verbose setting.  It's confusing but it works.
-from . import test_all
-test_all.verbose = verbose
+if sys.version_info[0] < 3 :
+    from . import test_all
+    test_all.verbose = verbose
+else :
+    import sys
+    print("Work to do!", file=sys.stderr)
 
 
 def suite(module_prefix='', timing_check=None):
