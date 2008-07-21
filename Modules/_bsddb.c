@@ -2998,7 +2998,7 @@ DB_has_key(DBObject* self, PyObject* args)
     PyObject* txnobj = NULL;
     DB_TXN *txn = NULL;
 
-    if (!PyArg_ParseTuple(args,"O|O:has_key", &keyobj, &txnobj))
+    if (!PyArg_UnpackTuple(args,"has_key", 1, 2, &keyobj, &txnobj))
         return NULL;
     CHECK_DB_NOT_CLOSED(self);
     if (!make_key_dbt(self, keyobj, &key, NULL))
