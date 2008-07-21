@@ -2206,12 +2206,8 @@ DB_get_private(DBObject* self)
 }
 
 static PyObject*
-DB_set_private(DBObject* self, PyObject* args)
+DB_set_private(DBObject* self, PyObject* private)
 {
-    PyObject *private;
-
-    if (!PyArg_ParseTuple(args,"O:set_private",&private))
-        return NULL;
     /* We can set the private field even if db is closed */
     Py_DECREF(self->private);
     Py_INCREF(private);
@@ -2309,14 +2305,10 @@ _db_compareCallback(DB* db,
 }
 
 static PyObject*
-DB_set_bt_compare(DBObject* self, PyObject* args)
+DB_set_bt_compare(DBObject* self, PyObject* comparator)
 {
     int err;
-    PyObject *comparator;
     PyObject *tuple, *result;
-
-    if (!PyArg_ParseTuple(args, "O:set_bt_compare", &comparator))
-	return NULL;
 
     CHECK_DB_NOT_CLOSED(self);
 
@@ -4933,12 +4925,8 @@ DBEnv_get_private(DBEnvObject* self)
 }
 
 static PyObject*
-DBEnv_set_private(DBEnvObject* self, PyObject* args)
+DBEnv_set_private(DBEnvObject* self, PyObject* private)
 {
-    PyObject *private;
-
-    if (!PyArg_ParseTuple(args,"O:set_private",&private))
-        return NULL;
     /* We can set the private field even if dbenv is closed */
     Py_DECREF(self->private);
     Py_INCREF(private);
@@ -5039,14 +5027,9 @@ _dbenv_event_notifyCallback(DB_ENV* db_env, u_int32_t event, void *event_info)
 
 #if (DBVER >= 45)
 static PyObject*
-DBEnv_set_event_notify(DBEnvObject* self, PyObject* args)
+DBEnv_set_event_notify(DBEnvObject* self, PyObject* notifyFunc)
 {
     int err;
-    PyObject *notifyFunc;
-
-    if (!PyArg_ParseTuple(args, "O:set_event_notify", &notifyFunc)) {
-	    return NULL;
-    }
 
     CHECK_ENV_NOT_CLOSED(self);
 
@@ -6300,7 +6283,7 @@ static PyMethodDef DB_methods[] = {
     {"remove",          (PyCFunction)DB_remove,         METH_VARARGS|METH_KEYWORDS},
     {"rename",          (PyCFunction)DB_rename,         METH_VARARGS},
     {"set_bt_minkey",   (PyCFunction)DB_set_bt_minkey,  METH_VARARGS},
-    {"set_bt_compare",  (PyCFunction)DB_set_bt_compare, METH_VARARGS},
+    {"set_bt_compare",  (PyCFunction)DB_set_bt_compare, METH_O},
     {"set_cachesize",   (PyCFunction)DB_set_cachesize,  METH_VARARGS},
 #if (DBVER >= 41)
     {"set_encrypt",     (PyCFunction)DB_set_encrypt,    METH_VARARGS|METH_KEYWORDS},
@@ -6315,7 +6298,7 @@ static PyMethodDef DB_methods[] = {
     {"set_re_pad",      (PyCFunction)DB_set_re_pad,     METH_VARARGS},
     {"set_re_source",   (PyCFunction)DB_set_re_source,  METH_VARARGS},
     {"set_q_extentsize",(PyCFunction)DB_set_q_extentsize, METH_VARARGS},
-    {"set_private",     (PyCFunction)DB_set_private,    METH_VARARGS},
+    {"set_private",     (PyCFunction)DB_set_private,    METH_O},
     {"get_private",     (PyCFunction)DB_get_private,    METH_NOARGS},
     {"stat",            (PyCFunction)DB_stat,           METH_VARARGS|METH_KEYWORDS},
     {"sync",            (PyCFunction)DB_sync,           METH_VARARGS},
@@ -6423,7 +6406,7 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 42)
     {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
 #endif
-    {"set_private",     (PyCFunction)DBEnv_set_private,       METH_VARARGS},
+    {"set_private",     (PyCFunction)DBEnv_set_private,       METH_O},
     {"get_private",     (PyCFunction)DBEnv_get_private,       METH_NOARGS},
     {"rep_start",       (PyCFunction)DBEnv_rep_start,
         METH_VARARGS|METH_KEYWORDS},
@@ -6447,7 +6430,7 @@ static PyMethodDef DBEnv_methods[] = {
     {"rep_get_request", (PyCFunction)DBEnv_rep_get_request,   METH_NOARGS},
 #endif
 #if (DBVER >= 45)
-    {"set_event_notify", (PyCFunction)DBEnv_set_event_notify, METH_VARARGS},
+    {"set_event_notify", (PyCFunction)DBEnv_set_event_notify, METH_O},
 #endif
 #if (DBVER >= 45)
     {"rep_set_nsites", (PyCFunction)DBEnv_rep_set_nsites, METH_VARARGS},
