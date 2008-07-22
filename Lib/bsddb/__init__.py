@@ -250,6 +250,12 @@ class _DBWithCursor(_iter_mixin):
         self._checkOpen()
         return _DeadlockWrap(lambda: len(self.db))  # len(self.db)
 
+    if sys.version_info[0:2] >= (2, 6) :
+        def __repr__(self) :
+            if self.isOpen() :
+                return repr(dict(_DeadlockWrap(self.db.items)))
+            return repr(dict())
+
     def __getitem__(self, key):
         self._checkOpen()
         return _DeadlockWrap(lambda: self.db[key])  # self.db[key]
