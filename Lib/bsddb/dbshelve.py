@@ -162,6 +162,10 @@ class DBShelf(MutableMapping):
         else:
             return self.db.keys()
 
+    if sys.version_info[0:2] >= (2, 6) :
+        def __iter__(self) :
+            return self.db.__iter__()
+
 
     def open(self, *args, **kwargs):
         self.db.open(*args, **kwargs)
