@@ -101,14 +101,14 @@ class BasicTestCase(unittest.TestCase):
     def populateDB(self, _txn=None):
         d = self.d
 
-        for x in range(self._numKeys/2):
+        for x in range(self._numKeys//2):
             key = '%04d' % (self._numKeys - x)  # insert keys in reverse order
             data = self.makeData(key)
             d.put(key, data, _txn)
 
         d.put('empty value', '', _txn)
 
-        for x in range(self._numKeys/2-1):
+        for x in range(self._numKeys//2-1):
             key = '%04d' % x  # and now some in forward order
             data = self.makeData(key)
             d.put(key, data, _txn)
