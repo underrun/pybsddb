@@ -138,6 +138,10 @@ class DB(MutableMapping):
     def __delitem__(self, arg):
         del self._cobj[arg]
 
+    if sys.version_info[0:2] >= (2, 6) :
+        def __iter__(self) :
+            return self._cobj.__iter__()
+
     def append(self, *args, **kwargs):
         return self._cobj.append(*args, **kwargs)
     def associate(self, *args, **kwargs):
