@@ -300,7 +300,7 @@ class DBBaseReplication(DBReplicationManager):
         timeout = time.time()+2
         while (time.time()<timeout) and not (self.confirmed_master and
                 self.client_startupdone) :
-           time.sleep(0.02)
+            time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
 
         self.dbMaster=db.DB(self.dbenvMaster)
@@ -433,4 +433,3 @@ def test_suite():
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-
