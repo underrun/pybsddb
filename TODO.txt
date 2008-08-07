@@ -40,3 +40,5 @@
 
 * 20080721: When we drop Python 2.3 support, we should user "PyTuple_Pack".
 
+* 20080807: EGG for 4.7.2 was installed as a directory, nor a ZIP file. Why?.
+

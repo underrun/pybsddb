@@ -1,3 +1,11 @@
+include test-full_prerelease.py
+include setup2.py
+include setup3.py
+include test2.py
+include test3.py
+include make3.py
+recursive-include Lib3 *.py
+
 include *.txt
 include updatedb.bat
 include MANIFEST.in
