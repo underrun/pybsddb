@@ -895,7 +895,7 @@ newDBObject(DBEnvObject* arg, int flags)
     self->btCompareCallback = NULL;
     self->primaryDBType = 0;
     Py_INCREF(Py_None);
-    self->private = Py_None;
+    self->private_obj = Py_None;
     self->in_weakreflist = NULL;
 
     /* keep a reference to our python DBEnv object */
@@ -967,7 +967,7 @@ DB_dealloc(DBObject* self)
         Py_DECREF(self->btCompareCallback);
         self->btCompareCallback = NULL;
     }
-    Py_DECREF(self->private);
+    Py_DECREF(self->private_obj);
     PyObject_Del(self);
 }
 
@@ -1030,7 +1030,7 @@ newDBEnvObject(int flags)
     self->children_dbs = NULL;
     self->children_txns = NULL;
     Py_INCREF(Py_None);
-    self->private = Py_None;
+    self->private_obj = Py_None;
     Py_INCREF(Py_None);
     self->rep_transport = Py_None;
     self->in_weakreflist = NULL;
@@ -1045,7 +1045,7 @@ newDBEnvObject(int flags)
     }
     else {
         self->db_env->set_errcall(self->db_env, _db_errorCallback);
-        self->db_env->app_private=self;
+        self->db_env->app_private = self;
     }
     return self;
 }
@@ -1069,7 +1069,7 @@ DBEnv_dealloc(DBEnvObject* self)
     if (self->in_weakreflist != NULL) {
         PyObject_ClearWeakRefs((PyObject *) self);
     }
-    Py_DECREF(self->private);
+    Py_DECREF(self->private_obj);
     Py_DECREF(self->rep_transport);
     PyObject_Del(self);
 }
@@ -2201,17 +2201,17 @@ static PyObject*
 DB_get_private(DBObject* self)
 {
     /* We can give out the private field even if db is closed */
-    Py_INCREF(self->private);
-    return self->private;
+    Py_INCREF(self->private_obj);
+    return self->private_obj;
 }
 
 static PyObject*
-DB_set_private(DBObject* self, PyObject* private)
+DB_set_private(DBObject* self, PyObject* private_obj)
 {
     /* We can set the private field even if db is closed */
-    Py_DECREF(self->private);
-    Py_INCREF(private);
-    self->private = private;
+    Py_DECREF(self->private_obj);
+    Py_INCREF(private_obj);
+    self->private_obj = private_obj;
     RETURN_NONE();
 }
 
@@ -4920,17 +4920,17 @@ static PyObject*
 DBEnv_get_private(DBEnvObject* self)
 {
     /* We can give out the private field even if dbenv is closed */
-    Py_INCREF(self->private);
-    return self->private;
+    Py_INCREF(self->private_obj);
+    return self->private_obj;
 }
 
 static PyObject*
-DBEnv_set_private(DBEnvObject* self, PyObject* private)
+DBEnv_set_private(DBEnvObject* self, PyObject* private_obj)
 {
     /* We can set the private field even if dbenv is closed */
-    Py_DECREF(self->private);
-    Py_INCREF(private);
-    self->private = private;
+    Py_DECREF(self->private_obj);
+    Py_INCREF(private_obj);
+    self->private_obj = private_obj;
     RETURN_NONE();
 }
 
