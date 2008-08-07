@@ -58,4 +58,3 @@ else :
     else :
         exec("from ._bsddb import *")
         exec("from ._bsddb import __version__")
-
