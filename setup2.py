@@ -350,6 +350,7 @@ pybsddb_doc/>`__ --
                                libraries = libname,
                                extra_link_args = lflags_arg,
                                )],
+      headers = ['Modules/bsddb.h'],
       data_files = utils,
       classifiers = [
                     'License :: OSI Approved :: MIT License',
