@@ -6,11 +6,13 @@ import os
 import unittest
 try:
     # For Pythons w/distutils pybsddb
-    from bsddb3 import db
+    from bsddb3 import db, dbtables, dbutils, dbshelve, \
+            hashopen, btopen, rnopen, dbobj
     import bsddb3 as bsddb
 except ImportError:
     # For Python 2.3
-    from bsddb import db
+    from bsddb import db, dbtables, dbutils, dbshelve, \
+            hashopen, btopen, rnopen, dbobj
     import bsddb
 
 try:

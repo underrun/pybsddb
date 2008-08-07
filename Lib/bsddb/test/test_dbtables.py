@@ -28,20 +28,8 @@ except ImportError:
     import pickle
 
 import unittest
-from test_all import verbose, get_new_environment_path, get_new_database_path
-
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db, dbtables
-except ImportError:
-    # For Python 2.3
-    from bsddb import db, dbtables
-
-try:
-    from bsddb3 import test_support
-except ImportError:
-    from test import test_support
-
+from test_all import db, dbtables, test_support, verbose, \
+        get_new_environment_path, get_new_database_path
 
 #----------------------------------------------------------------------
 

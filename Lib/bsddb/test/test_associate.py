@@ -7,19 +7,8 @@ import time
 from pprint import pprint
 
 import unittest
-from test_all import verbose, have_threads, get_new_environment_path
-
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db, dbshelve
-except ImportError:
-    # For Python 2.3
-    from bsddb import db, dbshelve
-
-try:
-    from bsddb3 import test_support
-except ImportError:
-    from test import test_support
+from test_all import db, dbshelve, test_support, verbose, have_threads, \
+        get_new_environment_path
 
 
 #----------------------------------------------------------------------

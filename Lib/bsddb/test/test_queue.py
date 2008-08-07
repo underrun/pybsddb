@@ -6,15 +6,7 @@ import os, string
 from pprint import pprint
 import unittest
 
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db
-except ImportError:
-    # For Python 2.3
-    from bsddb import db
-
-from test_all import verbose, get_new_database_path
-
+from test_all import db, verbose, get_new_database_path
 
 #----------------------------------------------------------------------
 

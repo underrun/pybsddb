@@ -4,19 +4,7 @@
 import os
 import unittest
 
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db, dbshelve, hashopen
-except ImportError:
-    # For Python 2.3
-    from bsddb import db, dbshelve, hashopen
-
-from test_all import get_new_environment_path, get_new_database_path
-
-try:
-    from bsddb3 import test_support
-except ImportError:
-    from test import test_support
+from test_all import db, dbshelve, hashopen, test_support, get_new_environment_path, get_new_database_path
 
 #----------------------------------------------------------------------
 

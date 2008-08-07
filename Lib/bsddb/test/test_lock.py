@@ -5,23 +5,11 @@ TestCases for testing the locking sub-system.
 import time
 
 import unittest
-from test_all import verbose, have_threads, get_new_environment_path, get_new_database_path
+from test_all import db, test_support, verbose, have_threads, \
+        get_new_environment_path, get_new_database_path
 
 if have_threads :
     from threading import Thread, currentThread
-
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db
-except ImportError:
-    # For Python 2.3
-    from bsddb import db
-
-try:
-    from bsddb3 import test_support
-except ImportError:
-    from test import test_support
-
 
 #----------------------------------------------------------------------
 

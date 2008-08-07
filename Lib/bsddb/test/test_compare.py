@@ -7,19 +7,10 @@ import test_all
 from cStringIO import StringIO
 
 import unittest
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db, dbshelve
-except ImportError:
-    # For Python 2.3
-    from bsddb import db, dbshelve
 
-from test_all import get_new_environment_path, get_new_database_path
+from test_all import db, dbshelve, test_support, \
+        get_new_environment_path, get_new_database_path
 
-try:
-    from bsddb3 import test_support
-except ImportError:
-    from test import test_support
 
 lexical_cmp = cmp
 
