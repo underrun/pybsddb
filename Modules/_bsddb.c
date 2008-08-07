@@ -1443,6 +1443,7 @@ DB_close_internal(DBObject* self, int flags)
     if (self->db != NULL) {
         /* Can be NULL if db is not in an environment */
         EXTRACT_FROM_DOUBLE_LINKED_LIST_MAYBE_NULL(self);
+
         if (self->txn) {
             EXTRACT_FROM_DOUBLE_LINKED_LIST_TXN(self);
             self->txn=NULL;
@@ -2168,7 +2169,12 @@ DB_remove(DBObject* self, PyObject* args, PyObject* kwargs)
         return NULL;
     CHECK_DB_NOT_CLOSED(self);
 
+    EXTRACT_FROM_DOUBLE_LINKED_LIST_MAYBE_NULL(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
     err = self->db->remove(self->db, filename, database, flags);
+    MYDB_END_ALLOW_THREADS;
+
     self->db = NULL;
     RETURN_IF_ERR();
     RETURN_NONE();

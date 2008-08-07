@@ -1,6 +1,7 @@
 4.7.3:
   * "private" is a keyword in C++.  (Duncan Grisby)
   * setup.py should install "bsddb.h".  (Duncan Grisby)
+  * "DB_remove" memory corruption & crash.  (Duncan Grisby)
 
 4.7.2:
   * Solved a race condition in Replication Manager testcode.
