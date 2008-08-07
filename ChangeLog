@@ -1,3 +1,5 @@
+4.7.3:
+
 4.7.2:
   * Solved a race condition in Replication Manager testcode.
   * Changing any python code, automatically regenerates the
