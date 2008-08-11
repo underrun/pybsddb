@@ -4,6 +4,9 @@
   * "DB_remove" memory corruption & crash.  (Duncan Grisby)
   * Under Python 3.0, you can't use string keys/values, but
     bytes ones. Print the right error message.
+  * "DB.has_key" allowed transactions as a positional parameter.
+    We allow, now, transactions as a keyword parameter also, as
+    documented.
 
 4.7.2:
   * Solved a race condition in Replication Manager testcode.

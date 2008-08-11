@@ -3008,16 +3008,19 @@ DB_ass_sub(DBObject* self, PyObject* keyobj, PyObject* dataobj)
 
 
 static PyObject*
-DB_has_key(DBObject* self, PyObject* args)
+DB_has_key(DBObject* self, PyObject* args, PyObject* kwargs)
 {
     int err;
     PyObject* keyobj;
     DBT key, data;
     PyObject* txnobj = NULL;
     DB_TXN *txn = NULL;
+    static char* kwnames[] = {"key","txn", NULL};
 
-    if (!PyArg_UnpackTuple(args,"has_key", 1, 2, &keyobj, &txnobj))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|O:has_key", kwnames,
+                &keyobj, &txnobj))
         return NULL;
+
     CHECK_DB_NOT_CLOSED(self);
     if (!make_key_dbt(self, keyobj, &key, NULL))
         return NULL;
@@ -3326,7 +3329,7 @@ DBC_get(DBCursorObject* self, PyObject* args, PyObject *kwargs)
     {
         PyErr_Clear();
         if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi|ii:get",
-                                         &kwnames[1], 
+                                         &kwnames[1],
 					 &keyobj, &flags, &dlen, &doff))
         {
             PyErr_Clear();
@@ -6293,7 +6296,7 @@ static PyMethodDef DB_methods[] = {
     {"get_type",        (PyCFunction)DB_get_type,       METH_NOARGS},
     {"join",            (PyCFunction)DB_join,           METH_VARARGS},
     {"key_range",       (PyCFunction)DB_key_range,      METH_VARARGS|METH_KEYWORDS},
-    {"has_key",         (PyCFunction)DB_has_key,        METH_VARARGS},
+    {"has_key",         (PyCFunction)DB_has_key,        METH_VARARGS|METH_KEYWORDS},
     {"items",           (PyCFunction)DB_items,          METH_VARARGS},
     {"keys",            (PyCFunction)DB_keys,           METH_VARARGS},
     {"open",            (PyCFunction)DB_open,           METH_VARARGS|METH_KEYWORDS},
