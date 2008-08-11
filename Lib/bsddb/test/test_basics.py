@@ -908,7 +908,7 @@ class BasicMultiDBTestCase(BasicTestCase):
             if verbose:
                 print rec
             rec = c3.next()
-        self.assertEqual(count, 52)
+        self.assertEqual(count, len(string.letters))
 
 
         c1.close()

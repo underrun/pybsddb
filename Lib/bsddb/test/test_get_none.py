@@ -43,7 +43,7 @@ class GetReturnsNoneTestCase(unittest.TestCase):
             rec = c.next()
 
         self.assertEqual(rec, None)
-        self.assertEqual(count, 52)
+        self.assertEqual(count, len(string.letters))
 
         c.close()
         d.close()
@@ -77,7 +77,7 @@ class GetReturnsNoneTestCase(unittest.TestCase):
 
         self.assertNotEqual(rec, None)
         self.assert_(exceptionHappened)
-        self.assertEqual(count, 52)
+        self.assertEqual(count, len(string.letters))
 
         c.close()
         d.close()

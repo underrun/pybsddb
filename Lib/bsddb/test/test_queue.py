@@ -39,7 +39,7 @@ class SimpleQueueTestCase(unittest.TestCase):
         for x in string.letters:
             d.append(x * 40)
 
-        self.assertEqual(len(d), 52)
+        self.assertEqual(len(d), len(string.letters))
 
         d.put(100, "some more data")
         d.put(101, "and some more ")
@@ -111,7 +111,7 @@ class SimpleQueueTestCase(unittest.TestCase):
         for x in string.letters:
             d.append(x * 40)
 
-        self.assertEqual(len(d), 52)
+        self.assertEqual(len(d), len(string.letters))
 
         d.put(100, "some more data")
         d.put(101, "and some more ")
