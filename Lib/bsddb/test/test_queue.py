@@ -46,7 +46,7 @@ class SimpleQueueTestCase(unittest.TestCase):
         d.put(75,  "out of order")
         d.put(1,   "replacement data")
 
-        self.assertEqual(len(d), 55)
+        self.assertEqual(len(d), len(string.letters)+3)
 
         if verbose:
             print "before close" + '-' * 30
@@ -118,7 +118,7 @@ class SimpleQueueTestCase(unittest.TestCase):
         d.put(75,  "out of order")
         d.put(1,   "replacement data")
 
-        self.assertEqual(len(d), 55)
+        self.assertEqual(len(d), len(string.letters)+3)
 
         if verbose:
             print "before close" + '-' * 30
