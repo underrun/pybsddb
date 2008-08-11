@@ -6,27 +6,159 @@ import os
 import unittest
 try:
     # For Pythons w/distutils pybsddb
+    import bsddb3 as bsddb
+except ImportError:
+    # For Python 2.3
+    import bsddb
+
+
+if sys.version_info[0] >= 3 :
+    class cursor_py3k(object) :
+        def __init__(self, db, *args, **kwargs) :
+            self._dbcursor = db.cursor(*args, **kwargs)
+
+        def __getattr__(self, v) :
+            return getattr(self._dbcursor, v)
+
+        def __next__(self) :
+            return getattr(self._dbcursor, "next")()
+
+        def set(self, k) :
+            if isinstance(k, str) :
+                k = bytes(k, "ascii")
+            return self._dbcursor.set(k)
+
+        def get(self, k, flags=0) :
+            if isinstance(k, str) :
+                k = bytes(k, "ascii")
+            v = self._dbcursor.get(k, flags=flags)
+            if v != None :
+                v = v.decode("ascii")
+            return v
+
+    class DB_py3k(object) :
+        def __init__(self, *args, **kwargs) :
+            args2=[]
+            for i in args :
+                if isinstance(i, DBEnv_py3k) :
+                    i = i._dbenv
+                args2.append(i)
+            args = tuple(args2)
+            for k, v in kwargs.items() :
+                if isinstance(v, DBEnv_py3k) :
+                    kwargs[k] = v._dbenv
+
+            self._db = bsddb._db.DB_orig(*args, **kwargs)
+
+        def __getitem__(self, k) :
+            if isinstance(k, str) :
+                k = bytes(k, "ascii")
+            v = self._db[k]
+            return v.decode("ascii")
+
+        def __setitem__(self, k, v) :
+            if isinstance(k, str) :
+                k = bytes(k, "ascii")
+            if isinstance(v, str) :
+                v = bytes(v, "ascii")
+            self._db[k] = v
+
+        def __delitem__(self, k) :
+            if isinstance(k, str) :
+                k = bytes(k, "ascii")
+            del self._db[k]
+
+        def __getattr__(self, v) :
+            return getattr(self._db, v)
+
+        def __len__(self) :
+            return len(self._db)
+
+        def has_key(self, k) :
+            if isinstance(k, str) :
+                k = bytes(k, "ascii")
+            return k in self._db
+
+        def put(self, key, value, flags=0, txn=None) :
+            if isinstance(key, str) :
+                key = bytes(key, "ascii")
+            return self._db.put(key, bytes(value, "ascii"),
+                    flags=flags, txn=txn)
+
+        def get(self, key, txn=None) :
+            if isinstance(key, str) :
+                key = bytes(key, "ascii")
+            v=self._db.get(key, txn=txn)
+            if v != None : v = v.decode("ascii")
+            return v
+
+        def delete(self, key, txn=None) :
+            return self._db.delete(bytes(key, "ascii"), txn=txn)
+
+        def keys(self) :
+            k = self._db.keys()
+            if len(k) and isinstance(k[0], bytes) :
+                return [i.decode("ascii") for i in self._db.keys()]
+            else :
+                return k
+
+        def associate(self, db, *args, **kwargs) :
+            return self._db.associate(db._db, *args, **kwargs)
+
+        def cursor(self, txn=None, flags=0) :
+            return cursor_py3k(self._db, txn=txn, flags=flags)
+
+    bsddb._db.DB_orig = bsddb._db.DB
+    bsddb.DB = bsddb._db.DB = DB_py3k
+
+    class DBEnv_py3k(object) :
+        def __init__(self, *args, **kwargs) :
+            self._dbenv = bsddb._db.DBEnv_orig(*args, **kwargs)
+
+        def __getattr__(self, v) :
+            return getattr(self._dbenv, v)
+
+    bsddb._db.DBEnv_orig = bsddb._db.DBEnv
+    bsddb.DBEnv = bsddb._db.DBEnv = DBEnv_py3k
+
+    class DBSequence_py3k(object) :
+        def __init__(self, db, *args, **kwargs) :
+            self._db=db
+            self._dbsequence = bsddb._db.DBSequence_orig(db._db, *args, **kwargs)
+
+        def __getattr__(self, v) :
+            return getattr(self._dbsequence, v)
+
+        def open(self, key, *args, **kwargs) :
+            return self._dbsequence.open(bytes(key, "ascii"), *args, **kwargs)
+
+        def get_key(self) :
+            return  self._dbsequence.get_key().decode("ascii")
+
+        def get_dbp(self) :
+            return self._db
+
+    bsddb._db.DBSequence_orig = bsddb._db.DBSequence
+    bsddb._db.DBSequence = DBSequence_py3k
+
+    import string
+    string.letters=[chr(i) for i in xrange(65,91)]
+
+
+try:
+    # For Pythons w/distutils pybsddb
     from bsddb3 import db, dbtables, dbutils, dbshelve, \
             hashopen, btopen, rnopen, dbobj
-    import bsddb3 as bsddb
 except ImportError:
     # For Python 2.3
     from bsddb import db, dbtables, dbutils, dbshelve, \
             hashopen, btopen, rnopen, dbobj
-    import bsddb
 
 try:
     from bsddb3 import test_support
 except ImportError:
     from test import test_support
 
-if sys.version_info[0] >= 3 :
-    class DB3(object) :
-        def __init__(self, *args, **kwargs) :
-            self._db = bsddb.db.DB(*args,**kwags)
-
-        def __getattr__(self,v) :
-            return getattr(self._db,v)
 
 try:
     from threading import Thread, currentThread
