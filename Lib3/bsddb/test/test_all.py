@@ -20,6 +20,14 @@ try:
 except ImportError:
     from test import test_support
 
+if sys.version_info[0] >= 3 :
+    class DB3(object) :
+        def __init__(self, *args, **kwargs) :
+            self._db = bsddb.db.DB(*args,**kwags)
+
+        def __getattr__(self,v) :
+            return getattr(self._db,v)
+
 try:
     from threading import Thread, currentThread
     del Thread, currentThread

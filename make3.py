@@ -15,8 +15,8 @@ def make2to3(path_from, path_to) :
         return
 
     cwd = os.getcwd()
-    if os.path.exists(path_to) and \
-        (os.stat(path_from).st_ctime < os.stat(path_to).st_ctime) :
+    if (not path_from.endswith(".py")) or (os.path.exists(path_to) and \
+        (os.stat(path_from).st_mtime < os.stat(path_to).st_mtime)) :
             return
     print "*** Converting", path_to
     if path_from[0] != "/" :
