@@ -32,8 +32,8 @@ class GetReturnsNoneTestCase(unittest.TestCase):
         data = d.get('bad key')
         self.assertEqual(data, None)
 
-        data = d.get('a')
-        self.assertEqual(data, 'a'*40)
+        data = d.get(string.letters[0])
+        self.assertEqual(data, string.letters[0]*40)
 
         count = 0
         c = d.cursor()
@@ -60,8 +60,8 @@ class GetReturnsNoneTestCase(unittest.TestCase):
         self.assertRaises(db.DBNotFoundError, d.get, 'bad key')
         self.assertRaises(KeyError, d.get, 'bad key')
 
-        data = d.get('a')
-        self.assertEqual(data, 'a'*40)
+        data = d.get(string.letters[0])
+        self.assertEqual(data, string.letters[0]*40)
 
         count = 0
         exceptionHappened = 0
