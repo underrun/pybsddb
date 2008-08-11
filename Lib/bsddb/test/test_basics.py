@@ -244,8 +244,10 @@ class BasicTestCase(unittest.TestCase):
 
         self.assertEqual(d['new record'], 'a replacement record')
 
-        self.assertEqual(d.has_key('0001'), 1)
-        self.assertEqual(d.has_key('spam'), 0)
+# We check also the positional parameter
+        self.assertEqual(d.has_key('0001', None), 1)
+# We check also the keyword parameter
+        self.assertEqual(d.has_key('spam', txn=None), 0)
 
         items = d.items()
         self.assertEqual(len(items), self._numKeys+1)
