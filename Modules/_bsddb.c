@@ -396,7 +396,11 @@ static int make_dbt(PyObject* obj, DBT* dbt)
     }
     else if (!PyArg_Parse(obj, "s#", &dbt->data, &dbt->size)) {
         PyErr_SetString(PyExc_TypeError,
+#if (PY_VERSION_HEX < 0x03000000)
                         "Data values must be of type string or None.");
+#else
+                        "Data values must be of type bytes or None.");
+#endif
         return 0;
     }
     return 1;
@@ -435,7 +439,11 @@ make_key_dbt(DBObject* self, PyObject* keyobj, DBT* key, int* pflags)
         if (type == DB_RECNO || type == DB_QUEUE) {
             PyErr_SetString(
                 PyExc_TypeError,
+#if (PY_VERSION_HEX < 0x03000000)
                 "String keys not allowed for Recno and Queue DB's");
+#else
+                "Bytes keys not allowed for Recno and Queue DB's");
+#endif
             return 0;
         }
 
@@ -488,7 +496,11 @@ make_key_dbt(DBObject* self, PyObject* keyobj, DBT* key, int* pflags)
     }
     else {
         PyErr_Format(PyExc_TypeError,
+#if (PY_VERSION_HEX < 0x03000000)
                      "String or Integer object expected for key, %s found",
+#else
+                     "Bytes or Integer object expected for key, %s found",
+#endif
                      Py_TYPE(keyobj)->tp_name);
         return 0;
     }
