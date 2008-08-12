@@ -22,21 +22,39 @@ if sys.version_info[0] >= 3 :
         def __getattr__(self, v) :
             return getattr(self._dbcursor, v)
 
+        def _fix(self, v) :
+            if v == None : return None
+            key, value = v
+            if isinstance(key, bytes) :
+                key = key.decode(charset)
+            return (key, value.decode(charset))
+
         def __next__(self) :
-            return getattr(self._dbcursor, "next")()
+            v = getattr(self._dbcursor, "next")()
+            return self._fix(v)
 
         def set(self, k) :
             if isinstance(k, str) :
                 k = bytes(k, charset)
-            return self._dbcursor.set(k)
+            v = self._dbcursor.set(k)
+            return self._fix(v)
+
+        def set_recno(self, num) :
+            v = self._dbcursor.set_recno(num)
+            return self._fix(v)
 
         def set_range(self, k, dlen=-1, doff=-1) :
             if isinstance(k, str) :
                 k = bytes(k, charset)
-            return self._dbcursor.set_range(k, dlen=dlen, doff=doff)
+            v = self._dbcursor.set_range(k, dlen=dlen, doff=doff)
+            return self._fix(v)
 
         def dup(self, flags=0) :
             return dup_cursor_py3k(self._dbcursor, flags)
+
+        def next_dup(self) :
+            v = self._dbcursor.next_dup()
+            return self._fix(v)
 
         def put(self, key, value, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
@@ -45,6 +63,14 @@ if sys.version_info[0] >= 3 :
                 value = bytes(value, charset)
             return self._dbcursor.put(key, value, flags=flags, dlen=dlen,
                     doff=doff)
+
+        def current(self) :
+            v = self._dbcursor.current()
+            return self._fix(v)
+
+        def first(self) :
+            v = self._dbcursor.first()
+            return self._fix(v)
 
         def pget(self, key, data=None, flags=0) :
             if isinstance(key, str) :
@@ -87,7 +113,7 @@ if sys.version_info[0] >= 3 :
             if isinstance(value, str) :
                 value = bytes(value, charset)
             v=self._dbcursor.get_both(key, value)
-            return v
+            return self._fix(v)
 
     class dup_cursor_py3k(cursor_py3k) :
         def __init__(self, dbcursor, *args, **kwargs) :
@@ -211,8 +237,11 @@ if sys.version_info[0] >= 3 :
                     self._callback = callback
 
                 def callback(self, key, data) :
+                    if isinstance(key, str) :
+                        key = key.decode(charset)
                     key = self._callback(key, data)
-                    if key != bsddb._db.DB_DONOTINDEX :
+                    if (key != bsddb._db.DB_DONOTINDEX) and isinstance(key,
+                            str) :
                         key = bytes(key, charset)
                     return key
 
