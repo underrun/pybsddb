@@ -121,11 +121,11 @@ class DBShelveTestCase(unittest.TestCase):
         if sys.version_info[0] < 3 :
             values.sort()
             dbvalues.sort()
+            self.assertEqual(values, dbvalues)
         else :  # XXX: Convert all to strings. Please, improve
             values.sort(key=lambda x : str(x))
             dbvalues.sort(key=lambda x : str(x))
-
-        self.assertEqual(values, dbvalues)
+            self.assertEqual(repr(values), repr(dbvalues))
 
         items = d.items()
         self.assertEqual(len(items), len(values))
@@ -165,7 +165,8 @@ class DBShelveTestCase(unittest.TestCase):
                 print rec
             key, value = rec
             self.checkrec(key, value)
-            rec = c.next()
+            # Hack to avoid conversion by 2to3 tool
+            rec = getattr(c, "next")()
         del c
 
         self.assertEqual(count, len(d))
