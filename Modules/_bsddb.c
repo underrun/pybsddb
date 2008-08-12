@@ -609,7 +609,11 @@ PyObject *a, *b, *r;
       return NULL;
   }
 
+#if (PY_VERSION_HEX >= 0x02040000)
   r = PyTuple_Pack(2, a, b) ;
+#else
+  r = Py_BuildValue("OO", a, b);
+#endif
   Py_DECREF(a);
   Py_DECREF(b);
   return r;
