@@ -30,10 +30,21 @@ if sys.version_info[0] >= 3 :
                 k = bytes(k, charset)
             return self._dbcursor.set(k)
 
-        def set_range(self, k) :
+        def set_range(self, k, dlen=-1, doff=-1) :
             if isinstance(k, str) :
                 k = bytes(k, charset)
-            return self._dbcursor.set_range(k)
+            return self._dbcursor.set_range(k, dlen=dlen, doff=doff)
+
+        def dup(self, flags) :
+            return dup_cursor_py3k(self._dbcursor, flags)
+
+        def put(self, key, value, flags=0, dlen=-1, doff=-1) :
+            if isinstance(key, str) :
+                key = bytes(key, charset)
+            if isinstance(value, str) :
+                value = bytes(value, charset)
+            return self._dbcursor.put(key, value, flags=flags, dlen=dlen,
+                    doff=doff)
 
         def get(self, *args, **kwargs) :
             l = len(args)
@@ -54,6 +65,18 @@ if sys.version_info[0] >= 3 :
             if v != None :
                 v = v.decode(charset)
             return v
+
+        def get_both(self, key, value) :
+            if isinstance(key, str) :
+                key = bytes(key, charset)
+            if isinstance(value, str) :
+                value = bytes(value, charset)
+            v=self._dbcursor.get_both(key, value)
+            return v
+
+    class dup_cursor_py3k(cursor_py3k) :
+        def __init__(self, dbcursor, *args, **kwargs) :
+            self._dbcursor = dbcursor.dup(*args, **kwargs)
 
     class DB_py3k(object) :
         def __init__(self, *args, **kwargs) :
@@ -105,23 +128,31 @@ if sys.version_info[0] >= 3 :
                 k = bytes(k, charset)
             return self._db.has_key(k, txn=txn)
 
-        def put(self, key, value, flags=0, txn=None) :
+        def put(self, key, value, txn=None, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
             if isinstance(value, str) :
                 value = bytes(value, charset)
-            return self._db.put(key, value, flags=flags, txn=txn)
+            return self._db.put(key, value, flags=flags, txn=txn, dlen=dlen,
+                    doff=doff)
 
         def append(self, value) :
             if isinstance(value, str) :
                 value = bytes(value, charset)
             return self._db.append(value)
 
-        def get(self, key, txn=None, flags=0) :
+        def get_size(self, key) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
-            v=self._db.get(key, txn=txn, flags=flags)
-            if v != None :
+            return self._db.get_size(key)
+
+        def get(self, key, value=None, txn=None, flags=0, dlen=-1, doff=-1) :
+            if isinstance(key, str) :
+                key = bytes(key, charset)
+            if isinstance(value, str) :
+                value = bytes(value, charset)
+            v=self._db.get(key, value, txn=txn, flags=flags, dlen=dlen, doff=doff)
+            if (v != None) and (type(v) == type(bytes("",charset))) :
                 v = v.decode(charset)
             return v
 
