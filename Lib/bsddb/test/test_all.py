@@ -231,6 +231,16 @@ if sys.version_info[0] >= 3 :
             else :
                 return k
 
+        def items(self) :
+            data = self._db.items()
+            if not len(data) : return data
+            data2 = []
+            for k, v in data :
+                if isinstance(k, bytes) :
+                    k = k.decode(charset)
+                data2.append((k, v.decode(charset)))
+            return data2
+
         def associate(self, secondarydb, callback, flags=0, txn=None) :
             class associate_callback(object) :
                 def __init__(self, callback) :
