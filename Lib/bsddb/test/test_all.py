@@ -328,8 +328,12 @@ except ImportError:
 
 
 try:
-    from threading import Thread, currentThread
-    del Thread, currentThread
+    if sys.version_info[0] < 3 :
+        from threading import Thread, currentThread
+        del Thread, currentThread
+    else :
+        from threading import Thread, current_thread
+        del Thread, current_thread
     have_threads = True
 except ImportError:
     have_threads = False
