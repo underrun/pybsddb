@@ -585,11 +585,13 @@ static PyObject *BuildValue_S(const void *p,int s)
     p=DummyString;
     assert(s==0);
   }
-  return Py_BuildValue("s#",p,s);
+  return PyBytes_FromStringAndSize(p, s);
 }
 
 static PyObject *BuildValue_SS(const void *p1,int s1,const void *p2,int s2)
 {
+PyObject *a, *b, *r;
+
   if (!p1) {
     p1=DummyString;
     assert(s1==0);
@@ -598,25 +600,55 @@ static PyObject *BuildValue_SS(const void *p1,int s1,const void *p2,int s2)
     p2=DummyString;
     assert(s2==0);
   }
-  return Py_BuildValue("s#s#",p1,s1,p2,s2);
+
+  if (!(a = PyBytes_FromStringAndSize(p1, s1))) {
+      return NULL;
+  }
+  if (!(b = PyBytes_FromStringAndSize(p2, s2))) {
+      Py_DECREF(a);
+      return NULL;
+  }
+
+  r = PyTuple_Pack(2, a, b) ;
+  Py_DECREF(a);
+  Py_DECREF(b);
+  return r;
 }
 
 static PyObject *BuildValue_IS(int i,const void *p,int s)
 {
+  PyObject *a, *r;
+
   if (!p) {
     p=DummyString;
     assert(s==0);
   }
-  return Py_BuildValue("is#",i,p,s);
+
+  if (!(a = PyBytes_FromStringAndSize(p, s))) {
+      return NULL;
+  }
+
+  r = Py_BuildValue("iO", i, a);
+  Py_DECREF(a);
+  return r;
 }
 
-static PyObject *BuildValue_LS(long i,const void *p,int s)
+static PyObject *BuildValue_LS(long l,const void *p,int s)
 {
+  PyObject *a, *r;
+
   if (!p) {
     p=DummyString;
     assert(s==0);
   }
-  return Py_BuildValue("ls#",i,p,s);
+
+  if (!(a = PyBytes_FromStringAndSize(p, s))) {
+      return NULL;
+  }
+
+  r = Py_BuildValue("lO", l, a);
+  Py_DECREF(a);
+  return r;
 }
 
 
@@ -5139,8 +5171,18 @@ DBEnv_rep_process_message(DBEnvObject* self, PyObject* args)
             return Py_BuildValue("(iO)", err, Py_None);
             break;
         case DB_REP_NEWSITE :
-            return Py_BuildValue("(is#)", err, rec.data, rec.size);
-            break;
+            {
+                PyObject *tmp, *r;
+
+                if (!(tmp = PyBytes_FromStringAndSize(rec.data, rec.size))) {
+                    return NULL;
+                }
+
+                r = Py_BuildValue("(iO)", err, tmp);
+                Py_DECREF(tmp);
+                return r;
+                break;
+            }
 #if (DBVER >= 42)
         case DB_REP_NOTPERM :
         case DB_REP_ISPERM :
@@ -5159,6 +5201,7 @@ _DBEnv_rep_transportCallback(DB_ENV* db_env, const DBT* control, const DBT* rec,
     DBEnvObject *dbenv;
     PyObject* rep_transport;
     PyObject* args;
+    PyObject *a, *b;
     PyObject* result = NULL;
     int ret=0;
 
@@ -5166,15 +5209,21 @@ _DBEnv_rep_transportCallback(DB_ENV* db_env, const DBT* control, const DBT* rec,
     dbenv = (DBEnvObject *)db_env->app_private;
     rep_transport = dbenv->rep_transport;
 
+    /*
+    ** The errors in 'a' or 'b' are detected in "Py_BuildValue".
+    */
+    a = PyBytes_FromStringAndSize(control->data, control->size);
+    b = PyBytes_FromStringAndSize(rec->data, rec->size);
+
     args = Py_BuildValue(
 #if (PY_VERSION_HEX >= 0x02040000)
-            "(Os#s#(ll)iI)",
+            "(OOO(ll)iI)",
 #else
-            "(Os#s#(ll)ii)",
+            "(OOO(ll)ii)",
 #endif
             dbenv,
-            control->data, control->size,
-            rec->data, rec->size, lsn->file, lsn->offset, envid, flags);
+            a, b,
+            lsn->file, lsn->offset, envid, flags);
     if (args) {
         result = PyEval_CallObject(rep_transport, args);
     }
@@ -5183,6 +5232,8 @@ _DBEnv_rep_transportCallback(DB_ENV* db_env, const DBT* control, const DBT* rec,
         PyErr_Print();
         ret = -1;
     }
+    Py_XDECREF(a);
+    Py_XDECREF(b);
     Py_XDECREF(args);
     Py_XDECREF(result);
     MYDB_END_BLOCK_THREADS;
