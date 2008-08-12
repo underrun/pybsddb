@@ -151,10 +151,10 @@ if sys.version_info[0] >= 3 :
             return self._db.put(key, value, flags=flags, txn=txn, dlen=dlen,
                     doff=doff)
 
-        def append(self, value) :
+        def append(self, value, txn=None) :
             if isinstance(value, str) :
                 value = bytes(value, charset)
-            return self._db.append(value)
+            return self._db.append(value, txn=txn)
 
         def get_size(self, key) :
             if isinstance(key, str) :
@@ -226,18 +226,12 @@ if sys.version_info[0] >= 3 :
           cursor_list = [i._dbcursor for i in cursor_list]
           return self._db.join(cursor_list)
 
-    bsddb._db.DB_orig = bsddb._db.DB
-    bsddb.DB = bsddb.db.DB = bsddb._db.DB = DB_py3k
-
     class DBEnv_py3k(object) :
         def __init__(self, *args, **kwargs) :
             self._dbenv = bsddb._db.DBEnv_orig(*args, **kwargs)
 
         def __getattr__(self, v) :
             return getattr(self._dbenv, v)
-
-    bsddb._db.DBEnv_orig = bsddb._db.DBEnv
-    bsddb.DBEnv = bsddb.db.DBEnv = bsddb._db.DBEnv = DBEnv_py3k
 
     class DBSequence_py3k(object) :
         def __init__(self, db, *args, **kwargs) :
@@ -256,12 +250,28 @@ if sys.version_info[0] >= 3 :
         def get_dbp(self) :
             return self._db
 
-    bsddb._db.DBSequence_orig = bsddb._db.DBSequence
-    bsddb._db.DBSequence = DBSequence_py3k
-
     import string
     string.letters=[chr(i) for i in xrange(65,91)]
 
+    bsddb._db.DBEnv_orig = bsddb._db.DBEnv
+    bsddb._db.DB_orig = bsddb._db.DB
+    bsddb._db.DBSequence_orig = bsddb._db.DBSequence
+
+    def do_proxy_db_py3k(flag) :
+        flag2 = do_proxy_db_py3k.flag
+        do_proxy_db_py3k.flag = flag
+        if flag :
+            bsddb.DBEnv = bsddb.db.DBEnv = bsddb._db.DBEnv = DBEnv_py3k
+            bsddb.DB = bsddb.db.DB = bsddb._db.DB = DB_py3k
+            bsddb._db.DBSequence = DBSequence_py3k
+        else :
+            bsddb.DBEnv = bsddb.db.DBEnv = bsddb._db.DBEnv = bsddb._db.DBEnv_orig
+            bsddb.DB = bsddb.db.DB = bsddb._db.DB = bsddb._db.DB_orig
+            bsddb._db.DBSequence = bsddb._db.DBSequence_orig
+        return flag2
+
+    do_proxy_db_py3k.flag = False
+    do_proxy_db_py3k(True)
 
 try:
     # For Pythons w/distutils pybsddb
