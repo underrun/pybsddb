@@ -141,7 +141,7 @@ class AssociateTestCase(unittest.TestCase):
         for key, value in list(musicdata.items()):
             if type(self.keytype) == type(''):
                 key = "%02d" % key
-            d.put(key, string.join(value, '|'), txn=txn)
+            d.put(key, '|'.join(value), txn=txn)
 
     def createDB(self, txn=None):
         self.cur = None
@@ -227,7 +227,7 @@ class AssociateTestCase(unittest.TestCase):
         rec = self.cur.first()
         while rec is not None:
             if type(self.keytype) == type(''):
-                self.assert_(string.atoi(rec[0]))  # for primary db, key is a number
+                self.assert_(int(rec[0]))  # for primary db, key is a number
             else:
                 self.assert_(rec[0] and type(rec[0]) == type(0))
             count = count + 1
@@ -266,10 +266,17 @@ class AssociateTestCase(unittest.TestCase):
         self.cur = None
 
     def getGenre(self, priKey, priData):
-        self.assertEqual(type(priData), type(""))
+        import sys
+        if sys.version_info[0] < 3 :
+            self.assertEqual(type(priData), type(""))
+            genre = priData.split('|')[2]
+        else :
+            self.assertEqual(type(priData), bytes)
+            genre = priData.split(bytes('|', "ascii"))[2]
+
         if verbose:
             print('getGenre key: %r data: %r' % (priKey, priData))
-        genre = string.split(priData, '|')[2]
+
         if genre == 'Blues':
             return db.DB_DONOTINDEX
         else:
@@ -393,13 +400,13 @@ class ThreadedAssociateTestCase(AssociateTestCase):
         for key, value in list(musicdata.items()):
             if type(self.keytype) == type(''):
                 key = "%02d" % key
-            d.put(key, string.join(value, '|'))
+            d.put(key, '|'.join(value))
 
     def writer2(self, d):
         for x in range(100, 600):
             key = 'z%2d' % x
             value = [key] * 4
-            d.put(key, string.join(value, '|'))
+            d.put(key, '|'.join(value))
 
 
 class ThreadedAssociateHashTestCase(ShelveAssociateTestCase):

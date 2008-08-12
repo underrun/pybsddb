@@ -139,7 +139,11 @@ class BasicTestCase(unittest.TestCase):
         try:
             d.delete('abcd')
         except db.DBNotFoundError as val:
-            self.assertEqual(val[0], db.DB_NOTFOUND)
+            import sys
+            if sys.version_info[0] < 3 :
+                self.assertEqual(val[0], db.DB_NOTFOUND)
+            else :
+                self.assertEqual(val.args[0], db.DB_NOTFOUND)
             if verbose: print(val)
         else:
             self.fail("expected exception")
@@ -158,7 +162,11 @@ class BasicTestCase(unittest.TestCase):
         try:
             d.put('abcd', 'this should fail', flags=db.DB_NOOVERWRITE)
         except db.DBKeyExistError as val:
-            self.assertEqual(val[0], db.DB_KEYEXIST)
+            import sys
+            if sys.version_info[0] < 3 :
+                self.assertEqual(val[0], db.DB_KEYEXIST)
+            else :
+                self.assertEqual(val.args[0], db.DB_KEYEXIST)
             if verbose: print(val)
         else:
             self.fail("expected exception")
@@ -244,8 +252,10 @@ class BasicTestCase(unittest.TestCase):
 
         self.assertEqual(d['new record'], 'a replacement record')
 
-        self.assertEqual('0001' in d, 1)
-        self.assertEqual('spam' in d, 0)
+# We check also the positional parameter
+        self.assertEqual(d.has_key('0001', None), 1)
+# We check also the keyword parameter
+        self.assertEqual(d.has_key('spam', txn=None), 0)
 
         items = list(d.items())
         self.assertEqual(len(items), self._numKeys+1)
@@ -291,7 +301,11 @@ class BasicTestCase(unittest.TestCase):
                 rec = next(c)
             except db.DBNotFoundError as val:
                 if get_raises_error:
-                    self.assertEqual(val[0], db.DB_NOTFOUND)
+                    import sys
+                    if sys.version_info[0] < 3 :
+                        self.assertEqual(val[0], db.DB_NOTFOUND)
+                    else :
+                        self.assertEqual(val.args[0], db.DB_NOTFOUND)
                     if verbose: print(val)
                     rec = None
                 else:
@@ -312,7 +326,11 @@ class BasicTestCase(unittest.TestCase):
                 rec = c.prev()
             except db.DBNotFoundError as val:
                 if get_raises_error:
-                    self.assertEqual(val[0], db.DB_NOTFOUND)
+                    import sys
+                    if sys.version_info[0] < 3 :
+                        self.assertEqual(val[0], db.DB_NOTFOUND)
+                    else :
+                        self.assertEqual(val.args[0], db.DB_NOTFOUND)
                     if verbose: print(val)
                     rec = None
                 else:
@@ -335,7 +353,11 @@ class BasicTestCase(unittest.TestCase):
         try:
             n = c.set('bad key')
         except db.DBNotFoundError as val:
-            self.assertEqual(val[0], db.DB_NOTFOUND)
+            import sys
+            if sys.version_info[0] < 3 :
+                self.assertEqual(val[0], db.DB_NOTFOUND)
+            else :
+                self.assertEqual(val.args[0], db.DB_NOTFOUND)
             if verbose: print(val)
         else:
             if set_raises_error:
@@ -349,7 +371,11 @@ class BasicTestCase(unittest.TestCase):
         try:
             n = c.get_both('0404', 'bad data')
         except db.DBNotFoundError as val:
-            self.assertEqual(val[0], db.DB_NOTFOUND)
+            import sys
+            if sys.version_info[0] < 3 :
+                self.assertEqual(val[0], db.DB_NOTFOUND)
+            else :
+                self.assertEqual(val.args[0], db.DB_NOTFOUND)
             if verbose: print(val)
         else:
             if get_raises_error:
@@ -378,7 +404,11 @@ class BasicTestCase(unittest.TestCase):
             rec = c.current()
         except db.DBKeyEmptyError as val:
             if get_raises_error:
-                self.assertEqual(val[0], db.DB_KEYEMPTY)
+                import sys
+                if sys.version_info[0] < 3 :
+                    self.assertEqual(val[0], db.DB_KEYEMPTY)
+                else :
+                    self.assertEqual(val.args[0], db.DB_KEYEMPTY)
                 if verbose: print(val)
             else:
                 self.fail("unexpected DBKeyEmptyError")
@@ -423,7 +453,11 @@ class BasicTestCase(unittest.TestCase):
                 # a bug may cause a NULL pointer dereference...
                 getattr(c, method)(*args)
             except db.DBError as val:
-                self.assertEqual(val[0], 0)
+                import sys
+                if sys.version_info[0] < 3 :
+                    self.assertEqual(val[0], 0)
+                else :
+                    self.assertEqual(val.args[0], 0)
                 if verbose: print(val)
             else:
                 self.fail("no exception raised when using a buggy cursor's"
@@ -792,8 +826,8 @@ class BasicDUPTestCase(BasicTestCase):
         rec = c.set("dup1")
         self.assertEqual(rec, ('dup1', 'The'))
 
-        next = next(c)
-        self.assertEqual(next, ('dup1', 'quick'))
+        next_reg = next(c)
+        self.assertEqual(next_reg, ('dup1', 'quick'))
 
         rec = c.set("dup1")
         count = c.count()
@@ -908,7 +942,7 @@ class BasicMultiDBTestCase(BasicTestCase):
             if verbose:
                 print(rec)
             rec = next(c3)
-        self.assertEqual(count, 52)
+        self.assertEqual(count, len(string.letters))
 
 
         c1.close()

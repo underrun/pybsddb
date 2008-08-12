@@ -232,7 +232,7 @@ class DBShelf(MutableMapping):
         data = self.db.get(*args, **kw)
         try:
             return pickle.loads(data)
-        except (TypeError, pickle.UnpicklingError):
+        except (EOFError, TypeError, pickle.UnpicklingError):
             return data  # we may be getting the default value, or None,
                          # so it doesn't need unpickled.
 

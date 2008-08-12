@@ -28,7 +28,7 @@ class CompatibilityTestCase(unittest.TestCase):
         self.do_bthash_test(hashopen, 'hashopen')
 
     def test03_rnopen(self):
-        data = string.split("The quick brown fox jumped over the lazy dog.")
+        data = "The quick brown fox jumped over the lazy dog.".split()
         if verbose:
             print("\nTesting: rnopen")
 

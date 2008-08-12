@@ -39,14 +39,14 @@ class SimpleQueueTestCase(unittest.TestCase):
         for x in string.letters:
             d.append(x * 40)
 
-        self.assertEqual(len(d), 52)
+        self.assertEqual(len(d), len(string.letters))
 
         d.put(100, "some more data")
         d.put(101, "and some more ")
         d.put(75,  "out of order")
         d.put(1,   "replacement data")
 
-        self.assertEqual(len(d), 55)
+        self.assertEqual(len(d), len(string.letters)+3)
 
         if verbose:
             print("before close" + '-' * 30)
@@ -61,7 +61,11 @@ class SimpleQueueTestCase(unittest.TestCase):
             print("after open" + '-' * 30)
             pprint(d.stat())
 
-        d.append("one more")
+        # Test "txn" as a positional parameter
+        d.append("one more", None)
+        # Test "txn" as a keyword parameter
+        d.append("another one", txn=None)
+
         c = d.cursor()
 
         if verbose:
@@ -111,14 +115,14 @@ class SimpleQueueTestCase(unittest.TestCase):
         for x in string.letters:
             d.append(x * 40)
 
-        self.assertEqual(len(d), 52)
+        self.assertEqual(len(d), len(string.letters))
 
         d.put(100, "some more data")
         d.put(101, "and some more ")
         d.put(75,  "out of order")
         d.put(1,   "replacement data")
 
-        self.assertEqual(len(d), 55)
+        self.assertEqual(len(d), len(string.letters)+3)
 
         if verbose:
             print("before close" + '-' * 30)
