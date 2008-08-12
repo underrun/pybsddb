@@ -9,7 +9,12 @@ from test_all import db, test_support, verbose, have_threads, \
         get_new_environment_path, get_new_database_path
 
 if have_threads :
-    from threading import Thread, currentThread
+    from threading import Thread
+    import sys
+    if sys.version_info[0] < 3 :
+        from threading import currentThread
+    else :
+        from threading import current_thread as currentThread
 
 #----------------------------------------------------------------------
 
@@ -75,7 +80,11 @@ class LockingTestCase(unittest.TestCase):
                               args=(db.DB_LOCK_WRITE,)))
 
         for t in threads:
-            t.setDaemon(True)
+            import sys
+            if sys.version_info[0] < 3 :
+                t.setDaemon(True)
+            else :
+                t.set_daemon(True)
             t.start()
         for t in threads:
             t.join()
@@ -99,7 +108,11 @@ class LockingTestCase(unittest.TestCase):
         deadlock_detection.end=False
         deadlock_detection.count=0
         t=Thread(target=deadlock_detection)
-        t.setDaemon(True)
+        import sys
+        if sys.version_info[0] < 3 :
+            t.setDaemon(True)
+        else :
+            t.set_daemon(True)
         t.start()
         self.env.set_timeout(100000, db.DB_SET_LOCK_TIMEOUT)
         anID = self.env.lock_id()
@@ -122,7 +135,12 @@ class LockingTestCase(unittest.TestCase):
             self.assertTrue(deadlock_detection.count>0)
 
     def theThread(self, lockType):
-        name = currentThread().getName()
+        import sys
+        if sys.version_info[0] < 3 :
+            name = currentThread().getName()
+        else :
+            name = currentThread().get_name()
+
         if lockType ==  db.DB_LOCK_WRITE:
             lt = "write"
         else:
