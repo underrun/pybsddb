@@ -1260,15 +1260,17 @@ DBSequence_dealloc(DBSequenceObject* self)
 /* DB methods */
 
 static PyObject*
-DB_append(DBObject* self, PyObject* args)
+DB_append(DBObject* self, PyObject* args, PyObject* kwargs)
 {
     PyObject* txnobj = NULL;
     PyObject* dataobj;
     db_recno_t recno;
     DBT key, data;
     DB_TXN *txn = NULL;
+    static char* kwnames[] = { "data", "txn", NULL };
 
-    if (!PyArg_UnpackTuple(args, "append", 1, 2, &dataobj, &txnobj))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|O:append", kwnames,
+                                     &dataobj, &txnobj))
         return NULL;
 
     CHECK_DB_NOT_CLOSED(self);
@@ -6280,7 +6282,7 @@ DBSequence_stat(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 /* Method definition tables and type objects */
 
 static PyMethodDef DB_methods[] = {
-    {"append",          (PyCFunction)DB_append,         METH_VARARGS},
+    {"append",          (PyCFunction)DB_append,         METH_VARARGS|METH_KEYWORDS},
     {"associate",       (PyCFunction)DB_associate,      METH_VARARGS|METH_KEYWORDS},
     {"close",           (PyCFunction)DB_close,          METH_VARARGS},
     {"consume",         (PyCFunction)DB_consume,        METH_VARARGS|METH_KEYWORDS},

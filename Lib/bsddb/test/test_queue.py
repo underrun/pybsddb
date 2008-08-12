@@ -61,7 +61,11 @@ class SimpleQueueTestCase(unittest.TestCase):
             print "after open" + '-' * 30
             pprint(d.stat())
 
-        d.append("one more")
+        # Test "txn" as a positional parameter
+        d.append("one more", None)
+        # Test "txn" as a keyword parameter
+        d.append("another one", txn=None)
+
         c = d.cursor()
 
         if verbose:
