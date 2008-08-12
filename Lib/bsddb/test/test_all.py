@@ -35,7 +35,7 @@ if sys.version_info[0] >= 3 :
                 k = bytes(k, charset)
             return self._dbcursor.set_range(k, dlen=dlen, doff=doff)
 
-        def dup(self, flags) :
+        def dup(self, flags=0) :
             return dup_cursor_py3k(self._dbcursor, flags)
 
         def put(self, key, value, flags=0, dlen=-1, doff=-1) :
@@ -45,6 +45,21 @@ if sys.version_info[0] >= 3 :
                 value = bytes(value, charset)
             return self._dbcursor.put(key, value, flags=flags, dlen=dlen,
                     doff=doff)
+
+        def pget(self, key, data=None, flags=0) :
+            if isinstance(key, str) :
+                key = bytes(key, charset)
+            v=self._dbcursor.pget(key, data=data, flags=flags)
+            if v != None :
+                v1, v2, v3 = v
+                if isinstance(v1, bytes) :
+                    v1 = v1.decode(charset)
+                if isinstance(v2, bytes) :
+                    v2 = v2.decode(charset)
+
+                v = (v1, v2, v3.decode(charset))
+
+            return v
 
         def get(self, *args, **kwargs) :
             l = len(args)
@@ -156,6 +171,18 @@ if sys.version_info[0] >= 3 :
                 v = v.decode(charset)
             return v
 
+        def pget(self, key, txn=None) :
+            if isinstance(key, str) :
+                key = bytes(key, charset)
+            v=self._db.pget(key, txn=txn)
+            if v != None :
+                v1, v2 = v
+                if isinstance(v1, bytes) :
+                    v1 = v1.decode(charset)
+
+                v = (v1, v2.decode(charset))
+            return v
+
         def get_both(self, key, value, txn=None, flags=0) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
@@ -178,8 +205,19 @@ if sys.version_info[0] >= 3 :
             else :
                 return k
 
-        def associate(self, db, *args, **kwargs) :
-            return self._db.associate(db._db, *args, **kwargs)
+        def associate(self, secondarydb, callback, flags=0, txn=None) :
+            class associate_callback(object) :
+                def __init__(self, callback) :
+                    self._callback = callback
+
+                def callback(self, key, data) :
+                    key = self._callback(key, data)
+                    if key != bsddb._db.DB_DONOTINDEX :
+                        key = bytes(key, charset)
+                    return key
+
+            return self._db.associate(secondarydb._db,
+                    associate_callback(callback).callback, flags=flags, txn=txn)
 
         def cursor(self, txn=None, flags=0) :
             return cursor_py3k(self._db, txn=txn, flags=flags)
