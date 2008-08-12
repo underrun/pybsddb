@@ -13,6 +13,8 @@ except ImportError:
 
 
 if sys.version_info[0] >= 3 :
+    charset = "iso8859-1"  # Full 8 bit
+
     class cursor_py3k(object) :
         def __init__(self, db, *args, **kwargs) :
             self._dbcursor = db.cursor(*args, **kwargs)
@@ -25,15 +27,32 @@ if sys.version_info[0] >= 3 :
 
         def set(self, k) :
             if isinstance(k, str) :
-                k = bytes(k, "ascii")
+                k = bytes(k, charset)
             return self._dbcursor.set(k)
 
-        def get(self, k, flags=0) :
+        def set_range(self, k) :
             if isinstance(k, str) :
-                k = bytes(k, "ascii")
-            v = self._dbcursor.get(k, flags=flags)
+                k = bytes(k, charset)
+            return self._dbcursor.set_range(k)
+
+        def get(self, *args, **kwargs) :
+            l = len(args)
+            if l == 2 :
+                k, f = args
+                if isinstance(k, str) :
+                    k = bytes(k, "iso8859-1")
+                args = (k, f)
+            elif l == 3 :
+                k, d, f = args
+                if isinstance(k, str) :
+                    k = bytes(k, charset)
+                if isinstance(d, str) :
+                    d = bytes(d, charset)
+                args =(k, d, f)
+
+            v = self._dbcursor.get(*args, **kwargs)
             if v != None :
-                v = v.decode("ascii")
+                v = v.decode(charset)
             return v
 
     class DB_py3k(object) :
@@ -50,22 +69,29 @@ if sys.version_info[0] >= 3 :
 
             self._db = bsddb._db.DB_orig(*args, **kwargs)
 
+        def __contains__(self, k) :
+            if isinstance(k, str) :
+                k = bytes(k, charset)
+            return getattr(self._db, "has_key")(k)
+
         def __getitem__(self, k) :
             if isinstance(k, str) :
-                k = bytes(k, "ascii")
+                k = bytes(k, charset)
             v = self._db[k]
-            return v.decode("ascii")
+            if v != None :
+                v = v.decode(charset)
+            return v
 
         def __setitem__(self, k, v) :
             if isinstance(k, str) :
-                k = bytes(k, "ascii")
+                k = bytes(k, charset)
             if isinstance(v, str) :
-                v = bytes(v, "ascii")
+                v = bytes(v, charset)
             self._db[k] = v
 
         def __delitem__(self, k) :
             if isinstance(k, str) :
-                k = bytes(k, "ascii")
+                k = bytes(k, charset)
             del self._db[k]
 
         def __getattr__(self, v) :
@@ -74,31 +100,50 @@ if sys.version_info[0] >= 3 :
         def __len__(self) :
             return len(self._db)
 
-        def has_key(self, k) :
+        def has_key(self, k, txn=None) :
             if isinstance(k, str) :
-                k = bytes(k, "ascii")
-            return k in self._db
+                k = bytes(k, charset)
+            return self._db.has_key(k, txn=txn)
 
         def put(self, key, value, flags=0, txn=None) :
             if isinstance(key, str) :
-                key = bytes(key, "ascii")
-            return self._db.put(key, bytes(value, "ascii"),
-                    flags=flags, txn=txn)
+                key = bytes(key, charset)
+            if isinstance(value, str) :
+                value = bytes(value, charset)
+            return self._db.put(key, value, flags=flags, txn=txn)
 
-        def get(self, key, txn=None) :
+        def append(self, value) :
+            if isinstance(value, str) :
+                value = bytes(value, charset)
+            return self._db.append(value)
+
+        def get(self, key, txn=None, flags=0) :
             if isinstance(key, str) :
-                key = bytes(key, "ascii")
-            v=self._db.get(key, txn=txn)
-            if v != None : v = v.decode("ascii")
+                key = bytes(key, charset)
+            v=self._db.get(key, txn=txn, flags=flags)
+            if v != None :
+                v = v.decode(charset)
+            return v
+
+        def get_both(self, key, value, txn=None, flags=0) :
+            if isinstance(key, str) :
+                key = bytes(key, charset)
+            if isinstance(value, str) :
+                value = bytes(value, charset)
+            v=self._db.get_both(key, value, txn=txn, flags=flags)
+            if v != None :
+                v = v.decode(charset)
             return v
 
         def delete(self, key, txn=None) :
-            return self._db.delete(bytes(key, "ascii"), txn=txn)
+            if isinstance(key, str) :
+                key = bytes(key, charset)
+            return self._db.delete(key, txn=txn)
 
         def keys(self) :
             k = self._db.keys()
             if len(k) and isinstance(k[0], bytes) :
-                return [i.decode("ascii") for i in self._db.keys()]
+                return [i.decode(charset) for i in self._db.keys()]
             else :
                 return k
 
@@ -108,8 +153,12 @@ if sys.version_info[0] >= 3 :
         def cursor(self, txn=None, flags=0) :
             return cursor_py3k(self._db, txn=txn, flags=flags)
 
+        def join(self, cursor_list) :
+          cursor_list = [i._dbcursor for i in cursor_list]
+          return self._db.join(cursor_list)
+
     bsddb._db.DB_orig = bsddb._db.DB
-    bsddb.DB = bsddb._db.DB = DB_py3k
+    bsddb.DB = bsddb.db.DB = bsddb._db.DB = DB_py3k
 
     class DBEnv_py3k(object) :
         def __init__(self, *args, **kwargs) :
@@ -119,7 +168,7 @@ if sys.version_info[0] >= 3 :
             return getattr(self._dbenv, v)
 
     bsddb._db.DBEnv_orig = bsddb._db.DBEnv
-    bsddb.DBEnv = bsddb._db.DBEnv = DBEnv_py3k
+    bsddb.DBEnv = bsddb.db.DBEnv = bsddb._db.DBEnv = DBEnv_py3k
 
     class DBSequence_py3k(object) :
         def __init__(self, db, *args, **kwargs) :
@@ -130,10 +179,10 @@ if sys.version_info[0] >= 3 :
             return getattr(self._dbsequence, v)
 
         def open(self, key, *args, **kwargs) :
-            return self._dbsequence.open(bytes(key, "ascii"), *args, **kwargs)
+            return self._dbsequence.open(bytes(key, charset), *args, **kwargs)
 
         def get_key(self) :
-            return  self._dbsequence.get_key().decode("ascii")
+            return  self._dbsequence.get_key().decode(charset)
 
         def get_dbp(self) :
             return self._db
