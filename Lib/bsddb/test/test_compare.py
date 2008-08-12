@@ -28,7 +28,22 @@ _expected_lowercase_test_data = ['', 'a', 'aaa', 'b', 'c', 'CC', 'cccce', 'ccccf
 class ComparatorTests (unittest.TestCase):
     def comparator_test_helper (self, comparator, expected_data):
         data = expected_data[:]
-        data.sort (comparator)
+
+        import sys
+        if sys.version_info[0] < 3 :
+            data.sort(cmp=comparator)
+        else :  # Insertion Sort. Please, improve
+            data2 = []
+            for i in data :
+                for j, k in enumerate(data2) :
+                    r = comparator(k, i)
+                    if r == 1 :
+                        data2.insert(j, i)
+                        break
+                else :
+                    data2.append(i)
+            data = data2
+
         self.failUnless (data == expected_data,
                          "comparator `%s' is not right: %s vs. %s"
                          % (comparator, expected_data, data))
