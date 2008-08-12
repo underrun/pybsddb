@@ -242,9 +242,14 @@ class DBBaseReplication(DBReplicationManager):
 
         from threading import Thread
         t_m=Thread(target=thread_master)
-        t_m.setDaemon(True)
         t_c=Thread(target=thread_client)
-        t_c.setDaemon(True)
+        import sys
+        if sys.version_info[0] < 3 :
+            t_m.setDaemon(True)
+            t_c.setDaemon(True)
+        else :
+            t_m.set_daemon(True)
+            t_c.set_daemon(True)
 
         self.t_m = t_m
         self.t_c = t_c
@@ -388,7 +393,11 @@ class DBBaseReplication(DBReplicationManager):
                             from threading import Thread
                             election_status[0] = True
                             t=Thread(target=elect)
-                            t.setDaemon(True)
+                            import sys
+                            if sys.version_info[0] < 3 :
+                                t.setDaemon(True)
+                            else :
+                                t.set_daemon(True)
                             t.start()
 
             self.thread_do = thread_do
