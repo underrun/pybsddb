@@ -68,8 +68,8 @@ class DBTxn_distributed(unittest.TestCase):
 
     def test01_distributed_transactions(self) :
         txns=set()
-        import sys
         adapt = lambda x : x
+        import sys
         if sys.version_info[0] >= 3 :
             adapt = lambda x : bytes(x, "ascii")
     # Create transactions, "prepare" them, and
