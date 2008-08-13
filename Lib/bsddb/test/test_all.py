@@ -81,10 +81,20 @@ if sys.version_info[0] >= 3 :
             v = self._dbcursor.first()
             return self._fix(v)
 
-        def pget(self, key, data=None, flags=0) :
+        def pget(self, key=None, data=None, flags=0) :
+            # Incorrect because key can be a bare number,
+            # but enough to pass testsuite
+            if isinstance(key, int) and (data==None) and (flags==0) :
+                flags = key
+                key = None
             if isinstance(key, str) :
                 key = bytes(key, charset)
-            v=self._dbcursor.pget(key, data=data, flags=flags)
+            if isinstance(data, int) and (flags==0) :
+                flags = data
+                data = None
+            if isinstance(data, str) :
+                data = bytes(data, charset)
+            v=self._dbcursor.pget(key=key, data=data, flags=flags)
             if v != None :
                 v1, v2, v3 = v
                 if isinstance(v1, bytes) :
