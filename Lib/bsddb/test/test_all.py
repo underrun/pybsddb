@@ -33,6 +33,14 @@ if sys.version_info[0] >= 3 :
             v = getattr(self._dbcursor, "next")()
             return self._fix(v)
 
+        def previous(self) :
+            v = self._dbcursor.previous()
+            return self._fix(v)
+
+        def last(self) :
+            v = self._dbcursor.last()
+            return self._fix(v)
+
         def set(self, k) :
             if isinstance(k, str) :
                 k = bytes(k, charset)
@@ -65,8 +73,8 @@ if sys.version_info[0] >= 3 :
             return self._dbcursor.put(key, value, flags=flags, dlen=dlen,
                     doff=doff)
 
-        def current(self) :
-            v = self._dbcursor.current()
+        def current(self, flags=0, dlen=-1, doff=-1) :
+            v = self._dbcursor.current(flags=flags, dlen=dlen, doff=doff)
             return self._fix(v)
 
         def first(self) :
