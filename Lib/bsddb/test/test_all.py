@@ -50,7 +50,8 @@ if sys.version_info[0] >= 3 :
             return self._fix(v)
 
         def dup(self, flags=0) :
-            return dup_cursor_py3k(self._dbcursor, flags)
+            cursor = self._dbcursor.dup(flags)
+            return dup_cursor_py3k(cursor)
 
         def next_dup(self) :
             v = self._dbcursor.next_dup()
@@ -87,6 +88,12 @@ if sys.version_info[0] >= 3 :
 
             return v
 
+        def join_item(self) :
+            v = self._dbcursor.join_item()
+            if v != None :
+                v = v.decode(charset)
+            return v
+
         def get(self, *args, **kwargs) :
             l = len(args)
             if l == 2 :
@@ -104,7 +111,10 @@ if sys.version_info[0] >= 3 :
 
             v = self._dbcursor.get(*args, **kwargs)
             if v != None :
-                v = v.decode(charset)
+                k, v = v
+                if isinstance(k, bytes) :
+                    k = k.decode(charset)
+                v = (k, v.decode(charset))
             return v
 
         def get_both(self, key, value) :
@@ -116,8 +126,8 @@ if sys.version_info[0] >= 3 :
             return self._fix(v)
 
     class dup_cursor_py3k(cursor_py3k) :
-        def __init__(self, dbcursor, *args, **kwargs) :
-            self._dbcursor = dbcursor.dup(*args, **kwargs)
+        def __init__(self, dbcursor) :
+            self._dbcursor = dbcursor
 
     class DB_py3k(object) :
         def __init__(self, *args, **kwargs) :
@@ -263,7 +273,7 @@ if sys.version_info[0] >= 3 :
 
         def join(self, cursor_list) :
           cursor_list = [i._dbcursor for i in cursor_list]
-          return self._db.join(cursor_list)
+          return dup_cursor_py3k(self._db.join(cursor_list))
 
     class DBEnv_py3k(object) :
         def __init__(self, *args, **kwargs) :
