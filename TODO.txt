@@ -77,3 +77,7 @@
 * 20080813: TO INVESTIGATE (posible bug in Berkeley DB): if you
   duplicate a duplicated cursor, crash.
 
+* 20080813: The put_bytes/get_bytes technique in "dbtables" is
+  nice, but the "getattr" method is not. The problem is that
+  DB objects can't grow new attributes. Solve this.
+

@@ -238,7 +238,8 @@ class bsdTableDB :
         txn = self.env.txn_begin()
         try:
             if not getattr(self.db, "has_key")(_table_names_key, txn):
-                self.db.put_bytes(_table_names_key, pickle.dumps([], 1), txn=txn)
+                getattr(self.db, "put_bytes", self.db.put) \
+                        (_table_names_key, pickle.dumps([], 1), txn=txn)
         # Yes, bare except
         except:
             txn.abort()
@@ -314,15 +315,17 @@ class bsdTableDB :
 
             txn = self.env.txn_begin()
             # store the table's column info
-            self.db.put_bytes(columnlist_key, pickle.dumps(columns, 1), txn=txn)
+            getattr(self.db, "put_bytes", self.db.put)(columnlist_key,
+                    pickle.dumps(columns, 1), txn=txn)
 
             # add the table name to the tablelist
-            tablelist = pickle.loads(self.db.get_bytes(_table_names_key, txn=txn,
-                                                 flags=db.DB_RMW))
+            tablelist = pickle.loads(getattr(self.db, "get_bytes",
+                self.db.get) (_table_names_key, txn=txn, flags=db.DB_RMW))
             tablelist.append(table)
             # delete 1st, in case we opened with DB_DUP
             self.db.delete(_table_names_key, txn=txn)
-            self.db.put_bytes(_table_names_key, pickle.dumps(tablelist, 1), txn=txn)
+            getattr(self.db, "put_bytes", self.db.put)(_table_names_key,
+                    pickle.dumps(tablelist, 1), txn=txn)
 
             txn.commit()
             txn = None
@@ -346,7 +349,8 @@ class bsdTableDB :
         columnlist_key = _columns_key(table)
         if not getattr(self.db, "has_key")(columnlist_key):
             return []
-        pickledcolumnlist = self.db.get_bytes(columnlist_key)
+        pickledcolumnlist = getattr(self.db, "get_bytes",
+                self.db.get)(columnlist_key)
         if pickledcolumnlist:
             return pickle.loads(pickledcolumnlist)
         else:
@@ -382,7 +386,8 @@ class bsdTableDB :
 
                 # load the current column list
                 oldcolumnlist = pickle.loads(
-                    self.db.get_bytes(columnlist_key, txn=txn, flags=db.DB_RMW))
+                    getattr(self.db, "get_bytes",
+                        self.db.get)(columnlist_key, txn=txn, flags=db.DB_RMW))
                 # create a hash table for fast lookups of column names in the
                 # loop below
                 oldcolumnhash = {}
@@ -400,7 +405,7 @@ class bsdTableDB :
                 if newcolumnlist != oldcolumnlist :
                     # delete the old one first since we opened with DB_DUP
                     self.db.delete(columnlist_key, txn=txn)
-                    self.db.put_bytes(columnlist_key,
+                    getattr(self.db, "put_bytes", self.db.put)(columnlist_key,
                                 pickle.dumps(newcolumnlist, 1),
                                 txn=txn)
 
@@ -421,7 +426,8 @@ class bsdTableDB :
         """initialize the self.__tablecolumns dict"""
         # check the column names
         try:
-            tcolpickles = self.db.get_bytes(_columns_key(table))
+            tcolpickles = getattr(self.db, "get_bytes",
+                    self.db.get)(_columns_key(table))
         except db.DBNotFoundError:
             raise TableDBError("unknown table: %r" % (table,))
         if not tcolpickles:
@@ -794,7 +800,8 @@ class bsdTableDB :
 
             # delete the tablename from the table name list
             tablelist = pickle.loads(
-                self.db.get_bytes(_table_names_key, txn=txn, flags=db.DB_RMW))
+                getattr(self.db, "get_bytes", self.db.get)(_table_names_key,
+                    txn=txn, flags=db.DB_RMW))
             try:
                 tablelist.remove(table)
             except ValueError:
@@ -802,7 +809,8 @@ class bsdTableDB :
                 pass
             # delete 1st, incase we opened with DB_DUP
             self.db.delete(_table_names_key, txn=txn)
-            self.db.put_bytes(_table_names_key, pickle.dumps(tablelist, 1), txn=txn)
+            getattr(self.db, "put_bytes", self.db.put)(_table_names_key,
+                    pickle.dumps(tablelist, 1), txn=txn)
 
             txn.commit()
             txn = None
