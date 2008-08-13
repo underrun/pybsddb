@@ -215,13 +215,11 @@ if sys.version_info[0] >= 3 :
                 key = bytes(key, charset)
             return self._db.get_size(key)
 
-        def get(self, key, value=None, txn=None, flags=0, dlen=-1, doff=-1) :
+        def get(self, key, txn=None, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
-            if isinstance(value, str) :
-                value = bytes(value, charset)
-            v=self._db.get(key, value, txn=txn, flags=flags, dlen=dlen, doff=doff)
-            if (v != None) and (type(v) == type(bytes("",charset))) :
+            v=self._db.get(key, txn=txn, flags=flags, dlen=dlen, doff=doff)
+            if (v != None) and isinstance(v, bytes) :
                 v = v.decode(charset)
             return v
 
