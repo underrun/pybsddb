@@ -12,7 +12,7 @@ you try it as is, it would fail.
 """
 
 def do_matrix_check() :
-  python_versions=("2.3","2.4","2.5","2.6")
+  python_versions=("2.3","2.4","2.5","2.6", "3.0")
   berkeleydb_versions=("4.0","4.1","4.2","4.3","4.4","4.5","4.6","4.7")
 
   import subprocess
