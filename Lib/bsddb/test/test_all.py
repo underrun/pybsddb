@@ -215,10 +215,11 @@ if sys.version_info[0] >= 3 :
                 key = bytes(key, charset)
             return self._db.get_size(key)
 
-        def get(self, key, txn=None, flags=0, dlen=-1, doff=-1) :
+        def get(self, key, default=None, txn=None, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
-            v=self._db.get(key, txn=txn, flags=flags, dlen=dlen, doff=doff)
+            v=self._db.get(key, default=default, txn=txn, flags=flags,
+                    dlen=dlen, doff=doff)
             if (v != None) and isinstance(v, bytes) :
                 v = v.decode(charset)
             return v
@@ -275,6 +276,7 @@ if sys.version_info[0] >= 3 :
                 def callback(self, key, data) :
                     if isinstance(key, str) :
                         key = key.decode(charset)
+                    data = data.decode(charset)
                     key = self._callback(key, data)
                     if (key != bsddb._db.DB_DONOTINDEX) and isinstance(key,
                             str) :
