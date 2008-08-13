@@ -1,4 +1,4 @@
-4.7.3:
+4.7.3: (first release with Python 3.0 support)
   * "private" is a keyword in C++.  (Duncan Grisby)
   * setup.py should install "bsddb.h".  (Duncan Grisby)
   * "DB_remove" memory corruption & crash.  (Duncan Grisby)
@@ -10,6 +10,11 @@
   * Correct "DB.associate()" parameter order in the documentation.
   * "DB.append()" recognizes "txn" both as a positional and a
     keyword parameter.
+  * Small fix in "dbshelve" for compatibility with Python 3.0.
+  * A lot of changes in "dbtables" for compatibility with Python 3.0.
+  * Huge work making the testsuite compatible with Python 3.0.
+  * In some cases the C module returned Unicode strings under
+    Python 3.0. It should return "bytes", ALWAYS. Solved.
 
 4.7.2:
   * Solved a race condition in Replication Manager testcode.

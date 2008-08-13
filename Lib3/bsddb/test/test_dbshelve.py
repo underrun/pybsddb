@@ -290,6 +290,10 @@ class BasicEnvShelveTestCase(DBShelveTestCase):
         DBShelveTestCase.setUp(self)
 
     def tearDown(self):
+        import sys
+        if sys.version_info[0] >= 3 :
+            from .test_all import do_proxy_db_py3k
+            do_proxy_db_py3k(self._flag_proxy_db_py3k)
         self.do_close()
         test_support.rmtree(self.homeDir)
 

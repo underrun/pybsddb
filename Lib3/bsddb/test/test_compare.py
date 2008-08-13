@@ -31,7 +31,10 @@ class ComparatorTests (unittest.TestCase):
 
         import sys
         if sys.version_info[0] < 3 :
-            data.sort(cmp=comparator)
+            if sys.version_info[:3] < (2, 4, 0):
+                data.sort(comparator)
+            else :
+                data.sort(cmp=comparator)
         else :  # Insertion Sort. Please, improve
             data2 = []
             for i in data :

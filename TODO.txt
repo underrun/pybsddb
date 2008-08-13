@@ -38,8 +38,42 @@
   is disabled because it prints a error message to screen. Solve this and
   reenable the test. This would require "set_errfile" implementation.
 
-* 20080721: When we drop Python 2.3 support, we should user "PyTuple_Pack".
+* 20080721: When we drop Python 2.3 support, we should use "PyTuple_Pack".
 
 * 20080807: The EGG for 4.7.2 was installed as a directory, not a
   ZIP file. Why?.
+
+* 20080811: "DB.has_key()" must be retained in python3.0, since it allows
+  a transaction parameter.
+
+* 20080812: "DBEnv.db_home", under python3.0, is automatically converted
+  to bytes. What charset is used?.
+
+* 20080812: Since Python 3.0 dropped the "cmp" function in "sort()"
+  methods, we need to handcode some "Insertion sort" functions, in
+  the testsuite and in the production code. This is ugly and slow.
+
+* 20080812: "test_all.do_proxy_db_py3k()" is a very ugly hack. For
+  example, if a test fails, it can leave the testsuite in an
+  inconsistent state, causing spurious failures.
+
+* 20080812: We use "getattr()" to avoid "obj.next()" automatic
+  conversion via "2to3" tool. Improve this.
+
+* 20080812: Python 3.0 idioms available in 2.6 and up should be
+  used also in this versions.
+
+* 20080813: Create a "__contains__" routine in DB, etc, to use
+  when 2to3 tools translate "has_key" to "in".
+
+* 20080813: We use "getattr()" to avoid "obj.has_key()" automatic
+  conversion via "2to3" tool. Improve this, specially in
+  "dbtables.py".
+
+* 20080813: We can store "None" values in a database. How can we
+  differenciate between stored "None" and NotFound?. We can
+  use exceptions or the "default" parameter, but... this is ugly.
+
+* 20080813: TO INVESTIGATE (posible bug in Berkeley DB): if you
+  duplicate a duplicated cursor, crash.
 

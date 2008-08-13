@@ -33,6 +33,14 @@ if sys.version_info[0] >= 3 :
             v = getattr(self._dbcursor, "next")()
             return self._fix(v)
 
+        def previous(self) :
+            v = self._dbcursor.previous()
+            return self._fix(v)
+
+        def last(self) :
+            v = self._dbcursor.last()
+            return self._fix(v)
+
         def set(self, k) :
             if isinstance(k, str) :
                 k = bytes(k, charset)
@@ -50,7 +58,8 @@ if sys.version_info[0] >= 3 :
             return self._fix(v)
 
         def dup(self, flags=0) :
-            return dup_cursor_py3k(self._dbcursor, flags)
+            cursor = self._dbcursor.dup(flags)
+            return dup_cursor_py3k(cursor)
 
         def next_dup(self) :
             v = self._dbcursor.next_dup()
@@ -64,18 +73,28 @@ if sys.version_info[0] >= 3 :
             return self._dbcursor.put(key, value, flags=flags, dlen=dlen,
                     doff=doff)
 
-        def current(self) :
-            v = self._dbcursor.current()
+        def current(self, flags=0, dlen=-1, doff=-1) :
+            v = self._dbcursor.current(flags=flags, dlen=dlen, doff=doff)
             return self._fix(v)
 
         def first(self) :
             v = self._dbcursor.first()
             return self._fix(v)
 
-        def pget(self, key, data=None, flags=0) :
+        def pget(self, key=None, data=None, flags=0) :
+            # Incorrect because key can be a bare number,
+            # but enough to pass testsuite
+            if isinstance(key, int) and (data==None) and (flags==0) :
+                flags = key
+                key = None
             if isinstance(key, str) :
                 key = bytes(key, charset)
-            v=self._dbcursor.pget(key, data=data, flags=flags)
+            if isinstance(data, int) and (flags==0) :
+                flags = data
+                data = None
+            if isinstance(data, str) :
+                data = bytes(data, charset)
+            v=self._dbcursor.pget(key=key, data=data, flags=flags)
             if v != None :
                 v1, v2, v3 = v
                 if isinstance(v1, bytes) :
@@ -85,6 +104,12 @@ if sys.version_info[0] >= 3 :
 
                 v = (v1, v2, v3.decode(charset))
 
+            return v
+
+        def join_item(self) :
+            v = self._dbcursor.join_item()
+            if v != None :
+                v = v.decode(charset)
             return v
 
         def get(self, *args, **kwargs) :
@@ -104,7 +129,10 @@ if sys.version_info[0] >= 3 :
 
             v = self._dbcursor.get(*args, **kwargs)
             if v != None :
-                v = v.decode(charset)
+                k, v = v
+                if isinstance(k, bytes) :
+                    k = k.decode(charset)
+                v = (k, v.decode(charset))
             return v
 
         def get_both(self, key, value) :
@@ -116,8 +144,8 @@ if sys.version_info[0] >= 3 :
             return self._fix(v)
 
     class dup_cursor_py3k(cursor_py3k) :
-        def __init__(self, dbcursor, *args, **kwargs) :
-            self._dbcursor = dbcursor.dup(*args, **kwargs)
+        def __init__(self, dbcursor) :
+            self._dbcursor = dbcursor
 
     class DB_py3k(object) :
         def __init__(self, *args, **kwargs) :
@@ -187,13 +215,16 @@ if sys.version_info[0] >= 3 :
                 key = bytes(key, charset)
             return self._db.get_size(key)
 
-        def get(self, key, value=None, txn=None, flags=0, dlen=-1, doff=-1) :
+        def get(self, key, default="MagicCookie", txn=None, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
-            if isinstance(value, str) :
-                value = bytes(value, charset)
-            v=self._db.get(key, value, txn=txn, flags=flags, dlen=dlen, doff=doff)
-            if (v != None) and (type(v) == type(bytes("",charset))) :
+            if default != "MagicCookie" :  # Magic for 'test_get_none.py'
+                v=self._db.get(key, default=default, txn=txn, flags=flags,
+                        dlen=dlen, doff=doff)
+            else :
+                v=self._db.get(key, txn=txn, flags=flags,
+                        dlen=dlen, doff=doff)
+            if (v != None) and isinstance(v, bytes) :
                 v = v.decode(charset)
             return v
 
@@ -249,6 +280,7 @@ if sys.version_info[0] >= 3 :
                 def callback(self, key, data) :
                     if isinstance(key, str) :
                         key = key.decode(charset)
+                    data = data.decode(charset)
                     key = self._callback(key, data)
                     if (key != bsddb._db.DB_DONOTINDEX) and isinstance(key,
                             str) :
@@ -263,7 +295,7 @@ if sys.version_info[0] >= 3 :
 
         def join(self, cursor_list) :
           cursor_list = [i._dbcursor for i in cursor_list]
-          return self._db.join(cursor_list)
+          return dup_cursor_py3k(self._db.join(cursor_list))
 
     class DBEnv_py3k(object) :
         def __init__(self, *args, **kwargs) :

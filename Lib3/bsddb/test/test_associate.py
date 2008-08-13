@@ -233,7 +233,7 @@ class AssociateTestCase(unittest.TestCase):
             count = count + 1
             if verbose:
                 print(rec)
-            rec = next(self.cur)
+            rec = getattr(self.cur, "next")()
         self.assertEqual(count, len(musicdata))  # all items accounted for
 
 
@@ -259,20 +259,15 @@ class AssociateTestCase(unittest.TestCase):
             count = count + 1
             if verbose:
                 print(rec)
-            rec = next(self.cur)
+            rec = getattr(self.cur, "next")()
         # all items accounted for EXCEPT for 1 with "Blues" genre
         self.assertEqual(count, len(musicdata)-1)
 
         self.cur = None
 
     def getGenre(self, priKey, priData):
-        import sys
-        if sys.version_info[0] < 3 :
-            self.assertEqual(type(priData), type(""))
-            genre = priData.split('|')[2]
-        else :
-            self.assertEqual(type(priData), bytes)
-            genre = priData.split(bytes('|', "ascii"))[2]
+        self.assertEqual(type(priData), type(""))
+        genre = priData.split('|')[2]
 
         if verbose:
             print('getGenre key: %r data: %r' % (priKey, priData))

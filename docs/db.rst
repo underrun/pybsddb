@@ -23,7 +23,7 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_put.html#DB_APPEND>`__
 
-.. function:: associate(secondaryDB, callback, txn=None, flags=0)
+.. function:: associate(secondaryDB, callback, flags=0, txn=None)
 
    Used to associate secondaryDB to act as a secondary index for this
    (primary) database. The callback parameter should be a reference to a
