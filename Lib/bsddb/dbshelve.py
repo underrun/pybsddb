@@ -218,7 +218,8 @@ class DBShelf(MutableMapping):
 
     def associate(self, secondaryDB, callback, flags=0):
         def _shelf_callback(priKey, priData, realCallback=callback):
-            if sys.version_info[0] < 3 :
+            # Safe in Python 2.x because expresion short circuit
+            if sys.version_info[0] < 3 or isinstance(priData, bytes) :
                 data = cPickle.loads(priData)
             else :
                 data = cPickle.loads(bytes(priData, "iso8859-1"))  # 8 bits
@@ -354,7 +355,8 @@ class DBShelfCursor:
             return None
         else:
             key, data = rec
-            if sys.version_info[0] < 3 :
+            # Safe in Python 2.x because expresion short circuit
+            if sys.version_info[0] < 3 or isinstance(data, bytes) :
                 return key, cPickle.loads(data)
             else :
                 return key, cPickle.loads(bytes(data, "iso8859-1"))  # 8 bits
