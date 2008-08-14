@@ -81,3 +81,7 @@
   nice, but the "getattr" method is not. The problem is that
   DB objects can't grow new attributes. Solve this.
 
+* 20080814: If pybsddb classes would be subclassed, we could
+  implement conversion methods for keys and values in
+  a very elegant way. This is specially relevant in Python 3.0.
+
