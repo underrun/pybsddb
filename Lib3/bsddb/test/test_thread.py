@@ -103,7 +103,7 @@ class ConcurrentDataStoreBase(BaseThreadedTestCase):
             if sys.version_info[0] < 3 :
                 rt.setDaemon(True)
             else :
-                rt.set_daemon(True)
+                rt.daemon = True
             readers.append(rt)
 
         writers=[]
@@ -122,7 +122,7 @@ class ConcurrentDataStoreBase(BaseThreadedTestCase):
             if sys.version_info[0] < 3 :
                 t.setDaemon(True)
             else :
-                t.set_daemon(True)
+                t.daemon = True
             t.start()
 
         for t in writers:
@@ -135,7 +135,7 @@ class ConcurrentDataStoreBase(BaseThreadedTestCase):
         if sys.version_info[0] < 3 :
             name = currentThread().getName()
         else :
-            name = currentThread().get_name()
+            name = currentThread().name
 
         if verbose:
             print("%s: creating records %d - %d" % (name, start, stop))
@@ -165,7 +165,7 @@ class ConcurrentDataStoreBase(BaseThreadedTestCase):
         if sys.version_info[0] < 3 :
             name = currentThread().getName()
         else :
-            name = currentThread().get_name()
+            name = currentThread().name
 
         for i in range(5) :
             c = d.cursor()
@@ -235,7 +235,7 @@ class SimpleThreadedBase(BaseThreadedTestCase):
             if sys.version_info[0] < 3 :
                 rt.setDaemon(True)
             else :
-                rt.set_daemon(True)
+                rt.daemon = True
             readers.append(rt)
 
         writers = []
@@ -254,7 +254,7 @@ class SimpleThreadedBase(BaseThreadedTestCase):
             if sys.version_info[0] < 3 :
                 t.setDaemon(True)
             else :
-                t.set_daemon(True)
+                t.daemon = True
             t.start()
 
         for t in writers:
@@ -267,7 +267,7 @@ class SimpleThreadedBase(BaseThreadedTestCase):
         if sys.version_info[0] < 3 :
             name = currentThread().getName()
         else :
-            name = currentThread().get_name()
+            name = currentThread().name
         if verbose:
             print("%s: creating records %d - %d" % (name, start, stop))
 
@@ -294,7 +294,7 @@ class SimpleThreadedBase(BaseThreadedTestCase):
         if sys.version_info[0] < 3 :
             name = currentThread().getName()
         else :
-            name = currentThread().get_name()
+            name = currentThread().name
 
         c = d.cursor()
         count = 0
@@ -365,7 +365,7 @@ class ThreadedTransactionsBase(BaseThreadedTestCase):
             if sys.version_info[0] < 3 :
                 rt.setDaemon(True)
             else :
-                rt.set_daemon(True)
+                rt.daemon = True
             readers.append(rt)
 
         writers = []
@@ -383,7 +383,7 @@ class ThreadedTransactionsBase(BaseThreadedTestCase):
         if sys.version_info[0] < 3 :
             dt.setDaemon(True)
         else :
-            dt.set_daemon(True)
+            dt.daemon = True
         dt.start()
 
         for t in writers:
@@ -391,7 +391,7 @@ class ThreadedTransactionsBase(BaseThreadedTestCase):
             if sys.version_info[0] < 3 :
                 t.setDaemon(True)
             else :
-                t.set_daemon(True)
+                t.daemon = True
             t.start()
 
         for t in writers:
@@ -407,7 +407,7 @@ class ThreadedTransactionsBase(BaseThreadedTestCase):
         if sys.version_info[0] < 3 :
             name = currentThread().getName()
         else :
-            name = currentThread().get_name()
+            name = currentThread().name
 
         count=len(keys)//len(readers)
         while len(keys):
@@ -435,7 +435,7 @@ class ThreadedTransactionsBase(BaseThreadedTestCase):
         if sys.version_info[0] < 3 :
             name = currentThread().getName()
         else :
-            name = currentThread().get_name()
+            name = currentThread().name
 
         finished = False
         while not finished:

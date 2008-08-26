@@ -84,7 +84,7 @@ class LockingTestCase(unittest.TestCase):
             if sys.version_info[0] < 3 :
                 t.setDaemon(True)
             else :
-                t.set_daemon(True)
+                t.daemon = True
             t.start()
         for t in threads:
             t.join()
@@ -112,7 +112,7 @@ class LockingTestCase(unittest.TestCase):
         if sys.version_info[0] < 3 :
             t.setDaemon(True)
         else :
-            t.set_daemon(True)
+            t.daemon = True
         t.start()
         self.env.set_timeout(100000, db.DB_SET_LOCK_TIMEOUT)
         anID = self.env.lock_id()
@@ -139,7 +139,7 @@ class LockingTestCase(unittest.TestCase):
         if sys.version_info[0] < 3 :
             name = currentThread().getName()
         else :
-            name = currentThread().get_name()
+            name = currentThread().name
 
         if lockType ==  db.DB_LOCK_WRITE:
             lt = "write"
