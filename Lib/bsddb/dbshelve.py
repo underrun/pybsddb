@@ -224,7 +224,7 @@ class DBShelf(MutableMapping):
             else :
                 data = cPickle.loads(bytes(priData, "iso8859-1"))  # 8 bits
             return realCallback(priKey, data)
-              
+
         return self.db.associate(secondaryDB, _shelf_callback, flags)
 
 

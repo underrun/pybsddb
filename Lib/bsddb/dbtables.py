@@ -824,5 +824,4 @@ class bsdTableDB :
             if sys.version_info[0] < 3 :
                 raise TableDBError, dberror[1]
             else :
-                 raise TableDBError, dberror.args[1]
-
+                raise TableDBError, dberror.args[1]

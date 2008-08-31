@@ -294,8 +294,8 @@ if sys.version_info[0] >= 3 :
             return cursor_py3k(self._db, txn=txn, flags=flags)
 
         def join(self, cursor_list) :
-          cursor_list = [i._dbcursor for i in cursor_list]
-          return dup_cursor_py3k(self._db.join(cursor_list))
+            cursor_list = [i._dbcursor for i in cursor_list]
+            return dup_cursor_py3k(self._db.join(cursor_list))
 
     class DBEnv_py3k(object) :
         def __init__(self, *args, **kwargs) :
