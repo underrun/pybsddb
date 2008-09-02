@@ -85,6 +85,9 @@
   implement conversion methods for keys and values in
   a very elegant way. This is specially relevant in Python 3.0.
 
+  When done, delete "StringValues" and "StringKeys" in
+  Python native "test_bsddb.py".
+
 * 20080814: If we could subclass the bsddb objects, we could
   drop "dbobj.py" (a bit outdated by now).
 
