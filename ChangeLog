@@ -17,6 +17,7 @@
     Python 3.0. It should return "bytes", ALWAYS. Solved.
   * Remove a dict.has_key() use to silence a warning raised under 
     Python2.6 -3 parameter. Python SVN r65391, Brett Cannon.
+  * Solve some memory leaks - Neal Norwitz
 
 4.7.2:
   * Solved a race condition in Replication Manager testcode.
