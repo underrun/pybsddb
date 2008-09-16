@@ -18,6 +18,7 @@
   * Remove a dict.has_key() use to silence a warning raised under 
     Python2.6 -3 parameter. Python SVN r65391, Brett Cannon.
   * Solve some memory leaks - Neal Norwitz
+  * If DBEnv creation fails, library can crash.  (Victor Stinner)
 
 4.7.2:
   * Solved a race condition in Replication Manager testcode.

@@ -1071,6 +1071,7 @@ newDBEnvObject(int flags)
     if (self == NULL)
         return NULL;
 
+    self->db_env = NULL;
     self->closed = 1;
     self->flags = flags;
     self->moduleFlags.getReturnsNone = DEFAULT_GET_RETURNS_NONE;
