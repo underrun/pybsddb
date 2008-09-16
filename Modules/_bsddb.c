@@ -1108,7 +1108,7 @@ DBEnv_dealloc(DBEnvObject* self)
   PyObject *dummy;
 
     if (self->db_env) {
-      /* Raisng exceptions while garbage collection is a fatal error */
+      /* Raising exceptions while garbage collection is a fatal error */
       dummy=DBEnv_close_internal(self, 0, 0);
       Py_XDECREF(dummy);
     }
