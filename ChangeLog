@@ -19,6 +19,8 @@
     Python2.6 -3 parameter. Python SVN r65391, Brett Cannon.
   * Solve some memory leaks - Neal Norwitz
   * If DBEnv creation fails, library can crash.  (Victor Stinner)
+  * Raising exceptions while doing a garbage collection
+    will kill the interpreter.  (Victor Stinner)
 
 4.7.2:
   * Solved a race condition in Replication Manager testcode.
