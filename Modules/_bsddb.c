@@ -989,7 +989,7 @@ newDBObject(DBEnvObject* arg, int flags)
 
 
 /* Forward declaration */
-static PyObject *DB_close_internal(DBObject* self, int flags);
+static PyObject *DB_close_internal(DBObject* self, int flags, int do_not_close);
 
 static void
 DB_dealloc(DBObject* self)
@@ -997,7 +997,7 @@ DB_dealloc(DBObject* self)
   PyObject *dummy;
 
     if (self->db != NULL) {
-      dummy=DB_close_internal(self,0);
+      dummy=DB_close_internal(self, 0, 0);
       Py_XDECREF(dummy);
     }
     if (self->in_weakreflist != NULL) {
@@ -1487,10 +1487,10 @@ DB_associate(DBObject* self, PyObject* args, PyObject* kwargs)
 
 
 static PyObject*
-DB_close_internal(DBObject* self, int flags)
+DB_close_internal(DBObject* self, int flags, int do_not_close)
 {
     PyObject *dummy;
-    int err;
+    int err = 0;
 
     if (self->db != NULL) {
         /* Can be NULL if db is not in an environment */
@@ -1513,10 +1513,12 @@ DB_close_internal(DBObject* self, int flags)
         }
 #endif
 
-        MYDB_BEGIN_ALLOW_THREADS;
-        err = self->db->close(self->db, flags);
-        MYDB_END_ALLOW_THREADS;
-        self->db = NULL;
+        if (!do_not_close) {
+            MYDB_BEGIN_ALLOW_THREADS;
+            err = self->db->close(self->db, flags);
+            MYDB_END_ALLOW_THREADS;
+            self->db = NULL;
+        }
         RETURN_IF_ERR();
     }
     RETURN_NONE();
@@ -1528,7 +1530,7 @@ DB_close(DBObject* self, PyObject* args)
     int flags=0;
     if (!PyArg_ParseTuple(args,"|i:close", &flags))
         return NULL;
-    return DB_close_internal(self,flags);
+    return DB_close_internal(self, flags, 0);
 }
 
 
@@ -2148,7 +2150,7 @@ DB_open(DBObject* self, PyObject* args, PyObject* kwargs)
     if (makeDBError(err)) {
         PyObject *dummy;
 
-        dummy=DB_close_internal(self,0);
+        dummy=DB_close_internal(self, 0, 0);
         Py_XDECREF(dummy);
         return NULL;
     }
@@ -2842,20 +2844,23 @@ DB_verify(DBObject* self, PyObject* args, PyObject* kwargs)
 	/* XXX(nnorwitz): it should probably be an exception if outFile
 	   can't be opened. */
 
-    MYDB_BEGIN_ALLOW_THREADS;
-    err = self->db->verify(self->db, fileName, dbName, outFile, flags);
-    MYDB_END_ALLOW_THREADS;
-    if (outFile)
-        fclose(outFile);
-
     {  /* DB.verify acts as a DB handle destructor (like close) */
         PyObject *error;
 
-        error=DB_close_internal(self,0);
+        error=DB_close_internal(self, 0, 1);
         if (error ) {
           return error;
         }
      }
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->verify(self->db, fileName, dbName, outFile, flags);
+    MYDB_END_ALLOW_THREADS;
+
+    self->db = NULL;  /* Implicit close; related objects already released */
+
+    if (outFile)
+        fclose(outFile);
 
     RETURN_IF_ERR();
     RETURN_NONE();
@@ -3980,7 +3985,7 @@ DBEnv_close_internal(DBEnvObject* self, int flags, int check_error)
           Py_XDECREF(dummy);
         }
         while(self->children_dbs) {
-          dummy=DB_close_internal(self->children_dbs,0);
+          dummy=DB_close_internal(self->children_dbs, 0, 0);
           Py_XDECREF(dummy);
         }
     }
@@ -5953,7 +5958,7 @@ DBTxn_abort_discard_internal(DBTxnObject* self, int discard)
     }
 #endif
     while (self->children_dbs) {
-        dummy=DB_close_internal(self->children_dbs,0);
+        dummy=DB_close_internal(self->children_dbs, 0, 0);
         Py_XDECREF(dummy);
     }
 

@@ -21,6 +21,7 @@
   * If DBEnv creation fails, library can crash.  (Victor Stinner)
   * Raising exceptions while doing a garbage collection
     will kill the interpreter.  (Victor Stinner)
+  * Crash in "DB.verify()". Noted by solsTiCe d'Hiver.
 
 4.7.2:
   * Solved a race condition in Replication Manager testcode.
