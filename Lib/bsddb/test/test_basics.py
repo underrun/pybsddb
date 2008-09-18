@@ -1023,9 +1023,20 @@ class DBPrivateObject(PrivateObject) :
         self.obj = db.DB()
 
 class CrashAndBurn(unittest.TestCase) :
-    def test01_OpenCrash(self) :
-        # See http://bugs.python.org/issue3307
-        self.assertRaises(db.DBInvalidArgError, db.DB, None, 65535)
+    import sys
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
+    #def test01_OpenCrash(self) :
+    #    # See http://bugs.python.org/issue3307
+    #    self.assertRaises(db.DBInvalidArgError, db.DB, None, 65535)
+
+    def test02_DBEnv_dealloc(self):
+        # http://bugs.python.org/issue3885
+        import gc
+        self.assertRaises(db.DBInvalidArgError, db.DBEnv, ~db.DB_RPCCLIENT)
+        gc.collect()
 
 
 #----------------------------------------------------------------------
@@ -1053,7 +1064,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(HashMultiDBTestCase))
     suite.addTest(unittest.makeSuite(DBEnvPrivateObject))
     suite.addTest(unittest.makeSuite(DBPrivateObject))
-    #suite.addTest(unittest.makeSuite(CrashAndBurn))
+    suite.addTest(unittest.makeSuite(CrashAndBurn))
 
     return suite
 
