@@ -91,3 +91,6 @@
 * 20080814: If we could subclass the bsddb objects, we could
   drop "dbobj.py" (a bit outdated by now).
 
+* 20080918: If "DB_close_internal()" fails in DB_verify, we
+  should close the DB handle.
+
