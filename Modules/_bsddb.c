@@ -997,8 +997,15 @@ DB_dealloc(DBObject* self)
   PyObject *dummy;
 
     if (self->db != NULL) {
-      dummy=DB_close_internal(self, 0, 0);
-      Py_XDECREF(dummy);
+        dummy=DB_close_internal(self, 0, 0);
+        /*
+        ** Raising exceptions while doing
+        ** garbage collection is a fatal error.
+        */
+        if (dummy)
+            Py_DECREF(dummy);
+        else
+            PyErr_Clear();
     }
     if (self->in_weakreflist != NULL) {
         PyObject_ClearWeakRefs((PyObject *) self);
@@ -1052,8 +1059,15 @@ DBCursor_dealloc(DBCursorObject* self)
     PyObject *dummy;
 
     if (self->dbc != NULL) {
-      dummy=DBC_close_internal(self);
-      Py_XDECREF(dummy);
+        dummy=DBC_close_internal(self);
+        /*
+        ** Raising exceptions while doing
+        ** garbage collection is a fatal error.
+        */
+        if (dummy)
+            Py_DECREF(dummy);
+        else
+            PyErr_Clear();
     }
     if (self->in_weakreflist != NULL) {
         PyObject_ClearWeakRefs((PyObject *) self);
@@ -1100,7 +1114,7 @@ newDBEnvObject(int flags)
 }
 
 /* Forward declaration */
-static PyObject *DBEnv_close_internal(DBEnvObject* self, int flags, int check_error);
+static PyObject *DBEnv_close_internal(DBEnvObject* self, int flags);
 
 static void
 DBEnv_dealloc(DBEnvObject* self)
@@ -1108,9 +1122,15 @@ DBEnv_dealloc(DBEnvObject* self)
   PyObject *dummy;
 
     if (self->db_env) {
-      /* Raising exceptions while doing garbage collection is a fatal error */
-      dummy=DBEnv_close_internal(self, 0, 0);
-      Py_XDECREF(dummy);
+        dummy=DBEnv_close_internal(self, 0);
+        /*
+        ** Raising exceptions while doing
+        ** garbage collection is a fatal error.
+        */
+        if (dummy)
+            Py_DECREF(dummy);
+        else
+            PyErr_Clear();
     }
 
     Py_XDECREF(self->event_notifyCallback);
@@ -1188,8 +1208,17 @@ DBTxn_dealloc(DBTxnObject* self)
 
     if (self->txn) {
         int flag_prepare = self->flag_prepare;
+
         dummy=DBTxn_abort_discard_internal(self,0);
-        Py_XDECREF(dummy);
+        /*
+        ** Raising exceptions while doing
+        ** garbage collection is a fatal error.
+        */
+        if (dummy)
+            Py_DECREF(dummy);
+        else
+            PyErr_Clear();
+
         if (!flag_prepare) {
             PyErr_Warn(PyExc_RuntimeWarning,
               "DBTxn aborted in destructor.  No prior commit() or abort().");
@@ -1282,7 +1311,14 @@ DBSequence_dealloc(DBSequenceObject* self)
 
     if (self->sequence != NULL) {
         dummy=DBSequence_close_internal(self,0,0);
-        Py_XDECREF(dummy);
+        /*
+        ** Raising exceptions while doing
+        ** garbage collection is a fatal error.
+        */
+        if (dummy)
+            Py_DECREF(dummy);
+        else
+            PyErr_Clear();
     }
 
     if (self->in_weakreflist != NULL) {
@@ -3974,7 +4010,7 @@ DBC_join_item(DBCursorObject* self, PyObject* args)
 
 
 static PyObject*
-DBEnv_close_internal(DBEnvObject* self, int flags, int check_error)
+DBEnv_close_internal(DBEnvObject* self, int flags)
 {
     PyObject *dummy;
     int err;
@@ -3998,9 +4034,7 @@ DBEnv_close_internal(DBEnvObject* self, int flags, int check_error)
         /* after calling DBEnv->close, regardless of error, this DBEnv
          * may not be accessed again (Berkeley DB docs). */
         self->db_env = NULL;
-        if (check_error) {
-            RETURN_IF_ERR();
-        }
+        RETURN_IF_ERR();
     }
     RETURN_NONE();
 }
@@ -4012,7 +4046,7 @@ DBEnv_close(DBEnvObject* self, PyObject* args)
 
     if (!PyArg_ParseTuple(args, "|i:close", &flags))
         return NULL;
-    return DBEnv_close_internal(self, flags, 1);
+    return DBEnv_close_internal(self, flags);
 }
 
 
