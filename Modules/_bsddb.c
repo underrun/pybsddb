@@ -1550,7 +1550,7 @@ DB_close_internal(DBObject* self, int flags, int do_not_close)
 #endif
 
         /*
-        ** "do_not-close" is used to dispose all related objects in the
+        ** "do_not_close" is used to dispose all related objects in the
         ** tree, without actually releasing the "root" object.
         ** This is done, for example, because function calls like
         ** "DB.verify()" implicitly close the underlying handle. So
@@ -6082,7 +6082,7 @@ DBSequence_close_internal(DBSequenceObject* self, int flags, int do_not_close)
         }
 
         /*
-        ** "do_not-close" is used to dispose all related objects in the
+        ** "do_not_close" is used to dispose all related objects in the
         ** tree, without actually releasing the "root" object.
         ** This is done, for example, because function calls like
         ** "DBSequence.remove()" implicitly close the underlying handle. So
