@@ -1549,6 +1549,14 @@ DB_close_internal(DBObject* self, int flags, int do_not_close)
         }
 #endif
 
+        /*
+        ** "do_not-close" is used to dispose all related objects in the
+        ** tree, without actually releasing the "root" object.
+        ** This is done, for example, because function calls like
+        ** "DB.verify()" implicitly close the underlying handle. So
+        ** the handle doesn't need to be closed, but related objects
+        ** must be cleaned up.
+        */
         if (!do_not_close) {
             MYDB_BEGIN_ALLOW_THREADS;
             err = self->db->close(self->db, flags);
@@ -6073,6 +6081,14 @@ DBSequence_close_internal(DBSequenceObject* self, int flags, int do_not_close)
             self->txn=NULL;
         }
 
+        /*
+        ** "do_not-close" is used to dispose all related objects in the
+        ** tree, without actually releasing the "root" object.
+        ** This is done, for example, because function calls like
+        ** "DBSequence.remove()" implicitly close the underlying handle. So
+        ** the handle doesn't need to be closed, but related objects
+        ** must be cleaned up.
+        */
         if (!do_not_close) {
             MYDB_BEGIN_ALLOW_THREADS
             err = self->sequence->close(self->sequence, flags);
