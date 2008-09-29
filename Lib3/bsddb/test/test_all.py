@@ -392,10 +392,24 @@ if 'silent' in sys.argv:  # take care of old flag, just in case
 def print_versions():
     print()
     print('-=' * 38)
-    print(db.DB_VERSION_STRING)
+
+    if sys.version_info[0] < 3 :
+        print(db.DB_VERSION_STRING)
+    else :
+        print(db.DB_VERSION_STRING.decode(charset))
+
     print('bsddb.db.version():   %s' % (db.version(), ))
-    print('bsddb.db.__version__: %s' % db.__version__)
-    print('bsddb.db.cvsid:       %s' % db.cvsid)
+
+    if sys.version_info[0] < 3 : 
+        print('bsddb.db.__version__: %s' % db.__version__)
+    else :
+        print('bsddb.db.__version__: %s' % db.__version__.decode(charset))
+
+    if sys.version_info[0] < 3 :
+        print('bsddb.db.cvsid:       %s' % db.cvsid)
+    else :
+        print('bsddb.db.cvsid:       %s' % db.cvsid.decode(charset))
+
     print('py module:            %s' % bsddb.__file__)
     print('extension module:     %s' % bsddb._bsddb.__file__)
     print('python version:       %s' % sys.version)
