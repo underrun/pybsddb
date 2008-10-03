@@ -1,3 +1,8 @@
+4.7.4:
+  * Under Python 3.0, "bsddb.db.DB_VERSION_STRING",
+    "bsddb.db.__version__" and "bsddb.db.cvsid" must
+    return (unicode) string instead of bytes. Solved.
+
 4.7.3: (Python 2.6 release. First release with Python 3.0 support)
   * "private" is a keyword in C++.  (Duncan Grisby)
   * setup.py should install "bsddb.h".  (Duncan Grisby)

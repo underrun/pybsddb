@@ -2892,7 +2892,7 @@ DB_verify(DBObject* self, PyObject* args, PyObject* kwargs)
         PyObject *error;
 
         error=DB_close_internal(self, 0, 1);
-        if (error ) {
+        if (error) {
           return error;
         }
      }
@@ -7029,10 +7029,21 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 {
     PyObject* m;
     PyObject* d;
-    PyObject* pybsddb_version_s = PyBytes_FromString( PY_BSDDB_VERSION );
-    PyObject* db_version_s = PyBytes_FromString( DB_VERSION_STRING );
-    PyObject* cvsid_s = PyBytes_FromString( rcs_id );
     PyObject* py_api;
+    PyObject* pybsddb_version_s;
+    PyObject* db_version_s;
+    PyObject* cvsid_s;
+
+#if (PY_VERSION_HEX < 0x03000000)
+    pybsddb_version_s = PyString_FromString(PY_BSDDB_VERSION);
+    db_version_s = PyString_FromString(DB_VERSION_STRING);
+    cvsid_s = PyString_FromString(rcs_id);
+#else
+    /* This data should be ascii, so UTF-8 conversion is fine */
+    pybsddb_version_s = PyUnicode_FromString(PY_BSDDB_VERSION);
+    db_version_s = PyUnicode_FromString(DB_VERSION_STRING);
+    cvsid_s = PyUnicode_FromString(rcs_id);
+#endif
 
     /* Initialize object types */
     if ((PyType_Ready(&DB_Type) < 0)

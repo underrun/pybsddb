@@ -97,6 +97,3 @@
 * 20080929: Support "master leases". Beware bug
   http://forums.oracle.com/forums/thread.jspa?forumID=272&threadID=708324
 
-* 20080929: Under Python 3.0, string like "cvsid", version, etc., are
-  bytes. They should be strings.
-
