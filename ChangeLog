@@ -1,4 +1,4 @@
-4.7.3: (first release with Python 3.0 support)
+4.7.3: (Python 2.6 release. First release with Python 3.0 support)
   * "private" is a keyword in C++.  (Duncan Grisby)
   * setup.py should install "bsddb.h".  (Duncan Grisby)
   * "DB_remove" memory corruption & crash.  (Duncan Grisby)

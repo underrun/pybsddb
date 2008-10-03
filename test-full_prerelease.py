@@ -12,7 +12,7 @@ you try it as is, it would fail.
 """
 
 def do_matrix_check() :
-  python_versions=("2.3","2.4","2.5","2.6", "3.0")
+  python_versions=("2.3","2.4","2.5","2.6","3.0")
   berkeleydb_versions=("4.0","4.1","4.2","4.3","4.4","4.5","4.6","4.7")
 
   import subprocess
@@ -21,14 +21,18 @@ def do_matrix_check() :
     for bdb in berkeleydb_versions :
       print
       print "*** Testing bindings for Python %s and Berkeley DB %s" %(py,bdb)
-      ret=subprocess.call(["/usr/local/bin/python"+py,"setup.py", "-q", \
-                       "--berkeley-db=/usr/local/BerkeleyDB."+bdb,"build", "-f"])
+      params = [] if float(py)<=2.999 else ["-bb"]
+      params += ["setup.py", "-q", \
+                 "--berkeley-db=/usr/local/BerkeleyDB."+bdb,"build", "-f"]
+      ret=subprocess.call(["/usr/local/bin/python"+py] + params)
       if ret :
         print
         print ">>> Testsuite skipped"
         print
       else :
-        subprocess.call(["/usr/local/bin/python"+py,"test.py","-p"])
+        params = [] if float(py)<=2.999 else ["-bb"]
+        params += ["test.py","-p"]
+        subprocess.call(["/usr/local/bin/python"+py] + params)
 
 if __name__=="__main__" :
   print __doc__
