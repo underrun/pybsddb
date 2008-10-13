@@ -97,3 +97,8 @@
 * 20080929: Support "master leases". Beware bug
   http://forums.oracle.com/forums/thread.jspa?forumID=272&threadID=708324
 
+* 20081011: Evaluate support of "with" statement for things like
+  transactions.
+
+* 20081013: Evaluate convenience of returning named tuples in some places.
+
