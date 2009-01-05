@@ -102,3 +102,8 @@
 
 * 20081013: Evaluate convenience of returning named tuples in some places.
 
+* 20081013: Evaluate convenience of supporting "sys.getsizeof()".
+
+* 20081013: Port "PyModule_AddStringMacro" and "PyModule_AddIntMacro"
+  when compiling for old versions of Python.
+
