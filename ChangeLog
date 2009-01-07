@@ -4,6 +4,12 @@
     return (unicode) strings instead of bytes. Solved.
   * Use the new (20081018) trove classifiers in PyPI
     to identify Python supported versions.
+  * In "DB_ENV->rep_set_timeout()" and "DB_ENV->rep_get_timeout()",
+    support flags "DB_REP_LEASE_TIMEOUT".
+  * In "DB_ENV->rep_set_timeout()" and "DB_ENV->rep_get_timeout()",
+    support flags "DB_REP_HEARTBEAT_MONITOR" and
+    "DB_REP_HEARTBEAT_SEND". These flags are used in the Replication
+    Manager framework, ignored if using Base Replication.
 
 4.7.3: (Python 2.6 release. First release with Python 3.0 support)
   * "private" is a keyword in C++.  (Duncan Grisby)
