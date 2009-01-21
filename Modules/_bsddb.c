@@ -670,7 +670,8 @@ static int makeDBError(int err)
     unsigned int bytes_left;
 
     switch (err) {
-        case 0:                     /* successful, no error */      break;
+        case 0:                     /* successful, no error */
+            return 0;
 
 #if (DBVER < 41)
         case DB_INCOMPLETE:
@@ -1765,6 +1766,64 @@ DB_delete(DBObject* self, PyObject* args, PyObject* kwargs)
     FREE_DBT(key);
     RETURN_NONE();
 }
+
+
+#if (DBVER >= 47)
+/*
+** This function is available since Berkeley DB 4.4,
+** but 4.6 version is so buggy that we only support
+** it from BDB 4.7 and newer.
+*/
+static PyObject*
+DB_compact(DBObject* self, PyObject* args, PyObject* kwargs)
+{
+    PyObject* txnobj = NULL;
+    PyObject *startobj = NULL, *stopobj = NULL;
+    int flags = 0;
+    DB_TXN *txn = NULL;
+    DBT *start_p = NULL, *stop_p = NULL;
+    DBT start, stop;
+    int err;
+    DB_COMPACT c_data = { 0 };
+    static char* kwnames[] = { "txn", "start", "stop", "flags",
+                               "compact_fillpercent", "compact_pages",
+                               "compact_timeout", NULL };
+
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOOiiiI:compact", kwnames,
+                                     &txnobj, &startobj, &stopobj, &flags,
+                                     &c_data.compact_fillpercent,
+                                     &c_data.compact_pages,
+                                     &c_data.compact_timeout))
+        return NULL;
+
+    CHECK_DB_NOT_CLOSED(self);
+    if (!checkTxnObj(txnobj, &txn)) {
+        return NULL;
+    }
+
+    if (startobj && make_key_dbt(self, startobj, &start, NULL)) {
+        start_p = &start;
+    }
+    if (stopobj && make_key_dbt(self, stopobj, &stop, NULL)) {
+        stop_p = &stop;
+    }
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->compact(self->db, txn, start_p, stop_p, &c_data,
+                            flags, NULL);
+    MYDB_END_ALLOW_THREADS;
+
+    if (startobj)
+        FREE_DBT(start);
+    if (stopobj)
+        FREE_DBT(stop);
+ 
+    RETURN_IF_ERR();
+
+    return PyLong_FromUnsignedLong(c_data.compact_pages_truncated);
+}
+#endif
 
 
 static PyObject*
@@ -6538,6 +6597,9 @@ static PyMethodDef DB_methods[] = {
     {"append",          (PyCFunction)DB_append,         METH_VARARGS|METH_KEYWORDS},
     {"associate",       (PyCFunction)DB_associate,      METH_VARARGS|METH_KEYWORDS},
     {"close",           (PyCFunction)DB_close,          METH_VARARGS},
+#if (DBVER >= 47)
+    {"compact",         (PyCFunction)DB_compact,        METH_VARARGS|METH_KEYWORDS},
+#endif
     {"consume",         (PyCFunction)DB_consume,        METH_VARARGS|METH_KEYWORDS},
     {"consume_wait",    (PyCFunction)DB_consume_wait,   METH_VARARGS|METH_KEYWORDS},
     {"cursor",          (PyCFunction)DB_cursor,         METH_VARARGS|METH_KEYWORDS},
@@ -7434,6 +7496,11 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_IMMUTABLE_KEY);
     ADD_INT(d, DB_READ_UNCOMMITTED);    /* replaces DB_DIRTY_READ in 4.4 */
     ADD_INT(d, DB_READ_COMMITTED);
+#endif
+
+#if (DBVER >= 44)
+    ADD_INT(d, DB_FREELIST_ONLY);
+    ADD_INT(d, DB_FREE_SPACE);
 #endif
 
     ADD_INT(d, DB_DONOTINDEX);

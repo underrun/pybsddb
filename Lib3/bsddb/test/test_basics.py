@@ -592,6 +592,23 @@ class BasicTestCase(unittest.TestCase):
 
     #----------------------------------------
 
+    if db.version() >= (4, 7):
+        def test_compact(self) :
+            d = self.d
+            self.assertEqual(0, d.compact(flags=db.DB_FREELIST_ONLY))
+            self.assertEqual(0, d.compact(flags=db.DB_FREELIST_ONLY))
+            d.put("abcde", "ABCDE");
+            d.put("bcde", "BCDE");
+            d.put("abc", "ABC");
+            d.put("monty", "python");
+            d.delete("abc")
+            d.delete("bcde")
+            d.compact(start='abcde', stop='monty', txn=None,
+                    compact_fillpercent=42, compact_pages=1,
+                    compact_timeout=50000000,
+                    flags=db.DB_FREELIST_ONLY|db.DB_FREE_SPACE)
+
+    #----------------------------------------
 
 #----------------------------------------------------------------------
 

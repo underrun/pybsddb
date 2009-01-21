@@ -19,6 +19,11 @@
     returning a list. In particular, in Python 3.0 the list
     must contain bytes.
   * Implements "DBEnv->fileid_reset()".  (Duncan Findlay)
+  * Implements "DB->compact()".  (Gregory P. Smith)
+    Berkeley DB 4.6 implementation is buggy, so we only
+    support this function from Berkeley DB 4.7 and newer.
+    We also support related flags "DB_FREELIST_ONLY"
+    and "DB_FREE_SPACE".
 
 4.7.3: (Python 2.6 release. First release with Python 3.0 support)
   * "private" is a keyword in C++.  (Duncan Grisby)

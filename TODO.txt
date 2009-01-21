@@ -116,3 +116,5 @@
 
 * 20090121: If the "associate()" callback returns an empty list, crash.
 
+* 20090121: "DB->compact()" should return more data.
+

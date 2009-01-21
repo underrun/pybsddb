@@ -42,6 +42,18 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_close.html>`__
 
+.. function:: compact(start=None, stop=None, flags=0,
+   compact_fillpercent=0, compact_pages=0, compact_timeout=0)
+
+   Compacts Btree and Recno access method databases, and optionally
+   returns unused Btree, Hash or Recno database pages to the underlying
+   filesystem.
+
+   The method returns the number of pages returned to the filesystem.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/db_compact.html>`__
+
 .. function:: consume(txn=None, flags=0)
 
    For a database with the Queue access method, returns the record
