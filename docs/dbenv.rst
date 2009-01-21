@@ -68,6 +68,18 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_dbrename.html>`__
 
+.. function:: fileid_reset(file, flags=0)
+
+   All databases contain an ID string used to identify the database in
+   the database environment cache. If a physical database file is
+   copied, and used in the same environment as another file with the
+   same ID strings, corruption can occur. The DB_ENV->fileid_reset
+   method creates new ID strings for all of the databases in the
+   physical file.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_fileid_reset.html>`__
+
 .. function:: set_encrypt(passwd, flags=0)
 
    Set the password used by the Berkeley DB library to perform

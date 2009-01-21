@@ -119,6 +119,9 @@ class DBEnv:
             return apply(self._cobj.set_encrypt, args, kwargs)
 
     if db.version() >= (4,4):
+        def fileid_reset(self, *args, **kwargs):
+            return self._cobj.fileid_reset(*args, **kwargs)
+
         def lsn_reset(self, *args, **kwargs):
             return apply(self._cobj.lsn_reset, args, kwargs)
 

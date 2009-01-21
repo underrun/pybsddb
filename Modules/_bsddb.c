@@ -4267,6 +4267,8 @@ DBEnv_dbrename(DBEnvObject* self, PyObject* args, PyObject* kwargs)
     RETURN_NONE();
 }
 
+
+
 static PyObject*
 DBEnv_set_encrypt(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -4836,6 +4838,26 @@ DBEnv_lock_put(DBEnvObject* self, PyObject* args)
 }
 
 #if (DBVER >= 44)
+static PyObject*
+DBEnv_fileid_reset(DBEnvObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err;
+    char *file;
+    u_int32_t flags = 0;
+    static char* kwnames[] = { "file", "flags", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "z|i:fileid_reset", kwnames,
+                                     &file, &flags))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->fileid_reset(self->db_env, file, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
 static PyObject*
 DBEnv_lsn_reset(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -6654,6 +6676,7 @@ static PyMethodDef DBEnv_methods[] = {
     {"log_flush",       (PyCFunction)DBEnv_log_flush,        METH_NOARGS},
     {"log_stat",        (PyCFunction)DBEnv_log_stat,         METH_VARARGS},
 #if (DBVER >= 44)
+    {"fileid_reset",    (PyCFunction)DBEnv_fileid_reset,     METH_VARARGS|METH_KEYWORDS},
     {"lsn_reset",       (PyCFunction)DBEnv_lsn_reset,        METH_VARARGS|METH_KEYWORDS},
 #endif
     {"set_get_returns_none",(PyCFunction)DBEnv_set_get_returns_none, METH_VARARGS},

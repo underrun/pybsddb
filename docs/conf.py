@@ -24,7 +24,7 @@ copyright = '2008 Jesus Cea Avion'
 # The short X.Y version.
 version = '4.7.4'
 # The full version, including alpha/beta/rc tags.
-release = '4.7.4devel3'
+release = '4.7.4devel5'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
