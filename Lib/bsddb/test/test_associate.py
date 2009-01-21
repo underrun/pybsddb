@@ -169,12 +169,7 @@ class AssociateTestCase(unittest.TestCase):
         return self.primary
 
 
-    def test01_associateWithDB(self):
-        if verbose:
-            print '\n', '-=' * 30
-            print "Running %s.test01_associateWithDB..." % \
-                  self.__class__.__name__
-
+    def _associateWithDB(self, getGenre):
         self.createDB()
 
         self.secDB = db.DB(self.env)
@@ -182,19 +177,21 @@ class AssociateTestCase(unittest.TestCase):
         self.secDB.set_get_returns_none(2)
         self.secDB.open(self.filename, "secondary", db.DB_BTREE,
                    db.DB_CREATE | db.DB_THREAD | self.dbFlags)
-        self.getDB().associate(self.secDB, self.getGenre)
+        self.getDB().associate(self.secDB, getGenre)
 
         self.addDataToDB(self.getDB())
 
         self.finish_test(self.secDB)
 
-
-    def test02_associateAfterDB(self):
+    def test01_associateWithDB(self):
         if verbose:
             print '\n', '-=' * 30
-            print "Running %s.test02_associateAfterDB..." % \
+            print "Running %s.test01_associateWithDB..." % \
                   self.__class__.__name__
 
+        return self._associateWithDB(self.getGenre)
+
+    def _associateAfterDB(self, getGenre) :
         self.createDB()
         self.addDataToDB(self.getDB())
 
@@ -204,9 +201,34 @@ class AssociateTestCase(unittest.TestCase):
                    db.DB_CREATE | db.DB_THREAD | self.dbFlags)
 
         # adding the DB_CREATE flag will cause it to index existing records
-        self.getDB().associate(self.secDB, self.getGenre, db.DB_CREATE)
+        self.getDB().associate(self.secDB, getGenre, db.DB_CREATE)
 
         self.finish_test(self.secDB)
+
+    def test02_associateAfterDB(self):
+        if verbose:
+            print '\n', '-=' * 30
+            print "Running %s.test02_associateAfterDB..." % \
+                  self.__class__.__name__
+
+        return self._associateAfterDB(self.getGenre)
+
+    if db.version() >= (4, 6):
+        def test03_associateWithDB(self):
+            if verbose:
+                print '\n', '-=' * 30
+                print "Running %s.test03_associateWithDB..." % \
+                      self.__class__.__name__
+
+            return self._associateWithDB(self.getGenreList)
+
+        def test04_associateAfterDB(self):
+            if verbose:
+                print '\n', '-=' * 30
+                print "Running %s.test04_associateAfterDB..." % \
+                      self.__class__.__name__
+
+            return self._associateAfterDB(self.getGenreList)
 
 
     def finish_test(self, secDB, txn=None):
@@ -276,6 +298,12 @@ class AssociateTestCase(unittest.TestCase):
             return db.DB_DONOTINDEX
         else:
             return genre
+
+    def getGenreList(self, priKey, PriData) :
+        v = self.getGenre(priKey, PriData)
+        if type(v) == type("") :
+            v = [v]
+        return v
 
 
 #----------------------------------------------------------------------

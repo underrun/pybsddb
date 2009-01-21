@@ -107,3 +107,10 @@
 * 20081013: Port "PyModule_AddStringMacro" and "PyModule_AddIntMacro"
   when compiling for old versions of Python.
 
+* 20090121: In the "associate()" callback, there are mallocs to
+  contain the "data" portion of DBT's. Test that they are correctly
+  freed by Berkeley DB.
+
+* 20090121: If somethings goes wrong in the "associate()" callback,
+  we are going to leak memory. Solve it.
+

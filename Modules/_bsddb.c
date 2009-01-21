@@ -208,6 +208,9 @@ static PyObject* DBPermissionsError;    /* EPERM  */
 #if (DBVER >= 42)
 static PyObject* DBRepHandleDeadError;  /* DB_REP_HANDLE_DEAD */
 #endif
+#if (DBVER >= 44)
+static PyObject* DBRepLockoutError;     /* DB_REP_LOCKOUT */
+#endif
 
 static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 
@@ -719,6 +722,9 @@ static int makeDBError(int err)
 
 #if (DBVER >= 42)
         case DB_REP_HANDLE_DEAD : errObj = DBRepHandleDeadError; break;
+#endif
+#if (DBVER >= 44)
+        case DB_REP_LOCKOUT : errObj = DBRepLockoutError; break;
 #endif
 
         case DB_REP_UNAVAIL : errObj = DBRepUnavailError; break;
@@ -1417,10 +1423,62 @@ _db_associateCallback(DB* db, const DBT* priKey, const DBT* priData,
 		PyErr_Print();
 	    }
         }
+#if (DBVER >= 46)
+        else if (PyList_Check(result))
+        {
+            char* data;
+            Py_ssize_t size;
+            int i, listlen;
+            DBT* dbts;
+
+            listlen = PyList_Size(result);
+
+            dbts = (DBT *)malloc(sizeof(DBT) * listlen);
+
+            for (i=0; i<listlen; i++)
+            {
+                if (!PyBytes_Check(PyList_GetItem(result, i)))
+                {
+                    PyErr_SetString(
+                       PyExc_TypeError,
+"DB associate callback should return DB_DONOTINDEX/string/list of strings.");
+                    PyErr_Print();
+                }
+
+                PyBytes_AsStringAndSize(
+                    PyList_GetItem(result, i),
+                    &data, &size);
+
+                CLEAR_DBT(dbts[i]);
+                dbts[i].data = malloc(size);          /* TODO, check this */
+
+                if (dbts[i].data)
+                {
+                    memcpy(dbts[i].data, data, size);
+                    dbts[i].size = size;
+                    dbts[i].ulen = dbts[i].size;
+                    dbts[i].flags = DB_DBT_APPMALLOC;  /* DB will free */
+                }
+                else
+                {
+                    PyErr_SetString(PyExc_MemoryError,
+                        "malloc failed in _db_associateCallback (list)");
+                    PyErr_Print();
+                }
+            }
+
+            CLEAR_DBT(*secKey);
+
+            secKey->data = dbts;
+            secKey->size = listlen;
+            secKey->flags = DB_DBT_APPMALLOC | DB_DBT_MULTIPLE;
+            retval = 0;
+        }
+#endif
         else {
             PyErr_SetString(
                PyExc_TypeError,
-               "DB associate callback should return DB_DONOTINDEX or string.");
+"DB associate callback should return DB_DONOTINDEX/string/list of strings.");
             PyErr_Print();
         }
 
@@ -7597,6 +7655,9 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
 #if (DBVER >= 42)
     MAKE_EX(DBRepHandleDeadError);
+#endif
+#if (DBVER >= 44)
+    MAKE_EX(DBRepLockoutError);
 #endif
 
     MAKE_EX(DBRepUnavailError);
