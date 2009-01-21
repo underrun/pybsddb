@@ -562,7 +562,7 @@ class BasicTestCase(unittest.TestCase):
         d = self.d
         if verbose:
             print('\n', '-=' * 30)
-            print("Running %s.test99_Truncate..." % self.__class__.__name__)
+            print("Running %s.test06_Truncate..." % self.__class__.__name__)
 
         d.put("abcde", "ABCDE");
         num = d.truncate()
@@ -638,24 +638,21 @@ class BasicWithEnvTestCase(BasicTestCase):
 
     #----------------------------------------
 
-    def test09_EnvRemoveAndRename(self):
-        if not self.env:
-            return
+    if db.version() >= (4,1):
+        def test09_EnvRemoveAndRename(self):
+            if not self.env:
+                return
 
-        if verbose:
-            print('\n', '-=' * 30)
-            print("Running %s.test08_EnvRemoveAndRename..." % self.__class__.__name__)
+            if verbose:
+                print('\n', '-=' * 30)
+                print("Running %s.test09_EnvRemoveAndRename..." % self.__class__.__name__)
 
-        # can't rename or remove an open DB
-        self.d.close()
+            # can't rename or remove an open DB
+            self.d.close()
 
-        newname = self.filename + '.renamed'
-        self.env.dbrename(self.filename, None, newname)
-        self.env.dbremove(newname)
-
-    # dbremove and dbrename are in 4.1 and later
-    if db.version() < (4,1):
-        del test08_EnvRemoveAndRename
+            newname = self.filename + '.renamed'
+            self.env.dbrename(self.filename, None, newname)
+            self.env.dbremove(newname)
 
     #----------------------------------------
 
@@ -774,7 +771,7 @@ class BasicTransactionTestCase(BasicTestCase):
         d = self.d
         if verbose:
             print('\n', '-=' * 30)
-            print("Running %s.test08_TxnTruncate..." % self.__class__.__name__)
+            print("Running %s.test09_TxnTruncate..." % self.__class__.__name__)
 
         d.put("abcde", "ABCDE");
         txn = self.env.txn_begin()
@@ -825,7 +822,7 @@ class BTreeRecnoTestCase(BasicTestCase):
         d = self.d
         if verbose:
             print('\n', '-=' * 30)
-            print("Running %s.test08_RecnoInBTree..." % self.__class__.__name__)
+            print("Running %s.test09_RecnoInBTree..." % self.__class__.__name__)
 
         rec = d.get(200)
         self.assertEqual(type(rec), type(()))
@@ -859,7 +856,7 @@ class BasicDUPTestCase(BasicTestCase):
         d = self.d
         if verbose:
             print('\n', '-=' * 30)
-            print("Running %s.test09_DuplicateKeys..." % \
+            print("Running %s.test10_DuplicateKeys..." % \
                   self.__class__.__name__)
 
         d.put("dup0", "before")
@@ -932,7 +929,7 @@ class BasicMultiDBTestCase(BasicTestCase):
         d1 = self.d
         if verbose:
             print('\n', '-=' * 30)
-            print("Running %s.test10_MultiDB..." % self.__class__.__name__)
+            print("Running %s.test11_MultiDB..." % self.__class__.__name__)
 
         d2 = db.DB(self.env)
         d2.open(self.filename, "second", self.dbtype,
