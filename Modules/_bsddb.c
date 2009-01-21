@@ -1756,7 +1756,7 @@ DB_exists(DBObject* self, PyObject* args, PyObject* kwargs)
     }
 
     /*
-    ** If we reach there, there where an error. The
+    ** If we reach there, there was an error. The
     ** "return" should be unreachable.
     */
     RETURN_IF_ERR();
