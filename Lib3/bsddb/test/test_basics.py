@@ -582,6 +582,16 @@ class BasicTestCase(unittest.TestCase):
 
     #----------------------------------------
 
+    if db.version() >= (4, 6):
+        def test08_exists(self) :
+            self.d.put("abcde", "ABCDE")
+            self.assert_(self.d.exists("abcde") == True,
+                    "DB->exists() returns wrong value")
+            self.assert_(self.d.exists("x") == False,
+                    "DB->exists() returns wrong value")
+
+    #----------------------------------------
+
 
 #----------------------------------------------------------------------
 
@@ -611,7 +621,7 @@ class BasicWithEnvTestCase(BasicTestCase):
 
     #----------------------------------------
 
-    def test08_EnvRemoveAndRename(self):
+    def test09_EnvRemoveAndRename(self):
         if not self.env:
             return
 
@@ -729,7 +739,21 @@ class BasicTransactionTestCase(BasicTestCase):
 
     #----------------------------------------
 
-    def test08_TxnTruncate(self):
+    if db.version() >= (4, 6):
+        def test08_exists(self) :
+            txn = self.env.txn_begin()
+            self.d.put("abcde", "ABCDE", txn=txn)
+            txn.commit()
+            txn = self.env.txn_begin()
+            self.assert_(self.d.exists("abcde", txn=txn) == True,
+                    "DB->exists() returns wrong value")
+            self.assert_(self.d.exists("x", txn=txn) == False,
+                    "DB->exists() returns wrong value")
+            txn.abort()
+
+    #----------------------------------------
+
+    def test09_TxnTruncate(self):
         d = self.d
         if verbose:
             print('\n', '-=' * 30)
@@ -746,7 +770,7 @@ class BasicTransactionTestCase(BasicTestCase):
 
     #----------------------------------------
 
-    def test09_TxnLateUse(self):
+    def test10_TxnLateUse(self):
         txn = self.env.txn_begin()
         txn.abort()
         try:
@@ -780,7 +804,7 @@ class BTreeRecnoTestCase(BasicTestCase):
     dbtype     = db.DB_BTREE
     dbsetflags = db.DB_RECNUM
 
-    def test08_RecnoInBTree(self):
+    def test09_RecnoInBTree(self):
         d = self.d
         if verbose:
             print('\n', '-=' * 30)
@@ -814,7 +838,7 @@ class BTreeRecnoWithThreadFlagTestCase(BTreeRecnoTestCase):
 class BasicDUPTestCase(BasicTestCase):
     dbsetflags = db.DB_DUP
 
-    def test09_DuplicateKeys(self):
+    def test10_DuplicateKeys(self):
         d = self.d
         if verbose:
             print('\n', '-=' * 30)
@@ -887,7 +911,7 @@ class BasicMultiDBTestCase(BasicTestCase):
         else:
             return db.DB_BTREE
 
-    def test10_MultiDB(self):
+    def test11_MultiDB(self):
         d1 = self.d
         if verbose:
             print('\n', '-=' * 30)

@@ -10,6 +10,7 @@
     support flags "DB_REP_HEARTBEAT_MONITOR" and
     "DB_REP_HEARTBEAT_SEND". These flags are used in the Replication
     Manager framework, ignored if using Base Replication.
+  * Implements "DB->exists()".
 
 4.7.3: (Python 2.6 release. First release with Python 3.0 support)
   * "private" is a keyword in C++.  (Duncan Grisby)

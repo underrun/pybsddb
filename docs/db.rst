@@ -78,6 +78,13 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_del.html>`__
 
+.. function:: exists(key, txn=None, flags=0)
+
+   Test if a key exists in the database. Returns True or False.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/db_exists.html>`__
+
 .. function:: fd()
 
    Returns a file descriptor for the database.

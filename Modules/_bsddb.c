@@ -1716,6 +1716,55 @@ DB_fd(DBObject* self)
 }
 
 
+#if (DBVER >= 46)
+static PyObject*
+DB_exists(DBObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err, flags=0;
+    PyObject* txnobj = NULL;
+    PyObject* keyobj;
+    DBT key;
+    DB_TXN *txn;
+
+    static char* kwnames[] = {"key", "txn", "flags", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|Oi:exists", kwnames,
+                &keyobj, &txnobj, &flags))
+        return NULL;
+
+    CHECK_DB_NOT_CLOSED(self);
+    if (!make_key_dbt(self, keyobj, &key, NULL))
+        return NULL;
+    if (!checkTxnObj(txnobj, &txn)) {
+        FREE_DBT(key);
+        return NULL;
+    }
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->exists(self->db, txn, &key, flags);
+    MYDB_END_ALLOW_THREADS;
+
+    FREE_DBT(key);
+
+    if (!err) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+    if ((err == DB_NOTFOUND || err == DB_KEYEMPTY)) {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+
+    /*
+    ** If we reach there, there where an error. The
+    ** "return" should be unreachable.
+    */
+    RETURN_IF_ERR();
+    assert(0);  /* This coude SHOULD be unreachable */
+    return NULL;
+}
+#endif
+
 static PyObject*
 DB_get(DBObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -6406,6 +6455,10 @@ static PyMethodDef DB_methods[] = {
     {"cursor",          (PyCFunction)DB_cursor,         METH_VARARGS|METH_KEYWORDS},
     {"delete",          (PyCFunction)DB_delete,         METH_VARARGS|METH_KEYWORDS},
     {"fd",              (PyCFunction)DB_fd,             METH_NOARGS},
+#if (DBVER >= 46)
+    {"exists",          (PyCFunction)DB_exists,
+        METH_VARARGS|METH_KEYWORDS},
+#endif
     {"get",             (PyCFunction)DB_get,            METH_VARARGS|METH_KEYWORDS},
     {"pget",            (PyCFunction)DB_pget,           METH_VARARGS|METH_KEYWORDS},
     {"get_both",        (PyCFunction)DB_get_both,       METH_VARARGS|METH_KEYWORDS},
