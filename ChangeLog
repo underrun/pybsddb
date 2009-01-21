@@ -15,6 +15,9 @@
   * Add support for "DB_REP_LOCKOUT" exception.
   * Support returning a list of strings in "associate()"
     callback.  (Kung Phu)
+  * Testsuite and Python 3.0 compatibility for "associate()"
+    returning a list. In particular, in Python 3.0 the list
+    must contain bytes.
 
 4.7.3: (Python 2.6 release. First release with Python 3.0 support)
   * "private" is a keyword in C++.  (Duncan Grisby)

@@ -221,6 +221,11 @@ if sys.version_info[0] >= 3 :
                 key = bytes(key, charset)
             return self._db.get_size(key)
 
+        def exists(self, key, *args, **kwargs) :
+            if isinstance(key, str) :
+                key = bytes(key, charset)
+            return self._db.exists(key, *args, **kwargs)
+
         def get(self, key, default="MagicCookie", txn=None, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
@@ -288,9 +293,16 @@ if sys.version_info[0] >= 3 :
                         key = key.decode(charset)
                     data = data.decode(charset)
                     key = self._callback(key, data)
-                    if (key != bsddb._db.DB_DONOTINDEX) and isinstance(key,
-                            str) :
-                        key = bytes(key, charset)
+                    if (key != bsddb._db.DB_DONOTINDEX) :
+                        if isinstance(key, str) :
+                            key = bytes(key, charset)
+                        elif isinstance(key, list) :
+                            key2 = []
+                            for i in key :
+                                if isinstance(i, str) :
+                                    i = bytes(i, charset)
+                                key2.append(i)
+                            key = key2
                     return key
 
             if bsddb.db.version() < (4, 1) :

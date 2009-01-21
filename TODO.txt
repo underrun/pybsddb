@@ -112,5 +112,7 @@
   freed by Berkeley DB.
 
 * 20090121: If somethings goes wrong in the "associate()" callback,
-  we are going to leak memory. Solve it.
+  we are going to leak memory and coredump. Solve it.
+
+* 20090121: If the "associate()" callback returns an empty list, crash.
 

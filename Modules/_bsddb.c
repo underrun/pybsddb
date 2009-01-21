@@ -1441,7 +1441,11 @@ _db_associateCallback(DB* db, const DBT* priKey, const DBT* priData,
                 {
                     PyErr_SetString(
                        PyExc_TypeError,
-"DB associate callback should return DB_DONOTINDEX/string/list of strings.");
+#if (PY_VERSION_HEX < 0x03000000)
+"The list returned by DB->associate callback should be a list of strings.");
+#else
+"The list returned by DB->associate callback should be a list of bytes.");
+#endif
                     PyErr_Print();
                 }
 
@@ -1478,7 +1482,11 @@ _db_associateCallback(DB* db, const DBT* priKey, const DBT* priData,
         else {
             PyErr_SetString(
                PyExc_TypeError,
+#if (PY_VERSION_HEX < 0x03000000)
 "DB associate callback should return DB_DONOTINDEX/string/list of strings.");
+#else
+"DB associate callback should return DB_DONOTINDEX/bytes/list of bytes.");
+#endif
             PyErr_Print();
         }
 
