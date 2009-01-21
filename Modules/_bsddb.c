@@ -7342,6 +7342,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_MULTIPLE_KEY);
 
 #if (DBVER >= 44)
+    ADD_INT(d, DB_IMMUTABLE_KEY);
     ADD_INT(d, DB_READ_UNCOMMITTED);    /* replaces DB_DIRTY_READ in 4.4 */
     ADD_INT(d, DB_READ_COMMITTED);
 #endif
