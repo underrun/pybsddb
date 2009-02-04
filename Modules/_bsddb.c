@@ -4366,7 +4366,7 @@ DBEnv_get_timeout(DBEnvObject* self, PyObject* args, PyObject* kwargs)
     CHECK_ENV_NOT_CLOSED(self);
 
     MYDB_BEGIN_ALLOW_THREADS;
-    err = self->db_env->get_timeout(self->db_env, flag, &timeout);
+    err = self->db_env->get_timeout(self->db_env, &timeout, flag);
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
     return NUMBER_FromLong(timeout);
@@ -4804,7 +4804,7 @@ DBEnv_txn_checkpoint(DBEnvObject* self, PyObject* args)
 static PyObject*
 DBEnv_get_tx_max(DBEnvObject* self)
 {
-    int err
+    int err;
     u_int32_t max;
 
     CHECK_ENV_NOT_CLOSED(self);
@@ -4837,7 +4837,7 @@ DBEnv_set_tx_max(DBEnvObject* self, PyObject* args)
 static PyObject*
 DBEnv_get_tx_timestamp(DBEnvObject* self)
 {
-    int err
+    int err;
     time_t timestamp;
 
     CHECK_ENV_NOT_CLOSED(self);
