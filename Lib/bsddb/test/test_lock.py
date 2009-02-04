@@ -89,15 +89,22 @@ class LockingTestCase(unittest.TestCase):
         for t in threads:
             t.join()
 
-    def test03_lock_timeout(self):
+    if db.version() >= (4, 2) :
+        def test03_lock_timeout(self):
+            self.env.set_timeout(0, db.DB_SET_LOCK_TIMEOUT)
+            self.assertEqual(self.env.get_timeout(db.DB_SET_LOCK_TIMEOUT), 0)
+            self.env.set_timeout(0, db.DB_SET_TXN_TIMEOUT)
+            self.assertEqual(self.env.get_timeout(db.DB_SET_TXN_TIMEOUT), 0)
+            self.env.set_timeout(123456, db.DB_SET_LOCK_TIMEOUT)
+            self.assertEqual(self.env.get_timeout(db.DB_SET_LOCK_TIMEOUT), 123456)
+            self.env.set_timeout(7890123, db.DB_SET_TXN_TIMEOUT)
+            self.assertEqual(self.env.get_timeout(db.DB_SET_TXN_TIMEOUT), 7890123)
+
+    def test04_lock_timeout2(self):
         self.env.set_timeout(0, db.DB_SET_LOCK_TIMEOUT)
-        self.assertEqual(self.env.get_timeout(db.DB_SET_LOCK_TIMEOUT), 0)
         self.env.set_timeout(0, db.DB_SET_TXN_TIMEOUT)
-        self.assertEqual(self.env.get_timeout(db.DB_SET_TXN_TIMEOUT), 0)
         self.env.set_timeout(123456, db.DB_SET_LOCK_TIMEOUT)
-        self.assertEqual(self.env.get_timeout(db.DB_SET_LOCK_TIMEOUT), 123456)
         self.env.set_timeout(7890123, db.DB_SET_TXN_TIMEOUT)
-        self.assertEqual(self.env.get_timeout(db.DB_SET_TXN_TIMEOUT), 7890123)
 
         def deadlock_detection() :
             while not deadlock_detection.end :

@@ -820,6 +820,16 @@ class BasicTransactionTestCase(BasicTestCase):
             self.assertEqual(txn.get_name(), "")
             txn.abort()
 
+    #----------------------------------------
+
+
+        if db.version() >= (4, 0):
+            def test_txn_set_timeout(self) :
+                txn=self.env.txn_begin()
+                txn.set_timeout(1234567, db.DB_SET_LOCK_TIMEOUT)
+                txn.set_timeout(2345678, flags=db.DB_SET_TXN_TIMEOUT)
+                txn.abort()
+
 
 class BTreeTransactionTestCase(BasicTransactionTestCase):
     dbtype = db.DB_BTREE
