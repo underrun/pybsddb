@@ -50,10 +50,8 @@ class BasicTestCase(unittest.TestCase):
                 self.env = db.DBEnv()
                 self.env.set_lg_max(1024*1024)
                 self.env.set_tx_max(30)
-                self.assertEqual(self.env.get_tx_max(), 30)
-                t = int(time.time())
-                self.env.set_tx_timestamp(t)
-                self.assertEqual(self.env.get_tx_timestamp(), t)
+                self._t = int(time.time())
+                self.env.set_tx_timestamp(self._t)
                 self.env.set_flags(self.envsetflags, 1)
                 self.env.open(self.homeDir, self.envflags | db.DB_CREATE)
                 self.filename = "test"
@@ -829,6 +827,16 @@ class BasicTransactionTestCase(BasicTestCase):
                 txn.set_timeout(1234567, db.DB_SET_LOCK_TIMEOUT)
                 txn.set_timeout(2345678, flags=db.DB_SET_TXN_TIMEOUT)
                 txn.abort()
+
+    #----------------------------------------
+
+    if db.version() >= (4, 2) :
+        def test_get_tx_max(self) :
+            self.assertEqual(self.env.get_tx_max(), 30)
+
+        def test_get_tx_timestamp(self) :
+            self.assertEqual(self.env.get_tx_timestamp(), self._t)
+
 
 
 class BTreeTransactionTestCase(BasicTransactionTestCase):
