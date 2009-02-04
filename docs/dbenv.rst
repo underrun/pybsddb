@@ -468,6 +468,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/lock_stat.html>`__
 
+.. function:: get_tx_max()
+
+   Returns the number of active transactions.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_tx_max.html>`__
+
 .. function:: set_tx_max(max)
 
    Set the maximum number of active transactions.

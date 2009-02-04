@@ -4802,6 +4802,22 @@ DBEnv_txn_checkpoint(DBEnvObject* self, PyObject* args)
 
 
 static PyObject*
+DBEnv_get_tx_max(DBEnvObject* self)
+{
+    int err
+    u_int32_t max;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_tx_max(self->db_env, &max);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyLong_FromUnsignedLong(max);
+}
+
+
+static PyObject*
 DBEnv_set_tx_max(DBEnvObject* self, PyObject* args)
 {
     int err, max;
@@ -6803,6 +6819,7 @@ static PyMethodDef DBEnv_methods[] = {
     {"txn_stat",        (PyCFunction)DBEnv_txn_stat,         METH_VARARGS},
     {"txn_stat_print",  (PyCFunction)DBEnv_txn_stat_print,
         METH_VARARGS|METH_KEYWORDS},
+    {"get_tx_max",      (PyCFunction)DBEnv_get_tx_max,       METH_NOARGS},
     {"set_tx_max",      (PyCFunction)DBEnv_set_tx_max,       METH_VARARGS},
     {"set_tx_timestamp", (PyCFunction)DBEnv_set_tx_timestamp, METH_VARARGS},
     {"lock_detect",     (PyCFunction)DBEnv_lock_detect,      METH_VARARGS},
