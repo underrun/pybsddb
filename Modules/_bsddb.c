@@ -6371,6 +6371,44 @@ DBTxn_set_timeout(DBTxnObject* self, PyObject* args, PyObject* kwargs)
     RETURN_NONE();
 }
 
+
+#if (DBVER >= 44)
+static PyObject*
+DBTxn_set_name(DBTxnObject* self, PyObject* args)
+{
+    int err;
+    const char *name;
+
+    if (!PyArg_ParseTuple(args, "s:set_name", &name))
+        return NULL;
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->txn->set_name(self->txn, name);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
+
+
+#if (DBVER >= 44)
+static PyObject*
+DBTxn_get_name(DBTxnObject* self)
+{
+    int err;
+    const char *name;
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->txn->get_name(self->txn, &name);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    return PyBytes_FromString(name);
+}
+#endif
+
+
 #if (DBVER >= 43)
 /* --------------------------------------------------------------------- */
 /* DBSequence methods */
@@ -6961,6 +6999,10 @@ static PyMethodDef DBTxn_methods[] = {
     {"id",              (PyCFunction)DBTxn_id,          METH_NOARGS},
     {"set_timeout",     (PyCFunction)DBTxn_set_timeout,
         METH_VARARGS|METH_KEYWORDS},
+#if (DBVER >= 44)
+    {"set_name",        (PyCFunction)DBTxn_set_name, METH_VARARGS},
+    {"get_name",        (PyCFunction)DBTxn_get_name, METH_NOARGS},
+#endif
     {NULL,      NULL}       /* sentinel */
 };
 

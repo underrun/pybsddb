@@ -11,6 +11,9 @@
   * Add support for "DB_ENV->get_tx_timestamp()".
   * Add support for "DB_TXN_WAIT" flag.
   * Add support for "DB_TXN->set_timeout()".
+  * Add support for "DB_TXN->set_name()" and
+    "DB_TXN->get_name()". The binding support for "DB_TXN"
+    is now complete.
 
 4.7.4:
   * Under Python 3.0, "bsddb.db.DB_VERSION_STRING",

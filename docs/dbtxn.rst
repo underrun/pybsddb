@@ -66,3 +66,17 @@ DBTxn Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_set_timeout.html>`__
 
+.. function:: get_name(name)
+
+   Returns the string associated with the transaction.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/txn_set_name.html>`__
+
+.. function:: set_name(name)
+
+   Associates the specified string with the transaction.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/txn_set_name.html>`__
+
