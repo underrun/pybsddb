@@ -6404,7 +6404,17 @@ DBTxn_get_name(DBTxnObject* self)
     MYDB_END_ALLOW_THREADS;
 
     RETURN_IF_ERR();
-    return PyBytes_FromString(name);
+#if (PY_VERSION_HEX < 0x03000000)
+    if (!name) {
+        return PyString_FromString("");
+    }
+    return PyString_FromString(name);
+#else
+    if (!name) {
+        return PyUnicode_FromString("");
+    }
+    return PyUnicode_FromString(name);
+#endif
 }
 #endif
 

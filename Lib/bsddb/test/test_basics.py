@@ -804,6 +804,20 @@ class BasicTransactionTestCase(BasicTestCase):
             raise RuntimeError, "DBTxn.commit() called after DB_TXN no longer valid w/o an exception"
 
 
+    #----------------------------------------
+
+
+    if db.version() >= (4, 4):
+        def test_txn_name(self) :
+            txn=self.env.txn_begin()
+            self.assertEqual(txn.get_name(), "")
+            txn.set_name("XXYY")
+            self.assertEqual(txn.get_name(), "XXYY")
+            txn.set_name("")
+            self.assertEqual(txn.get_name(), "")
+            txn.abort()
+
+
 class BTreeTransactionTestCase(BasicTransactionTestCase):
     dbtype = db.DB_BTREE
 

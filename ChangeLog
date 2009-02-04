@@ -12,12 +12,13 @@
   * Add support for "DB_TXN_WAIT" flag.
   * Add support for "DB_TXN->set_timeout()".
   * Add support for "DB_TXN->set_name()" and
-    "DB_TXN->get_name()". The binding support for "DB_TXN"
-    is now complete.
+    "DB_TXN->get_name()". Under Python 3.0, the name
+    is an Unicode string. The binding support for
+    "DB_TXN" is now complete.
   * Add support for "DB_REP_PERMANENT", "DB_REP_CONF_NOAUTOINIT",
     "DB_REP_CONF_DELAYCLIENT", "DB_REP_CONF_BULK",
     "DB_REP_CONF_NOWAIT", "DB_REP_LEASE_EXPIRED",
-    "DB_REP_CONF_LEASE" and "DB_REPMGR_CONF_2SITE_STRICT",
+    "DB_REP_CONF_LEASE", "DB_REPMGR_CONF_2SITE_STRICT",
     "DB_REP_ANYWHERE", "DB_REP_NOBUFFER" and "DB_REP_REREQUEST"
     flags.
 
