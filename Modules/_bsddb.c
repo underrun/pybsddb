@@ -4703,7 +4703,7 @@ DBEnv_txn_recover(DBEnvObject* self)
                 Py_DECREF(list);
                 return NULL;
             }
-            txn=newDBTxnObject(self, NULL, preplist[i].txn, flags);
+            txn=newDBTxnObject(self, NULL, preplist[i].txn, 0);
             if (!txn) {
                 Py_DECREF(list);
                 Py_DECREF(gid);
@@ -5148,6 +5148,29 @@ DBEnv_log_archive(DBEnvObject* self, PyObject* args)
         free(log_list_start);
     }
     return list;
+}
+
+
+static PyObject*
+DBEnv_txn_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:stat_print",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->txn_stat_print(self->db_env, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
 }
 
 
@@ -6749,6 +6772,8 @@ static PyMethodDef DBEnv_methods[] = {
     {"txn_begin",       (PyCFunction)DBEnv_txn_begin,        METH_VARARGS|METH_KEYWORDS},
     {"txn_checkpoint",  (PyCFunction)DBEnv_txn_checkpoint,   METH_VARARGS},
     {"txn_stat",        (PyCFunction)DBEnv_txn_stat,         METH_VARARGS},
+    {"txn_stat_print",  (PyCFunction)DBEnv_txn_stat_print,
+        METH_VARARGS|METH_KEYWORDS},
     {"set_tx_max",      (PyCFunction)DBEnv_set_tx_max,       METH_VARARGS},
     {"set_tx_timestamp", (PyCFunction)DBEnv_set_tx_timestamp, METH_VARARGS},
     {"lock_detect",     (PyCFunction)DBEnv_lock_detect,      METH_VARARGS},

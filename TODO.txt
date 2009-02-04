@@ -118,3 +118,9 @@
 
 * 20090121: "DB->compact()" should return more data to the caller.
 
+* 20090204: "txn->stat()" returns also a list of active transactions.
+  Evaluate if we must export that data to python.
+
+* 20090204: A lot of binding functions allow optional parameters, but
+  not keyword ones. Normalize this.
+
