@@ -7456,6 +7456,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_TXN_SYNC);
     ADD_INT(d, DB_TXN_NOWAIT);
 
+#if (DBVER >= 46)
+    ADD_INT(d, DB_TXN_WAIT);
+#endif
+
     ADD_INT(d, DB_EXCL);
     ADD_INT(d, DB_FCNTL_LOCKING);
     ADD_INT(d, DB_ODDFILESIZE);
