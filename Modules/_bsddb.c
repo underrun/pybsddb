@@ -7814,6 +7814,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
 #if (DBVER >= 44)
     ADD_INT(d, DB_REP_CONF_NOAUTOINIT);
+    ADD_INT(d, DB_REP_CONF_DELAYCLIENT);
 #endif
 
 #if (DBVER >= 45)

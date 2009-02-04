@@ -16,6 +16,7 @@
     is now complete.
   * Add support for "DB_REP_PERMANENT" flag.
   * Add support for "DB_REP_CONF_NOAUTOINIT" flag.
+  * Add support for "DB_REP_CONF_DELAYCLIENT" flag.
 
 4.7.4:
   * Under Python 3.0, "bsddb.db.DB_VERSION_STRING",
