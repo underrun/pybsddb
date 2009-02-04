@@ -6349,6 +6349,28 @@ DBTxn_id(DBTxnObject* self)
     return NUMBER_FromLong(id);
 }
 
+
+static PyObject*
+DBTxn_set_timeout(DBTxnObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err;
+    u_int32_t flags=0;
+    u_int32_t timeout = 0;
+    static char* kwnames[] = { "timeout", "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "ii:set_timeout", kwnames,
+		&timeout, &flags)) {
+	return NULL;
+    }
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->txn->set_timeout(self->txn, (db_timeout_t)timeout, flags);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
 #if (DBVER >= 43)
 /* --------------------------------------------------------------------- */
 /* DBSequence methods */
@@ -6937,6 +6959,8 @@ static PyMethodDef DBTxn_methods[] = {
     {"discard",         (PyCFunction)DBTxn_discard,     METH_NOARGS},
     {"abort",           (PyCFunction)DBTxn_abort,       METH_NOARGS},
     {"id",              (PyCFunction)DBTxn_id,          METH_NOARGS},
+    {"set_timeout",     (PyCFunction)DBTxn_set_timeout,
+        METH_VARARGS|METH_KEYWORDS},
     {NULL,      NULL}       /* sentinel */
 };
 

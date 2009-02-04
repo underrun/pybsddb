@@ -58,4 +58,11 @@ DBTxn Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_discard.html>`__
 
+.. function:: set_timeout(timeout, flags)
+
+   Sets timeout values for locks or transactions for the specified
+   transaction.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/txn_set_timeout.html>`__
 
