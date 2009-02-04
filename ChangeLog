@@ -1,4 +1,7 @@
 4.7.5:
+  * Add support for "DB_EID_INVALID" and "DB_EID_BROADCAST" flags.
+  * Add support for "DB_SEQUENCE->stat_print()". The binding
+    support for "DB_SEQUENCE" is now complete.
 
 4.7.4:
   * Under Python 3.0, "bsddb.db.DB_VERSION_STRING",

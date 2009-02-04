@@ -137,6 +137,13 @@ DBSequence Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/seq_stat.html>`__
 
+.. function:: stat_print(flags=0)
+
+   Prints diagnostic information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/seq_stat.html>`__
+
 .. function:: get_range()
 
    Returns a tuple representing the range of values in the sequence.

@@ -6546,6 +6546,29 @@ DBSequence_get_range(DBSequenceObject* self)
     return Py_BuildValue("(LL)", min, max);
 }
 
+
+static PyObject*
+DBSequence_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:stat_print",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+
+    CHECK_SEQUENCE_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->sequence->stat_print(self->sequence, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
 static PyObject*
 DBSequence_stat(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -6833,6 +6856,8 @@ static PyMethodDef DBSequence_methods[] = {
     {"set_range",       (PyCFunction)DBSequence_set_range,      METH_VARARGS},
     {"get_range",       (PyCFunction)DBSequence_get_range,      METH_NOARGS},
     {"stat",            (PyCFunction)DBSequence_stat,           METH_VARARGS|METH_KEYWORDS},
+    {"stat_print",      (PyCFunction)DBSequence_stat_print,
+        METH_VARARGS|METH_KEYWORDS},
     {NULL,      NULL}       /* sentinel */
 };
 #endif
@@ -7538,6 +7563,9 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_REGISTER);
 #endif
 
+    ADD_INT(d, DB_EID_INVALID);
+    ADD_INT(d, DB_EID_BROADCAST);
+
 #if (DBVER >= 42)
     ADD_INT(d, DB_TIME_NOTGRANTED);
     ADD_INT(d, DB_TXN_NOT_DURABLE);
@@ -7638,7 +7666,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_REPMGR_ACKS_QUORUM);
     ADD_INT(d, DB_REPMGR_CONNECTED);
     ADD_INT(d, DB_REPMGR_DISCONNECTED);
-    ADD_INT(d, DB_STAT_CLEAR);
     ADD_INT(d, DB_STAT_ALL);
 #endif
 
