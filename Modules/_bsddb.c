@@ -4810,7 +4810,9 @@ DBEnv_set_tx_max(DBEnvObject* self, PyObject* args)
         return NULL;
     CHECK_ENV_NOT_CLOSED(self);
 
+    MYDB_BEGIN_ALLOW_THREADS;
     err = self->db_env->set_tx_max(self->db_env, max);
+    MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
     RETURN_NONE();
 }
@@ -4827,7 +4829,9 @@ DBEnv_set_tx_timestamp(DBEnvObject* self, PyObject* args)
         return NULL;
     CHECK_ENV_NOT_CLOSED(self);
     timestamp = (time_t)stamp;
+    MYDB_BEGIN_ALLOW_THREADS;
     err = self->db_env->set_tx_timestamp(self->db_env, &timestamp);
+    MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
     RETURN_NONE();
 }

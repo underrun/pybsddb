@@ -5,6 +5,8 @@
   * Add support for "DB_ENV->txn_stat_print()".
   * Add support for "DB_ENV->get_timeout()".
   * Document that "DB_ENV->txn_stat()" accepts a flag.
+  * Unlock the GIL when doing "DB_ENV->set_tx_max()" and
+    "DB_ENV->set_tx_timestamp()".
 
 4.7.4:
   * Under Python 3.0, "bsddb.db.DB_VERSION_STRING",
