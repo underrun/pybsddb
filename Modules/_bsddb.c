@@ -4351,6 +4351,7 @@ DBEnv_set_encrypt(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 #endif /* DBVER >= 41 */
 
 
+#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_timeout(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -4371,6 +4372,7 @@ DBEnv_get_timeout(DBEnvObject* self, PyObject* args, PyObject* kwargs)
     RETURN_IF_ERR();
     return NUMBER_FromLong(timeout);
 }
+#endif
 
 
 static PyObject*
@@ -4801,6 +4803,7 @@ DBEnv_txn_checkpoint(DBEnvObject* self, PyObject* args)
 }
 
 
+#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_tx_max(DBEnvObject* self)
 {
@@ -4815,6 +4818,7 @@ DBEnv_get_tx_max(DBEnvObject* self)
     RETURN_IF_ERR();
     return PyLong_FromUnsignedLong(max);
 }
+#endif
 
 
 static PyObject*
@@ -4834,6 +4838,7 @@ DBEnv_set_tx_max(DBEnvObject* self, PyObject* args)
 }
 
 
+#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_tx_timestamp(DBEnvObject* self)
 {
@@ -4848,7 +4853,7 @@ DBEnv_get_tx_timestamp(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(timestamp);
 }
-
+#endif
 
 static PyObject*
 DBEnv_set_tx_timestamp(DBEnvObject* self, PyObject* args)
@@ -5210,6 +5215,7 @@ DBEnv_log_archive(DBEnvObject* self, PyObject* args)
 }
 
 
+#if (DBVER >= 43)
 static PyObject*
 DBEnv_txn_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
 {
@@ -5231,6 +5237,7 @@ DBEnv_txn_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+#endif
 
 
 static PyObject*
@@ -6804,8 +6811,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"dbrename",        (PyCFunction)DBEnv_dbrename,         METH_VARARGS|METH_KEYWORDS},
     {"set_encrypt",     (PyCFunction)DBEnv_set_encrypt,      METH_VARARGS|METH_KEYWORDS},
 #endif
+#if (DBVER >= 42)
     {"get_timeout",     (PyCFunction)DBEnv_get_timeout,
         METH_VARARGS|METH_KEYWORDS},
+#endif
     {"set_timeout",     (PyCFunction)DBEnv_set_timeout,      METH_VARARGS|METH_KEYWORDS},
     {"set_shm_key",     (PyCFunction)DBEnv_set_shm_key,      METH_VARARGS},
     {"set_cachesize",   (PyCFunction)DBEnv_set_cachesize,    METH_VARARGS},
@@ -6833,11 +6842,15 @@ static PyMethodDef DBEnv_methods[] = {
     {"txn_begin",       (PyCFunction)DBEnv_txn_begin,        METH_VARARGS|METH_KEYWORDS},
     {"txn_checkpoint",  (PyCFunction)DBEnv_txn_checkpoint,   METH_VARARGS},
     {"txn_stat",        (PyCFunction)DBEnv_txn_stat,         METH_VARARGS},
+#if (DBVER >= 43)
     {"txn_stat_print",  (PyCFunction)DBEnv_txn_stat_print,
         METH_VARARGS|METH_KEYWORDS},
+#endif
+#if (DBVER >= 42)
     {"get_tx_max",      (PyCFunction)DBEnv_get_tx_max,       METH_NOARGS},
-    {"set_tx_max",      (PyCFunction)DBEnv_set_tx_max,       METH_VARARGS},
     {"get_tx_timestamp", (PyCFunction)DBEnv_get_tx_timestamp, METH_NOARGS},
+#endif
+    {"set_tx_max",      (PyCFunction)DBEnv_set_tx_max,       METH_VARARGS},
     {"set_tx_timestamp", (PyCFunction)DBEnv_set_tx_timestamp, METH_VARARGS},
     {"lock_detect",     (PyCFunction)DBEnv_lock_detect,      METH_VARARGS},
     {"lock_get",        (PyCFunction)DBEnv_lock_get,         METH_VARARGS},
