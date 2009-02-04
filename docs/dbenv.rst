@@ -88,6 +88,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_encrypt.html>`__
 
+.. function:: get_timeout(flags)
+
+   Returns a timeout value, in microseconds.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_timeout.html>`__
+
 .. function:: set_timeout(timeout, flags)
 
    Sets timeout values for locks or transactions in the database
@@ -491,7 +498,7 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_checkpoint.html>`__
 
-.. function:: txn_stat()
+.. function:: txn_stat(flags=0)
 
    Return a dictionary of transaction statistics with the following
    keys:
@@ -542,6 +549,13 @@ DBEnv Methods
     |              | waiting.                                    |
     +--------------+---------------------------------------------+
 
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/txn_stat.html>`__
+
+.. function:: txn_stat_print(flags=0)
+
+   Displays the transaction subsystem statistical information.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_stat.html>`__

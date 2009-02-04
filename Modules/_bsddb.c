@@ -4350,6 +4350,29 @@ DBEnv_set_encrypt(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 }
 #endif /* DBVER >= 41 */
 
+
+static PyObject*
+DBEnv_get_timeout(DBEnvObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err;
+    int flag;
+    u_int32_t timeout;
+    static char* kwnames[] = {"flag", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:get_timeout", kwnames,
+                &flag)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_timeout(self->db_env, flag, &timeout);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(timeout);
+}
+
+
 static PyObject*
 DBEnv_set_timeout(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -6745,6 +6768,8 @@ static PyMethodDef DBEnv_methods[] = {
     {"dbrename",        (PyCFunction)DBEnv_dbrename,         METH_VARARGS|METH_KEYWORDS},
     {"set_encrypt",     (PyCFunction)DBEnv_set_encrypt,      METH_VARARGS|METH_KEYWORDS},
 #endif
+    {"get_timeout",     (PyCFunction)DBEnv_get_timeout,
+        METH_VARARGS|METH_KEYWORDS},
     {"set_timeout",     (PyCFunction)DBEnv_set_timeout,      METH_VARARGS|METH_KEYWORDS},
     {"set_shm_key",     (PyCFunction)DBEnv_set_shm_key,      METH_VARARGS},
     {"set_cachesize",   (PyCFunction)DBEnv_set_cachesize,    METH_VARARGS},
