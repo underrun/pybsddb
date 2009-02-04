@@ -7809,6 +7809,13 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
     ADD_INT(d, DB_REP_MASTER);
     ADD_INT(d, DB_REP_CLIENT);
+
+    ADD_INT(d, DB_REP_PERMANENT);
+
+#if (DBVER >= 44)
+    ADD_INT(d, DB_REP_CONF_NOAUTOINIT);
+#endif
+
 #if (DBVER >= 45)
     ADD_INT(d, DB_REP_ELECTION);
 
