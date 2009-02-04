@@ -482,6 +482,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_tx_max.html>`__
 
+.. function:: get_tx_timestamp()
+
+   Returns the recovery timestamp.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_tx_timestamp.html>`__
+
 .. function:: set_tx_timestamp(timestamp)
 
    Recover to the time specified by timestamp rather than to the most

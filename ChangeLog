@@ -8,6 +8,7 @@
   * Unlock the GIL when doing "DB_ENV->set_tx_max()" and
     "DB_ENV->set_tx_timestamp()".
   * Add support for "DB_ENV->get_tx_max()".
+  * Add support for "DB_ENV->get_tx_timestamp()".
 
 4.7.4:
   * Under Python 3.0, "bsddb.db.DB_VERSION_STRING",

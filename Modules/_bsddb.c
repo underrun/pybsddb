@@ -4835,6 +4835,22 @@ DBEnv_set_tx_max(DBEnvObject* self, PyObject* args)
 
 
 static PyObject*
+DBEnv_get_tx_timestamp(DBEnvObject* self)
+{
+    int err
+    time_t timestamp;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_tx_timestamp(self->db_env, &timestamp);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(timestamp);
+}
+
+
+static PyObject*
 DBEnv_set_tx_timestamp(DBEnvObject* self, PyObject* args)
 {
     int err;
@@ -6821,6 +6837,7 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS|METH_KEYWORDS},
     {"get_tx_max",      (PyCFunction)DBEnv_get_tx_max,       METH_NOARGS},
     {"set_tx_max",      (PyCFunction)DBEnv_set_tx_max,       METH_VARARGS},
+    {"get_tx_timestamp", (PyCFunction)DBEnv_get_tx_timestamp, METH_NOARGS},
     {"set_tx_timestamp", (PyCFunction)DBEnv_set_tx_timestamp, METH_VARARGS},
     {"lock_detect",     (PyCFunction)DBEnv_lock_detect,      METH_VARARGS},
     {"lock_get",        (PyCFunction)DBEnv_lock_get,         METH_VARARGS},
