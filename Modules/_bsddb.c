@@ -6548,7 +6548,7 @@ DBSequence_get_range(DBSequenceObject* self)
 
 
 static PyObject*
-DBSequence_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+DBSequence_stat_print(DBSequenceObject* self, PyObject* args, PyObject *kwargs)
 {
     int err;
     int flags=0;
