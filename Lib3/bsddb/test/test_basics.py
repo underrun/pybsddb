@@ -50,7 +50,10 @@ class BasicTestCase(unittest.TestCase):
                 self.env = db.DBEnv()
                 self.env.set_lg_max(1024*1024)
                 self.env.set_tx_max(30)
-                self.env.set_tx_timestamp(int(time.time()))
+                self.assertEqual(self.env.get_tx_max(), 30)
+                t = int(time.time())
+                self.env.set_tx_timestamp(t)
+                self.assertEqual(self.env.get_tx_timestamp(), t)
                 self.env.set_flags(self.envsetflags, 1)
                 self.env.open(self.homeDir, self.envflags | db.DB_CREATE)
                 self.filename = "test"
