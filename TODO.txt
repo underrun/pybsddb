@@ -127,3 +127,5 @@
 * 20090204: "rep_set_limit()" and "rep_get_limit()" only manages "bytes",
   not gigabytes.
 
+* 20090423: Evaluate convenience of supporting DTrace.
+
