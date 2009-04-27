@@ -966,4 +966,198 @@ DBEnv Replication Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/rep_timeout.html>`__
 
+.. function:: rep_stat(flags=0)
+
+   Returns a dictionary with the replication subsystem statistics. Keys
+   are:
+
+   +---------------------+---------------------------------------------+
+   | st_bulk_fills       | The number of times the bulk buffer filled  |
+   |                     | up, forcing the buffer content to be sent.  |
+   +---------------------+---------------------------------------------+
+   | bulk_overflows      | The number of times a record was bigger     |
+   |                     | than the entire bulk buffer, and therefore  |
+   |                     | had to be sent as a singleton.              |
+   +---------------------+---------------------------------------------+
+   | bulk_records        | The number of records added to a bulk       |
+   |                     | buffer.                                     |
+   +---------------------+---------------------------------------------+
+   | bulk_transfers      | The number of bulk buffers transferred (via |
+   |                     | a call to the application's send function). |
+   +---------------------+---------------------------------------------+
+   | client_rerequests   | The number of times this client site        |
+   |                     | received a "re-request" message, indicating |
+   |                     | that a request it previously sent to        |
+   |                     | another client could not be serviced by     |
+   |                     | that client. (Compare to client_svc_miss.)  |
+   +---------------------+---------------------------------------------+
+   | client_svc_miss     | The number of "request" type messages       |
+   |                     | received by this client that could not be   |
+   |                     | processed, forcing the originating          |
+   |                     | requester to try sending the request to the |
+   |                     | master (or another client).                 |
+   +---------------------+---------------------------------------------+
+   | client_svc_req      | The number of "request" type messages       |
+   |                     | received by this client. ("Request"         |
+   |                     | messages are usually sent from a client to  |
+   |                     | the master, but a message marked with the   |
+   |                     | DB_REP_ANYWHERE flag in the invocation of   |
+   |                     | the application's send function may be sent |
+   |                     | to another client instead.)                 |
+   +---------------------+---------------------------------------------+
+   | dupmasters          | The number of duplicate master conditions   |
+   |                     | originally detected at this site.           |
+   +---------------------+---------------------------------------------+
+   | egen                | The current election generation number.     |
+   +---------------------+---------------------------------------------+
+   | election_cur_winner | The election winner.                        |
+   +---------------------+---------------------------------------------+
+   | election_gen        | The election generation number.             |
+   +---------------------+---------------------------------------------+
+   | election_lsn        | The maximum LSN of election winner.         |
+   +---------------------+---------------------------------------------+
+   | election_nsites     | The number sites responding to this site    |
+   |                     | during the last election.                   |
+   +---------------------+---------------------------------------------+
+   | election_nvotes     | The number of votes required in the last    |
+   |                     | election.                                   |
+   +---------------------+---------------------------------------------+
+   | election_priority   | The election priority.                      |
+   +---------------------+---------------------------------------------+
+   | election_sec        | The number of seconds the last election     |
+   |                     | took (the total election time is            |
+   |                     | election_sec plus election_usec).           |
+   +---------------------+---------------------------------------------+
+   | election_status     | The current election phase (0 if no         |
+   |                     | election is in progress).                   |
+   +---------------------+---------------------------------------------+
+   | election_tiebreaker | The election tiebreaker value.              |
+   +---------------------+---------------------------------------------+
+   | election_usec       | The number of microseconds the last         |
+   |                     | election took (the total election time is   |
+   |                     | election_sec plus election_usec).           |
+   +---------------------+---------------------------------------------+
+   | election_votes      | The number of votes received in the last    |
+   |                     | election.                                   |
+   +---------------------+---------------------------------------------+
+   | elections           | The number of elections held.               |
+   +---------------------+---------------------------------------------+
+   | elections_won       | The number of elections won.                |
+   +---------------------+---------------------------------------------+
+   | env_id              | The current environment ID.                 |
+   +---------------------+---------------------------------------------+
+   | env_priority        | The current environment priority.           |
+   +---------------------+---------------------------------------------+
+   | gen                 | The current generation number.              |
+   +---------------------+---------------------------------------------+
+   | log_duplicated      | The number of duplicate log records         |
+   |                     | received.                                   |
+   +---------------------+---------------------------------------------+
+   | log_queued          | The number of log records currently queued. |
+   +---------------------+---------------------------------------------+
+   | log_queued_max      | The maximum number of log records ever      |
+   |                     | queued at once.                             |
+   +---------------------+---------------------------------------------+
+   | log_queued_total    | The total number of log records queued.     |
+   +---------------------+---------------------------------------------+
+   | log_records         | The number of log records received and      |
+   |                     | appended to the log.                        |
+   +---------------------+---------------------------------------------+
+   | log_requested       | The number of times log records were missed |
+   |                     | and requested.                              |
+   +---------------------+---------------------------------------------+
+   | master              | The current master environment ID.          |
+   +---------------------+---------------------------------------------+
+   | master_changes      | The number of times the master has changed. |
+   +---------------------+---------------------------------------------+
+   | max_lease_sec       | The number of seconds of the longest lease  |
+   |                     | (the total lease time is max_lease_sec plus |
+   |                     | max_lease_usec).                            |
+   +---------------------+---------------------------------------------+
+   | max_lease_usec      | The number of microseconds of the longest   |
+   |                     | lease (the total lease time is              |
+   |                     | max_lease_sec plus max_lease_usec).         |
+   +---------------------+---------------------------------------------+
+   | max_perm_lsn        | The LSN of the maximum permanent log        |
+   |                     | record, or 0 if there are no permanent log  |
+   |                     | records.                                    |
+   +---------------------+---------------------------------------------+
+   | msgs_badgen         | The number of messages received with a bad  |
+   |                     | generation number.                          |
+   +---------------------+---------------------------------------------+
+   | msgs_processed      | The number of messages received and         |
+   |                     | processed.                                  |
+   +---------------------+---------------------------------------------+
+   | msgs_recover        | The number of messages ignored due to       |
+   |                     | pending recovery.                           |
+   +---------------------+---------------------------------------------+
+   | msgs_send_failures  | The number of failed message sends.         |
+   +---------------------+---------------------------------------------+
+   | msgs_sent           | The number of messages sent.                |
+   +---------------------+---------------------------------------------+
+   | newsites            | The number of new site messages received.   |
+   +---------------------+---------------------------------------------+
+   | next_lsn            | In replication environments configured as   |
+   |                     | masters, the next LSN expected. In          |
+   |                     | replication environments configured as      |
+   |                     | clients, the next LSN to be used.           |
+   +---------------------+---------------------------------------------+
+   | next_pg             | The next page number we expect to receive.  |
+   +---------------------+---------------------------------------------+
+   | nsites              | The number of sites used in the last        |
+   |                     | election.                                   |
+   +---------------------+---------------------------------------------+
+   | nthrottles          | Transmission limited. This indicates the    |
+   |                     | number of times that data transmission was  |
+   |                     | stopped to limit the amount of data sent in |
+   |                     | response to a single call to                |
+   |                     | DB_ENV->rep_process_message.                |
+   +---------------------+---------------------------------------------+
+   | outdated            | The number of outdated conditions detected. |
+   +---------------------+---------------------------------------------+
+   | pg_duplicated       | The number of duplicate pages received.     |
+   +---------------------+---------------------------------------------+
+   | pg_records          | The number of pages received and stored.    |
+   +---------------------+---------------------------------------------+
+   | pg_requested        | The number of pages missed and requested    |
+   |                     | from the master.                            |
+   +---------------------+---------------------------------------------+
+   | startsync_delayed   | The number of times the client had to delay |
+   |                     | the start of a cache flush operation        |
+   |                     | (initiated by the master for an impending   |
+   |                     | checkpoint) because it was missing some     |
+   |                     | previous log record(s).                     |
+   +---------------------+---------------------------------------------+
+   | startup_complete    | The client site has completed its startup   |
+   |                     | procedures and is now handling live records |
+   |                     | from the master.                            |
+   +---------------------+---------------------------------------------+
+   | status              |The current replication mode. Set to         |
+   |                     | DB_REP_MASTER if the environment is a       |
+   |                     | replication master, DB_REP_CLIENT if the    |
+   |                     | environment is a replication client, or 0   |
+   |                     | if replication is not configured.           |
+   +---------------------+---------------------------------------------+
+   | txns_applied        | The number of transactions applied.         |
+   +---------------------+---------------------------------------------+
+   | waiting_lsn         | The LSN of the first log record we have     |
+   |                     | after missing log records being waited for, |
+   |                     | or 0 if no log records are currently        |
+   |                     | missing.                                    |
+   +---------------------+---------------------------------------------+
+   | waiting_pg          | The page number of the first page we have   |
+   |                     | after missing pages being waited for, or 0  |
+   |                     | if no pages are currently missing.          |
+   +---------------------+---------------------------------------------+
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_stat.html>`__
+
+.. function:: rep_stat_print(flags=0)
+
+   Displays the replication subsystem statistical information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_stat.html>`__
 
