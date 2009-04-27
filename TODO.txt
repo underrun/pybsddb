@@ -129,4 +129,6 @@
 
 * 20090423: Evaluate convenience of supporting DTrace.
 
+* 20090427: Split base replication and replication manager
+  documentation in documents separated of DBENV docs.
 

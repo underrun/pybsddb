@@ -966,6 +966,22 @@ DBEnv Replication Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/rep_timeout.html>`__
 
+.. function:: rep_set_clockskew(fast, slow)
+
+   Sets the clock skew ratio among replication group members based on
+   the fastest and slowest measurements among the group for use with
+   master leases.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_clockskew.html>`__
+
+.. function:: rep_get_clockskew()
+
+   Returns a tuple with the current clock skew values.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/rep_clockskew.html>`__
+   
 .. function:: rep_stat(flags=0)
 
    Returns a dictionary with the replication subsystem statistics. Keys

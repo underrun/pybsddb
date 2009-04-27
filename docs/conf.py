@@ -17,14 +17,14 @@ sys.path.append('tools/sphinxext')
 
 # General substitutions.
 project = 'PyBSDDB'
-copyright = '2008 Jesus Cea Avion'
+copyright = '2008-2009 Jesus Cea Avion'
 
 # The default replacements for |version| and |release|.
 #
 # The short X.Y version.
 version = '4.7.6'
 # The full version, including alpha/beta/rc tags.
-release = '4.7.6devel2'
+release = '4.7.6devel3'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
