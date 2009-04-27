@@ -3271,18 +3271,11 @@ DB_ass_sub(DBObject* self, PyObject* keyobj, PyObject* dataobj)
 
 
 static PyObject*
-DB_has_key(DBObject* self, PyObject* args, PyObject* kwargs)
+_DB_has_key(DBObject* self, PyObject* keyobj, PyObject* txnobj)
 {
     int err;
-    PyObject* keyobj;
-    DBT key, data;
-    PyObject* txnobj = NULL;
+    DBT key;
     DB_TXN *txn = NULL;
-    static char* kwnames[] = {"key","txn", NULL};
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|O:has_key", kwnames,
-                &keyobj, &txnobj))
-        return NULL;
 
     CHECK_DB_NOT_CLOSED(self);
     if (!make_key_dbt(self, keyobj, &key, NULL))
@@ -3292,18 +3285,33 @@ DB_has_key(DBObject* self, PyObject* args, PyObject* kwargs)
         return NULL;
     }
 
+#if (DBVER < 46)
     /* This causes DB_BUFFER_SMALL to be returned when the db has the key because
        it has a record but can't allocate a buffer for the data.  This saves
        having to deal with data we won't be using.
      */
-    CLEAR_DBT(data);
-    data.flags = DB_DBT_USERMEM;
+    {
+        DBT data ;
+        CLEAR_DBT(data);
+        data.flags = DB_DBT_USERMEM;
 
+        MYDB_BEGIN_ALLOW_THREADS;
+        err = self->db->get(self->db, txn, &key, &data, 0);
+        MYDB_END_ALLOW_THREADS;
+    }
+#else
     MYDB_BEGIN_ALLOW_THREADS;
-    err = self->db->get(self->db, txn, &key, &data, 0);
+    err = self->db->exists(self->db, txn, &key, 0);
     MYDB_END_ALLOW_THREADS;
+#endif
+
     FREE_DBT(key);
 
+    /*
+    ** DB_BUFFER_SMALL is only used if we use "get".
+    ** We can drop it when we only use "exists",
+    ** when we drop suport for Berkeley DB < 4.6.
+    */
     if (err == DB_BUFFER_SMALL || err == 0) {
         Py_INCREF(Py_True);
         return Py_True;
@@ -3314,6 +3322,38 @@ DB_has_key(DBObject* self, PyObject* args, PyObject* kwargs)
 
     makeDBError(err);
     return NULL;
+}
+
+static PyObject*
+DB_has_key(DBObject* self, PyObject* args, PyObject* kwargs)
+{
+    PyObject* keyobj;
+    PyObject* txnobj = NULL;
+    static char* kwnames[] = {"key","txn", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|O:has_key", kwnames,
+                &keyobj, &txnobj))
+        return NULL;
+
+    return _DB_has_key(self, keyobj, txnobj);
+}
+
+
+static int DB_contains(DBObject* self, PyObject* keyobj)
+{
+    PyObject* result;
+    int result2 = 0;
+
+    result = _DB_has_key(self, keyobj, NULL) ;
+    if (result == NULL) {
+        return -1; /* Propague exception */
+    }
+    if (result != Py_False) {
+        result2 = 1;
+    }
+
+    Py_DECREF(result);
+    return result2;
 }
 
 
@@ -7009,6 +7049,20 @@ static PyMethodDef DB_methods[] = {
 };
 
 
+/* We need this to support __contains__() */
+static PySequenceMethods DB_sequence = {
+    0, /* sq_length, mapping wins here */
+    0, /* sq_concat */
+    0, /* sq_repeat */
+    0, /* sq_item */
+    0, /* sq_slice */
+    0, /* sq_ass_item */
+    0, /* sq_ass_slice */
+    (objobjproc)DB_contains, /* sq_contains */
+    0, /* sq_inplace_concat */
+    0, /* sq_inplace_repeat */
+};
+
 static PyMappingMethods DB_mapping = {
         DB_length,                   /*mp_length*/
         (binaryfunc)DB_subscript,    /*mp_subscript*/
@@ -7269,7 +7323,7 @@ statichere PyTypeObject DB_Type = {
     0,          /*tp_compare*/
     0,          /*tp_repr*/
     0,          /*tp_as_number*/
-    0,          /*tp_as_sequence*/
+    &DB_sequence,/*tp_as_sequence*/
     &DB_mapping,/*tp_as_mapping*/
     0,          /*tp_hash*/
     0,			/* tp_call */

@@ -132,3 +132,8 @@
 * 20090427: Split base replication and replication manager
   documentation in documents separated of DBENV docs.
 
+* 20090427: "__contains__()" is not transactionally protected. This is
+  a problem. Maybe we should raise an exception to avoid the usage
+  of patterns like "if key in DB", not transactionally protected.
+  Think about this.
+

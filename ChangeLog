@@ -5,6 +5,11 @@
     for base replication is now complete.
   * "DB.has_key()" used to return 0 or 1. Changed to return
     True or False instead. Check your code!.
+  * As requested by several users, implement "DB.__contains__()",
+    to allow constructions like "if key in DB" without
+    iterating over the entire database. But, BEWARE, this
+    test is not protected by transactions!. This is the same
+    problem we already have with "DB.has_key()".
 
 4.7.5:
   * Add support for "DB_EID_INVALID" and "DB_EID_BROADCAST" flags.
