@@ -3305,9 +3305,11 @@ DB_has_key(DBObject* self, PyObject* args, PyObject* kwargs)
     FREE_DBT(key);
 
     if (err == DB_BUFFER_SMALL || err == 0) {
-        return NUMBER_FromLong(1);
+        Py_INCREF(Py_True);
+        return Py_True;
     } else if (err == DB_NOTFOUND || err == DB_KEYEMPTY) {
-        return NUMBER_FromLong(0);
+        Py_INCREF(Py_False);
+        return Py_False;
     }
 
     makeDBError(err);
