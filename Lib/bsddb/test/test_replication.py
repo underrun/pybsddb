@@ -328,6 +328,10 @@ class DBBaseReplication(DBReplicationManager):
             txn.commit()
             break
 
+        if db.version() >= (4,1) :
+            d = self.dbenvMaster.rep_stat(flags=db.DB_STAT_CLEAR);
+            self.assertTrue("master_changes" in d)
+
         txn=self.dbenvMaster.txn_begin()
         self.dbMaster.put("ABC", "123", txn=txn)
         txn.commit()

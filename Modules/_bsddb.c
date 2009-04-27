@@ -5910,6 +5910,134 @@ DBEnv_rep_get_timeout(DBEnvObject* self, PyObject* args)
 }
 #endif
 
+
+#if (DBVER >= 43)
+static PyObject*
+DBEnv_rep_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:rep_stat_print",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_stat_print(self->db_env, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
+
+#if (DBVER >= 41)
+static PyObject*
+DBEnv_rep_stat(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    DB_REP_STAT *statp;
+    PyObject *stats;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:rep_stat",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_stat(self->db_env, &statp, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+
+    stats=PyDict_New();
+    if (stats == NULL) {
+        free(statp);
+        return NULL;
+    }
+
+#define MAKE_ENTRY(name)  _addIntToDict(stats, #name, statp->st_##name)
+#define MAKE_DB_LSN_ENTRY(name) _addDB_lsnToDict(stats , #name, statp->st_##name)
+
+#if (DBVER >= 44)
+    MAKE_ENTRY(bulk_fills);
+    MAKE_ENTRY(bulk_overflows);
+    MAKE_ENTRY(bulk_records);
+    MAKE_ENTRY(bulk_transfers);
+    MAKE_ENTRY(client_rerequests);
+    MAKE_ENTRY(client_svc_miss);
+    MAKE_ENTRY(client_svc_req);
+#endif
+    MAKE_ENTRY(dupmasters);
+#if (DBVER >= 43)
+    MAKE_ENTRY(egen);
+    MAKE_ENTRY(election_nvotes);
+    MAKE_ENTRY(startup_complete);
+    MAKE_ENTRY(pg_duplicated);
+    MAKE_ENTRY(pg_records);
+    MAKE_ENTRY(pg_requested);
+    MAKE_ENTRY(next_pg);
+    MAKE_ENTRY(waiting_pg);
+#endif
+    MAKE_ENTRY(election_cur_winner);
+    MAKE_ENTRY(election_gen);
+    MAKE_DB_LSN_ENTRY(election_lsn);
+    MAKE_ENTRY(election_nsites);
+    MAKE_ENTRY(election_priority);
+#if (DBVER >= 44)
+    MAKE_ENTRY(election_sec);
+    MAKE_ENTRY(election_usec);
+#endif
+    MAKE_ENTRY(election_status);
+    MAKE_ENTRY(election_tiebreaker);
+    MAKE_ENTRY(election_votes);
+    MAKE_ENTRY(elections);
+    MAKE_ENTRY(elections_won);
+    MAKE_ENTRY(env_id);
+    MAKE_ENTRY(env_priority);
+    MAKE_ENTRY(gen);
+    MAKE_ENTRY(log_duplicated);
+    MAKE_ENTRY(log_queued);
+    MAKE_ENTRY(log_queued_max);
+    MAKE_ENTRY(log_queued_total);
+    MAKE_ENTRY(log_records);
+    MAKE_ENTRY(log_requested);
+    MAKE_ENTRY(master);
+    MAKE_ENTRY(master_changes);
+#if (DBVER >= 47)
+    MAKE_ENTRY(max_lease_sec);
+    MAKE_ENTRY(max_lease_usec);
+    MAKE_DB_LSN_ENTRY(max_perm_lsn);
+#endif
+    MAKE_ENTRY(msgs_badgen);
+    MAKE_ENTRY(msgs_processed);
+    MAKE_ENTRY(msgs_recover);
+    MAKE_ENTRY(msgs_send_failures);
+    MAKE_ENTRY(msgs_sent);
+    MAKE_ENTRY(newsites);
+    MAKE_DB_LSN_ENTRY(next_lsn);
+    MAKE_ENTRY(nsites);
+    MAKE_ENTRY(nthrottles);
+    MAKE_ENTRY(outdated);
+#if (DBVER >= 46)
+    MAKE_ENTRY(startsync_delayed);
+#endif
+    MAKE_ENTRY(status);
+    MAKE_ENTRY(txns_applied);
+    MAKE_DB_LSN_ENTRY(waiting_lsn);
+
+#undef MAKE_DB_LSN_ENTRY
+#undef MAKE_ENTRY
+
+    free(statp);
+    return stats;
+}
+#endif
+
 /* --------------------------------------------------------------------- */
 /* REPLICATION METHODS: Replication Manager */
 
@@ -6977,6 +7105,15 @@ static PyMethodDef DBEnv_methods[] = {
     {"rep_set_timeout", (PyCFunction)DBEnv_rep_set_timeout, METH_VARARGS},
     {"rep_get_timeout", (PyCFunction)DBEnv_rep_get_timeout, METH_VARARGS},
 #endif
+#if (DBVER >= 41)
+    {"rep_stat", (PyCFunction)DBEnv_rep_stat,
+        METH_VARARGS|METH_KEYWORDS},
+#endif
+#if (DBVER >= 43)
+    {"rep_stat_print", (PyCFunction)DBEnv_rep_stat_print,
+        METH_VARARGS|METH_KEYWORDS},
+#endif
+
 #if (DBVER >= 45)
     {"repmgr_start", (PyCFunction)DBEnv_repmgr_start,
         METH_VARARGS|METH_KEYWORDS},
