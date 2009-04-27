@@ -1,5 +1,8 @@
 4.7.6:
   * Add support for "DB_ENV->stat" and "DB_ENV->stat_print".
+  * Add support for "DB_ENV->rep_set_clockskew()" and
+    "DB_ENV->rep_get_clockskew()". The binding support
+    for base replication is now complete.
 
 4.7.5:
   * Add support for "DB_EID_INVALID" and "DB_EID_BROADCAST" flags.

@@ -422,6 +422,14 @@ class DBBaseReplication(DBReplicationManager):
 
             self.assertTrue(self.confirmed_master)
 
+    if db.version() >= (4,7) :
+        def test04_test_clockskew(self) :
+            fast, slow = 1234, 1230
+            self.dbenvMaster.rep_set_clockskew(fast, slow)
+            self.assertEqual((fast, slow),
+                    self.dbenvMaster.rep_get_clockskew())
+            self.basic_rep_threading()
+
 #----------------------------------------------------------------------
 
 def test_suite():

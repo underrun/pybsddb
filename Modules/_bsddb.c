@@ -5911,6 +5911,49 @@ DBEnv_rep_get_timeout(DBEnvObject* self, PyObject* args)
 #endif
 
 
+#if (DBVER >= 47)
+static PyObject*
+DBEnv_rep_set_clockskew(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    unsigned int fast, slow;
+
+#if (PY_VERSION_HEX >= 0x02040000)
+    if (!PyArg_ParseTuple(args,"II:rep_set_clockskew", &fast, &slow))
+        return NULL;
+#else
+    if (!PyArg_ParseTuple(args,"ii:rep_set_clockskew", &fast, &slow))
+        return NULL;
+#endif
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_set_clockskew(self->db_env, fast, slow);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_rep_get_clockskew(DBEnvObject* self)
+{
+    int err;
+    unsigned int fast, slow;
+
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->rep_get_clockskew(self->db_env, &fast, &slow);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+#if (PY_VERSION_HEX >= 0x02040000)
+    return Py_BuildValue("(II)", fast, slow);
+#else
+    return Py_BuildValue("(ii)", fast, slow);
+#endif
+}
+#endif
+
 #if (DBVER >= 43)
 static PyObject*
 DBEnv_rep_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
@@ -7104,6 +7147,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"rep_get_priority", (PyCFunction)DBEnv_rep_get_priority, METH_NOARGS},
     {"rep_set_timeout", (PyCFunction)DBEnv_rep_set_timeout, METH_VARARGS},
     {"rep_get_timeout", (PyCFunction)DBEnv_rep_get_timeout, METH_VARARGS},
+#endif
+#if (DBVER >= 47)
+    {"rep_set_clockskew", (PyCFunction)DBEnv_rep_set_clockskew, METH_VARARGS},
+    {"rep_get_clockskew", (PyCFunction)DBEnv_rep_get_clockskew, METH_VARARGS},
 #endif
 #if (DBVER >= 41)
     {"rep_stat", (PyCFunction)DBEnv_rep_stat,
