@@ -10,6 +10,10 @@
     iterating over the entire database. But, BEWARE, this
     test is not protected by transactions!. This is the same
     problem we already have with "DB.has_key()".
+  * Change "DBSequence.init_value()" to "DBSequence.initial_value()",
+    for consistence with Berkeley DB real method name. This could
+    require minimal changes in your code. The documentation was
+    right. Noted by "anan".
 
 4.7.5:
   * Add support for "DB_EID_INVALID" and "DB_EID_BROADCAST" flags.

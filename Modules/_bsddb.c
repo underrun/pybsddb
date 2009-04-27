@@ -6735,12 +6735,12 @@ DBSequence_get_key(DBSequenceObject* self)
 }
 
 static PyObject*
-DBSequence_init_value(DBSequenceObject* self, PyObject* args)
+DBSequence_initial_value(DBSequenceObject* self, PyObject* args)
 {
     int err;
     PY_LONG_LONG value;
     db_seq_t value2;
-    if (!PyArg_ParseTuple(args,"L:init_value", &value))
+    if (!PyArg_ParseTuple(args,"L:initial_value", &value))
         return NULL;
     CHECK_SEQUENCE_NOT_CLOSED(self)
 
@@ -7263,7 +7263,7 @@ static PyMethodDef DBSequence_methods[] = {
     {"get",             (PyCFunction)DBSequence_get,            METH_VARARGS|METH_KEYWORDS},
     {"get_dbp",         (PyCFunction)DBSequence_get_dbp,        METH_NOARGS},
     {"get_key",         (PyCFunction)DBSequence_get_key,        METH_NOARGS},
-    {"init_value",      (PyCFunction)DBSequence_init_value,     METH_VARARGS},
+    {"initial_value",   (PyCFunction)DBSequence_initial_value,  METH_VARARGS},
     {"open",            (PyCFunction)DBSequence_open,           METH_VARARGS|METH_KEYWORDS},
     {"remove",          (PyCFunction)DBSequence_remove,         METH_VARARGS|METH_KEYWORDS},
     {"set_cachesize",   (PyCFunction)DBSequence_set_cachesize,  METH_VARARGS},
