@@ -277,6 +277,21 @@ class BasicTestCase(unittest.TestCase):
             pprint(values[:10])
 
 
+    #----------------------------------------
+
+    def test02b_SequenceMethods(self):
+        d = self.d
+
+        for key in ['0002', '0101', '0401', '0701', '0998']:
+            data = d[key]
+            self.assertEqual(data, self.makeData(key))
+            if verbose:
+                print data
+
+        self.assertTrue(hasattr(d, "__contains__"))
+        self.assertTrue("0401" in d)
+        self.assertFalse("1234" in d)
+
 
     #----------------------------------------
 
