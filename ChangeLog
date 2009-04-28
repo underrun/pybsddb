@@ -1,4 +1,5 @@
 4.7.6:
+  * Compatibility with Python 3.0.1.
   * Add support for "DB_ENV->stat()" and "DB_ENV->stat_print()".
   * Add support for "DB_ENV->rep_set_clockskew()" and
     "DB_ENV->rep_get_clockskew()". The binding support
@@ -22,7 +23,7 @@
     "DB_PRIORITY_DEFAULT", "DB_PRIORITY_HIGH", 
     "DB_PRIORITY_VERY_HIGH", and "DB_PRIORITY_UNCHANGED" flags.
   * Add support for "DBCursor->set_priority()" and
-    "DBCursor->get_priority". The binding support for cursors
+    "DBCursor->get_priority()". The binding support for cursors
     is now complete.
 
 4.7.5:
