@@ -181,6 +181,15 @@ C API.
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/dbc_get.html#DB_NEXT_NODUP>`__
 
+.. function:: prev_dup(flags=0, dlen=-1, doff=-1)
+
+   If the previous key/data pair of the database is a duplicate data
+   record for the current key/data pair, the cursor is moved to the
+   previous key/data pair of the database, and that pair is returned. 
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/dbc_get.html#DB_PREV_DUP>`__
+
 .. function:: prev_nodup(flags=0, dlen=-1, doff=-1)
 
    The cursor is moved to the previous non-duplicate key/data pair of
@@ -223,4 +232,18 @@ C API.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/dbc_get.html#DB_GET_BOTH>`__
+
+.. function:: set_priority(priority)
+
+   Set the cache priority for pages referenced by the DBC handle.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/dbc_set_priority.html>`__
+
+.. function:: get_priority()
+
+   Returns the cache priority for pages referenced by the DBC handle.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/dbc_set_priority.html>`__
 

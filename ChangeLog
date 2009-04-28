@@ -14,6 +14,16 @@
     for consistence with Berkeley DB real method name. This could
     require minimal changes in your code. The documentation was
     right. Noted by "anan".
+  * Implements "DBCursor->prev_dup()".
+  * Add support for "DB_GET_BOTH_RANGE", "DB_PREV_DUP",
+    and "DB_IGNORE_LEASE" flags.
+  * Export exception "DBRepLeaseExpiredError".
+  * Add support for "DB_PRIORITY_VERY_LOW", "DB_PRIORITY_LOW",
+    "DB_PRIORITY_DEFAULT", "DB_PRIORITY_HIGH", 
+    "DB_PRIORITY_VERY_HIGH", and "DB_PRIORITY_UNCHANGED" flags.
+  * Add support for "DBCursor->set_priority()" and
+    "DBCursor->get_priority". The binding support for cursors
+    is now complete.
 
 4.7.5:
   * Add support for "DB_EID_INVALID" and "DB_EID_BROADCAST" flags.

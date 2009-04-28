@@ -137,3 +137,5 @@
   of patterns like "if key in DB", not transactionally protected.
   Think about this.
 
+* 20090428: Support DB_MULTIPLE and DB_MULTIPLE_KEY.
+

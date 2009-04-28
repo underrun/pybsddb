@@ -659,6 +659,13 @@ class bsdTableDB :
             a = atuple[1]
             b = btuple[1]
             if type(a) is type(b):
+
+                # Needed for python 3. "cmp" vanished in 3.0.1
+                def cmp(a, b) :
+                    if a==b : return 0
+                    if a<b : return -1
+                    return 1
+
                 if isinstance(a, PrefixCond) and isinstance(b, PrefixCond):
                     # longest prefix first
                     return cmp(len(b.prefix), len(a.prefix))

@@ -12,6 +12,12 @@ from .test_all import db, dbshelve, test_support, \
         get_new_environment_path, get_new_database_path
 
 
+# Needed for python 3. "cmp" vanished in 3.0.1
+def cmp(a, b) :
+    if a==b : return 0
+    if a<b : return -1
+    return 1
+
 lexical_cmp = cmp
 
 def lowercase_cmp(left, right):

@@ -43,6 +43,13 @@ class BasicTestCase(unittest.TestCase):
 
     _numKeys      = 1002    # PRIVATE.  NOTE: must be an even value
 
+    import sys
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+        def assertFalse(self, expr, msg=None):
+            self.failIf(expr,msg=msg)
+
     def setUp(self):
         if self.useEnv:
             self.homeDir=get_new_environment_path()
@@ -524,6 +531,15 @@ class BasicTestCase(unittest.TestCase):
         old = self.d.set_get_returns_none(2)
         self.assertEqual(old, 1)
         self.test03_SimpleCursorStuff(get_raises_error=0, set_raises_error=0)
+
+    if db.version() >= (4, 6):
+        def test03d_SimpleCursorPriority(self) :
+            c = self.d.cursor()
+            c.set_priority(db.DB_PRIORITY_VERY_LOW)  # Positional
+            self.assertEqual(db.DB_PRIORITY_VERY_LOW, c.get_priority())
+            c.set_priority(priority=db.DB_PRIORITY_HIGH)  # Keyword
+            self.assertEqual(db.DB_PRIORITY_HIGH, c.get_priority())
+            c.close()
 
     #----------------------------------------
 

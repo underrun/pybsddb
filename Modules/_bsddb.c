@@ -212,6 +212,10 @@ static PyObject* DBRepHandleDeadError;  /* DB_REP_HANDLE_DEAD */
 static PyObject* DBRepLockoutError;     /* DB_REP_LOCKOUT */
 #endif
 
+#if (DBVER >= 46)
+static PyObject* DBRepLeaseExpiredError; /* DB_REP_LEASE_EXPIRED */
+#endif
+
 static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 
 #if (DBVER < 43)
@@ -726,6 +730,10 @@ static int makeDBError(int err)
 #endif
 #if (DBVER >= 44)
         case DB_REP_LOCKOUT : errObj = DBRepLockoutError; break;
+#endif
+
+#if (DBVER >= 46)
+        case DB_REP_LEASE_EXPIRED : errObj = DBRepLeaseExpiredError; break;
 #endif
 
         case DB_REP_UNAVAIL : errObj = DBRepUnavailError; break;
@@ -4186,6 +4194,13 @@ DBC_next_nodup(DBCursorObject* self, PyObject* args, PyObject *kwargs)
     return _DBCursor_get(self,DB_NEXT_NODUP,args,kwargs,"|iii:next_nodup");
 }
 
+#if (DBVER >= 46)
+static PyObject*
+DBC_prev_dup(DBCursorObject* self, PyObject* args, PyObject *kwargs)
+{
+    return _DBCursor_get(self,DB_PREV_DUP,args,kwargs,"|iii:prev_dup");
+}
+#endif
 
 static PyObject*
 DBC_prev_nodup(DBCursorObject* self, PyObject* args, PyObject *kwargs)
@@ -4226,6 +4241,44 @@ DBC_join_item(DBCursorObject* self, PyObject* args)
 
     return retval;
 }
+
+
+#if (DBVER >= 46)
+static PyObject*
+DBC_set_priority(DBCursorObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err, priority;
+    static char* kwnames[] = { "priority", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:set_priority", kwnames,
+				     &priority))
+        return NULL;
+
+    CHECK_CURSOR_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->dbc->set_priority(self->dbc, priority);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+
+static PyObject*
+DBC_get_priority(DBCursorObject* self)
+{
+    int err;
+    DB_CACHE_PRIORITY priority;
+
+    CHECK_CURSOR_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->dbc->get_priority(self->dbc, &priority);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(priority);
+}
+#endif
 
 
 
@@ -7093,8 +7146,17 @@ static PyMethodDef DBCursor_methods[] = {
     {"consume",         (PyCFunction)DBC_consume,       METH_VARARGS|METH_KEYWORDS},
     {"next_dup",        (PyCFunction)DBC_next_dup,      METH_VARARGS|METH_KEYWORDS},
     {"next_nodup",      (PyCFunction)DBC_next_nodup,    METH_VARARGS|METH_KEYWORDS},
+#if (DBVER >= 46)
+    {"prev_dup",        (PyCFunction)DBC_prev_dup,
+        METH_VARARGS|METH_KEYWORDS},
+#endif
     {"prev_nodup",      (PyCFunction)DBC_prev_nodup,    METH_VARARGS|METH_KEYWORDS},
     {"join_item",       (PyCFunction)DBC_join_item,     METH_VARARGS},
+#if (DBVER >= 46)
+    {"set_priority",    (PyCFunction)DBC_set_priority,
+        METH_VARARGS|METH_KEYWORDS},
+    {"get_priority",    (PyCFunction)DBC_get_priority, METH_NOARGS},
+#endif
     {NULL,      NULL}       /* sentinel */
 };
 
@@ -7910,6 +7972,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_FIRST);
     ADD_INT(d, DB_FLUSH);
     ADD_INT(d, DB_GET_BOTH);
+    ADD_INT(d, DB_GET_BOTH_RANGE);
     ADD_INT(d, DB_GET_RECNO);
     ADD_INT(d, DB_JOIN_ITEM);
     ADD_INT(d, DB_KEYFIRST);
@@ -7924,6 +7987,9 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_POSITION);
     ADD_INT(d, DB_PREV);
     ADD_INT(d, DB_PREV_NODUP);
+#if (DBVER >= 46)
+    ADD_INT(d, DB_PREV_DUP);
+#endif
 #if (DBVER < 45)
     ADD_INT(d, DB_RECORDCOUNT);
 #endif
@@ -8077,6 +8143,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
 #if (DBVER >= 46)
     ADD_INT(d, DB_REP_LEASE_EXPIRED);
+    ADD_INT(d, DB_IGNORE_LEASE);
 #endif
 
 #if (DBVER >= 47)
@@ -8133,6 +8200,17 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #else
     /* allow Berkeley DB 4.1 aware apps to run on older versions */
     _addIntToDict(d, "DB_AUTO_COMMIT", 0);
+#endif
+
+#if (DBVER >= 41)
+    ADD_INT(d, DB_PRIORITY_VERY_LOW);
+    ADD_INT(d, DB_PRIORITY_LOW);
+    ADD_INT(d, DB_PRIORITY_DEFAULT);
+    ADD_INT(d, DB_PRIORITY_HIGH);
+    ADD_INT(d, DB_PRIORITY_VERY_HIGH);
+#endif
+#if (DBVER >= 46)
+    ADD_INT(d, DB_PRIORITY_UNCHANGED);
 #endif
 
     ADD_INT(d, EINVAL);
@@ -8232,6 +8310,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #endif
 
     MAKE_EX(DBRepUnavailError);
+
+#if (DBVER >= 46)
+    MAKE_EX(DBRepLeaseExpiredError);
+#endif
 
 #undef MAKE_EX
 
