@@ -247,4 +247,3 @@ C API.
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/dbc_get.html#DB_GET_BOTH>`__
 
-   2
