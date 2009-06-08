@@ -4801,7 +4801,11 @@ DBEnv_txn_recover(DBEnvObject* self)
     DBTxnObject *txn;
 #define PREPLIST_LEN 16
     DB_PREPLIST preplist[PREPLIST_LEN];
+#if (DBVER < 48)
     long retp;
+#else
+    u_int32_t retp;
+#endif
 
     CHECK_ENV_NOT_CLOSED(self);
 
