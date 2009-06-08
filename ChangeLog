@@ -1,8 +1,9 @@
 4.8.0:
   * Support for Berkeley DB 4.8.
   * The "DB_XIDDATASIZE" constant has been renamed
-    "DB_GID_SIZE". Update your code!.
-  * "DB_XA_CREATE" is removed.
+    to "DB_GID_SIZE". Update your code!.
+  * "DB_XA_CREATE" is removed. BDB 4.8 has eliminated
+     XA Resource Manager support.
 
 4.7.6:
   * Compatibility with Python 3.0.1.
