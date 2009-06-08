@@ -222,6 +222,10 @@ static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 #define	DB_BUFFER_SMALL		ENOMEM
 #endif
 
+#if (DBVER < 48)
+#define DB_GID_SIZE DB_XIDDATASIZE
+#endif
+
 
 /* --------------------------------------------------------------------- */
 /* Structure definitions */
@@ -4818,7 +4822,7 @@ DBEnv_txn_recover(DBEnvObject* self)
         flags=DB_NEXT;  /* Prepare for next loop pass */
         for (i=0; i<retp; i++) {
             gid=PyBytes_FromStringAndSize((char *)(preplist[i].gid),
-                                DB_XIDDATASIZE);
+                                DB_GID_SIZE);
             if (!gid) {
                 Py_DECREF(list);
                 return NULL;
@@ -6498,9 +6502,9 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
     if (!PyArg_ParseTuple(args, "s#:prepare", &gid, &gid_size))
         return NULL;
 
-    if (gid_size != DB_XIDDATASIZE) {
+    if (gid_size != DB_GID_SIZE) {
         PyErr_SetString(PyExc_TypeError,
-                        "gid must be DB_XIDDATASIZE bytes long");
+                        "gid must be DB_GID_SIZE bytes long");
         return NULL;
     }
 
@@ -7815,7 +7819,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     /* allow apps to be written using DB_RPCCLIENT on older Berkeley DB */
     _addIntToDict(d, "DB_RPCCLIENT", DB_CLIENT);
 #endif
+
+#if (DBVER < 48)
     ADD_INT(d, DB_XA_CREATE);
+#endif
 
     ADD_INT(d, DB_CREATE);
     ADD_INT(d, DB_NOMMAP);
@@ -7832,7 +7839,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_INIT_TXN);
     ADD_INT(d, DB_JOINENV);
 
-    ADD_INT(d, DB_XIDDATASIZE);
+    ADD_INT(d, DB_GID_SIZE);
 
     ADD_INT(d, DB_RECOVER);
     ADD_INT(d, DB_RECOVER_FATAL);
