@@ -6410,13 +6410,8 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
         return NULL;
 
     if (gid_size != DB_GID_SIZE) {
-#if (DBVER >= 48)
         PyErr_SetString(PyExc_TypeError,
                         "gid must be DB_GID_SIZE bytes long");
-#else
-        PyErr_SetString(PyExc_TypeError,
-                        "gid must be DB_XIDDATASIZE bytes long");
-#endif
         return NULL;
     }
 
