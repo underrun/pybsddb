@@ -40,7 +40,7 @@ class DBTxn_distributed(unittest.TestCase):
         else :
             self.db.set_re_len(db.DB_GID_SIZE)
         if must_open_db :
-            if db.version() > (4,1) :
+            if db.version() <= (4,2) :
                 txn=self.dbenv.txn_begin()
                 self.db.open(self.filename,
                         db.DB_QUEUE, db.DB_CREATE | db.DB_THREAD, 0666,

@@ -33,7 +33,7 @@
 #----------------------------------------------------------------------
 
 
-"""Support for Berkeley DB 4.0 through 4.7 with a simple interface.
+"""Support for Berkeley DB 4.1 through 4.8 with a simple interface.
 
 For the full featured object oriented interface use the bsddb.db module
 instead.  It mirrors the Oracle Berkeley DB C API.

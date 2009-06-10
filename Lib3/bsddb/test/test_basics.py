@@ -670,21 +670,20 @@ class BasicWithEnvTestCase(BasicTestCase):
 
     #----------------------------------------
 
-    if db.version() >= (4,1):
-        def test09_EnvRemoveAndRename(self):
-            if not self.env:
-                return
+    def test09_EnvRemoveAndRename(self):
+        if not self.env:
+            return
 
-            if verbose:
-                print('\n', '-=' * 30)
-                print("Running %s.test09_EnvRemoveAndRename..." % self.__class__.__name__)
+        if verbose:
+            print('\n', '-=' * 30)
+            print("Running %s.test09_EnvRemoveAndRename..." % self.__class__.__name__)
 
-            # can't rename or remove an open DB
-            self.d.close()
+        # can't rename or remove an open DB
+        self.d.close()
 
-            newname = self.filename + '.renamed'
-            self.env.dbrename(self.filename, None, newname)
-            self.env.dbremove(newname)
+        newname = self.filename + '.renamed'
+        self.env.dbrename(self.filename, None, newname)
+        self.env.dbremove(newname)
 
     #----------------------------------------
 
@@ -852,12 +851,11 @@ class BasicTransactionTestCase(BasicTestCase):
     #----------------------------------------
 
 
-        if db.version() >= (4, 0):
-            def test_txn_set_timeout(self) :
-                txn=self.env.txn_begin()
-                txn.set_timeout(1234567, db.DB_SET_LOCK_TIMEOUT)
-                txn.set_timeout(2345678, flags=db.DB_SET_TXN_TIMEOUT)
-                txn.abort()
+        def test_txn_set_timeout(self) :
+            txn=self.env.txn_begin()
+            txn.set_timeout(1234567, db.DB_SET_LOCK_TIMEOUT)
+            txn.set_timeout(2345678, flags=db.DB_SET_TXN_TIMEOUT)
+            txn.abort()
 
     #----------------------------------------
 

@@ -148,12 +148,8 @@ class AssociateTestCase(unittest.TestCase):
         self.secDB = None
         self.primary = db.DB(self.env)
         self.primary.set_get_returns_none(2)
-        if db.version() >= (4, 1):
-            self.primary.open(self.filename, "primary", self.dbtype,
-                          db.DB_CREATE | db.DB_THREAD | self.dbFlags, txn=txn)
-        else:
-            self.primary.open(self.filename, "primary", self.dbtype,
-                          db.DB_CREATE | db.DB_THREAD | self.dbFlags)
+        self.primary.open(self.filename, "primary", self.dbtype,
+                      db.DB_CREATE | db.DB_THREAD | self.dbFlags, txn=txn)
 
     def closeDB(self):
         if self.cur:
@@ -350,10 +346,7 @@ class AssociateBTreeTxnTestCase(AssociateBTreeTestCase):
             self.secDB.set_get_returns_none(2)
             self.secDB.open(self.filename, "secondary", db.DB_BTREE,
                        db.DB_CREATE | db.DB_THREAD, txn=txn)
-            if db.version() >= (4,1):
-                self.getDB().associate(self.secDB, self.getGenre, txn=txn)
-            else:
-                self.getDB().associate(self.secDB, self.getGenre)
+            self.getDB().associate(self.secDB, self.getGenre, txn=txn)
 
             self.addDataToDB(self.getDB(), txn=txn)
         except:
@@ -454,8 +447,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(AssociateBTreeTestCase))
     suite.addTest(unittest.makeSuite(AssociateRecnoTestCase))
 
-    if db.version() >= (4, 1):
-        suite.addTest(unittest.makeSuite(AssociateBTreeTxnTestCase))
+    suite.addTest(unittest.makeSuite(AssociateBTreeTxnTestCase))
 
     suite.addTest(unittest.makeSuite(ShelveAssociateHashTestCase))
     suite.addTest(unittest.makeSuite(ShelveAssociateBTreeTestCase))

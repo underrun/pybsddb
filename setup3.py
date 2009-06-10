@@ -274,7 +274,7 @@ elif os.name == 'nt':
             continue
         fullverstr = match.group(1)
         ver = fullverstr[0] + fullverstr[2]   # 31 == 3.1, 32 == 3.2, etc.
-    assert ver in ('40', '41', '42', '43', '44', '45', '46', '47', '48'), (
+    assert ver in ('41', '42', '43', '44', '45', '46', '47', '48'), (
         "pybsddb untested with this Berkeley DB version", ver)
     print('Detected Berkeley DB version', ver, 'from db.h')
 

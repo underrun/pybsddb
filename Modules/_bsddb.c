@@ -169,9 +169,6 @@ static PyInterpreterState* _db_interpreterState = NULL;
 
 #endif
 
-/* Should DB_INCOMPLETE be turned into a warning or an exception? */
-#define INCOMPLETE_IS_WARNING 1
-
 /* --------------------------------------------------------------------- */
 /* Exceptions */
 
@@ -190,10 +187,6 @@ static PyObject* DBNoServerHomeError;   /* DB_NOSERVER_HOME */
 static PyObject* DBNoServerIDError;     /* DB_NOSERVER_ID */
 static PyObject* DBPageNotFoundError;   /* DB_PAGE_NOTFOUND */
 static PyObject* DBSecondaryBadError;   /* DB_SECONDARY_BAD */
-
-#if !INCOMPLETE_IS_WARNING
-static PyObject* DBIncompleteError;     /* DB_INCOMPLETE */
-#endif
 
 static PyObject* DBInvalidArgError;     /* EINVAL */
 static PyObject* DBAccessError;         /* EACCES */
@@ -680,26 +673,6 @@ static int makeDBError(int err)
     switch (err) {
         case 0:                     /* successful, no error */
             return 0;
-
-#if (DBVER < 41)
-        case DB_INCOMPLETE:
-#if INCOMPLETE_IS_WARNING
-            bytes_left = our_strlcpy(errTxt, db_strerror(err), sizeof(errTxt));
-            /* Ensure that bytes_left never goes negative */
-            if (_db_errmsg[0] && bytes_left < (sizeof(errTxt) - 4)) {
-                bytes_left = sizeof(errTxt) - bytes_left - 4 - 1;
-		assert(bytes_left >= 0);
-                strcat(errTxt, " -- ");
-                strncat(errTxt, _db_errmsg, bytes_left);
-            }
-            _db_errmsg[0] = 0;
-            exceptionRaised = PyErr_Warn(PyExc_RuntimeWarning, errTxt);
-
-#else  /* do an exception instead */
-        errObj = DBIncompleteError;
-#endif
-        break;
-#endif /* DBVER < 41 */
 
         case DB_KEYEMPTY:           errObj = DBKeyEmptyError;       break;
         case DB_KEYEXIST:           errObj = DBKeyExistError;       break;
@@ -1518,29 +1491,18 @@ DB_associate(DBObject* self, PyObject* args, PyObject* kwargs)
     int err, flags=0;
     DBObject* secondaryDB;
     PyObject* callback;
-#if (DBVER >= 41)
     PyObject *txnobj = NULL;
     DB_TXN *txn = NULL;
     static char* kwnames[] = {"secondaryDB", "callback", "flags", "txn",
                                     NULL};
-#else
-    static char* kwnames[] = {"secondaryDB", "callback", "flags", NULL};
-#endif
 
-#if (DBVER >= 41)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO|iO:associate", kwnames,
                                      &secondaryDB, &callback, &flags,
                                      &txnobj)) {
-#else
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO|i:associate", kwnames,
-                                     &secondaryDB, &callback, &flags)) {
-#endif
         return NULL;
     }
 
-#if (DBVER >= 41)
     if (!checkTxnObj(txnobj, &txn)) return NULL;
-#endif
 
     CHECK_DB_NOT_CLOSED(self);
     if (!DBObject_Check(secondaryDB)) {
@@ -1576,18 +1538,11 @@ DB_associate(DBObject* self, PyObject* args, PyObject* kwargs)
     PyEval_InitThreads();
 #endif
     MYDB_BEGIN_ALLOW_THREADS;
-#if (DBVER >= 41)
     err = self->db->associate(self->db,
 	                      txn,
                               secondaryDB->db,
                               _db_associateCallback,
                               flags);
-#else
-    err = self->db->associate(self->db,
-                              secondaryDB->db,
-                              _db_associateCallback,
-                              flags);
-#endif
     MYDB_END_ALLOW_THREADS;
 
     if (err) {
@@ -2300,7 +2255,6 @@ DB_open(DBObject* self, PyObject* args, PyObject* kwargs)
     int err, type = DB_UNKNOWN, flags=0, mode=0660;
     char* filename = NULL;
     char* dbname = NULL;
-#if (DBVER >= 41)
     PyObject *txnobj = NULL;
     DB_TXN *txn = NULL;
     /* with dbname */
@@ -2309,45 +2263,22 @@ DB_open(DBObject* self, PyObject* args, PyObject* kwargs)
     /* without dbname */
     static char* kwnames_basic[] = {
         "filename", "dbtype", "flags", "mode", "txn", NULL};
-#else
-    /* with dbname */
-    static char* kwnames[] = {
-        "filename", "dbname", "dbtype", "flags", "mode", NULL};
-    /* without dbname */
-    static char* kwnames_basic[] = {
-        "filename", "dbtype", "flags", "mode", NULL};
-#endif
 
-#if (DBVER >= 41)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "z|ziiiO:open", kwnames,
 				     &filename, &dbname, &type, &flags, &mode,
                                      &txnobj))
-#else
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "z|ziii:open", kwnames,
-				     &filename, &dbname, &type, &flags,
-                                     &mode))
-#endif
     {
 	PyErr_Clear();
 	type = DB_UNKNOWN; flags = 0; mode = 0660;
 	filename = NULL; dbname = NULL;
-#if (DBVER >= 41)
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs,"z|iiiO:open",
                                          kwnames_basic,
 					 &filename, &type, &flags, &mode,
                                          &txnobj))
 	    return NULL;
-#else
-	if (!PyArg_ParseTupleAndKeywords(args, kwargs,"z|iii:open",
-                                         kwnames_basic,
-					 &filename, &type, &flags, &mode))
-	    return NULL;
-#endif
     }
 
-#if (DBVER >= 41)
     if (!checkTxnObj(txnobj, &txn)) return NULL;
-#endif
 
     if (NULL == self->db) {
         PyObject *t = Py_BuildValue("(is)", 0,
@@ -2359,24 +2290,17 @@ DB_open(DBObject* self, PyObject* args, PyObject* kwargs)
         return NULL;
     }
 
-#if (DBVER >= 41)
     if (txn) {  /* Can't use 'txnobj' because could be 'txnobj==Py_None' */
         INSERT_IN_DOUBLE_LINKED_LIST_TXN(((DBTxnObject *)txnobj)->children_dbs,self);
         self->txn=(DBTxnObject *)txnobj;
     } else {
         self->txn=NULL;
     }
-#else
-    self->txn=NULL;
-#endif
 
     MYDB_BEGIN_ALLOW_THREADS;
-#if (DBVER >= 41)
     err = self->db->open(self->db, txn, filename, dbname, type, flags, mode);
-#else
-    err = self->db->open(self->db, filename, dbname, type, flags, mode);
-#endif
     MYDB_END_ALLOW_THREADS;
+
     if (makeDBError(err)) {
         PyObject *dummy;
 
@@ -2916,9 +2840,6 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_HASH_ENTRY(pagecnt);
 #endif
         MAKE_HASH_ENTRY(pagesize);
-#if (DBVER < 41)
-        MAKE_HASH_ENTRY(nelem);
-#endif
         MAKE_HASH_ENTRY(ffactor);
         MAKE_HASH_ENTRY(buckets);
         MAKE_HASH_ENTRY(free);
@@ -2965,9 +2886,7 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
         MAKE_QUEUE_ENTRY(nkeys);
         MAKE_QUEUE_ENTRY(ndata);
         MAKE_QUEUE_ENTRY(pagesize);
-#if (DBVER >= 41)
         MAKE_QUEUE_ENTRY(extentsize);
-#endif
         MAKE_QUEUE_ENTRY(pages);
         MAKE_QUEUE_ENTRY(re_len);
         MAKE_QUEUE_ENTRY(re_pad);
@@ -3116,7 +3035,6 @@ DB_set_get_returns_none(DBObject* self, PyObject* args)
     return NUMBER_FromLong(oldValue);
 }
 
-#if (DBVER >= 41)
 static PyObject*
 DB_set_encrypt(DBObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -3137,7 +3055,6 @@ DB_set_encrypt(DBObject* self, PyObject* args, PyObject* kwargs)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
-#endif /* DBVER >= 41 */
 
 
 /*-------------------------------------------------------------- */
@@ -4368,7 +4285,6 @@ DBEnv_remove(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 41)
 static PyObject*
 DBEnv_dbremove(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -4447,7 +4363,6 @@ DBEnv_set_encrypt(DBEnvObject* self, PyObject* args, PyObject* kwargs)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
-#endif /* DBVER >= 41 */
 
 
 #if (DBVER >= 42)
@@ -5140,9 +5055,6 @@ DBEnv_log_stat(DBEnvObject* self, PyObject* args)
     MAKE_ENTRY(lg_size);
     MAKE_ENTRY(record);
 #endif
-#if (DBVER < 41)
-    MAKE_ENTRY(lg_max);
-#endif
     MAKE_ENTRY(w_mbytes);
     MAKE_ENTRY(w_bytes);
     MAKE_ENTRY(wc_mbytes);
@@ -5195,13 +5107,8 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
 
 #define MAKE_ENTRY(name)  _addIntToDict(d, #name, sp->st_##name)
 
-#if (DBVER < 41)
-    MAKE_ENTRY(lastid);
-#endif
-#if (DBVER >=41)
     MAKE_ENTRY(id);
     MAKE_ENTRY(cur_maxid);
-#endif
     MAKE_ENTRY(nmodes);
     MAKE_ENTRY(maxlocks);
     MAKE_ENTRY(maxlockers);
@@ -5226,10 +5133,8 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     MAKE_ENTRY(lock_wait);
 #endif
     MAKE_ENTRY(ndeadlocks);
-#if (DBVER >= 41)
     MAKE_ENTRY(locktimeout);
     MAKE_ENTRY(txntimeout);
-#endif
     MAKE_ENTRY(nlocktimeouts);
     MAKE_ENTRY(ntxntimeouts);
 #if (DBVER >= 46)
@@ -6079,7 +5984,6 @@ DBEnv_rep_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
 }
 #endif
 
-#if (DBVER >= 41)
 static PyObject*
 DBEnv_rep_stat(DBEnvObject* self, PyObject* args, PyObject *kwargs)
 {
@@ -6182,7 +6086,6 @@ DBEnv_rep_stat(DBEnvObject* self, PyObject* args, PyObject *kwargs)
     free(statp);
     return stats;
 }
-#endif
 
 /* --------------------------------------------------------------------- */
 /* REPLICATION METHODS: Replication Manager */
@@ -7083,9 +6986,7 @@ static PyMethodDef DB_methods[] = {
     {"set_bt_minkey",   (PyCFunction)DB_set_bt_minkey,  METH_VARARGS},
     {"set_bt_compare",  (PyCFunction)DB_set_bt_compare, METH_O},
     {"set_cachesize",   (PyCFunction)DB_set_cachesize,  METH_VARARGS},
-#if (DBVER >= 41)
     {"set_encrypt",     (PyCFunction)DB_set_encrypt,    METH_VARARGS|METH_KEYWORDS},
-#endif
     {"set_flags",       (PyCFunction)DB_set_flags,      METH_VARARGS},
     {"set_h_ffactor",   (PyCFunction)DB_set_h_ffactor,  METH_VARARGS},
     {"set_h_nelem",     (PyCFunction)DB_set_h_nelem,    METH_VARARGS},
@@ -7173,11 +7074,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"close",           (PyCFunction)DBEnv_close,            METH_VARARGS},
     {"open",            (PyCFunction)DBEnv_open,             METH_VARARGS},
     {"remove",          (PyCFunction)DBEnv_remove,           METH_VARARGS},
-#if (DBVER >= 41)
     {"dbremove",        (PyCFunction)DBEnv_dbremove,         METH_VARARGS|METH_KEYWORDS},
     {"dbrename",        (PyCFunction)DBEnv_dbrename,         METH_VARARGS|METH_KEYWORDS},
     {"set_encrypt",     (PyCFunction)DBEnv_set_encrypt,      METH_VARARGS|METH_KEYWORDS},
-#endif
 #if (DBVER >= 42)
     {"get_timeout",     (PyCFunction)DBEnv_get_timeout,
         METH_VARARGS|METH_KEYWORDS},
@@ -7278,10 +7177,8 @@ static PyMethodDef DBEnv_methods[] = {
     {"rep_set_clockskew", (PyCFunction)DBEnv_rep_set_clockskew, METH_VARARGS},
     {"rep_get_clockskew", (PyCFunction)DBEnv_rep_get_clockskew, METH_VARARGS},
 #endif
-#if (DBVER >= 41)
     {"rep_stat", (PyCFunction)DBEnv_rep_stat,
         METH_VARARGS|METH_KEYWORDS},
-#endif
 #if (DBVER >= 43)
     {"rep_stat_print", (PyCFunction)DBEnv_rep_stat_print,
         METH_VARARGS|METH_KEYWORDS},
@@ -7967,12 +7864,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_CACHED_COUNTS);
 #endif
 
-#if (DBVER >= 41)
-    _addIntToDict(d, "DB_CHECKPOINT", 0);
-#else
-    ADD_INT(d, DB_CHECKPOINT);
-    ADD_INT(d, DB_CURLSN);
-#endif
 #if (DBVER <= 41)
     ADD_INT(d, DB_COMMIT);
 #endif
@@ -8028,11 +7919,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
     ADD_INT(d, DB_DONOTINDEX);
 
-#if (DBVER >= 41)
-    _addIntToDict(d, "DB_INCOMPLETE", 0);
-#else
-    ADD_INT(d, DB_INCOMPLETE);
-#endif
     ADD_INT(d, DB_KEYEMPTY);
     ADD_INT(d, DB_KEYEXIST);
     ADD_INT(d, DB_LOCK_DEADLOCK);
@@ -8053,11 +7939,9 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_PANIC_ENVIRONMENT);
     ADD_INT(d, DB_NOPANIC);
 
-#if (DBVER >= 41)
     ADD_INT(d, DB_OVERWRITE);
-#endif
 
-#ifdef DB_REGISTER
+#if (DBVER >= 44)
     ADD_INT(d, DB_REGISTER);
 #endif
 
@@ -8205,21 +8089,14 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_DSYNC_LOG);
 #endif
 
-#if (DBVER >= 41)
     ADD_INT(d, DB_ENCRYPT_AES);
     ADD_INT(d, DB_AUTO_COMMIT);
-#else
-    /* allow Berkeley DB 4.1 aware apps to run on older versions */
-    _addIntToDict(d, "DB_AUTO_COMMIT", 0);
-#endif
-
-#if (DBVER >= 41)
     ADD_INT(d, DB_PRIORITY_VERY_LOW);
     ADD_INT(d, DB_PRIORITY_LOW);
     ADD_INT(d, DB_PRIORITY_DEFAULT);
     ADD_INT(d, DB_PRIORITY_HIGH);
     ADD_INT(d, DB_PRIORITY_VERY_HIGH);
-#endif
+
 #if (DBVER >= 46)
     ADD_INT(d, DB_PRIORITY_UNCHANGED);
 #endif
@@ -8285,10 +8162,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     }
 #endif
 
-
-#if !INCOMPLETE_IS_WARNING
-    MAKE_EX(DBIncompleteError);
-#endif
     MAKE_EX(DBCursorClosedError);
     MAKE_EX(DBKeyEmptyError);
     MAKE_EX(DBKeyExistError);

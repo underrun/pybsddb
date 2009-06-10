@@ -110,13 +110,12 @@ class DBEnv:
     def log_stat(self, *args, **kwargs):
         return self._cobj.log_stat(*args, **kwargs)
 
-    if db.version() >= (4,1):
-        def dbremove(self, *args, **kwargs):
-            return self._cobj.dbremove(*args, **kwargs)
-        def dbrename(self, *args, **kwargs):
-            return self._cobj.dbrename(*args, **kwargs)
-        def set_encrypt(self, *args, **kwargs):
-            return self._cobj.set_encrypt(*args, **kwargs)
+    def dbremove(self, *args, **kwargs):
+        return self._cobj.dbremove(*args, **kwargs)
+    def dbrename(self, *args, **kwargs):
+        return self._cobj.dbrename(*args, **kwargs)
+    def set_encrypt(self, *args, **kwargs):
+        return self._cobj.set_encrypt(*args, **kwargs)
 
     if db.version() >= (4,4):
         def fileid_reset(self, *args, **kwargs):
@@ -232,9 +231,8 @@ class DB(MutableMapping):
     def set_get_returns_none(self, *args, **kwargs):
         return self._cobj.set_get_returns_none(*args, **kwargs)
 
-    if db.version() >= (4,1):
-        def set_encrypt(self, *args, **kwargs):
-            return self._cobj.set_encrypt(*args, **kwargs)
+    def set_encrypt(self, *args, **kwargs):
+        return self._cobj.set_encrypt(*args, **kwargs)
 
 
 class DBSequence:

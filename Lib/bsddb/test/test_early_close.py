@@ -155,11 +155,8 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
                 db.DB_INIT_LOG | db.DB_CREATE)
         d = db.DB(dbenv)
         txn = dbenv.txn_begin()
-        if db.version() < (4,1) :
-            d.open(self.filename, dbtype = db.DB_HASH, flags = db.DB_CREATE)
-        else :
-            d.open(self.filename, dbtype = db.DB_HASH, flags = db.DB_CREATE,
-                    txn=txn)
+        d.open(self.filename, dbtype = db.DB_HASH, flags = db.DB_CREATE,
+                txn=txn)
         d.put("XXX", "yyy", txn=txn)
         txn.commit()
         txn = dbenv.txn_begin()

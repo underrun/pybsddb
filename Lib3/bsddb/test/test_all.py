@@ -305,13 +305,9 @@ if sys.version_info[0] >= 3 :
                             key = key2
                     return key
 
-            if bsddb.db.version() < (4, 1) :
-                return self._db.associate(secondarydb._db,
-                        associate_callback(callback).callback, flags=flags)
-            else :
-                return self._db.associate(secondarydb._db,
-                        associate_callback(callback).callback, flags=flags,
-                        txn=txn)
+            return self._db.associate(secondarydb._db,
+                    associate_callback(callback).callback, flags=flags,
+                    txn=txn)
 
         def cursor(self, txn=None, flags=0) :
             return cursor_py3k(self._db, txn=txn, flags=flags)

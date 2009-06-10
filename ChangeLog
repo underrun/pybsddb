@@ -4,6 +4,12 @@
     to "DB_GID_SIZE". Update your code!.
   * "DB_XA_CREATE" is removed. BDB 4.8 has eliminated
      XA Resource Manager support.
+  * Drop support for Berkeley DB 4.0. Our reference
+    is Red Had Enterprise Linux 3, until October 2010.
+  * Remove "DBIncompleteError" exception. It was only
+    used in BDB 4.0.
+  * Remove "DB_INCOMPLETE", "DB_CHECKPOINT",
+    "DB_CURLSN". They came from BDB 4.0 too.
 
 4.7.6:
   * Compatibility with Python 3.0.1.
