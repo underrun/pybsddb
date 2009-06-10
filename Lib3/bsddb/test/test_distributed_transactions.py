@@ -35,12 +35,9 @@ class DBTxn_distributed(unittest.TestCase):
                 db.DB_INIT_TXN | db.DB_INIT_LOG | db.DB_INIT_MPOOL |
                 db.DB_INIT_LOCK, 0o666)
         self.db = db.DB(self.dbenv)
-        if db.version() < (4,8) :
-            self.db.set_re_len(db.DB_XIDDATASIZE)
-        else :
-            self.db.set_re_len(db.DB_GID_SIZE)
+        self.db.set_re_len(db.DB_GID_SIZE)
         if must_open_db :
-            if db.version() <= (4,2) :
+            if db.version() >= (4,2) :
                 txn=self.dbenv.txn_begin()
                 self.db.open(self.filename,
                         db.DB_QUEUE, db.DB_CREATE | db.DB_THREAD, 0o666,
@@ -79,10 +76,7 @@ class DBTxn_distributed(unittest.TestCase):
     # let them be garbage collected.
         for i in range(self.num_txns) :
             txn = self.dbenv.txn_begin()
-            if db.version() < (4,8) :
-                gid = "%%%dd" %db.DB_XIDDATASIZE
-            else :
-                gid = "%%%dd" %db.DB_GID_SIZE
+            gid = "%%%dd" %db.DB_GID_SIZE
             gid = adapt(gid %i)
             self.db.put(i, gid, txn=txn, flags=db.DB_APPEND)
             txns.add(gid)

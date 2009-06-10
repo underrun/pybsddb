@@ -6410,8 +6410,13 @@ DBTxn_prepare(DBTxnObject* self, PyObject* args)
         return NULL;
 
     if (gid_size != DB_GID_SIZE) {
+#if (DBVER >= 48)
         PyErr_SetString(PyExc_TypeError,
                         "gid must be DB_GID_SIZE bytes long");
+#else
+        PyErr_SetString(PyExc_TypeError,
+                        "gid must be DB_XIDDATASIZE bytes long");
+#endif
         return NULL;
     }
 
@@ -7740,7 +7745,13 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_INIT_TXN);
     ADD_INT(d, DB_JOINENV);
 
+#if (DBVER >= 48)
     ADD_INT(d, DB_GID_SIZE);
+#else
+    ADD_INT(d, DB_XIDDATASIZE);
+    /* Allow new code to work in old BDB releases */
+    _addIntToDict(d, "DB_GID_SIZE", DB_XIDDATASIZE);
+#endif
 
     ADD_INT(d, DB_RECOVER);
     ADD_INT(d, DB_RECOVER_FATAL);

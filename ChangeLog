@@ -1,7 +1,13 @@
 4.8.0:
   * Support for Berkeley DB 4.8.
   * The "DB_XIDDATASIZE" constant has been renamed
-    to "DB_GID_SIZE". Update your code!.
+    to "DB_GID_SIZE". Update your code!. If linked
+    to BDB 4.8, only "DB_GID_SIZE" is defined.
+    If linked to previous BDB versions, we keep
+    "DB_XIDDATASIZE" but define "DB_GID_SIZE" too,
+    to be the same value. So, new code can use
+    the updated constant when used against old
+    BDB releases.
   * "DB_XA_CREATE" is removed. BDB 4.8 has eliminated
      XA Resource Manager support.
   * Drop support for Berkeley DB 4.0. Our reference
