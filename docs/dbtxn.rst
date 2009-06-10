@@ -31,10 +31,9 @@ DBTxn Methods
 
 .. function:: prepare(gid)
 
-   Initiates the beginning of a two-phase commit. Begining with Berkeley
-   DB 3.3 a global identifier paramater is required, which is a value
-   unique across all processes involved in the commit. It must be a
-   string of DB_XIDDATASIZE bytes.
+   Initiates the beginning of a two-phase commit. A global identifier
+   parameter is required, which is a value unique across all processes
+   involved in the commit. It must be a string of DB_GID_SIZE bytes.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/txn_prepare.html>`__
