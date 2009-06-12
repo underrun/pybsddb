@@ -24,6 +24,7 @@ DBEnv Methods
 .. function:: set_rpc_server(host, cl_timeout=0, sv_timeout=0)
 
    Establishes a connection for this dbenv to a RPC server.
+   This function is not available if linked to Berkeley DB 4.8 or up.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_rpc_server.html>`__

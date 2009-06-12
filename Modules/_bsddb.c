@@ -5340,6 +5340,7 @@ DBEnv_set_private(DBEnvObject* self, PyObject* private_obj)
 }
 
 
+#if (DBVER < 48)
 static PyObject*
 DBEnv_set_rpc_server(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -5361,6 +5362,7 @@ DBEnv_set_rpc_server(DBEnvObject* self, PyObject* args, PyObject* kwargs)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+#endif
 
 static PyObject*
 DBEnv_set_verbose(DBEnvObject* self, PyObject* args)
@@ -7133,8 +7135,10 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
     {"set_get_returns_none",(PyCFunction)DBEnv_set_get_returns_none, METH_VARARGS},
     {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_NOARGS},
+#if (DBVER < 48)
     {"set_rpc_server",  (PyCFunction)DBEnv_set_rpc_server,
         METH_VARARGS||METH_KEYWORDS},
+#endif
     {"set_verbose",     (PyCFunction)DBEnv_set_verbose,       METH_VARARGS},
 #if (DBVER >= 42)
     {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
@@ -7713,12 +7717,14 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_MAX_PAGES);
     ADD_INT(d, DB_MAX_RECORDS);
 
+#if (DBVER < 48)
 #if (DBVER >= 42)
     ADD_INT(d, DB_RPCCLIENT);
 #else
     ADD_INT(d, DB_CLIENT);
     /* allow apps to be written using DB_RPCCLIENT on older Berkeley DB */
     _addIntToDict(d, "DB_RPCCLIENT", DB_CLIENT);
+#endif
 #endif
 
 #if (DBVER < 48)

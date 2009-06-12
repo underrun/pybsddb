@@ -12,10 +12,14 @@
      XA Resource Manager support.
   * Drop support for Berkeley DB 4.0. Our reference
     is Red Had Enterprise Linux 3, until October 2010.
+    After that, RHEL4 has Python 2.3 and BDB 4.2.
   * Remove "DBIncompleteError" exception. It was only
     used in BDB 4.0.
   * Remove "DB_INCOMPLETE", "DB_CHECKPOINT",
     "DB_CURLSN". They came from BDB 4.0 too.
+  * RPC is dropped in Berkeley DB 4.8. The bindings
+    still keep the API if you link to previous BDB
+    releases.
 
 4.7.6:
   * Compatibility with Python 3.0.1.
