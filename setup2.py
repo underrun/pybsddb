@@ -80,7 +80,7 @@ if os.name == 'posix':
     if not BERKELEYDB_DIR and not BERKELEYDB_LIBDIR and not BERKELEYDB_INCDIR:
         # NOTE: when updating these, also change the tuples in the for loops below
         max_db_ver = (4, 8)
-        min_db_ver = (4, 0)
+        min_db_ver = (4, 1)
 
         # construct a list of paths to look for the header file in on
         # top of the normal inc_dirs.
