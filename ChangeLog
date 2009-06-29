@@ -1,5 +1,6 @@
 4.8.0:
   * Support for Berkeley DB 4.8.
+  * Support for Python 3.1.
   * The "DB_XIDDATASIZE" constant has been renamed
     to "DB_GID_SIZE". Update your code!. If linked
     to BDB 4.8, only "DB_GID_SIZE" is defined.
