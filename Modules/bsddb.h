@@ -105,7 +105,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "4.8.0devel4"
+#define PY_BSDDB_VERSION "4.8.0devel5"
 
 /* Python object definitions */
 

@@ -697,6 +697,20 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_event_notify.html>`__
 
+.. function:: mutex_set_max(value)
+
+   Configure the total number of mutexes to allocate.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/mutex_set_max.html>`__
+
+.. function:: mutex_get_max()
+
+   Returns the total number of mutexes allocated.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/mutex_set_max.html>`__
+
 
 DBEnv Replication Manager Methods
 ---------------------------------

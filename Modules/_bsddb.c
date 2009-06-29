@@ -4480,6 +4480,43 @@ DBEnv_log_set_config(DBEnvObject* self, PyObject* args)
 }
 #endif /* DBVER >= 47 */
 
+#if (DBVER >= 44)
+static PyObject*
+DBEnv_mutex_set_max(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int value;
+
+    if (!PyArg_ParseTuple(args, "i:mutex_set_max", &value))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_set_max(self->db_env, value);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_mutex_get_max(DBEnvObject* self)
+{
+    int err;
+    u_int32_t value;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_get_max(self->db_env, &value);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return NUMBER_FromLong(value);
+}
+#endif
 
 static PyObject*
 DBEnv_set_data_dir(DBEnvObject* self, PyObject* args)
@@ -7083,63 +7120,67 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_timeout",     (PyCFunction)DBEnv_get_timeout,
         METH_VARARGS|METH_KEYWORDS},
 #endif
-    {"set_timeout",     (PyCFunction)DBEnv_set_timeout,      METH_VARARGS|METH_KEYWORDS},
-    {"set_shm_key",     (PyCFunction)DBEnv_set_shm_key,      METH_VARARGS},
-    {"set_cachesize",   (PyCFunction)DBEnv_set_cachesize,    METH_VARARGS},
-    {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,     METH_VARARGS},
-    {"set_flags",       (PyCFunction)DBEnv_set_flags,        METH_VARARGS},
-#if (DBVER >= 47)
-    {"log_set_config",  (PyCFunction)DBEnv_log_set_config,   METH_VARARGS},
+    {"set_timeout",     (PyCFunction)DBEnv_set_timeout,     METH_VARARGS|METH_KEYWORDS},
+    {"set_shm_key",     (PyCFunction)DBEnv_set_shm_key,     METH_VARARGS},
+    {"set_cachesize",   (PyCFunction)DBEnv_set_cachesize,   METH_VARARGS},
+#if (DBVER >= 44)
+    {"mutex_set_max",   (PyCFunction)DBEnv_mutex_set_max,   METH_VARARGS},
+    {"mutex_get_max",   (PyCFunction)DBEnv_mutex_get_max,   METH_NOARGS},
 #endif
-    {"set_lg_bsize",    (PyCFunction)DBEnv_set_lg_bsize,     METH_VARARGS},
-    {"set_lg_dir",      (PyCFunction)DBEnv_set_lg_dir,       METH_VARARGS},
-    {"set_lg_max",      (PyCFunction)DBEnv_set_lg_max,       METH_VARARGS},
+    {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
+    {"set_flags",       (PyCFunction)DBEnv_set_flags,       METH_VARARGS},
+#if (DBVER >= 47)
+    {"log_set_config",  (PyCFunction)DBEnv_log_set_config,  METH_VARARGS},
+#endif
+    {"set_lg_bsize",    (PyCFunction)DBEnv_set_lg_bsize,    METH_VARARGS},
+    {"set_lg_dir",      (PyCFunction)DBEnv_set_lg_dir,      METH_VARARGS},
+    {"set_lg_max",      (PyCFunction)DBEnv_set_lg_max,      METH_VARARGS},
 #if (DBVER >= 42)
-    {"get_lg_max",      (PyCFunction)DBEnv_get_lg_max,       METH_NOARGS},
+    {"get_lg_max",      (PyCFunction)DBEnv_get_lg_max,      METH_NOARGS},
 #endif
     {"set_lg_regionmax",(PyCFunction)DBEnv_set_lg_regionmax, METH_VARARGS},
-    {"set_lk_detect",   (PyCFunction)DBEnv_set_lk_detect,    METH_VARARGS},
+    {"set_lk_detect",   (PyCFunction)DBEnv_set_lk_detect,   METH_VARARGS},
 #if (DBVER < 45)
-    {"set_lk_max",      (PyCFunction)DBEnv_set_lk_max,       METH_VARARGS},
+    {"set_lk_max",      (PyCFunction)DBEnv_set_lk_max,      METH_VARARGS},
 #endif
     {"set_lk_max_locks", (PyCFunction)DBEnv_set_lk_max_locks, METH_VARARGS},
     {"set_lk_max_lockers", (PyCFunction)DBEnv_set_lk_max_lockers, METH_VARARGS},
     {"set_lk_max_objects", (PyCFunction)DBEnv_set_lk_max_objects, METH_VARARGS},
-    {"set_mp_mmapsize", (PyCFunction)DBEnv_set_mp_mmapsize,  METH_VARARGS},
-    {"set_tmp_dir",     (PyCFunction)DBEnv_set_tmp_dir,      METH_VARARGS},
-    {"txn_begin",       (PyCFunction)DBEnv_txn_begin,        METH_VARARGS|METH_KEYWORDS},
-    {"txn_checkpoint",  (PyCFunction)DBEnv_txn_checkpoint,   METH_VARARGS},
-    {"txn_stat",        (PyCFunction)DBEnv_txn_stat,         METH_VARARGS},
+    {"set_mp_mmapsize", (PyCFunction)DBEnv_set_mp_mmapsize, METH_VARARGS},
+    {"set_tmp_dir",     (PyCFunction)DBEnv_set_tmp_dir,     METH_VARARGS},
+    {"txn_begin",       (PyCFunction)DBEnv_txn_begin,       METH_VARARGS|METH_KEYWORDS},
+    {"txn_checkpoint",  (PyCFunction)DBEnv_txn_checkpoint,  METH_VARARGS},
+    {"txn_stat",        (PyCFunction)DBEnv_txn_stat,        METH_VARARGS},
 #if (DBVER >= 43)
     {"txn_stat_print",  (PyCFunction)DBEnv_txn_stat_print,
         METH_VARARGS|METH_KEYWORDS},
 #endif
 #if (DBVER >= 42)
-    {"get_tx_max",      (PyCFunction)DBEnv_get_tx_max,       METH_NOARGS},
+    {"get_tx_max",      (PyCFunction)DBEnv_get_tx_max,      METH_NOARGS},
     {"get_tx_timestamp", (PyCFunction)DBEnv_get_tx_timestamp, METH_NOARGS},
 #endif
-    {"set_tx_max",      (PyCFunction)DBEnv_set_tx_max,       METH_VARARGS},
+    {"set_tx_max",      (PyCFunction)DBEnv_set_tx_max,      METH_VARARGS},
     {"set_tx_timestamp", (PyCFunction)DBEnv_set_tx_timestamp, METH_VARARGS},
-    {"lock_detect",     (PyCFunction)DBEnv_lock_detect,      METH_VARARGS},
-    {"lock_get",        (PyCFunction)DBEnv_lock_get,         METH_VARARGS},
-    {"lock_id",         (PyCFunction)DBEnv_lock_id,          METH_NOARGS},
-    {"lock_id_free",    (PyCFunction)DBEnv_lock_id_free,     METH_VARARGS},
-    {"lock_put",        (PyCFunction)DBEnv_lock_put,         METH_VARARGS},
-    {"lock_stat",       (PyCFunction)DBEnv_lock_stat,        METH_VARARGS},
-    {"log_archive",     (PyCFunction)DBEnv_log_archive,      METH_VARARGS},
-    {"log_flush",       (PyCFunction)DBEnv_log_flush,        METH_NOARGS},
-    {"log_stat",        (PyCFunction)DBEnv_log_stat,         METH_VARARGS},
+    {"lock_detect",     (PyCFunction)DBEnv_lock_detect,     METH_VARARGS},
+    {"lock_get",        (PyCFunction)DBEnv_lock_get,        METH_VARARGS},
+    {"lock_id",         (PyCFunction)DBEnv_lock_id,         METH_NOARGS},
+    {"lock_id_free",    (PyCFunction)DBEnv_lock_id_free,    METH_VARARGS},
+    {"lock_put",        (PyCFunction)DBEnv_lock_put,        METH_VARARGS},
+    {"lock_stat",       (PyCFunction)DBEnv_lock_stat,       METH_VARARGS},
+    {"log_archive",     (PyCFunction)DBEnv_log_archive,     METH_VARARGS},
+    {"log_flush",       (PyCFunction)DBEnv_log_flush,       METH_NOARGS},
+    {"log_stat",        (PyCFunction)DBEnv_log_stat,        METH_VARARGS},
 #if (DBVER >= 44)
-    {"fileid_reset",    (PyCFunction)DBEnv_fileid_reset,     METH_VARARGS|METH_KEYWORDS},
-    {"lsn_reset",       (PyCFunction)DBEnv_lsn_reset,        METH_VARARGS|METH_KEYWORDS},
+    {"fileid_reset",    (PyCFunction)DBEnv_fileid_reset,    METH_VARARGS|METH_KEYWORDS},
+    {"lsn_reset",       (PyCFunction)DBEnv_lsn_reset,       METH_VARARGS|METH_KEYWORDS},
 #endif
     {"set_get_returns_none",(PyCFunction)DBEnv_set_get_returns_none, METH_VARARGS},
-    {"txn_recover",     (PyCFunction)DBEnv_txn_recover,       METH_NOARGS},
+    {"txn_recover",     (PyCFunction)DBEnv_txn_recover,     METH_NOARGS},
 #if (DBVER < 48)
     {"set_rpc_server",  (PyCFunction)DBEnv_set_rpc_server,
         METH_VARARGS||METH_KEYWORDS},
 #endif
-    {"set_verbose",     (PyCFunction)DBEnv_set_verbose,       METH_VARARGS},
+    {"set_verbose",     (PyCFunction)DBEnv_set_verbose,     METH_VARARGS},
 #if (DBVER >= 42)
     {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
 #endif

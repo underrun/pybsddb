@@ -300,7 +300,8 @@ DB Methods
 .. function:: set_re_delim(delim)
 
    Set the delimiting byte used to mark the end of a record in the
-   backing source file for the Recno access method.
+   backing source file for the Recno access method. You can
+   specify a char or a numeric byte value.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_re_delim.html>`__
@@ -317,7 +318,8 @@ DB Methods
 .. function:: set_re_pad(pad)
 
    Set the padding character for short, fixed-length records for the
-   Queue and Recno access methods.
+   Queue and Recno access methods. You can specify a char or a numeric
+   byte value.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_re_pad.html>`__

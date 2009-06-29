@@ -21,8 +21,9 @@
   * RPC is dropped in Berkeley DB 4.8. The bindings
     still keep the API if you link to previous BDB
     releases.
-  * In recno databases, "set_re_delim()" and "set_re_pad()"
+  * In recno/queue databases, "set_re_delim()" and "set_re_pad()"
     require a byte instead of a unicode char, under Python3.
+  * Support for "DB_ENV->mutex_set_max()" and "DB_ENV->mutex_get_max()".
 
 4.7.6:
   * Compatibility with Python 3.0.1.

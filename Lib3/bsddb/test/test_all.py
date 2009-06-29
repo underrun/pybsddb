@@ -507,6 +507,7 @@ def suite(module_prefix='', timing_check=None):
     test_modules = [
         'test_associate',
         'test_basics',
+        'test_dbenv',
         'test_compare',
         'test_compat',
         'test_cursor_pget_bug',
