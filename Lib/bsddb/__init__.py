@@ -436,8 +436,10 @@ def _checkflag(flag, file):
 # Berkeley DB was too.
 
 try:
-    import thread
-    del thread
+    # 2to3 automatically changes "import thread" to "import _thread"
+    import thread as T
+    del T
+
 except ImportError:
     db.DB_THREAD = 0
 

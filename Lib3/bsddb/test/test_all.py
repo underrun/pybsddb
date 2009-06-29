@@ -203,6 +203,16 @@ if sys.version_info[0] >= 3 :
                 k = bytes(k, charset)
             return self._db.has_key(k, txn=txn)
 
+        def set_re_delim(self, c) :
+            if isinstance(c, str) :  # We can use a numeric value byte too
+                c = bytes(c, charset)
+            return self._db.set_re_delim(c)
+
+        def set_re_pad(self, c) :
+            if isinstance(c, str) :  # We can use a numeric value byte too
+               c = bytes(c, charset)
+            return self._db.set_re_pad(c)
+
         def put(self, key, value, txn=None, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
