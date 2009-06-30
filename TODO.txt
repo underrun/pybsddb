@@ -139,3 +139,5 @@
 
 * 20090428: Support DB_MULTIPLE and DB_MULTIPLE_KEY.
 
+* 20090630: "README.txt" needs some love.
+

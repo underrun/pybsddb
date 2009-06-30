@@ -3,9 +3,9 @@ IS STILL VALUABLE, SO USE YOUR BRAIN :-)
 
 
 README.txt
-bsddb3 v4.7.x
-http://www.argo.es/~jcea/programacion/pybsddb.htm
-2007-11-04
+bsddb3 v4.8.x
+http://www.jcea.es/programacion/pybsddb.htm
+2009-06-30
 --------------------------------
 
 This module is intended to be the definitive modern Berkeley DB
@@ -40,8 +40,8 @@ In addition we've run it on a several varieties of Linux and of course
 on Win32.
 
 This wrapper should be compatible with Berkeley DB releases going back
-to 4.0 up to and including DB 4.7.  It should also be compatible
-with Python versions from 2.1 to Python 2.6.
+to 4.1 up to and including DB 4.8.  It should also be compatible
+with Python versions from 2.3 to Python 2.6, and Python 3.0 to 3.1.
 
 
 Installation
@@ -62,8 +62,8 @@ fairly simple to get things ready to go.
    are indicated in the README then apply it to your Berkeley DB
    sources and rebuild it.
 
-1. First, make sure that you have a Berkeley DB version >= 4.0 and
-   no later than 4.7 and that it is built and installed.  Setup.py will
+1. First, make sure that you have a Berkeley DB version >= 4.1 and
+   no later than 4.8 and that it is built and installed.  Setup.py will
    detect a db3 or Berkeley DB directory under either /usr/local or /usr
    in that order; this will catch installations from RPMs and most hand
    installations under Unix.  If setup.py can't find your libdb then you
@@ -71,18 +71,18 @@ fairly simple to get things ready to go.
    environment variable) or on the command line by specifying the
    directory containing the include and lib directory.  For example:
 
-            python setup.py --berkeley-db=/stuff/BerkeleyDB.4.1 build
+            python setup.py --berkeley-db=/stuff/BerkeleyDB.4.8 build
 
    If your Berkeley DB was built as a shared library, and if that
    shared library is not on the runtime load path, then you can
    specify the additional linker flags needed to find the shared
    library on the command line as well.  For example:
 
-           --lflags="-Xlinker -rpath -Xlinker /stuff/BerkeleyDB.4.1/lib"
+           --lflags="-Xlinker -rpath -Xlinker /stuff/BerkeleyDB.4.8/lib"
 
    or perhaps just
 
-           --lflags="-R /stuff/BerkeleyDB.4.1/lib"
+           --lflags="-R /stuff/BerkeleyDB.4.8/lib"
 
    Check your compiler and linker documentation to be sure.
 
@@ -137,37 +137,6 @@ fairly simple to get things ready to go.
 
 
 That's it!
-
-
-Rebuilding older (2.2 and earlier) Python w/o bsddb
-----------------------------------------------------
-
-If the old bsddb is linked statically with Python all kinds of strange
-problems can happen when you try to use bsddb3.  Everything from
-seg-faults, to getting strange errors on every test, to working
-perfectly on some tests, but locking up the process on others.  How
-strange can it get?  Try this:
-
-    python -c "from bsddb3.db import *;print version(), DB_VERSION_STRING"
-
-On one machine I got this output:
-
-    (3, 1, 14) Sleepycat Software: Berkeley DB 3.1.17: (July 31, 2000)
-
-Notice the different version numbers?  One set is coming from the DB
-library, the other from a macro in db.h so it is actually coming from
-my _db.c.  The strange part is that bsddb3 was staticly linked with
-3.1.17, but it was still calling functions in the 3.1.14 version
-linked with Python.
-
-The best way (only way?) to fix this is to get the old bsddb extension
-out of the Python executable.  If the old bsddb is a dynamic extension
-module loaded from a shared library, then everything is peachy and
-bsddb3 works perfectly.  To do this, edit Modules/Setup.config in the
-Python 2.0 distribution and remove the # from in front of *shared*,
-then recompile and reinstall Python.  If you just want to remove the
-old bsddb entirely, just comment out the following line starting with
-bsddb, and then rebuild and install Python.
 
 
 Developer Information
