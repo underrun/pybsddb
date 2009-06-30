@@ -26,6 +26,13 @@ class DBEnv(unittest.TestCase):
             self.env.mutex_set_max(v)
             self.assertEqual(v, self.env.mutex_get_max())
 
+            # You can not change configuration after opening
+            # the environment.
+            self.env.open(self.homeDir, db.DB_CREATE)
+            self.assertRaises(db.DBInvalidArgError,
+                    self.env.mutex_set_max, v2)
+
+
 def test_suite():
     return unittest.makeSuite(DBEnv)
 
