@@ -4364,8 +4364,24 @@ DBEnv_set_encrypt(DBEnvObject* self, PyObject* args, PyObject* kwargs)
     RETURN_NONE();
 }
 
-
 #if (DBVER >= 42)
+static PyObject*
+DBEnv_get_encrypt_flags(DBEnvObject* self)
+{
+    int err;
+    u_int32_t flags;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_encrypt_flags(self->db_env, &flags);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return NUMBER_FromLong(flags);
+}
+
 static PyObject*
 DBEnv_get_timeout(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 {
@@ -7225,6 +7241,7 @@ static PyMethodDef DBEnv_methods[] = {
     {"dbrename",        (PyCFunction)DBEnv_dbrename,         METH_VARARGS|METH_KEYWORDS},
     {"set_encrypt",     (PyCFunction)DBEnv_set_encrypt,      METH_VARARGS|METH_KEYWORDS},
 #if (DBVER >= 42)
+    {"get_encrypt_flags", (PyCFunction)DBEnv_get_encrypt_flags, METH_NOARGS},
     {"get_timeout",     (PyCFunction)DBEnv_get_timeout,
         METH_VARARGS|METH_KEYWORDS},
 #endif

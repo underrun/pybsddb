@@ -141,3 +141,4 @@
 
 * 20090630: "README.txt" needs some love.
 
+* 20090723: Add encryption tests.
