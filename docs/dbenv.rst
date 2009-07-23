@@ -711,6 +711,19 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/mutex_set_max.html>`__
 
+.. function:: mutex_set_align(align)
+
+   Set the mutex alignment, in bytes.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/mutex_set_align.html>`__
+
+.. function:: mutex_get_align()
+
+   Returns the mutex alignment, in bytes.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/mutex_set_align.html>`__
 
 DBEnv Replication Manager Methods
 ---------------------------------
