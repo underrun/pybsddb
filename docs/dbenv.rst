@@ -711,6 +711,20 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/mutex_set_max.html>`__
 
+.. function:: mutex_set_increment(value)
+
+   Configure the number of additional mutexes to allocate.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/mutex_set_max.html>`__
+
+.. function:: mutex_get_increment()
+
+   Returns the number of additional mutexes to allocate.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/mutex_set_max.html>`__
+
 .. function:: mutex_set_align(align)
 
    Set the mutex alignment, in bytes.

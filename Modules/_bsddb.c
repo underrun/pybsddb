@@ -4552,6 +4552,42 @@ DBEnv_mutex_get_align(DBEnvObject* self)
 
     return NUMBER_FromLong(align);
 }
+
+static PyObject*
+DBEnv_mutex_set_increment(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int increment;
+
+    if (!PyArg_ParseTuple(args, "i:mutex_set_increment", &increment))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_set_increment(self->db_env, increment);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_mutex_get_increment(DBEnvObject* self)
+{
+    int err;
+    u_int32_t increment;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_get_increment(self->db_env, &increment);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return NUMBER_FromLong(increment);
+}
 #endif
 
 static PyObject*
@@ -7164,6 +7200,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"mutex_get_max",   (PyCFunction)DBEnv_mutex_get_max,   METH_NOARGS},
     {"mutex_set_align", (PyCFunction)DBEnv_mutex_set_align, METH_VARARGS},
     {"mutex_get_align", (PyCFunction)DBEnv_mutex_get_align, METH_NOARGS},
+    {"mutex_set_increment", (PyCFunction)DBEnv_mutex_set_increment,
+        METH_VARARGS},
+    {"mutex_get_increment", (PyCFunction)DBEnv_mutex_get_increment,
+        METH_NOARGS},
 #endif
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
     {"set_flags",       (PyCFunction)DBEnv_set_flags,       METH_VARARGS},

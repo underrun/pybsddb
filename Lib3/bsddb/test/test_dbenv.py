@@ -32,6 +32,22 @@ class DBEnv(unittest.TestCase):
             self.assertRaises(db.DBInvalidArgError,
                     self.env.mutex_set_max, v2)
 
+        def test_mutex_setget_increment(self) :
+            v = self.env.mutex_get_increment()
+            v2 = 127
+
+            self.env.mutex_set_increment(v2)
+            self.assertEqual(v2, self.env.mutex_get_increment())
+
+            self.env.mutex_set_increment(v)
+            self.assertEqual(v, self.env.mutex_get_increment())
+
+            # You can not change configuration after opening
+            # the environment.
+            self.env.open(self.homeDir, db.DB_CREATE)
+            self.assertRaises(db.DBInvalidArgError,
+                    self.env.mutex_set_increment, v2)
+
         def test_mutex_setget_align(self) :
             v = self.env.mutex_get_align()
             v2 = 64

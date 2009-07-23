@@ -1,6 +1,8 @@
 4.8.1:
-  * Support for "DB_ENV->mutex_set_align" and
-    "DB_ENV->mutex_get_align".
+  * Support for "DB_ENV->mutex_set_align()" and
+    "DB_ENV->mutex_get_align()".
+  * Support for "DB_ENV->mutex_set_increment()" and
+    "DB_ENV->mutex_get_increment()".
 
 4.8.0:
   * Support for Berkeley DB 4.8.
