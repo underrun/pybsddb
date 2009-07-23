@@ -4740,9 +4740,10 @@ static PyObject*
 DBEnv_get_data_dirs(DBEnvObject* self)
 {
     int err;
-    PyObject *list;
+    PyObject *tuple;
     PyObject *item;
     const char **dirpp;
+    int size, i;
 
     CHECK_ENV_NOT_CLOSED(self);
 
@@ -4752,26 +4753,27 @@ DBEnv_get_data_dirs(DBEnvObject* self)
 
     RETURN_IF_ERR();
 
-    list=PyList_New(0);
-    if (!list)
+    /*
+    ** Calculate size. Python C API
+    ** actually allows for tuple resizing,
+    ** but this is simple enough.
+    */
+    for (size=0; *(dirpp+size) ; size++);
+
+    tuple = PyTuple_New(size);
+    if (!tuple)
         return NULL;
 
-    while (*dirpp) {
-        item = PyBytes_FromString (*dirpp++);
+    for (i=0; i<size; i++) {
+        item = PyBytes_FromString (*(dirpp+i));
         if (item == NULL) {
-            Py_DECREF(list);
-            list = NULL;
+            Py_DECREF(tuple);
+            tuple = NULL;
             break;
         }
-        if (PyList_Append(list, item)) {
-            Py_DECREF(list);
-            list = NULL;
-            Py_DECREF(item);
-            break;
-        }
-        Py_DECREF(item);
+        PyTuple_SET_ITEM(tuple, i, item);
     }
-    return list;
+    return tuple;
 }
 #endif
 
@@ -7392,7 +7394,7 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
 #if (DBVER >= 42)
-    {"get_data_dir",    (PyCFunction)DBEnv_get_data_dirs,   METH_NOARGS},
+    {"get_data_dirs",   (PyCFunction)DBEnv_get_data_dirs,   METH_NOARGS},
 #endif
     {"set_flags",       (PyCFunction)DBEnv_set_flags,       METH_VARARGS},
 #if (DBVER >= 47)

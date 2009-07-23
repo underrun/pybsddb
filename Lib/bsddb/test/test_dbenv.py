@@ -15,6 +15,13 @@ class DBEnv(unittest.TestCase):
         del self.env
         test_support.rmtree(self.homeDir)
 
+    if db.version() >= (4, 2) :
+        def test_get_data_dirs(self) :
+            dirs = ("a", "b", "c", "d")
+            for i in dirs :
+                self.env.set_data_dir(i)
+            self.assertEqual(dirs, self.env.get_data_dirs())
+
     if db.version() >= (4, 4) :
         def test_mutex_setget_max(self) :
             v = self.env.mutex_get_max()

@@ -146,5 +146,3 @@
 * 20090723: Add "shm_key" tests.
 
 * 20090723: Add "cachesize" tests.
-
-* 20090723: Add "data_dir" tests.
