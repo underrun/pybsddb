@@ -333,6 +333,10 @@ if sys.version_info[0] >= 3 :
         def __getattr__(self, v) :
             return getattr(self._dbenv, v)
 
+        def get_data_dirs(self) :
+            return tuple(
+                (i.decode(charset) for i in self._dbenv.get_data_dirs()))
+
     class DBSequence_py3k(object) :
         def __init__(self, db, *args, **kwargs) :
             self._db=db
