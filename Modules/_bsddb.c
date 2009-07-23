@@ -4516,6 +4516,42 @@ DBEnv_mutex_get_max(DBEnvObject* self)
 
     return NUMBER_FromLong(value);
 }
+
+static PyObject*
+DBEnv_mutex_set_align(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int align;
+
+    if (!PyArg_ParseTuple(args, "i:mutex_set_align", &align))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_set_align(self->db_env, align);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_mutex_get_align(DBEnvObject* self)
+{
+    int err;
+    u_int32_t align;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_get_align(self->db_env, &align);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return NUMBER_FromLong(align);
+}
 #endif
 
 static PyObject*
@@ -7126,6 +7162,8 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 44)
     {"mutex_set_max",   (PyCFunction)DBEnv_mutex_set_max,   METH_VARARGS},
     {"mutex_get_max",   (PyCFunction)DBEnv_mutex_get_max,   METH_NOARGS},
+    {"mutex_set_align", (PyCFunction)DBEnv_mutex_set_align, METH_VARARGS},
+    {"mutex_get_align", (PyCFunction)DBEnv_mutex_get_align, METH_NOARGS},
 #endif
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
     {"set_flags",       (PyCFunction)DBEnv_set_flags,       METH_VARARGS},
