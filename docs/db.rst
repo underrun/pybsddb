@@ -225,6 +225,13 @@ DB Methods
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_encrypt.html>`__
+
+.. function:: get_encrypt_flags()
+
+   Returns the encryption flags.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/db_set_encrypt.html>`__
  
 .. function:: set_bt_compare(compareFunc)
 

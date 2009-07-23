@@ -3056,6 +3056,24 @@ DB_set_encrypt(DBObject* self, PyObject* args, PyObject* kwargs)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_encrypt_flags(DBObject* self)
+{
+    int err;
+    u_int32_t flags;
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_encrypt_flags(self->db, &flags);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return NUMBER_FromLong(flags);
+}
+#endif
+
+
 
 /*-------------------------------------------------------------- */
 /* Mapping and Dictionary-like access routines */
@@ -7150,6 +7168,10 @@ static PyMethodDef DB_methods[] = {
     {"set_bt_compare",  (PyCFunction)DB_set_bt_compare, METH_O},
     {"set_cachesize",   (PyCFunction)DB_set_cachesize,  METH_VARARGS},
     {"set_encrypt",     (PyCFunction)DB_set_encrypt,    METH_VARARGS|METH_KEYWORDS},
+#if (DBVER >= 42)
+    {"get_encrypt_flags", (PyCFunction)DB_get_encrypt_flags, METH_NOARGS},
+#endif
+
     {"set_flags",       (PyCFunction)DB_set_flags,      METH_VARARGS},
     {"set_h_ffactor",   (PyCFunction)DB_set_h_ffactor,  METH_VARARGS},
     {"set_h_nelem",     (PyCFunction)DB_set_h_nelem,    METH_VARARGS},
