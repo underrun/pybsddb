@@ -4459,6 +4459,25 @@ DBEnv_set_shm_key(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_shm_key(DBEnvObject* self)
+{
+    int err;
+    long shm_key;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_shm_key(self->db_env, &shm_key);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return NUMBER_FromLong(shm_key);
+}
+#endif
+
 static PyObject*
 DBEnv_set_cachesize(DBEnvObject* self, PyObject* args)
 {
@@ -7269,6 +7288,9 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
     {"set_timeout",     (PyCFunction)DBEnv_set_timeout,     METH_VARARGS|METH_KEYWORDS},
     {"set_shm_key",     (PyCFunction)DBEnv_set_shm_key,     METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_shm_key",     (PyCFunction)DBEnv_get_shm_key,     METH_NOARGS},
+#endif
     {"set_cachesize",   (PyCFunction)DBEnv_set_cachesize,   METH_VARARGS},
 #if (DBVER >= 44)
     {"mutex_set_max",   (PyCFunction)DBEnv_mutex_set_max,   METH_VARARGS},

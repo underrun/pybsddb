@@ -121,6 +121,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_shm_key.html>`__
 
+.. function:: get_shm_key()
+
+   Returns the base segment ID.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_shm_key.html>`__
+
 .. function:: set_cachesize(gbytes, bytes, ncache=0)
 
    Set the size of the shared memory buffer pool.

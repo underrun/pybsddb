@@ -7,6 +7,7 @@
     "DB_ENV->mutex_get_tas_spins()".
   * Support for "DB_ENV->get_encrypt_flags()".
   * Support for "DB->get_encrypt_flags()".
+  * Support for "DB_ENV->get_shm_key()".
 
 4.8.0:
   * Support for Berkeley DB 4.8.
