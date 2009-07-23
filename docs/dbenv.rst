@@ -144,7 +144,15 @@ DBEnv Methods
 
 .. function:: set_data_dir(dir)
 
-   Set the environment data directory.
+   Set the environment data directory. You can call this function
+   multiple times, adding new directories.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_data_dir.html>`__
+
+.. function:: get_data_dirs()
+
+   Return a tuple with the directories.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_data_dir.html>`__

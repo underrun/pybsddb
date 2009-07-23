@@ -147,3 +147,4 @@
 
 * 20090723: Add "cachesize" tests.
 
+* 20090723: Add "data_dir" tests.

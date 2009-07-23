@@ -4735,6 +4735,45 @@ DBEnv_set_data_dir(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_data_dirs(DBEnvObject* self)
+{
+    int err;
+    PyObject *list;
+    PyObject *item;
+    const char **dirpp;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_data_dirs(self->db_env, &dirpp);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    list=PyList_New(0);
+    if (!list)
+        return NULL;
+
+    while (*dirpp) {
+        item = PyBytes_FromString (*dirpp++);
+        if (item == NULL) {
+            Py_DECREF(list);
+            list = NULL;
+            break;
+        }
+        if (PyList_Append(list, item)) {
+            Py_DECREF(list);
+            list = NULL;
+            Py_DECREF(item);
+            break;
+        }
+        Py_DECREF(item);
+    }
+    return list;
+}
+#endif
 
 static PyObject*
 DBEnv_set_lg_bsize(DBEnvObject* self, PyObject* args)
@@ -7352,6 +7391,9 @@ static PyMethodDef DBEnv_methods[] = {
         METH_NOARGS},
 #endif
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_data_dir",    (PyCFunction)DBEnv_get_data_dirs,   METH_NOARGS},
+#endif
     {"set_flags",       (PyCFunction)DBEnv_set_flags,       METH_VARARGS},
 #if (DBVER >= 47)
     {"log_set_config",  (PyCFunction)DBEnv_log_set_config,  METH_VARARGS},
