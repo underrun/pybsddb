@@ -39,12 +39,26 @@ class DBEnv(unittest.TestCase):
             # You can not change configuration after opening
             # the environment.
             self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL)
-            # If we try to reconfigure cache after opening the
-            # environment, core dump.
             cachesize = (0, 2*1024*1024, 1)
             self.assertRaises(db.DBInvalidArgError,
                 self.env.set_cachesize, *cachesize)
             self.assertEqual(cachesize2, self.env.get_cachesize())
+
+        def test_setget_shm_key(self) :
+            shm_key=137
+            self.env.set_shm_key(shm_key)
+            self.assertEqual(shm_key, self.env.get_shm_key())
+            self.env.set_shm_key(shm_key+1)
+            self.assertEqual(shm_key+1, self.env.get_shm_key())
+
+            # You can not change configuration after opening
+            # the environment.
+            self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL)
+            # If we try to reconfigure cache after opening the
+            # environment, core dump.
+            self.assertRaises(db.DBInvalidArgError,
+                self.env.set_shm_key, shm_key)
+            self.assertEqual(shm_key+1, self.env.get_shm_key())
 
     if db.version() >= (4, 4) :
         def test_mutex_setget_max(self) :
