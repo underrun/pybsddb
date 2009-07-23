@@ -334,8 +334,10 @@ if sys.version_info[0] >= 3 :
             return getattr(self._dbenv, v)
 
         def get_data_dirs(self) :
+            # Have to use a list comprehension and not
+            # generators, because we are supporting Python 2.3.
             return tuple(
-                (i.decode(charset) for i in self._dbenv.get_data_dirs()))
+                [i.decode(charset) for i in self._dbenv.get_data_dirs()])
 
     class DBSequence_py3k(object) :
         def __init__(self, db, *args, **kwargs) :

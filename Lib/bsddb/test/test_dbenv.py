@@ -16,11 +16,35 @@ class DBEnv(unittest.TestCase):
         test_support.rmtree(self.homeDir)
 
     if db.version() >= (4, 2) :
-        def test_get_data_dirs(self) :
+        def test_setget_data_dirs(self) :
             dirs = ("a", "b", "c", "d")
             for i in dirs :
                 self.env.set_data_dir(i)
             self.assertEqual(dirs, self.env.get_data_dirs())
+
+        def test_setget_cachesize(self) :
+            cachesize = (0, 512*1024*1024, 3)
+            self.env.set_cachesize(*cachesize)
+            self.assertEqual(cachesize, self.env.get_cachesize())
+
+            cachesize = (0, 1*1024*1024, 5)
+            self.env.set_cachesize(*cachesize)
+            cachesize2 = self.env.get_cachesize()
+            self.assertEqual(cachesize[0], cachesize2[0])
+            self.assertEqual(cachesize[2], cachesize2[2])
+            # Berkeley DB expands the cache 25% accounting overhead,
+            # if the cache is small.
+            self.assertEqual(125, int(100.0*cachesize2[1]/cachesize[1]))
+
+            # You can not change configuration after opening
+            # the environment.
+            self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL)
+            # If we try to reconfigure cache after opening the
+            # environment, core dump.
+            cachesize = (0, 2*1024*1024, 1)
+            self.assertRaises(db.DBInvalidArgError,
+                self.env.set_cachesize, *cachesize)
+            self.assertEqual(cachesize2, self.env.get_cachesize())
 
     if db.version() >= (4, 4) :
         def test_mutex_setget_max(self) :

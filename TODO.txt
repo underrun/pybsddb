@@ -144,5 +144,3 @@
 * 20090723: Add encryption tests.
 
 * 20090723: Add "shm_key" tests.
-
-* 20090723: Add "cachesize" tests.
