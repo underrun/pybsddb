@@ -4588,6 +4588,42 @@ DBEnv_mutex_get_increment(DBEnvObject* self)
 
     return NUMBER_FromLong(increment);
 }
+
+static PyObject*
+DBEnv_mutex_set_tas_spins(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int tas_spins;
+
+    if (!PyArg_ParseTuple(args, "i:mutex_set_tas_spins", &tas_spins))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_set_tas_spins(self->db_env, tas_spins);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_mutex_get_tas_spins(DBEnvObject* self)
+{
+    int err;
+    u_int32_t tas_spins;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_get_tas_spins(self->db_env, &tas_spins);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return NUMBER_FromLong(tas_spins);
+}
 #endif
 
 static PyObject*
@@ -7203,6 +7239,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"mutex_set_increment", (PyCFunction)DBEnv_mutex_set_increment,
         METH_VARARGS},
     {"mutex_get_increment", (PyCFunction)DBEnv_mutex_get_increment,
+        METH_NOARGS},
+    {"mutex_set_tas_spins", (PyCFunction)DBEnv_mutex_set_tas_spins,
+        METH_VARARGS},
+    {"mutex_get_tas_spins", (PyCFunction)DBEnv_mutex_get_tas_spins,
         METH_NOARGS},
 #endif
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},

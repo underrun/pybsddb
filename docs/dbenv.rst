@@ -739,6 +739,21 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/mutex_set_align.html>`__
 
+.. function:: mutex_set_tas_spins(tas_spins)
+
+   Specify that test-and-set mutexes should spin tas_spins times without
+   blocking. Check the default values in the Oracle webpage.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/mutex_set_tas_spins.html>`__
+
+.. function:: mutex_get_tas_spins()
+
+   Returns the test-and-set spin count.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/mutex_set_tas_spins.html>`__
+
 DBEnv Replication Manager Methods
 ---------------------------------
 

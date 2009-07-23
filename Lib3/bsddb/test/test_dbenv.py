@@ -48,6 +48,22 @@ class DBEnv(unittest.TestCase):
             self.assertRaises(db.DBInvalidArgError,
                     self.env.mutex_set_increment, v2)
 
+        def test_mutex_setget_tas_spins(self) :
+            self.env.mutex_set_tas_spins(0)  # Default = BDB decides
+            v = self.env.mutex_get_tas_spins()
+            v2 = v*2+1
+
+            self.env.mutex_set_tas_spins(v2)
+            self.assertEqual(v2, self.env.mutex_get_tas_spins())
+
+            self.env.mutex_set_tas_spins(v)
+            self.assertEqual(v, self.env.mutex_get_tas_spins())
+
+            # In this case, you can change configuration
+            # after opening the environment.
+            self.env.open(self.homeDir, db.DB_CREATE)
+            self.env.mutex_set_tas_spins(v2)
+
         def test_mutex_setget_align(self) :
             v = self.env.mutex_get_align()
             v2 = 64
