@@ -135,6 +135,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_cachesize.html>`__
 
+.. function:: get_cachesize()
+
+   Returns a tuple with the current size and composition of the cache.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/env_set_cachesize.html>`__
+
 .. function:: set_data_dir(dir)
 
    Set the environment data directory.

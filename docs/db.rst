@@ -260,6 +260,13 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_cachesize.html>`__
 
+.. function:: get_cachesize()
+
+   Returns a tuple with the current size and composition of the cache.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_c/db_set_cachesize.html>`__
+
 .. function:: set_get_returns_none(flag)
 
    Controls what get and related methods do when a key is not found.

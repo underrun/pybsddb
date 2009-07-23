@@ -2600,6 +2600,25 @@ DB_set_cachesize(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_cachesize(DBObject* self)
+{
+    int err;
+    u_int32_t gbytes, bytes;
+    int ncache;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_cachesize(self->db, &gbytes, &bytes, &ncache);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return Py_BuildValue("(iii)", gbytes, bytes, ncache);
+}
+#endif
 
 static PyObject*
 DB_set_flags(DBObject* self, PyObject* args)
@@ -4494,6 +4513,26 @@ DBEnv_set_cachesize(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_cachesize(DBEnvObject* self)
+{
+    int err;
+    u_int32_t gbytes, bytes;
+    int ncache;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_cachesize(self->db_env, &gbytes, &bytes, &ncache);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return Py_BuildValue("(iii)", gbytes, bytes, ncache);
+}
+#endif
 
 
 static PyObject*
@@ -7186,6 +7225,9 @@ static PyMethodDef DB_methods[] = {
     {"set_bt_minkey",   (PyCFunction)DB_set_bt_minkey,  METH_VARARGS},
     {"set_bt_compare",  (PyCFunction)DB_set_bt_compare, METH_O},
     {"set_cachesize",   (PyCFunction)DB_set_cachesize,  METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_cachesize",   (PyCFunction)DB_get_cachesize,  METH_NOARGS},
+#endif
     {"set_encrypt",     (PyCFunction)DB_set_encrypt,    METH_VARARGS|METH_KEYWORDS},
 #if (DBVER >= 42)
     {"get_encrypt_flags", (PyCFunction)DB_get_encrypt_flags, METH_NOARGS},
@@ -7292,6 +7334,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_shm_key",     (PyCFunction)DBEnv_get_shm_key,     METH_NOARGS},
 #endif
     {"set_cachesize",   (PyCFunction)DBEnv_set_cachesize,   METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_cachesize",   (PyCFunction)DBEnv_get_cachesize,   METH_NOARGS},
+#endif
 #if (DBVER >= 44)
     {"mutex_set_max",   (PyCFunction)DBEnv_mutex_set_max,   METH_VARARGS},
     {"mutex_get_max",   (PyCFunction)DBEnv_mutex_get_max,   METH_NOARGS},
