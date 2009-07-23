@@ -44,6 +44,13 @@ class DBEnv(unittest.TestCase):
                 self.env.set_cachesize, *cachesize)
             self.assertEqual(cachesize2, self.env.get_cachesize())
 
+        def test_set_cachesize_dbenv_db(self) :
+            # You can not configure the cachesize using
+            # the database handle, if you are using an environment.
+            d = db.DB(self.env)
+            self.assertRaises(db.DBInvalidArgError,
+                d.set_cachesize, 0, 1024*1024, 1)
+
         def test_setget_shm_key(self) :
             shm_key=137
             self.env.set_shm_key(shm_key)
