@@ -329,11 +329,11 @@ documentation as appropriate.
 pybsddb.htm>`__ --
 `Documentation <http://www.jcea.es/programacion/
 pybsddb_doc/>`__ --
-`Mailing List <http://mailman.argo.es/listinfo/pybsddb>`__
+`Mailing List <http://mailman.jcea.es/listinfo/pybsddb>`__
 """,
 
       author = 'Jesus Cea, Robin Dunn, Gregory P. Smith, Andrew Kuchling, Barry Warsaw',
-      author_email = 'pybsddb@argo.es',
+      author_email = 'pybsddb@jcea.es',
       url = 'http://www.jcea.es/programacion/pybsddb.htm',
       license = "MIT License",
 

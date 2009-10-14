@@ -4,7 +4,7 @@ import pickle
 try:
     import pickle
 except ImportError:
-    pickle = None
+    cPickle = None
 import unittest
 
 from .test_all import db, test_support, get_new_environment_path, get_new_database_path
@@ -49,9 +49,9 @@ class pickleTestCase(unittest.TestCase):
     def test01_pickle_DBError(self):
         self._base_test_pickle_DBError(pickle=pickle)
 
-    if pickle:
+    if cPickle:
         def test02_cPickle_DBError(self):
-            self._base_test_pickle_DBError(pickle=pickle)
+            self._base_test_pickle_DBError(pickle=cPickle)
 
 #----------------------------------------------------------------------
 

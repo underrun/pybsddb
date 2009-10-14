@@ -23,7 +23,7 @@
 import os, re
 try:
     import pickle
-    pickle = pickle
+    pickle = cPickle
 except ImportError:
     import pickle
 
