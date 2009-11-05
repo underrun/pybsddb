@@ -11,6 +11,8 @@
   * Support for "DB_ENV->get_cachesize()".
   * Support for "DB->get_cachesize()".
   * Support for "DB_ENV->get_data_dirs()".
+  * Compatibility with development version of
+    Python 2.7 and 3.2.
 
 4.8.0:
   * Support for Berkeley DB 4.8.

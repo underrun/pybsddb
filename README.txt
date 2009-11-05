@@ -33,7 +33,7 @@ known to pass its unit tests on these platforms:
      HP-UX        10.20, 11.00
      Tru64 UNIX   4.0D, 5.0, 5.1
      IRIX         6.2, 6.5
-     Solaris      2.5.1, 2.6, 7, 8
+     Solaris      2.5.1, 2.6, 7, 8, 9, 10
      AIX          4.3.2
 
 In addition we've run it on a several varieties of Linux and of course
@@ -41,7 +41,7 @@ on Win32.
 
 This wrapper should be compatible with Berkeley DB releases going back
 to 4.1 up to and including DB 4.8.  It should also be compatible
-with Python versions from 2.3 to Python 2.6, and Python 3.0 to 3.1.
+with Python versions from 2.3 to Python 2.7, and Python 3.0 to 3.2.
 
 
 Installation
