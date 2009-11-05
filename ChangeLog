@@ -1,3 +1,5 @@
+4.8.2:
+
 4.8.1:
   * Support for "DB_ENV->mutex_set_align()" and
     "DB_ENV->mutex_get_align()".
