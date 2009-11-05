@@ -20,11 +20,15 @@
 #
 # $Id: test_dbtables.py 58532 2007-10-18 07:56:54Z gregory.p.smith $
 
-import os, re
-try:
-    import cPickle
-    pickle = cPickle
-except ImportError:
+import os, re, sys
+
+if sys.version_info[0] < 3 :
+    try:
+        import cPickle
+        pickle = cPickle
+    except ImportError:
+        import pickle
+else :
     import pickle
 
 import unittest

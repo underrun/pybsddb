@@ -11,8 +11,10 @@
   * Support for "DB_ENV->get_cachesize()".
   * Support for "DB->get_cachesize()".
   * Support for "DB_ENV->get_data_dirs()".
-  * Compatibility with development version of
-    Python 2.7 and 3.2.
+  * Testsuite compatibility with recent releases of
+    Python 3.0 and 3.1, where cPickle has been removed.
+  * Compatibility with development versions of
+    Python 2.7 and 3.2 (r76123).
 
 4.8.0:
   * Support for Berkeley DB 4.8.
