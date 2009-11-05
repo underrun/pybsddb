@@ -32,6 +32,10 @@ _expected_lexical_test_data = ['', 'CCCP', 'a', 'aaa', 'b', 'c', 'cccce', 'ccccf
 _expected_lowercase_test_data = ['', 'a', 'aaa', 'b', 'c', 'CC', 'cccce', 'ccccf', 'CCCP']
 
 class ComparatorTests (unittest.TestCase):
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
     def comparator_test_helper (self, comparator, expected_data):
         data = expected_data[:]
 
@@ -53,7 +57,7 @@ class ComparatorTests (unittest.TestCase):
                     data2.append(i)
             data = data2
 
-        self.failUnless (data == expected_data,
+        self.assertTrue (data == expected_data,
                          "comparator `%s' is not right: %s vs. %s"
                          % (comparator, expected_data, data))
     def test_lexical_comparator (self):
@@ -70,6 +74,10 @@ class ComparatorTests (unittest.TestCase):
 class AbstractBtreeKeyCompareTestCase (unittest.TestCase):
     env = None
     db = None
+
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
 
     def setUp (self):
         self.filename = self.__class__.__name__ + '.db'
@@ -121,14 +129,14 @@ class AbstractBtreeKeyCompareTestCase (unittest.TestCase):
             rec = curs.first ()
             while rec:
                 key, ignore = rec
-                self.failUnless (index < len (expected),
+                self.assertTrue(index < len (expected),
                                  "to many values returned from cursor")
-                self.failUnless (expected[index] == key,
+                self.assertTrue(expected[index] == key,
                                  "expected value `%s' at %d but got `%s'"
                                  % (expected[index], index, key))
                 index = index + 1
                 rec = curs.next ()
-            self.failUnless (index == len (expected),
+            self.assertTrue(index == len (expected),
                              "not enough values returned from cursor")
         finally:
             curs.close ()
