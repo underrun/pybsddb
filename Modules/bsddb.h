@@ -105,7 +105,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "4.8.1devel4"
+#define PY_BSDDB_VERSION "4.8.1devel6"
 
 /* Python object definitions */
 
@@ -220,6 +220,7 @@ typedef struct DBSequenceObject {
 /* To access the structure from an external module, use code like the
    following (error checking missed out for clarity):
 
+     // If you are using Python 3.2:
      BSDDB_api* bsddb_api;
      PyObject*  mod;
      PyObject*  cobj;
@@ -230,6 +231,15 @@ typedef struct DBSequenceObject {
      api  = (BSDDB_api*)PyCObject_AsVoidPtr(cobj);
      Py_DECREF(cobj);
      Py_DECREF(mod);
+
+
+     // If you are using Python 3.2 or up:
+     BSDDB_api* bsddb_api;
+
+     // Use "bsddb3._pybsddb.api" if you're using
+     // the standalone pybsddb add-on.
+     bsddb_api = (void **)PyCapsule_Import("bsddb._bsddb.api", 1);
+
 
    The structure's members must not be changed.
 */
@@ -247,7 +257,6 @@ typedef struct {
 
     /* Functions */
     int (*makeDBError)(int err);
-
 } BSDDB_api;
 
 

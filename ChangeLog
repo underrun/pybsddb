@@ -15,6 +15,12 @@
     Python 3.0 and 3.1, where cPickle has been removed.
   * Compatibility with development versions of
     Python 2.7 and 3.2 (r76123).
+  * For a long time, the API is accesible via C
+    using "_bsddb.api" or "_pybsddb.api". If you are
+    using Python 3.2 or up, you acquire access to
+    that API via the new Capsule protocol (see "bsddb.h").
+    If you use the C API and upgrade to Python 3.2 and up,
+    you must update the access code (see "bsddb.h").
 
 4.8.0:
   * Support for Berkeley DB 4.8.

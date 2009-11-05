@@ -8533,7 +8533,24 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #endif
     bsddb_api.makeDBError     = makeDBError;
 
+    /*
+    ** Capsules exist from Python 3.1, but I
+    ** don't want to break the API compatibility
+    ** for already published Python versions.
+    */
+#if (PY_VERSION_HEX < 0x03020000)
     py_api = PyCObject_FromVoidPtr((void*)&bsddb_api, NULL);
+#else
+    {
+        char py_api_name[250];
+
+        strcpy(py_api_name, _bsddbModuleName);
+        strcat(py_api_name, ".api");
+
+        py_api = PyCapsule_New((void*)&bsddb_api, py_api_name, NULL);
+    }
+#endif
+
     PyDict_SetItemString(d, "api", py_api);
     Py_DECREF(py_api);
 
