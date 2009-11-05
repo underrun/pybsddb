@@ -137,11 +137,17 @@ PLAT_SPEC = "%s-%s" % (get_platform(), sys.version[0:3])
 if hasattr(sys, 'gettotalrefcount'):
     PLAT_SPEC += '-pydebug'
 
-class ImmediateTestResult(unittest._TextTestResult):
+try :  # Check in the future if this still necessary
+    # Python 2.7 and 3.2
+    from unittest.runner import _TextTestResult
+except ImportError :
+    from unittest import _TextTestResult
 
-    __super_init = unittest._TextTestResult.__init__
-    __super_startTest = unittest._TextTestResult.startTest
-    __super_printErrors = unittest._TextTestResult.printErrors
+class ImmediateTestResult(_TextTestResult):
+
+    __super_init = _TextTestResult.__init__
+    __super_startTest = _TextTestResult.startTest
+    __super_printErrors = _TextTestResult.printErrors
 
     def __init__(self, stream, descriptions, verbosity, debug=False,
                  count=None, progress=False):

@@ -142,3 +142,6 @@
 * 20090630: "README.txt" needs some love.
 
 * 20090723: Add encryption tests.
+
+* 20091105: Check if the "from unittest.runner import _TextTestResult"
+  trick in Python 2.7 and 3.2 development versions are still necessary.
