@@ -22,6 +22,12 @@ class DBEnv(unittest.TestCase):
         test_support.rmtree(self.homeDir)
 
 class DBEnv_general(DBEnv) :
+    if db.version() >= (4, 4) :
+        def test_lg_filemode(self) :
+            for i in [0o600, 0o660, 0o666] :
+                self.env.set_lg_filemode(i)
+                self.assertEqual(i, self.env.get_lg_filemode())
+
     if db.version() >= (4, 2) :
         def test_lg_dir(self) :
             for i in ["a", "bb", "ccc", "dddd"] :

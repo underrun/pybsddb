@@ -244,8 +244,22 @@ DBEnv Methods
 .. function:: get_private()
 
    Give the object linked to the DBEnv.
-   
-.. function:: get_lg_bsize(size)
+
+.. function:: get_lg_filemode()
+
+   Returns the log file mode.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_lg_filemode.html>`__
+
+.. function:: set_lg_filemode(filemode)
+
+   Set the absolute file mode for created log files.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envset_lg_filemode.html>`__
+
+.. function:: get_lg_bsize()
 
    Returns the size of the log buffer, in bytes.
    `More info...

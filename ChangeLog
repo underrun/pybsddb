@@ -3,7 +3,8 @@
     "DB_FOREIGN_CASCADE", "DB_FOREIGN_NULLIFY" flags.
   * Support for "DB_FOREIGN_CONFLICT" exception.
   * Support for "DB_ENV->memp_trickle()", "DB_ENV->get_lg_bsize()",
-    "DB_ENV->get_lg_dir()" functions.
+    "DB_ENV->get_lg_dir()", "DB_ENV->get_lg_filemode()",
+    "DB_ENV->set_lg_filemode()" functions.
 
 4.8.1:
   * Support for "DB_ENV->mutex_set_align()" and

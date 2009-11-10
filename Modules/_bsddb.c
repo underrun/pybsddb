@@ -4800,6 +4800,38 @@ DBEnv_get_data_dirs(DBEnvObject* self)
 }
 #endif
 
+#if (DBVER >= 44)
+static PyObject*
+DBEnv_set_lg_filemode(DBEnvObject* self, PyObject* args)
+{
+    int err, filemode;
+
+    if (!PyArg_ParseTuple(args, "i:set_lg_filemode", &filemode))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_lg_filemode(self->db_env, filemode);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_get_lg_filemode(DBEnvObject* self)
+{
+    int err, filemode;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_lg_filemode(self->db_env, &filemode);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(filemode);
+}
+#endif
+
 static PyObject*
 DBEnv_set_lg_bsize(DBEnvObject* self, PyObject* args)
 {
@@ -7470,6 +7502,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_lg_max",      (PyCFunction)DBEnv_get_lg_max,      METH_NOARGS},
 #endif
     {"set_lg_regionmax",(PyCFunction)DBEnv_set_lg_regionmax, METH_VARARGS},
+#if (DBVER >= 44)
+    {"set_lg_filemode", (PyCFunction)DBEnv_set_lg_filemode, METH_VARARGS},
+    {"get_lg_filemode", (PyCFunction)DBEnv_get_lg_filemode, METH_NOARGS},
+#endif
     {"set_lk_detect",   (PyCFunction)DBEnv_set_lk_detect,   METH_VARARGS},
 #if (DBVER < 45)
     {"set_lk_max",      (PyCFunction)DBEnv_set_lk_max,      METH_VARARGS},
