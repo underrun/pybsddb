@@ -4,7 +4,7 @@
   * Support for "DB_FOREIGN_CONFLICT" exception.
   * Support for "DB_ENV->memp_trickle()", "DB_ENV->get_lg_bsize()",
     "DB_ENV->get_lg_dir()", "DB_ENV->get_lg_filemode()",
-    "DB_ENV->set_lg_filemode()" functions.
+    "DB_ENV->set_lg_filemode()", "DB_ENV->get_lk_detect()" functions.
 
 4.8.1:
   * Support for "DB_ENV->mutex_set_align()" and

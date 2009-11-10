@@ -310,6 +310,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lg_regionmax.html>`__
 
+.. function:: get_lk_detect()
+
+   Returns the deadlock detector configuration.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_lk_detect.html>`__
+
 .. function:: set_lk_detect(mode)
 
    Set the automatic deadlock detection mode.

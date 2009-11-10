@@ -29,6 +29,14 @@ class DBEnv_general(DBEnv) :
                 self.assertEqual(i, self.env.get_lg_filemode())
 
     if db.version() >= (4, 2) :
+        def test_lk_detect(self) :
+            for i in [db.DB_LOCK_DEFAULT, db.DB_LOCK_EXPIRE,
+                    db.DB_LOCK_MAXLOCKS, db.DB_LOCK_MAXWRITE,
+                    db.DB_LOCK_MINLOCKS, db.DB_LOCK_MINWRITE,
+                    db.DB_LOCK_OLDEST, db.DB_LOCK_RANDOM, db.DB_LOCK_YOUNGEST]:
+                self.env.set_lk_detect(i)
+                self.assertEqual(i, self.env.get_lk_detect())
+
         def test_lg_dir(self) :
             for i in ["a", "bb", "ccc", "dddd"] :
                 self.env.set_lg_dir(i)

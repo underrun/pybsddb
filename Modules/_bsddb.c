@@ -4966,6 +4966,23 @@ DBEnv_set_lk_detect(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_lk_detect(DBEnvObject* self)
+{
+    int err;
+    u_int32_t lk_detect;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_lk_detect(self->db_env, &lk_detect);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(lk_detect);
+}
+#endif
+
 
 #if (DBVER < 45)
 static PyObject*
@@ -7507,6 +7524,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_lg_filemode", (PyCFunction)DBEnv_get_lg_filemode, METH_NOARGS},
 #endif
     {"set_lk_detect",   (PyCFunction)DBEnv_set_lk_detect,   METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_lk_detect",   (PyCFunction)DBEnv_get_lk_detect,   METH_NOARGS},
+#endif
 #if (DBVER < 45)
     {"set_lk_max",      (PyCFunction)DBEnv_set_lk_max,      METH_VARARGS},
 #endif
