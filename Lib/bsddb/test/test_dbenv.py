@@ -17,15 +17,24 @@ class DBEnv(unittest.TestCase):
         self.env = db.DBEnv()
 
     def tearDown(self):
+        self.env.close()
         del self.env
         test_support.rmtree(self.homeDir)
 
 class DBEnv_general(DBEnv) :
     if db.version() >= (4, 2) :
+        def test_lg_dir(self) :
+            for i in ["a", "bb", "ccc", "dddd"] :
+                self.env.set_lg_dir(i)
+                self.assertEqual(i, self.env.get_lg_dir())
+
         def test_lg_bsize(self) :
             log_size = 70*1024
+            self.env.set_lg_bsize(log_size)
+            self.assertTrue(self.env.get_lg_bsize() >= log_size)
+            self.assertTrue(self.env.get_lg_bsize() < 4*log_size)
             self.env.set_lg_bsize(4*log_size)
-            self.assertTrue(self.env.get_lg_bsize() > log_size)
+            self.assertTrue(self.env.get_lg_bsize() >= 4*log_size)
 
         def test_setget_data_dirs(self) :
             dirs = ("a", "b", "c", "d")
@@ -154,17 +163,15 @@ class DBEnv_general(DBEnv) :
 
 class DBEnv_memp(DBEnv):
     def setUp(self):
-        self.homeDir = get_new_environment_path()
-        self.env = db.DBEnv()
+        DBEnv.setUp(self)
         self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL | db.DB_INIT_LOG )
         self.db = db.DB(self.env)
         self.db.open("test", db.DB_HASH, db.DB_CREATE, 0660)
 
     def tearDown(self):
         self.db.close()
-        self.env.close()
-        del self.db, self.env
-        test_support.rmtree(self.homeDir)
+        del self.db
+        DBEnv.tearDown(self)
 
     def test_memp_trickle(self) :
         self.db.put("hi", "bye")

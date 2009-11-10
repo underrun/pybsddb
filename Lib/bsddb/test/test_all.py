@@ -333,6 +333,9 @@ if sys.version_info[0] >= 3 :
         def __getattr__(self, v) :
             return getattr(self._dbenv, v)
 
+        def get_lg_dir(self) :
+            return self._dbenv.get_lg_dir().decode(charset)
+
         def get_data_dirs(self) :
             # Have to use a list comprehension and not
             # generators, because we are supporting Python 2.3.

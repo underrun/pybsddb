@@ -259,6 +259,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lg_bsize.html>`__
 
+.. function:: get_lg_dir()
+
+   Returns the log directory, which is the location for logging files.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_lg_dir.html>`__
+
 .. function:: set_lg_dir(dir)
 
    The path of a directory to be used as the location of logging files.
