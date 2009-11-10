@@ -209,6 +209,11 @@ static PyObject* DBRepLockoutError;     /* DB_REP_LOCKOUT */
 static PyObject* DBRepLeaseExpiredError; /* DB_REP_LEASE_EXPIRED */
 #endif
 
+#if (DBVER >= 47)
+static PyObject* DBForeignConflictError; /* DB_FOREIGN_CONFLICT */
+#endif
+
+
 static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 
 #if (DBVER < 43)
@@ -713,6 +718,10 @@ static int makeDBError(int err)
         case DB_REP_LEASE_EXPIRED : errObj = DBRepLeaseExpiredError; break;
 #endif
 
+#if (DBVER >= 47)
+        case DB_FOREIGN_CONFLICT : errObj = DBForeignConflictError; break;
+#endif
+
         case DB_REP_UNAVAIL : errObj = DBRepUnavailError; break;
 
         default:      errObj = DBError;             break;
@@ -814,7 +823,7 @@ static PyObject* _DBCursor_get(DBCursorObject* self, int extra_flags,
     static char* kwnames[] = { "flags", "dlen", "doff", NULL };
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, format, kwnames,
-				     &flags, &dlen, &doff)) 
+				     &flags, &dlen, &doff))
       return NULL;
 
     CHECK_CURSOR_NOT_CLOSED(self);
@@ -1785,7 +1794,7 @@ DB_compact(DBObject* self, PyObject* args, PyObject* kwargs)
         FREE_DBT(start);
     if (stopobj)
         FREE_DBT(stop);
- 
+
     RETURN_IF_ERR();
 
     return PyLong_FromUnsignedLong(c_data.compact_pages_truncated);
@@ -7378,6 +7387,7 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 42)
     {"get_cachesize",   (PyCFunction)DBEnv_get_cachesize,   METH_NOARGS},
 #endif
+    {"memp_trickle",    (PyCFunction)DBEnv_memp_trickle,    METH_VARARGS|METH_KEYWORDS},
 #if (DBVER >= 44)
     {"mutex_set_max",   (PyCFunction)DBEnv_mutex_set_max,   METH_VARARGS},
     {"mutex_get_max",   (PyCFunction)DBEnv_mutex_get_max,   METH_NOARGS},
@@ -8262,6 +8272,16 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
     ADD_INT(d, DB_OVERWRITE);
 
+#if (DBVER >= 48)
+    ADD_INT(d, DB_OVERWRITE_DUP);
+#endif
+
+#if (DBVER >= 47)
+    ADD_INT(d, DB_FOREIGN_ABORT);
+    ADD_INT(d, DB_FOREIGN_CASCADE);
+    ADD_INT(d, DB_FOREIGN_NULLIFY);
+#endif
+
 #if (DBVER >= 44)
     ADD_INT(d, DB_REGISTER);
 #endif
@@ -8518,6 +8538,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
 #if (DBVER >= 46)
     MAKE_EX(DBRepLeaseExpiredError);
+#endif
+
+#if (DBVER >= 47)
+        MAKE_EX(DBForeignConflictError);
 #endif
 
 #undef MAKE_EX
