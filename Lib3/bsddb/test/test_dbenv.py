@@ -15,6 +15,7 @@ class DBEnv(unittest.TestCase):
         del self.env
         test_support.rmtree(self.homeDir)
 
+class DBEnv_general(DBEnv) :
     if db.version() >= (4, 2) :
         def test_setget_data_dirs(self) :
             dirs = ("a", "b", "c", "d")
@@ -141,8 +142,31 @@ class DBEnv(unittest.TestCase):
                     self.env.mutex_set_align, v2)
 
 
+class DBEnv_memp(DBEnv):
+    def setUp(self):
+        self.homeDir = get_new_environment_path()
+        self.env = db.DBEnv()
+        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL | db.DB_INIT_LOG )
+        self.db = db.DB(self.env)
+        self.db.open("test", db.DB_HASH, db.DB_CREATE, 0o660)
+
+    def tearDown(self):
+        self.db.close()
+        self.env.close()
+        del self.db, self.env
+        test_support.rmtree(self.homeDir)
+
+    def test_memp_trickle(self) :
+        self.db.put("hi", "bye")
+        self.assertTrue(self.env.memp_trickle(100) > 0)
+
 def test_suite():
-    return unittest.makeSuite(DBEnv)
+    suite = unittest.TestSuite()
+
+    suite.addTest(unittest.makeSuite(DBEnv_general))
+    suite.addTest(unittest.makeSuite(DBEnv_memp))
+
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

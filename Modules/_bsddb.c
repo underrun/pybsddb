@@ -4314,6 +4314,20 @@ DBEnv_open(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+static PyObject*
+DBEnv_memp_trickle(DBEnvObject* self, PyObject* args)
+{
+    int err, percent, nwrotep;
+
+    if (!PyArg_ParseTuple(args, "i:memp_trickle", &percent))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->memp_trickle(self->db_env, percent, &nwrotep);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(nwrotep);
+}
 
 static PyObject*
 DBEnv_remove(DBEnvObject* self, PyObject* args)
@@ -7387,7 +7401,7 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 42)
     {"get_cachesize",   (PyCFunction)DBEnv_get_cachesize,   METH_NOARGS},
 #endif
-    {"memp_trickle",    (PyCFunction)DBEnv_memp_trickle,    METH_VARARGS|METH_KEYWORDS},
+    {"memp_trickle",    (PyCFunction)DBEnv_memp_trickle,    METH_VARARGS},
 #if (DBVER >= 44)
     {"mutex_set_max",   (PyCFunction)DBEnv_mutex_set_max,   METH_VARARGS},
     {"mutex_get_max",   (PyCFunction)DBEnv_mutex_get_max,   METH_NOARGS},

@@ -43,6 +43,14 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_open.html>`__
 
+.. function:: memp_trickle(percent)
+
+   Ensures that a specified percent of the pages in the cache are clean,
+   by writing dirty pages to their backing files.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/memptrickle.html>`__
+   
 .. function:: remove(homedir, flags=0)
 
    Remove a database environment.
