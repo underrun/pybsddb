@@ -1,9 +1,8 @@
 4.8.2:
-  * Support for "DB_OVERWRITE_DUP" flag.
-  * Support for "DB_FOREIGN_ABORT", "DB_FOREIGN_CASCADE",
-    "DB_FOREIGN_NULLIFY" flags.
+  * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",
+    "DB_FOREIGN_CASCADE", "DB_FOREIGN_NULLIFY" flags.
   * Support for "DB_FOREIGN_CONFLICT" exception.
-  * Support for "DB_ENV->memp_trickle()".
+  * Support for "DB_ENV->memp_trickle()", "DB_ENV->get_lg_bsize()" functions.
 
 4.8.1:
   * Support for "DB_ENV->mutex_set_align()" and

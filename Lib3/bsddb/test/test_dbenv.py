@@ -7,6 +7,11 @@ from .test_all import db, test_support, get_new_environment_path, \
 #----------------------------------------------------------------------
 
 class DBEnv(unittest.TestCase):
+    import sys
+    if sys.version_info[:3] < (2, 4, 0):
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
     def setUp(self):
         self.homeDir = get_new_environment_path()
         self.env = db.DBEnv()
@@ -17,6 +22,11 @@ class DBEnv(unittest.TestCase):
 
 class DBEnv_general(DBEnv) :
     if db.version() >= (4, 2) :
+        def test_lg_bsize(self) :
+            log_size = 70*1024
+            self.env.set_lg_bsize(4*log_size)
+            self.assertTrue(self.env.get_lg_bsize() > log_size)
+
         def test_setget_data_dirs(self) :
             dirs = ("a", "b", "c", "d")
             for i in dirs :

@@ -245,6 +245,13 @@ DBEnv Methods
 
    Give the object linked to the DBEnv.
    
+.. function:: get_lg_bsize(size)
+
+   Returns the size of the log buffer, in bytes.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_lg_bsize.html>`__
+
 .. function:: set_lg_bsize(size)
 
    Set the size of the in-memory log buffer, in bytes.

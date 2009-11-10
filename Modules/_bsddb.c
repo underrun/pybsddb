@@ -4816,6 +4816,22 @@ DBEnv_set_lg_bsize(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_lg_bsize(DBEnvObject* self)
+{
+    int err;
+    u_int32_t lg_bsize;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_lg_bsize(self->db_env, &lg_bsize);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(lg_bsize);
+}
+#endif
 
 static PyObject*
 DBEnv_set_lg_dir(DBEnvObject* self, PyObject* args)
@@ -7425,6 +7441,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"log_set_config",  (PyCFunction)DBEnv_log_set_config,  METH_VARARGS},
 #endif
     {"set_lg_bsize",    (PyCFunction)DBEnv_set_lg_bsize,    METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_lg_bsize",    (PyCFunction)DBEnv_get_lg_bsize,    METH_NOARGS},
+#endif
     {"set_lg_dir",      (PyCFunction)DBEnv_set_lg_dir,      METH_VARARGS},
     {"set_lg_max",      (PyCFunction)DBEnv_set_lg_max,      METH_VARARGS},
 #if (DBVER >= 42)
