@@ -43,6 +43,14 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_open.html>`__
 
+.. function:: memp_sync(lsn=None)
+
+   Flushes modified pages in the cache to their backing files. If
+   provided, lsn is a tuple: (file, offset).
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/mempsync.html>`__
+  
 .. function:: memp_trickle(percent)
 
    Ensures that a specified percent of the pages in the cache are clean,

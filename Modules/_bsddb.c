@@ -4330,6 +4330,26 @@ DBEnv_memp_trickle(DBEnvObject* self, PyObject* args)
 }
 
 static PyObject*
+DBEnv_memp_sync(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    DB_LSN lsn = {0, 0};
+    DB_LSN *lsn_p = NULL;
+
+    if (!PyArg_ParseTuple(args, "|(ii):memp_sync", &lsn.file, &lsn.offset))
+        return NULL;
+    if ((lsn.file!=0) || (lsn.offset!=0)) {
+        lsn_p = &lsn;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->memp_sync(self->db_env, lsn_p);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
 DBEnv_remove(DBEnvObject* self, PyObject* args)
 {
     int err, flags=0;
@@ -7637,6 +7657,8 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_cachesize",   (PyCFunction)DBEnv_get_cachesize,   METH_NOARGS},
 #endif
     {"memp_trickle",    (PyCFunction)DBEnv_memp_trickle,    METH_VARARGS},
+    {"memp_sync",       (PyCFunction)DBEnv_memp_sync,       METH_VARARGS},
+
 #if (DBVER >= 44)
     {"mutex_set_max",   (PyCFunction)DBEnv_mutex_set_max,   METH_VARARGS},
     {"mutex_get_max",   (PyCFunction)DBEnv_mutex_get_max,   METH_NOARGS},
