@@ -4966,6 +4966,38 @@ DBEnv_get_lg_regionmax(DBEnvObject* self)
 }
 #endif
 
+#if (DBVER >= 47)
+static PyObject*
+DBEnv_set_lk_partitions(DBEnvObject* self, PyObject* args)
+{
+    int err, lk_partitions;
+
+    if (!PyArg_ParseTuple(args, "i:set_lk_partitions", &lk_partitions))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_lk_partitions(self->db_env, lk_partitions);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_get_lk_partitions(DBEnvObject* self)
+{
+    int err;
+    u_int32_t lk_partitions;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_lk_partitions(self->db_env, &lk_partitions);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(lk_partitions);
+}
+#endif
 
 static PyObject*
 DBEnv_set_lk_detect(DBEnvObject* self, PyObject* args)
@@ -7590,6 +7622,10 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 44)
     {"set_lg_filemode", (PyCFunction)DBEnv_set_lg_filemode, METH_VARARGS},
     {"get_lg_filemode", (PyCFunction)DBEnv_get_lg_filemode, METH_NOARGS},
+#endif
+#if (DBVER >= 47)
+    {"set_lk_partitions", (PyCFunction)DBEnv_set_lk_partitions, METH_VARARGS},
+    {"get_lk_partitions", (PyCFunction)DBEnv_get_lk_partitions, METH_NOARGS},
 #endif
     {"set_lk_detect",   (PyCFunction)DBEnv_set_lk_detect,   METH_VARARGS},
 #if (DBVER >= 42)

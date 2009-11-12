@@ -22,6 +22,12 @@ class DBEnv(unittest.TestCase):
         test_support.rmtree(self.homeDir)
 
 class DBEnv_general(DBEnv) :
+    if db.version() >= (4, 7) :
+        def test_lk_partitions(self) :
+            for i in [10, 20, 40] :
+                self.env.set_lk_partitions(i)
+                self.assertEqual(i, self.env.get_lk_partitions())
+
     if db.version() >= (4, 4) :
         def test_lg_filemode(self) :
             for i in [0o600, 0o660, 0o666] :

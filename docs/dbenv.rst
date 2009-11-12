@@ -317,6 +317,22 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lg_regionmax.html>`__
 
+.. function:: get_lk_partitions()
+
+   Returns the number of lock table partitions used in the Berkeley DB
+   environment.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_lk_partitions.html>`__
+
+.. function:: set_lk_partitions(partitions)
+
+   Set the number of lock table partitions in the Berkeley DB
+   environment.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envset_lk_partitions.html>`__
+
 .. function:: get_lk_detect()
 
    Returns the deadlock detector configuration.
