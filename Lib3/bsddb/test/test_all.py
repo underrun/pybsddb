@@ -517,6 +517,7 @@ def suite(module_prefix='', timing_check=None):
         'test_associate',
         'test_basics',
         'test_dbenv',
+        'test_db',
         'test_compare',
         'test_compat',
         'test_cursor_pget_bug',

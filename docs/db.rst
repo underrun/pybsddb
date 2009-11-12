@@ -282,6 +282,14 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_flags.html>`__
 
+.. function:: get_h_ffactor()
+
+   Returns the hash table density as set by the DB->set_h_ffactor()
+   method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_h_ffactor.html>`__
+
 .. function:: set_h_ffactor(ffactor)
 
    Set the desired density within the hash table.

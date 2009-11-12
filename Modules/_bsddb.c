@@ -2664,6 +2664,22 @@ DB_set_h_ffactor(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_h_ffactor(DBObject* self)
+{
+    int err;
+    u_int32_t ffactor;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_h_ffactor(self->db, &ffactor);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(ffactor);
+}
+#endif
 
 static PyObject*
 DB_set_h_nelem(DBObject* self, PyObject* args)
@@ -7550,6 +7566,9 @@ static PyMethodDef DB_methods[] = {
 
     {"set_flags",       (PyCFunction)DB_set_flags,      METH_VARARGS},
     {"set_h_ffactor",   (PyCFunction)DB_set_h_ffactor,  METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_h_ffactor",   (PyCFunction)DB_get_h_ffactor,  METH_NOARGS},
+#endif
     {"set_h_nelem",     (PyCFunction)DB_set_h_nelem,    METH_VARARGS},
     {"set_lorder",      (PyCFunction)DB_set_lorder,     METH_VARARGS},
     {"set_pagesize",    (PyCFunction)DB_set_pagesize,   METH_VARARGS},
