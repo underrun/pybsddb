@@ -29,6 +29,11 @@ class DBEnv_general(DBEnv) :
                 self.assertEqual(i, self.env.get_lg_filemode())
 
     if db.version() >= (4, 2) :
+        def test_lk_max_objects(self) :
+            for i in [1000, 2000, 3000] :
+                self.env.set_lk_max_objects(i)
+                self.assertEqual(i, self.env.get_lk_max_objects())
+
         def test_lk_max_locks(self) :
             for i in [1000, 2000, 3000] :
                 self.env.set_lk_max_locks(i)
