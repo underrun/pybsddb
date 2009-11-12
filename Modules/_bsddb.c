@@ -4949,6 +4949,23 @@ DBEnv_set_lg_regionmax(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_lg_regionmax(DBEnvObject* self)
+{
+    int err;
+    u_int32_t lg_regionmax;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_lg_regionmax(self->db_env, &lg_regionmax);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(lg_regionmax);
+}
+#endif
+
 
 static PyObject*
 DBEnv_set_lk_detect(DBEnvObject* self, PyObject* args)
@@ -7519,6 +7536,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_lg_max",      (PyCFunction)DBEnv_get_lg_max,      METH_NOARGS},
 #endif
     {"set_lg_regionmax",(PyCFunction)DBEnv_set_lg_regionmax, METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_lg_regionmax",(PyCFunction)DBEnv_get_lg_regionmax, METH_NOARGS},
+#endif
 #if (DBVER >= 44)
     {"set_lg_filemode", (PyCFunction)DBEnv_set_lg_filemode, METH_VARARGS},
     {"get_lg_filemode", (PyCFunction)DBEnv_get_lg_filemode, METH_NOARGS},

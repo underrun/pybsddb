@@ -145,3 +145,6 @@
 
 * 20091105: Check if the "from unittest.runner import _TextTestResult"
   trick in Python 2.7 and 3.2 development versions are still necessary.
+
+* 20091112: Update documentation links to Oracle site.
+

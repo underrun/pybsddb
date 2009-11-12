@@ -303,6 +303,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lg_max.html>`__
 
+.. function:: get_lg_regionmax()
+
+   Returns the size of the underlying logging subsystem region.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_lg_regionmax.html>`__
+
 .. function:: set_lg_regionmax(size)
 
    Set the maximum size of a single region in the log, in bytes.

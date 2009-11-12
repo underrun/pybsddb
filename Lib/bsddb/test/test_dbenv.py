@@ -29,6 +29,14 @@ class DBEnv_general(DBEnv) :
                 self.assertEqual(i, self.env.get_lg_filemode())
 
     if db.version() >= (4, 2) :
+        def test_lg_regionmax(self) :
+            for i in [128, 256, 1024] :
+                i = i*1024*1024
+                self.env.set_lg_regionmax(i)
+                j = self.env.get_lg_regionmax()
+                self.assertTrue(i <= j)
+                self.assertTrue(2*i > j)
+
         def test_lk_detect(self) :
             for i in [db.DB_LOCK_DEFAULT, db.DB_LOCK_EXPIRE,
                     db.DB_LOCK_MAXLOCKS, db.DB_LOCK_MAXWRITE,
