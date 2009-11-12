@@ -28,6 +28,16 @@ class DBEnv_general(DBEnv) :
                 self.env.set_lk_partitions(i)
                 self.assertEqual(i, self.env.get_lk_partitions())
 
+    if db.version() >= (4, 6) :
+        def test_cache_max(self) :
+            for size in [64, 128] :
+                size = size*1024*1024  # Megabytes
+                self.env.set_cache_max(0, size)
+                size2 = self.env.get_cache_max()
+                self.assertEqual(0, size2[0])
+                self.assertTrue(size <= size2[1])
+                self.assertTrue(2*size > size2[1])
+
     if db.version() >= (4, 4) :
         def test_lg_filemode(self) :
             for i in [0600, 0660, 0666] :

@@ -4520,6 +4520,42 @@ DBEnv_get_shm_key(DBEnvObject* self)
 }
 #endif
 
+#if (DBVER >= 46)
+static PyObject*
+DBEnv_set_cache_max(DBEnvObject* self, PyObject* args)
+{
+    int err, gbytes, bytes;
+
+    if (!PyArg_ParseTuple(args, "ii:set_cache_max",
+                          &gbytes, &bytes))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_cache_max(self->db_env, gbytes, bytes);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_get_cache_max(DBEnvObject* self)
+{
+    int err;
+    u_int32_t gbytes, bytes;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_cache_max(self->db_env, &gbytes, &bytes);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return Py_BuildValue("(ii)", gbytes, bytes);
+}
+#endif
+
 static PyObject*
 DBEnv_set_cachesize(DBEnvObject* self, PyObject* args)
 {
@@ -7591,6 +7627,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"set_shm_key",     (PyCFunction)DBEnv_set_shm_key,     METH_VARARGS},
 #if (DBVER >= 42)
     {"get_shm_key",     (PyCFunction)DBEnv_get_shm_key,     METH_NOARGS},
+#endif
+#if (DBVER >= 46)
+    {"set_cache_max",   (PyCFunction)DBEnv_set_cache_max,   METH_VARARGS},
+    {"get_cache_max",   (PyCFunction)DBEnv_get_cache_max,   METH_NOARGS},
 #endif
     {"set_cachesize",   (PyCFunction)DBEnv_set_cachesize,   METH_VARARGS},
 #if (DBVER >= 42)

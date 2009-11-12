@@ -136,6 +136,25 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_shm_key.html>`__
 
+.. function:: set_cache_max(gbytes, bytes)
+
+   Sets the maximum cache size, in bytes. The specified size is rounded
+   to the nearest multiple of the cache region size, which is the
+   initial cache size divided by the number of regions specified to the
+   DB_ENV->set_cachesize() method. If no value is specified, it defaults
+   to the initial cache size.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envset_cache_max.html>`__
+
+.. function:: get_cache_max()
+
+   Returns the maximum size of the cache as set using the
+   DB_ENV->set_cache_max() method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_cache_max.html>`__
+
 .. function:: set_cachesize(gbytes, bytes, ncache=0)
 
    Set the size of the shared memory buffer pool.
