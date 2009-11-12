@@ -346,6 +346,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lk_max_locks.html>`__
 
+.. function:: get_lk_max_lockers()
+
+   Returns the maximum number of potential lockers.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_lk_max_lockers.html>`__
+
 .. function:: set_lk_max_lockers(max)
 
    Set the maximum number of simultaneous locking entities supported by

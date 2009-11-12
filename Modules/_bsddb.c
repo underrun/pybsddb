@@ -5054,6 +5054,22 @@ DBEnv_set_lk_max_lockers(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_lk_max_lockers(DBEnvObject* self)
+{
+    int err;
+    u_int32_t lk_max;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_lk_max_lockers(self->db_env, &lk_max);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(lk_max);
+}
+#endif
 
 static PyObject*
 DBEnv_set_lk_max_objects(DBEnvObject* self, PyObject* args)
@@ -7552,6 +7568,9 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
     {"set_lk_max_locks", (PyCFunction)DBEnv_set_lk_max_locks, METH_VARARGS},
     {"set_lk_max_lockers", (PyCFunction)DBEnv_set_lk_max_lockers, METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_lk_max_lockers", (PyCFunction)DBEnv_get_lk_max_lockers, METH_NOARGS},
+#endif
     {"set_lk_max_objects", (PyCFunction)DBEnv_set_lk_max_objects, METH_VARARGS},
     {"set_mp_mmapsize", (PyCFunction)DBEnv_set_mp_mmapsize, METH_VARARGS},
     {"set_tmp_dir",     (PyCFunction)DBEnv_set_tmp_dir,     METH_VARARGS},
