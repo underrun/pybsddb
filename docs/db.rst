@@ -297,6 +297,14 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_h_ffactor.html>`__
 
+.. function:: get_h_nelem()
+
+   Returns the estimate of the final size of the hash table as set by the
+   DB->set_h_nelem() method. 
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_h_nelem.html>`__
+
 .. function:: set_h_nelem(nelem)
 
    Set an estimate of the final size of the hash table.

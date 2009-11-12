@@ -28,6 +28,12 @@ class DB_hash(DB) :
                 self.db.set_h_ffactor(ffactor)
                 self.assertEqual(ffactor, self.db.get_h_ffactor())
 
+        def test_h_nelem(self) :
+            for nelem in [1, 2, 4] :
+                nelem = nelem*1024*1024  # Millions
+                self.db.set_h_nelem(nelem)
+                self.assertEqual(nelem, self.db.get_h_nelem())
+
 
 def test_suite():
     suite = unittest.TestSuite()
