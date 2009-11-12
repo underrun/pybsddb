@@ -29,6 +29,11 @@ class DBEnv_general(DBEnv) :
                 self.assertEqual(i, self.env.get_lg_filemode())
 
     if db.version() >= (4, 2) :
+        def test_lk_max_locks(self) :
+            for i in [1000, 2000, 3000] :
+                self.env.set_lk_max_locks(i)
+                self.assertEqual(i, self.env.get_lk_max_locks())
+
         def test_lk_max_lockers(self) :
             for i in [1000, 2000, 3000] :
                 self.env.set_lk_max_lockers(i)
@@ -43,10 +48,14 @@ class DBEnv_general(DBEnv) :
                 self.assertTrue(2*i > j)
 
         def test_lk_detect(self) :
-            for i in [db.DB_LOCK_DEFAULT, db.DB_LOCK_EXPIRE,
-                    db.DB_LOCK_MAXLOCKS, db.DB_LOCK_MAXWRITE,
+            flags= [db.DB_LOCK_DEFAULT, db.DB_LOCK_EXPIRE, db.DB_LOCK_MAXLOCKS,
                     db.DB_LOCK_MINLOCKS, db.DB_LOCK_MINWRITE,
-                    db.DB_LOCK_OLDEST, db.DB_LOCK_RANDOM, db.DB_LOCK_YOUNGEST]:
+                    db.DB_LOCK_OLDEST, db.DB_LOCK_RANDOM, db.DB_LOCK_YOUNGEST]
+
+            if db.version() >= (4, 3) :
+                flags.append(db.DB_LOCK_MAXWRITE)
+
+            for i in flags :
                 self.env.set_lk_detect(i)
                 self.assertEqual(i, self.env.get_lk_detect())
 

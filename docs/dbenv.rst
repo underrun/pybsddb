@@ -338,6 +338,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lk_max.html>`__
 
+.. function:: get_lk_max_locks()
+
+   Returns the maximum number of potential locks.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_lk_max_locks.html>`__
+
 .. function:: set_lk_max_locks(max)
 
    Set the maximum number of locks supported by the Berkeley DB lock
