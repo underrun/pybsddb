@@ -8,6 +8,7 @@
     "DB_ENV->get_lg_regionmax()", "DB_ENV->get_lk_max_lockers()", 
     "DB_ENV->set_lk_max_locks()", "DB_ENV->get_lk_max_objects()",
     "DB_ENV->set_lk_partitions()", "DB_ENV->get_lk_partitions()",
+    "DB_ENV->get_flags()",
     functions.
 
 4.8.1:

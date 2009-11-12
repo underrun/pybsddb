@@ -165,6 +165,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_data_dir.html>`__
 
+.. function:: get_flags()
+
+   Returns the configuration flags set for a DB_ENV handle.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_flags.html>`__
+
 .. function:: set_flags(flags, onoff)
 
    Set additional flags for the DBEnv. The onoff parameter specifes if

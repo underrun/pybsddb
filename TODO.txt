@@ -148,3 +148,5 @@
 
 * 20091112: Update documentation links to Oracle site.
 
+* 20091112: DBEnv->set_flags() must support True/False.
+

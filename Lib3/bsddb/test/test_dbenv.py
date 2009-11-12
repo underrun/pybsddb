@@ -35,6 +35,17 @@ class DBEnv_general(DBEnv) :
                 self.assertEqual(i, self.env.get_lg_filemode())
 
     if db.version() >= (4, 2) :
+        def test_flags(self) :
+            self.env.set_flags(db.DB_AUTO_COMMIT, 1)
+            self.assertEqual(db.DB_AUTO_COMMIT, self.env.get_flags())
+            self.env.set_flags(db.DB_TXN_NOSYNC, 1)
+            self.assertEqual(db.DB_AUTO_COMMIT | db.DB_TXN_NOSYNC,
+                    self.env.get_flags())
+            self.env.set_flags(db.DB_AUTO_COMMIT, 0)
+            self.assertEqual(db.DB_TXN_NOSYNC, self.env.get_flags())
+            self.env.set_flags(db.DB_TXN_NOSYNC, 0)
+            self.assertEqual(0, self.env.get_flags())
+
         def test_lk_max_objects(self) :
             for i in [1000, 2000, 3000] :
                 self.env.set_lk_max_objects(i)

@@ -4575,6 +4575,22 @@ DBEnv_set_flags(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_flags(DBEnvObject* self)
+{
+    int err;
+    u_int32_t flags;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_flags(self->db_env, &flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(flags);
+}
+#endif
 
 #if (DBVER >= 47)
 static PyObject*
@@ -7598,6 +7614,9 @@ static PyMethodDef DBEnv_methods[] = {
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
 #if (DBVER >= 42)
     {"get_data_dirs",   (PyCFunction)DBEnv_get_data_dirs,   METH_NOARGS},
+#endif
+#if (DBVER >= 42)
+    {"get_flags",       (PyCFunction)DBEnv_get_flags,       METH_NOARGS},
 #endif
     {"set_flags",       (PyCFunction)DBEnv_set_flags,       METH_VARARGS},
 #if (DBVER >= 47)
