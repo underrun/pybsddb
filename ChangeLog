@@ -1,6 +1,6 @@
 4.8.2:
   * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",
-    "DB_FOREIGN_CASCADE", "DB_FOREIGN_NULLIFY" flags.
+    "DB_FOREIGN_CASCADE", "DB_FOREIGN_NULLIFY", "DB_PRINTABLE" flags.
   * Support for "DB_FOREIGN_CONFLICT" exception.
   * Support for "DB_ENV->memp_trickle()", "DB_ENV->memp_sync()",
     "DB_ENV->get_lg_bsize()", "DB_ENV->get_lg_dir()",

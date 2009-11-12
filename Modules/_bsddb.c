@@ -8404,6 +8404,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_VERIFY);
     ADD_INT(d, DB_UPGRADE);
 
+    ADD_INT(d, DB_PRINTABLE);
     ADD_INT(d, DB_AGGRESSIVE);
     ADD_INT(d, DB_NOORDERCHK);
     ADD_INT(d, DB_ORDERCHKONLY);
