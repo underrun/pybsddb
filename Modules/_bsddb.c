@@ -2730,6 +2730,22 @@ DB_set_lorder(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_lorder(DBObject* self)
+{
+    int err;
+    int lorder;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_lorder(self->db, &lorder);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(lorder);
+}
+#endif
 
 static PyObject*
 DB_set_pagesize(DBObject* self, PyObject* args)
@@ -7590,6 +7606,9 @@ static PyMethodDef DB_methods[] = {
     {"get_h_nelem",     (PyCFunction)DB_get_h_nelem,    METH_NOARGS},
 #endif
     {"set_lorder",      (PyCFunction)DB_set_lorder,     METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_lorder",      (PyCFunction)DB_get_lorder,     METH_NOARGS},
+#endif
     {"set_pagesize",    (PyCFunction)DB_set_pagesize,   METH_VARARGS},
     {"set_re_delim",    (PyCFunction)DB_set_re_delim,   METH_VARARGS},
     {"set_re_len",      (PyCFunction)DB_set_re_len,     METH_VARARGS},

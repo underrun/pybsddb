@@ -10,7 +10,8 @@
     "DB_ENV->get_lk_max_objects()", "DB_ENV->set_lk_partitions()",
     "DB_ENV->get_lk_partitions()", "DB_ENV->get_flags()",
     "DB_ENV->set_cache_max()", "DB_ENV->get_cache_max()", functions.
-  * Support for "DB->get_h_ffactor()", "DB->set_h_nelem()", functions.
+  * Support for "DB->get_h_ffactor()", "DB->set_h_nelem()",
+    "DB->get_lorder()", functions.
 
 4.8.1:
   * Support for "DB_ENV->mutex_set_align()" and

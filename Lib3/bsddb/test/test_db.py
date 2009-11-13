@@ -21,6 +21,15 @@ class DB(unittest.TestCase):
         del self.db
         test_support.rmtree(self.path)
 
+class DB_general(DB) :
+    if db.version() >= (4, 2) :
+        def test_lorder(self) :
+            self.db.set_lorder(1234)
+            self.assertEqual(1234,self.db.get_lorder())
+            self.db.set_lorder(4321)
+            self.assertEqual(4321,self.db.get_lorder())
+            self.assertRaises(db.DBInvalidArgError, self.db.set_lorder,9182)
+
 class DB_hash(DB) :
     if db.version() >= (4, 2) :
         def test_h_ffactor(self) :
@@ -38,6 +47,7 @@ class DB_hash(DB) :
 def test_suite():
     suite = unittest.TestSuite()
 
+    suite.addTest(unittest.makeSuite(DB_general))
     suite.addTest(unittest.makeSuite(DB_hash))
 
     return suite

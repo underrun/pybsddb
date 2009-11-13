@@ -312,6 +312,15 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_h_nelem.html>`__
 
+.. function:: get_lorder()
+
+   Returns the database byte order; a byte order of 4,321 indicates a
+   big endian order, and a byte order of 1,234 indicates a little endian
+   order. This value is set using the DB->set_lorder() method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_lorder.html>`__
+
 .. function:: set_lorder(lorder)
 
    Set the byte order for integers in the stored database metadata.
