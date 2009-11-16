@@ -4720,6 +4720,40 @@ DBEnv_get_cache_max(DBEnvObject* self)
 }
 #endif
 
+#if (DBVER >= 46)
+static PyObject*
+DBEnv_set_thread_count(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    u_int32_t count;
+
+    if (!PyArg_ParseTuple(args, "i:set_thread_count", &count))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_thread_count(self->db_env, count);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_get_thread_count(DBEnvObject* self)
+{
+    int err;
+    u_int32_t count;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_thread_count(self->db_env, &count);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(count);
+}
+#endif
+
 static PyObject*
 DBEnv_set_cachesize(DBEnvObject* self, PyObject* args)
 {
@@ -7808,6 +7842,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"remove",          (PyCFunction)DBEnv_remove,           METH_VARARGS},
     {"dbremove",        (PyCFunction)DBEnv_dbremove,         METH_VARARGS|METH_KEYWORDS},
     {"dbrename",        (PyCFunction)DBEnv_dbrename,         METH_VARARGS|METH_KEYWORDS},
+#if (DBVER >= 46)
+    {"set_thread_count", (PyCFunction)DBEnv_set_thread_count, METH_VARARGS},
+    {"get_thread_count", (PyCFunction)DBEnv_get_thread_count, METH_NOARGS},
+#endif
     {"set_encrypt",     (PyCFunction)DBEnv_set_encrypt,      METH_VARARGS|METH_KEYWORDS},
 #if (DBVER >= 42)
     {"get_encrypt_flags", (PyCFunction)DBEnv_get_encrypt_flags, METH_NOARGS},

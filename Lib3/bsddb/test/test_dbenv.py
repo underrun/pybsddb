@@ -29,6 +29,11 @@ class DBEnv_general(DBEnv) :
                 self.assertEqual(i, self.env.get_lk_partitions())
 
     if db.version() >= (4, 6) :
+        def test_thread(self) :
+            for i in [16, 100, 1000] :
+                self.env.set_thread_count(i)
+                self.assertEqual(i, self.env.get_thread_count())
+
         def test_cache_max(self) :
             for size in [64, 128] :
                 size = size*1024*1024  # Megabytes

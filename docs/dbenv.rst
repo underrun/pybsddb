@@ -97,6 +97,26 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_fileid_reset.html>`__
 
+.. function:: get_thread_count()
+
+   Returns the thread count as set by the DB_ENV->set_thread_count()
+   method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_thread_count.html>`__
+
+.. function:: set_thread_count(count)
+
+   Declare an approximate number of threads in the database environment.
+   The DB_ENV->set_thread_count() method must be called prior to opening
+   the database environment if the DB_ENV->failchk() method will be
+   used. The DB_ENV->set_thread_count() method does not set the maximum
+   number of threads but is used to determine memory sizing and the
+   thread control block reclamation policy.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envset_thread_count.html>`__
+
 .. function:: set_encrypt(passwd, flags=0)
 
    Set the password used by the Berkeley DB library to perform
