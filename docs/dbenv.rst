@@ -492,6 +492,15 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/log_flush.html>`__
 
+.. function:: log_get_config(which)
+
+   Returns whether the specified which parameter is currently set or
+   not. You can manage this value using the DB_ENV->log_set_config()
+   method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envlog_get_config.html>`__
+
 .. function:: log_set_config(flags, onoff)
 
    Configures the Berkeley DB logging subsystem.

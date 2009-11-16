@@ -4908,6 +4908,22 @@ DBEnv_log_set_config(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+
+static PyObject*
+DBEnv_log_get_config(DBEnvObject* self, PyObject* args)
+{
+    int err, flag, onoff;
+
+    if (!PyArg_ParseTuple(args, "i:log_get_config", &flag))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->log_get_config(self->db_env, flag, &onoff);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyBool_FromLong(onoff);
+}
 #endif /* DBVER >= 47 */
 
 #if (DBVER >= 44)
@@ -7967,6 +7983,7 @@ static PyMethodDef DBEnv_methods[] = {
     {"set_flags",       (PyCFunction)DBEnv_set_flags,       METH_VARARGS},
 #if (DBVER >= 47)
     {"log_set_config",  (PyCFunction)DBEnv_log_set_config,  METH_VARARGS},
+    {"log_get_config",  (PyCFunction)DBEnv_log_get_config,  METH_VARARGS},
 #endif
     {"set_lg_bsize",    (PyCFunction)DBEnv_set_lg_bsize,    METH_VARARGS},
 #if (DBVER >= 42)

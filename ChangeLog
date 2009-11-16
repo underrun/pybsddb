@@ -10,6 +10,7 @@
     "DB_ENV->get_lk_partitions()", "DB_ENV->get_flags()",
     "DB_ENV->set_cache_max()", "DB_ENV->get_cache_max()",
     "DB_ENV->set_thread_count()", "DB_ENV->get_thread_count()",
+    "DB_ENV->log_set_config()", "DB_ENV->log_get_config()",
     functions.
   * Support for "DB->get_h_ffactor()", "DB->set_h_nelem()",
     "DB->get_h_nelem()", "DB->get_lorder()", "DB->get_pagesize()",

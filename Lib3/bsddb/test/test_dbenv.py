@@ -234,10 +234,25 @@ class DBEnv_general(DBEnv) :
                     self.env.mutex_set_align, v2)
 
 
+class DBEnv_log(DBEnv) :
+    def setUp(self):
+        DBEnv.setUp(self)
+        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL | db.DB_INIT_LOG)
+
+    if db.version() >= (4, 7) :
+        def test_log_config(self) :
+            self.env.log_set_config(db.DB_LOG_DSYNC | db.DB_LOG_ZERO, 1)
+            self.assertTrue(self.env.log_get_config(db.DB_LOG_DSYNC))
+            self.assertTrue(self.env.log_get_config(db.DB_LOG_ZERO))
+            self.env.log_set_config(db.DB_LOG_ZERO, 0)
+            self.assertTrue(self.env.log_get_config(db.DB_LOG_DSYNC))
+            self.assertFalse(self.env.log_get_config(db.DB_LOG_ZERO))
+
+
 class DBEnv_memp(DBEnv):
     def setUp(self):
         DBEnv.setUp(self)
-        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL | db.DB_INIT_LOG )
+        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL | db.DB_INIT_LOG)
         self.db = db.DB(self.env)
         self.db.open("test", db.DB_HASH, db.DB_CREATE, 0o660)
 
@@ -271,6 +286,7 @@ def test_suite():
     suite = unittest.TestSuite()
 
     suite.addTest(unittest.makeSuite(DBEnv_general))
+    suite.addTest(unittest.makeSuite(DBEnv_log))
     suite.addTest(unittest.makeSuite(DBEnv_memp))
 
     return suite
