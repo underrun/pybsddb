@@ -43,6 +43,18 @@ class DB_hash(DB) :
                 self.db.set_h_nelem(nelem)
                 self.assertEqual(nelem, self.db.get_h_nelem())
 
+        def test_pagesize(self) :
+            for i in xrange(9, 17) :  # From 512 to 65536
+                i = 1<<i
+                self.db.set_pagesize(i)
+                self.assertEqual(i, self.db.get_pagesize())
+
+            # The valid values goes from 512 to 65536
+            # Test 131072 bytes...
+            self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<17)
+            # Test 256 bytes...
+            self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<8)
+
 
 def test_suite():
     suite = unittest.TestSuite()

@@ -25,10 +25,10 @@ class DB_general(DB) :
     if db.version() >= (4, 2) :
         def test_lorder(self) :
             self.db.set_lorder(1234)
-            self.assertEqual(1234,self.db.get_lorder())
+            self.assertEqual(1234, self.db.get_lorder())
             self.db.set_lorder(4321)
-            self.assertEqual(4321,self.db.get_lorder())
-            self.assertRaises(db.DBInvalidArgError, self.db.set_lorder,9182)
+            self.assertEqual(4321, self.db.get_lorder())
+            self.assertRaises(db.DBInvalidArgError, self.db.set_lorder, 9182)
 
 class DB_hash(DB) :
     if db.version() >= (4, 2) :
@@ -42,6 +42,18 @@ class DB_hash(DB) :
                 nelem = nelem*1024*1024  # Millions
                 self.db.set_h_nelem(nelem)
                 self.assertEqual(nelem, self.db.get_h_nelem())
+
+        def test_pagesize(self) :
+            for i in range(9, 17) :  # From 512 to 65536
+                i = 1<<i
+                self.db.set_pagesize(i)
+                self.assertEqual(i, self.db.get_pagesize())
+
+            # The valid values goes from 512 to 65536
+            # Test 131072 bytes...
+            self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<17)
+            # Test 256 bytes...
+            self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<8)
 
 
 def test_suite():

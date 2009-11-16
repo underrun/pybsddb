@@ -328,6 +328,14 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_lorder.html>`__
 
+.. function:: get_pagesize()
+
+   Returns the database's current page size, as set by the
+   DB->set_pagesize() method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_pagesize.html>`__
+
 .. function:: set_pagesize(pagesize)
 
    Set the size of the pages used to hold items in the database, in
