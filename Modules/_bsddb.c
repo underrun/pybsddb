@@ -2472,6 +2472,40 @@ DB_get_priority(DBObject* self)
 #endif
 
 static PyObject*
+DB_set_q_extentsize(DBObject* self, PyObject* args)
+{
+    int err;
+    u_int32_t extentsize;
+
+    if (!PyArg_ParseTuple(args,"i:set_q_extentsize", &extentsize))
+        return NULL;
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->set_q_extentsize(self->db, extentsize);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+#if (DBVER >= 42)
+static PyObject*
+DB_get_q_extentsize(DBObject* self)
+{
+    int err = 0;
+    u_int32_t extentsize;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_q_extentsize(self->db, &extentsize);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(extentsize);
+}
+#endif
+
+static PyObject*
 DB_set_bt_minkey(DBObject* self, PyObject* args)
 {
     int err, minkey;
@@ -2968,23 +3002,6 @@ DB_set_re_source(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-
-static PyObject*
-DB_set_q_extentsize(DBObject* self, PyObject* args)
-{
-    int err;
-    int extentsize;
-
-    if (!PyArg_ParseTuple(args,"i:set_q_extentsize", &extentsize))
-        return NULL;
-    CHECK_DB_NOT_CLOSED(self);
-
-    MYDB_BEGIN_ALLOW_THREADS;
-    err = self->db->set_q_extentsize(self->db, extentsize);
-    MYDB_END_ALLOW_THREADS;
-    RETURN_IF_ERR();
-    RETURN_NONE();
-}
 
 static PyObject*
 DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
@@ -7795,6 +7812,9 @@ static PyMethodDef DB_methods[] = {
 #endif
     {"set_re_source",   (PyCFunction)DB_set_re_source,  METH_VARARGS},
     {"set_q_extentsize",(PyCFunction)DB_set_q_extentsize, METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_q_extentsize",(PyCFunction)DB_get_q_extentsize, METH_NOARGS},
+#endif
     {"set_private",     (PyCFunction)DB_set_private,    METH_O},
     {"get_private",     (PyCFunction)DB_get_private,    METH_NOARGS},
 #if (DBVER >= 46)

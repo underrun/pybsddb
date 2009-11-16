@@ -116,6 +116,11 @@ class DB_queue(DB) :
                 self.db.set_re_len(i)
                 self.assertEqual(i, self.db.get_re_len())
 
+        def test_q_extentsize(self) :
+            for i in [1, 60, 100] :
+                self.db.set_q_extentsize(i)
+                self.assertEqual(i, self.db.get_q_extentsize())
+
 def test_suite():
     suite = unittest.TestSuite()
 
