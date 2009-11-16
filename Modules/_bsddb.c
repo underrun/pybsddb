@@ -2817,6 +2817,22 @@ DB_set_re_len(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_re_len(DBObject* self)
+{
+    int err;
+    u_int32_t re_len;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_re_len(self->db, &re_len);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(re_len);
+}
+#endif
 
 static PyObject*
 DB_set_re_pad(DBObject* self, PyObject* args)
@@ -2838,6 +2854,21 @@ DB_set_re_pad(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_re_pad(DBObject* self)
+{
+    int err, re_pad;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_re_pad(self->db, &re_pad);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(re_pad);
+}
+#endif
 
 static PyObject*
 DB_set_re_source(DBObject* self, PyObject* args)
@@ -7631,7 +7662,13 @@ static PyMethodDef DB_methods[] = {
 #endif
     {"set_re_delim",    (PyCFunction)DB_set_re_delim,   METH_VARARGS},
     {"set_re_len",      (PyCFunction)DB_set_re_len,     METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_re_len",      (PyCFunction)DB_get_re_len,     METH_NOARGS},
+#endif
     {"set_re_pad",      (PyCFunction)DB_set_re_pad,     METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_re_pad",      (PyCFunction)DB_get_re_pad,     METH_NOARGS},
+#endif
     {"set_re_source",   (PyCFunction)DB_set_re_source,  METH_VARARGS},
     {"set_q_extentsize",(PyCFunction)DB_set_q_extentsize, METH_VARARGS},
     {"set_private",     (PyCFunction)DB_set_private,    METH_O},

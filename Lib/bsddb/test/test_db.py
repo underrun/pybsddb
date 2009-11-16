@@ -55,12 +55,30 @@ class DB_hash(DB) :
             # Test 256 bytes...
             self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<8)
 
+class DB_recno(DB) :
+    if db.version() >= (4, 2) :
+        def test_re_pad(self) :
+            for i in [' ', '*'] :  # Check chars
+                self.db.set_re_pad(i)
+                self.assertEqual(ord(i), self.db.get_re_pad())
+            for i in [97, 65] :  # Check integers
+                self.db.set_re_pad(i)
+                self.assertEqual(i, self.db.get_re_pad())
+
+class DB_queue(DB) :
+    if db.version() >= (4, 2) :
+        def test_re_len(self) :
+            for i in [33, 65, 300, 2000] :
+                self.db.set_re_len(i)
+                self.assertEqual(i, self.db.get_re_len())
 
 def test_suite():
     suite = unittest.TestSuite()
 
     suite.addTest(unittest.makeSuite(DB_general))
     suite.addTest(unittest.makeSuite(DB_hash))
+    suite.addTest(unittest.makeSuite(DB_recno))
+    suite.addTest(unittest.makeSuite(DB_queue))
 
     return suite
 

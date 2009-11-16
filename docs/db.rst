@@ -353,6 +353,14 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_re_delim.html>`__
 
+.. function:: get_re_len()
+
+   Returns the length of the records held in a Queue access method
+   database. This value can be set using the DB->set_re_len() method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_re_len.html>`__
+
 .. function:: set_re_len(length)
 
    For the Queue access method, specify that the records are of length
@@ -361,6 +369,15 @@ DB Methods
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_re_len.html>`__
+
+.. function:: get_re_pad()
+
+   Returns the pad character used for short, fixed-length records used
+   by the Queue and Recno access methods. The method returns a byte
+   value.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_re_pad.html>`__
 
 .. function:: set_re_pad(pad)
 
