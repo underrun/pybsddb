@@ -439,12 +439,29 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_re_pad.html>`__
 
+.. function:: get_re_source()
+
+   Returns the source file used by the Recno access method. This file is
+   configured for the Recno access method using the DB->set_re_source()
+   method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_re_source.html>`__
+
 .. function:: set_re_source(source)
 
    Set the underlying source file for the Recno access method.
    `More info...
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_re_source.html>`__
+
+.. function:: get_q_extentsize()
+
+   Returns the number of pages in an extent. This value is used only for
+   Queue databases and is set using the DB->set_q_extentsize() method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_q_extentsize.html>`__
 
 .. function:: set_q_extentsize(extentsize)
 

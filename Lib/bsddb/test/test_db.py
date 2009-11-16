@@ -109,6 +109,11 @@ class DB_recno(DB) :
                 self.db.set_re_delim(i)
                 self.assertEqual(i, self.db.get_re_delim())
 
+        def test_re_source(self) :
+            for i in ["test", "test2", "test3"] :
+                self.db.set_re_source(i)
+                self.assertEqual(i, self.db.get_re_source())
+
 class DB_queue(DB) :
     if db.version() >= (4, 2) :
         def test_re_len(self) :

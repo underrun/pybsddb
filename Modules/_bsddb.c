@@ -2989,19 +2989,35 @@ static PyObject*
 DB_set_re_source(DBObject* self, PyObject* args)
 {
     int err;
-    char *re_source;
+    char *source;
 
-    if (!PyArg_ParseTuple(args,"s:set_re_source", &re_source))
+    if (!PyArg_ParseTuple(args,"s:set_re_source", &source))
         return NULL;
     CHECK_DB_NOT_CLOSED(self);
 
     MYDB_BEGIN_ALLOW_THREADS;
-    err = self->db->set_re_source(self->db, re_source);
+    err = self->db->set_re_source(self->db, source);
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_re_source(DBObject* self)
+{
+    int err;
+    const char *source;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_re_source(self->db, &source);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return PyBytes_FromString(source);
+}
+#endif
 
 static PyObject*
 DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
@@ -7811,6 +7827,9 @@ static PyMethodDef DB_methods[] = {
     {"get_re_pad",      (PyCFunction)DB_get_re_pad,     METH_NOARGS},
 #endif
     {"set_re_source",   (PyCFunction)DB_set_re_source,  METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_re_source",   (PyCFunction)DB_get_re_source,  METH_NOARGS},
+#endif
     {"set_q_extentsize",(PyCFunction)DB_set_q_extentsize, METH_VARARGS},
 #if (DBVER >= 42)
     {"get_q_extentsize",(PyCFunction)DB_get_q_extentsize, METH_NOARGS},
@@ -8146,7 +8165,9 @@ DBEnv_db_home_get(DBEnvObject* self)
     CHECK_ENV_NOT_CLOSED(self);
 
 #if (DBVER >= 42)
+    MYDB_BEGIN_ALLOW_THREADS;
     self->db_env->get_home(self->db_env, &home);
+    MYDB_END_ALLOW_THREADS;
 #else
     home=self->db_env->db_home;
 #endif

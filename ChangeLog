@@ -17,7 +17,11 @@
     "DB->get_flags()", "DB->get_bt_minkey()",
     "DB->set_priority()", "DB->get_priority()",
     "DB->set_q_extentsize()", "DB->get_q_extentsize()",
+    "DB->set_re_source()", "DB->get_re_source()",
     functions.
+  * Unlock the Python GIL when doing "DB_ENV->db_home_get()". This is
+    slower, because the function is very fast so we add overhead, but it is
+    called very infrequently and we do the change for consistency.
 
 4.8.1:
   * Support for "DB_ENV->mutex_set_align()" and
