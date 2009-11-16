@@ -344,6 +344,15 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_pagesize.html>`__
 
+.. function:: get_re_delim()
+
+   Returns the delimiting byte, which is used to mark the end of a
+   record in the backing source file for the Recno access method.
+   The return value will be a numeric byte value.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_re_delim.html>`__
+
 .. function:: set_re_delim(delim)
 
    Set the delimiting byte used to mark the end of a record in the

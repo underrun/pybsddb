@@ -65,6 +65,14 @@ class DB_recno(DB) :
                 self.db.set_re_pad(i)
                 self.assertEqual(i, self.db.get_re_pad())
 
+        def test_re_delim(self) :
+            for i in [' ', '*'] :  # Check chars
+                self.db.set_re_delim(i)
+                self.assertEqual(ord(i), self.db.get_re_delim())
+            for i in [97, 65] :  # Check integers
+                self.db.set_re_delim(i)
+                self.assertEqual(i, self.db.get_re_delim())
+
 class DB_queue(DB) :
     if db.version() >= (4, 2) :
         def test_re_len(self) :

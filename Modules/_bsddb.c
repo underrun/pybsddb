@@ -2801,6 +2801,22 @@ DB_set_re_delim(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_re_delim(DBObject* self)
+{
+    int err, re_delim;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_re_delim(self->db, &re_delim);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(re_delim);
+}
+#endif
+
 static PyObject*
 DB_set_re_len(DBObject* self, PyObject* args)
 {
@@ -7661,6 +7677,9 @@ static PyMethodDef DB_methods[] = {
     {"get_pagesize",    (PyCFunction)DB_get_pagesize,   METH_NOARGS},
 #endif
     {"set_re_delim",    (PyCFunction)DB_set_re_delim,   METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_re_delim",    (PyCFunction)DB_get_re_delim,   METH_NOARGS},
+#endif
     {"set_re_len",      (PyCFunction)DB_set_re_len,     METH_VARARGS},
 #if (DBVER >= 42)
     {"get_re_len",      (PyCFunction)DB_get_re_len,     METH_NOARGS},
