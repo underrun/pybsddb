@@ -2438,13 +2438,45 @@ DB_set_private(DBObject* self, PyObject* private_obj)
     RETURN_NONE();
 }
 
+#if (DBVER >= 46)
+static PyObject*
+DB_set_priority(DBObject* self, PyObject* args)
+{
+    int err, priority;
+
+    if (!PyArg_ParseTuple(args,"i:set_priority", &priority))
+        return NULL;
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->set_priority(self->db, priority);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DB_get_priority(DBObject* self)
+{
+    int err = 0;
+    DB_CACHE_PRIORITY priority;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_priority(self->db, &priority);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(priority);
+}
+#endif
 
 static PyObject*
 DB_set_bt_minkey(DBObject* self, PyObject* args)
 {
     int err, minkey;
 
-    if (!PyArg_ParseTuple(args,"i:set_bt_minkey", &minkey ))
+    if (!PyArg_ParseTuple(args,"i:set_bt_minkey", &minkey))
         return NULL;
     CHECK_DB_NOT_CLOSED(self);
 
@@ -7765,6 +7797,10 @@ static PyMethodDef DB_methods[] = {
     {"set_q_extentsize",(PyCFunction)DB_set_q_extentsize, METH_VARARGS},
     {"set_private",     (PyCFunction)DB_set_private,    METH_O},
     {"get_private",     (PyCFunction)DB_get_private,    METH_NOARGS},
+#if (DBVER >= 46)
+    {"set_priority",    (PyCFunction)DB_set_priority,   METH_VARARGS},
+    {"get_priority",    (PyCFunction)DB_get_priority,   METH_NOARGS},
+#endif
     {"stat",            (PyCFunction)DB_stat,           METH_VARARGS|METH_KEYWORDS},
     {"sync",            (PyCFunction)DB_sync,           METH_VARARGS},
     {"truncate",        (PyCFunction)DB_truncate,       METH_VARARGS|METH_KEYWORDS},

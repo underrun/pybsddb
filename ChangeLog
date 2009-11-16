@@ -1,5 +1,3 @@
-4.8.2:
-  * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",
     "DB_FOREIGN_CASCADE", "DB_FOREIGN_NULLIFY", "DB_PRINTABLE", "DB_INORDER"
     flags.
   * Support for "DB_FOREIGN_CONFLICT" exception.
@@ -16,7 +14,8 @@
   * Support for "DB->get_h_ffactor()", "DB->set_h_nelem()",
     "DB->get_h_nelem()", "DB->get_lorder()", "DB->get_pagesize()",
     "DB->get_re_pad()", "DB->get_re_len()", "DB->get_re_delim()",
-    "DB->get_flags()", "DB->get_bt_minkey()" functions.
+    "DB->get_flags()", "DB->get_bt_minkey()",
+    "DB->set_priority()", "DB->get_priority()", functions.
 
 4.8.1:
   * Support for "DB_ENV->mutex_set_align()" and

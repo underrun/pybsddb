@@ -125,6 +125,31 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_get.html>`__
 
+.. function:: get_priority()
+
+   Returns the cache priority for pages referenced by the DB handle.
+   This priority value is set using the DB->set_priority() method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_priority.html>`__
+
+.. function:: set_priority(priority)
+
+   Set the cache priority for pages referenced by the DB handle.
+
+   The priority of a page biases the replacement algorithm to be more
+   or less likely to discard a page when space is needed in the buffer
+   pool. The bias is temporary, and pages will eventually be discarded
+   if they are not referenced again. The DB->set_priority() method is
+   only advisory, and does not guarantee pages will be treated in a
+   specific way.
+
+   The value provided must be symbolic. Check the Oracle documentation.
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbset_priority.html>`__
+
 .. function:: set_private(object)
 
    Link an arbitrary object to the DB.
