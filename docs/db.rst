@@ -245,6 +245,15 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_set_bt_compare.html>`__
 
+.. function:: get_bt_minkey()
+
+   Returns the minimum number of key/data pairs intended to be stored on
+   any single Btree leaf page. This value can be set using the
+   DB->set_bt_minkey() method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_bt_minkey.html>`__
+
 .. function:: set_bt_minkey(minKeys)
 
    Set the minimum number of keys that will be stored on any single

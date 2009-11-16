@@ -2455,6 +2455,23 @@ DB_set_bt_minkey(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_bt_minkey(DBObject* self)
+{
+    int err;
+    u_int32_t bt_minkey;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_bt_minkey(self->db, &bt_minkey);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(bt_minkey);
+}
+#endif
+
 static int
 _default_cmp(const DBT *leftKey,
 	     const DBT *rightKey)
@@ -7665,6 +7682,9 @@ static PyMethodDef DB_methods[] = {
     {"remove",          (PyCFunction)DB_remove,         METH_VARARGS|METH_KEYWORDS},
     {"rename",          (PyCFunction)DB_rename,         METH_VARARGS},
     {"set_bt_minkey",   (PyCFunction)DB_set_bt_minkey,  METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_bt_minkey",   (PyCFunction)DB_get_bt_minkey,  METH_NOARGS},
+#endif
     {"set_bt_compare",  (PyCFunction)DB_set_bt_compare, METH_O},
     {"set_cachesize",   (PyCFunction)DB_set_cachesize,  METH_VARARGS},
 #if (DBVER >= 42)
@@ -8641,7 +8661,9 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_REVSPLITOFF);
     ADD_INT(d, DB_SNAPSHOT);
 
+#if (DBVER >= 43)
     ADD_INT(d, DB_INORDER);
+#endif
 
     ADD_INT(d, DB_JOIN_NOSORT);
 

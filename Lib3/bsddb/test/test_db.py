@@ -23,6 +23,11 @@ class DB(unittest.TestCase):
 
 class DB_general(DB) :
     if db.version() >= (4, 2) :
+        def test_bt_minkey(self) :
+            for i in [17, 108, 1030] :
+                self.db.set_bt_minkey(i)
+                self.assertEqual(i, self.db.get_bt_minkey())
+
         def test_lorder(self) :
             self.db.set_lorder(1234)
             self.assertEqual(1234, self.db.get_lorder())
