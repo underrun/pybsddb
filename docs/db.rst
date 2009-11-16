@@ -275,6 +275,14 @@ DB Methods
 
    The previous setting is returned.
 
+.. function:: get_flags()
+
+   Returns the current database flags as set by the DB->set_flags()
+   method.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbget_flags.html>`__
+
 .. function:: set_flags(flags)
 
    Set additional flags on the database before opening.

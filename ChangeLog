@@ -1,6 +1,7 @@
 4.8.2:
   * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",
-    "DB_FOREIGN_CASCADE", "DB_FOREIGN_NULLIFY", "DB_PRINTABLE" flags.
+    "DB_FOREIGN_CASCADE", "DB_FOREIGN_NULLIFY", "DB_PRINTABLE", "DB_INORDER"
+    flags.
   * Support for "DB_FOREIGN_CONFLICT" exception.
   * Support for "DB_ENV->memp_trickle()", "DB_ENV->memp_sync()",
     "DB_ENV->get_lg_bsize()", "DB_ENV->get_lg_dir()",
@@ -12,7 +13,8 @@
     "DB_ENV->set_cache_max()", "DB_ENV->get_cache_max()", functions.
   * Support for "DB->get_h_ffactor()", "DB->set_h_nelem()",
     "DB->get_h_nelem()", "DB->get_lorder()", "DB->get_pagesize()",
-    "DB->get_re_pad()", "DB->get_re_len()", "DB->get_re_delim()" functions.
+    "DB->get_re_pad()", "DB->get_re_len()", "DB->get_re_delim()",
+    "DB->get_flags()" functions.
 
 4.8.1:
   * Support for "DB_ENV->mutex_set_align()" and

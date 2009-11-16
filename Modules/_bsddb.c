@@ -2647,6 +2647,22 @@ DB_set_flags(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+#if (DBVER >= 42)
+static PyObject*
+DB_get_flags(DBObject* self)
+{
+    int err;
+    u_int32_t flags;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_flags(self->db, &flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(flags);
+}
+#endif
 
 static PyObject*
 DB_set_h_ffactor(DBObject* self, PyObject* args)
@@ -7660,6 +7676,9 @@ static PyMethodDef DB_methods[] = {
 #endif
 
     {"set_flags",       (PyCFunction)DB_set_flags,      METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_flags",       (PyCFunction)DB_get_flags,      METH_NOARGS},
+#endif
     {"set_h_ffactor",   (PyCFunction)DB_set_h_ffactor,  METH_VARARGS},
 #if (DBVER >= 42)
     {"get_h_ffactor",   (PyCFunction)DB_get_h_ffactor,  METH_NOARGS},
@@ -8621,6 +8640,8 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_RENUMBER);
     ADD_INT(d, DB_REVSPLITOFF);
     ADD_INT(d, DB_SNAPSHOT);
+
+    ADD_INT(d, DB_INORDER);
 
     ADD_INT(d, DB_JOIN_NOSORT);
 

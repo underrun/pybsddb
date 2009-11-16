@@ -55,6 +55,29 @@ class DB_hash(DB) :
             # Test 256 bytes...
             self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<8)
 
+class DB_txn(DB) :
+    def setUp(self) :
+        self.homeDir = get_new_environment_path()
+        self.env = db.DBEnv()
+        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL |
+                db.DB_INIT_LOG | db.DB_INIT_TXN)
+        self.db = db.DB(self.env)
+
+    def tearDown(self) :
+        self.db.close()
+        del self.db
+        self.env.close()
+        del self.env
+        test_support.rmtree(self.homeDir)
+
+    if db.version() >= (4, 2) :
+        def test_flags(self) :
+            self.db.set_flags(db.DB_CHKSUM)
+            self.assertEqual(db.DB_CHKSUM, self.db.get_flags())
+            self.db.set_flags(db.DB_TXN_NOT_DURABLE)
+            self.assertEqual(db.DB_TXN_NOT_DURABLE | db.DB_CHKSUM,
+                    self.db.get_flags())
+
 class DB_recno(DB) :
     if db.version() >= (4, 2) :
         def test_re_pad(self) :
@@ -84,6 +107,7 @@ def test_suite():
     suite = unittest.TestSuite()
 
     suite.addTest(unittest.makeSuite(DB_general))
+    suite.addTest(unittest.makeSuite(DB_txn))
     suite.addTest(unittest.makeSuite(DB_hash))
     suite.addTest(unittest.makeSuite(DB_recno))
     suite.addTest(unittest.makeSuite(DB_queue))
