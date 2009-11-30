@@ -1,1 +1,0 @@
-#define PY_BSDDB_VERSION "3.0b3"
