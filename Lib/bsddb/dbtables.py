@@ -15,7 +15,7 @@
 # This provides a simple database table interface built on top of
 # the Python Berkeley DB 3 interface.
 #
-_cvsid = '$Id: dbtables.py 58758 2007-11-01 21:15:36Z gregory.p.smith $'
+_cvsid = '$Id$'
 
 import re
 import sys
