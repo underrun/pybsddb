@@ -150,3 +150,5 @@
 
 * 20091112: DBEnv->set_flags() must support True/False.
 
+* 20091206: Review ALL documentation, text and comments in code.
+
