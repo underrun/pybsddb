@@ -220,7 +220,7 @@ typedef struct DBSequenceObject {
 /* To access the structure from an external module, use code like the
    following (error checking missed out for clarity):
 
-     // If you are using Python 3.2:
+     // If you are using Python before 3.2:
      BSDDB_api* bsddb_api;
      PyObject*  mod;
      PyObject*  cobj;
