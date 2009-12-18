@@ -213,6 +213,10 @@ if sys.version_info[0] >= 3 :
                c = bytes(c, charset)
             return self._db.set_re_pad(c)
 
+        def get_re_source(self) :
+           source = self._db.get_re_source()
+           return source.decode(charset)
+
         def put(self, key, value, txn=None, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
                 key = bytes(key, charset)

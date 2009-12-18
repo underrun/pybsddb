@@ -12,6 +12,9 @@ class DBEnv(unittest.TestCase):
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
 
+        def assertFalse(self, expr, msg=None):
+            self.failIf(expr,msg=msg)
+
     def setUp(self):
         self.homeDir = get_new_environment_path()
         self.env = db.DBEnv()

@@ -35,6 +35,7 @@ class DB_general(DB) :
             self.assertEqual(4321, self.db.get_lorder())
             self.assertRaises(db.DBInvalidArgError, self.db.set_lorder, 9182)
 
+    if db.version() >= (4, 6) :
         def test_priority(self) :
             flags = [db.DB_PRIORITY_VERY_LOW, db.DB_PRIORITY_LOW,
                     db.DB_PRIORITY_DEFAULT, db.DB_PRIORITY_HIGH,
