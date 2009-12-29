@@ -12,7 +12,7 @@
     "DB_ENV->get_lk_partitions()", "DB_ENV->get_flags()",
     "DB_ENV->set_cache_max()", "DB_ENV->get_cache_max()",
     "DB_ENV->set_thread_count()", "DB_ENV->get_thread_count()",
-    "DB_ENV->log_set_config()", "DB_ENV->log_get_config()",
+    "DB_ENV->log_set_config()", "DB_ENV->log_get_config()"
     functions.
   * Support for "DB->get_h_ffactor()", "DB->set_h_nelem()",
     "DB->get_h_nelem()", "DB->get_lorder()", "DB->get_pagesize()",
@@ -20,7 +20,7 @@
     "DB->get_flags()", "DB->get_bt_minkey()",
     "DB->set_priority()", "DB->get_priority()",
     "DB->set_q_extentsize()", "DB->get_q_extentsize()",
-    "DB->set_re_source()", "DB->get_re_source()",
+    "DB->set_re_source()", "DB->get_re_source()"
     functions.
   * Unlock the Python GIL when doing "DB_ENV->db_home_get()". This is
     slower, because the function is very fast so we add overhead, but it is
