@@ -1,3 +1,6 @@
+4.8.3:
+  * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
+
 4.8.2:
   * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",
     "DB_FOREIGN_CASCADE", "DB_FOREIGN_NULLIFY", "DB_PRINTABLE", "DB_INORDER"
