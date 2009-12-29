@@ -42,6 +42,7 @@
 
 * 20080807: The EGG for 4.7.2 was installed as a directory, not a
   ZIP file. Why?.
+  20091229: Because "bsddb3.tests.test_all: module references __file__".
 
 * 20080811: "DB.has_key()" must be retained in python3.0, since it allows
   a transaction parameter.
