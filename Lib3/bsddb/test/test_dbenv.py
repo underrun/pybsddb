@@ -25,6 +25,11 @@ class DBEnv(unittest.TestCase):
         test_support.rmtree(self.homeDir)
 
 class DBEnv_general(DBEnv) :
+    def test_tmp_dir(self) :
+        for i in ["a", "bb", "ccc"] :
+            self.env.set_tmp_dir(i)
+            self.assertEqual(i, self.env.get_tmp_dir())
+
     if db.version() >= (4, 7) :
         def test_lk_partitions(self) :
             for i in [10, 20, 40] :

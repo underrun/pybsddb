@@ -234,6 +234,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_tmp_dir.html>`__
 
+.. function:: get_tmp_dir()
+
+   Returns the database environment temporary file directory.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_tmp_dir.html>`__
+
 .. function:: set_get_returns_none(flag)
 
    By default when DB.get or DBCursor.get, get_both, first, last, next

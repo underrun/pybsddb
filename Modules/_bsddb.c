@@ -5540,6 +5540,24 @@ DBEnv_set_tmp_dir(DBEnvObject* self, PyObject* args)
 
 
 static PyObject*
+DBEnv_get_tmp_dir(DBEnvObject* self)
+{
+    int err;
+    const char **dirpp;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_tmp_dir(self->db_env, &dirpp);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    return PyBytes_FromString(dirpp);
+}
+
+
+static PyObject*
 DBEnv_txn_recover(DBEnvObject* self)
 {
     int flags = DB_FIRST;
@@ -8165,6 +8183,7 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
     {"set_mp_mmapsize", (PyCFunction)DBEnv_set_mp_mmapsize, METH_VARARGS},
     {"set_tmp_dir",     (PyCFunction)DBEnv_set_tmp_dir,     METH_VARARGS},
+    {"get_tmp_dir",     (PyCFunction)DBEnv_get_tmp_dir,     METH_NOARGS},
     {"txn_begin",       (PyCFunction)DBEnv_txn_begin,       METH_VARARGS|METH_KEYWORDS},
     {"txn_checkpoint",  (PyCFunction)DBEnv_txn_checkpoint,  METH_VARARGS},
     {"txn_stat",        (PyCFunction)DBEnv_txn_stat,        METH_VARARGS},
