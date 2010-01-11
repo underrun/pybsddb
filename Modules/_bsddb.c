@@ -6080,6 +6080,27 @@ DBEnv_mutex_stat(DBEnvObject* self, PyObject* args)
 #endif
 
 
+static PyObject*
+DBEnv_mutex_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:mutex_stat_print",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_stat_print(self->db_env, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+
 #if (DBVER >= 43)
 static PyObject*
 DBEnv_txn_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
@@ -8019,6 +8040,8 @@ static PyMethodDef DBEnv_methods[] = {
     {"mutex_get_tas_spins", (PyCFunction)DBEnv_mutex_get_tas_spins,
         METH_NOARGS},
     {"mutex_stat",      (PyCFunction)DBEnv_mutex_stat,      METH_VARARGS},
+    {"mutex_stat_print", (PyCFunction)DBEnv_mutex_stat_print,
+                                         METH_VARARGS|METH_KEYWORDS},
 #endif
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
 #if (DBVER >= 42)

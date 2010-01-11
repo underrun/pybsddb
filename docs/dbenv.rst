@@ -910,6 +910,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_reference/C/mutexstat.html>`__
 
+.. function:: mutex_stat_print(flags=0)
+
+   Displays the mutex subsystem statistical information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/mutexstat_print.html>`__
+
 .. function:: mutex_set_max(value)
 
    Configure the total number of mutexes to allocate.
