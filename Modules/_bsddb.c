@@ -3150,6 +3150,27 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
 }
 
 static PyObject*
+DB_stat_print(DBObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:stat_print",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_DB_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->stat_print(self->db, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+
+static PyObject*
 DB_sync(DBObject* self, PyObject* args)
 {
     int err;
@@ -7924,6 +7945,8 @@ static PyMethodDef DB_methods[] = {
     {"get_priority",    (PyCFunction)DB_get_priority,   METH_NOARGS},
 #endif
     {"stat",            (PyCFunction)DB_stat,           METH_VARARGS|METH_KEYWORDS},
+    {"stat_print",      (PyCFunction)DB_stat_print,
+        METH_VARARGS|METH_KEYWORDS},
     {"sync",            (PyCFunction)DB_sync,           METH_VARARGS},
     {"truncate",        (PyCFunction)DB_truncate,       METH_VARARGS|METH_KEYWORDS},
     {"type",            (PyCFunction)DB_get_type,       METH_NOARGS},

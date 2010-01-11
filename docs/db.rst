@@ -613,6 +613,13 @@ DB Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/db_stat.html>`__
 
+.. function:: stat_print(flags=0)
+
+   Displays the database statistical information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/dbstat_print.html>`__
+
 .. function:: sync(flags=0)
 
    Flushes any cached information to disk.
