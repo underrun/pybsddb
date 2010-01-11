@@ -479,6 +479,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_mp_mmapsize.html>`__
 
+.. function:: stat_print(flags=0)
+
+   Displays the default subsystem statistical information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envstat.html>`__
+
 .. function:: log_archive(flags=0)
 
    Returns a list of log or database file names. By default,

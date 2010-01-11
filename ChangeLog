@@ -1,10 +1,10 @@
 4.8.3:
   * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
-  * Support for "DB_ENV->mutex_stat()" and "DB_ENV->mutex_stat_print()".
-  * Support for "DB->stat_print()".
-  * Support for "DB_ENV->lock_stat_print()".
-  * Support for "DB_ENV->log_stat_print()".
+  * Support for "DB_ENV->mutex_stat()" and "DB_ENV->mutex_stat_print()",
+    "DB->stat_print()", "DB_ENV->lock_stat_print()",
+    "DB_ENV->log_stat_print()", "DB_ENV->stat_print()".
   * Support for "DB_ENV->get_tmp_dir()".
+  * Support for "DB_STAT_SUBSYSTEM" flag.
 
 4.8.2:
   * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",

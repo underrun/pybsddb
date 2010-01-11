@@ -5872,6 +5872,27 @@ DBEnv_lsn_reset(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 
 
 static PyObject*
+DBEnv_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:stat_print",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->stat_print(self->db_env, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+
+static PyObject*
 DBEnv_log_stat(DBEnvObject* self, PyObject* args)
 {
     int err;
@@ -8181,6 +8202,8 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 42)
     {"get_lk_max_objects", (PyCFunction)DBEnv_get_lk_max_objects, METH_NOARGS},
 #endif
+    {"stat_print",          (PyCFunction)DBEnv_stat_print,
+        METH_VARARGS|METH_KEYWORDS},
     {"set_mp_mmapsize", (PyCFunction)DBEnv_set_mp_mmapsize, METH_VARARGS},
     {"set_tmp_dir",     (PyCFunction)DBEnv_set_tmp_dir,     METH_VARARGS},
     {"get_tmp_dir",     (PyCFunction)DBEnv_get_tmp_dir,     METH_NOARGS},
@@ -9040,6 +9063,8 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_NOPANIC);
 
     ADD_INT(d, DB_OVERWRITE);
+
+    ADD_INT(d, DB_STAT_SUBSYSTEM);
 
 #if (DBVER >= 48)
     ADD_INT(d, DB_OVERWRITE_DUP);
