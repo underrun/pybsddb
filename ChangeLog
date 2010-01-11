@@ -2,9 +2,10 @@
   * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
   * Support for "DB_ENV->mutex_stat()" and "DB_ENV->mutex_stat_print()",
     "DB->stat_print()", "DB_ENV->lock_stat_print()",
-    "DB_ENV->log_stat_print()", "DB_ENV->stat_print()".
+    "DB_ENV->log_stat_print()", "DB_ENV->stat_print()",
+    "DB_ENV->memp_stat()", "DB_ENV->memp_stat_print()".
   * Support for "DB_ENV->get_tmp_dir()".
-  * Support for "DB_STAT_SUBSYSTEM" flag.
+  * Support for "DB_STAT_SUBSYSTEM", "DB_STAT_MEMP_HASH" flags.
   * Support for "DB_ENV->set_mp_max_openfd()", "DB_ENV->get_mp_max_openfd()",
     "DB_ENV->set_mp_max_write()", "DB_ENV->get_mp_max_write()",
     "DB_ENV->get_mp_mmapsize()".

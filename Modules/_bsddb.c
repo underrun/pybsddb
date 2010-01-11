@@ -4546,6 +4546,30 @@ DBEnv_open(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
+
+#if (DBVER >= 43)
+static PyObject*
+DBEnv_memp_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    int flags=0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:memp_stat_print",
+                kwnames, &flags))
+    {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->memp_stat_print(self->db_env, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
+
+
 static PyObject*
 DBEnv_memp_trickle(DBEnvObject* self, PyObject* args)
 {
@@ -6432,7 +6456,11 @@ DBEnv_get_mp_max_write(DBEnvObject* self)
 {
     int err;
     int maxwrite;
+#if (DBVER >= 46)
     db_timeout_t maxwrite_sleep;
+#else
+    int maxwrite_sleep;
+#endif
 
     CHECK_ENV_NOT_CLOSED(self);
 
@@ -8234,7 +8262,10 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
     {"memp_trickle",    (PyCFunction)DBEnv_memp_trickle,    METH_VARARGS},
     {"memp_sync",       (PyCFunction)DBEnv_memp_sync,       METH_VARARGS},
-
+#if (DBVER >= 43)
+    {"memp_stat_print", (PyCFunction)DBEnv_memp_stat_print,
+        METH_VARARGS|METH_KEYWORDS},
+#endif
 #if (DBVER >= 44)
     {"mutex_set_max",   (PyCFunction)DBEnv_mutex_set_max,   METH_VARARGS},
     {"mutex_get_max",   (PyCFunction)DBEnv_mutex_get_max,   METH_NOARGS},
@@ -9190,6 +9221,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
 #if (DBVER >= 43)
     ADD_INT(d, DB_STAT_SUBSYSTEM);
+    ADD_INT(d, DB_STAT_MEMP_HASH);
 #endif
 
 #if (DBVER >= 48)

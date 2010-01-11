@@ -43,6 +43,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_open.html>`__
 
+.. function:: memp_stat_print(flags=0)
+
+   Displays cache subsystem statistical information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/mempstat_print.html>`__
+
 .. function:: memp_sync(lsn=None)
 
    Flushes modified pages in the cache to their backing files. If
