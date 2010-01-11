@@ -648,6 +648,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/lock_stat.html>`__
 
+.. function:: lock_stat_print(flags=0)
+
+   Displays the locking subsystem statistical information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/lockstat_print.html>`__
+
 .. function:: get_tx_max()
 
    Returns the number of active transactions.
