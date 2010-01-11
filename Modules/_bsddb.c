@@ -4547,6 +4547,137 @@ DBEnv_open(DBEnvObject* self, PyObject* args)
 }
 
 
+static PyObject*
+DBEnv_memp_stat(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    DB_MPOOL_STAT *gsp;
+    DB_MPOOL_FSTAT **fsp, **fsp2;
+    PyObject* d = NULL, *d2, *d3, *r;
+    u_int32_t flags = 0;
+    static char* kwnames[] = { "flags", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:memp_stat",
+                kwnames, &flags))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->memp_stat(self->db_env, &gsp, &fsp, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+
+    /* Turn the stat structure into a dictionary */
+    d = PyDict_New();
+    if (d == NULL) {
+        if (gsp)
+            free(gsp);
+        return NULL;
+    }
+
+#define MAKE_ENTRY(name)  _addIntToDict(d, #name, gsp->st_##name)
+
+    MAKE_ENTRY(gbytes);
+    MAKE_ENTRY(ncache);
+#if (DBVER >= 46)
+    MAKE_ENTRY(max_ncache);
+#endif
+    MAKE_ENTRY(regsize);
+#if (DBVER >= 43)
+    MAKE_ENTRY(mmapsize);
+    MAKE_ENTRY(maxopenfd);
+    MAKE_ENTRY(maxwrite);
+    MAKE_ENTRY(maxwrite_sleep);
+#endif
+    MAKE_ENTRY(map);
+    MAKE_ENTRY(cache_hit);
+    MAKE_ENTRY(cache_miss);
+    MAKE_ENTRY(page_create);
+    MAKE_ENTRY(page_in);
+    MAKE_ENTRY(page_out);
+    MAKE_ENTRY(ro_evict);
+    MAKE_ENTRY(rw_evict);
+    MAKE_ENTRY(page_trickle);
+    MAKE_ENTRY(pages);
+    MAKE_ENTRY(page_clean);
+    MAKE_ENTRY(page_dirty);
+    MAKE_ENTRY(hash_buckets);
+    MAKE_ENTRY(hash_searches);
+    MAKE_ENTRY(hash_longest);
+    MAKE_ENTRY(hash_examined);
+    MAKE_ENTRY(hash_nowait);
+    MAKE_ENTRY(hash_wait);
+#if (DBVER >= 45)
+    MAKE_ENTRY(hash_max_nowait);
+#endif
+    MAKE_ENTRY(hash_max_wait);
+    MAKE_ENTRY(region_wait);
+    MAKE_ENTRY(region_nowait);
+#if (DBVER >= 45)
+    MAKE_ENTRY(mvcc_frozen);
+    MAKE_ENTRY(mvcc_thawed);
+    MAKE_ENTRY(mvcc_freed);
+#endif
+    MAKE_ENTRY(alloc);
+    MAKE_ENTRY(alloc_buckets);
+    MAKE_ENTRY(alloc_max_buckets);
+    MAKE_ENTRY(alloc_pages);
+    MAKE_ENTRY(alloc_max_pages);
+#if (DBVER >= 45)
+    MAKE_ENTRY(io_wait);
+#endif
+#if (DBVER >= 48)
+    MAKE_ENTRY(sync_interrupted);
+#endif
+
+#undef MAKE_ENTRY
+    free(gsp);
+
+    d2 = PyDict_New();
+    if (d2 == NULL) {
+        Py_DECREF(d);
+        if (fsp)
+            free(fsp);
+        return NULL;
+    }
+#define MAKE_ENTRY(name)  _addIntToDict(d3, #name, (*fsp2)->st_##name)
+    for(fsp2=fsp;*fsp2; fsp2++) {
+        d3 = PyDict_New();
+        if (d3 == NULL) {
+            Py_DECREF(d);
+            Py_DECREF(d2);
+            if (fsp)
+                free(fsp);
+            return NULL;
+        }
+        MAKE_ENTRY(pagesize);
+        MAKE_ENTRY(cache_hit);
+        MAKE_ENTRY(cache_miss);
+        MAKE_ENTRY(map);
+        MAKE_ENTRY(page_create);
+        MAKE_ENTRY(page_in);
+        MAKE_ENTRY(page_out);
+        if(PyDict_SetItemString(d2, (*fsp2)->file_name, d3)) {
+            Py_DECREF(d);
+            Py_DECREF(d2);
+            Py_DECREF(d3);
+            if (fsp)
+                free(fsp);
+            return NULL;
+        }
+        Py_DECREF(d3);
+    }
+
+#undef MAKE_ENTRY
+    free(fsp);
+
+    r = Py_BuildValue("(OO)", d, d2);
+    Py_DECREF(d);
+    Py_DECREF(d2);
+    return r;
+}
+
 #if (DBVER >= 43)
 static PyObject*
 DBEnv_memp_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
@@ -8262,6 +8393,8 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
     {"memp_trickle",    (PyCFunction)DBEnv_memp_trickle,    METH_VARARGS},
     {"memp_sync",       (PyCFunction)DBEnv_memp_sync,       METH_VARARGS},
+    {"memp_stat",       (PyCFunction)DBEnv_memp_stat,
+        METH_VARARGS|METH_KEYWORDS},
 #if (DBVER >= 43)
     {"memp_stat_print", (PyCFunction)DBEnv_memp_stat_print,
         METH_VARARGS|METH_KEYWORDS},

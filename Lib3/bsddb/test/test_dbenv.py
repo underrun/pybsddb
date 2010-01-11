@@ -316,6 +316,21 @@ class DBEnv_memp(DBEnv):
         # Nothing to do...
         self.assertTrue(self.env.memp_trickle(100) == 0)
 
+    def test_memp_stat_1(self) :
+        stats = self.env.memp_stat()  # No param
+        self.assertTrue(len(stats)==2)
+        self.assertTrue("cache_miss" in stats[0])
+        stats = self.env.memp_stat(db.DB_STAT_CLEAR)  # Positional param
+        self.assertTrue("cache_miss" in stats[0])
+        stats = self.env.memp_stat(flags=0)  # Keyword param
+        self.assertTrue("cache_miss" in stats[0])
+
+    def test_memp_stat_2(self) :
+        stats=self.env.memp_stat()[1]
+        self.assertTrue(len(stats))==1
+        self.assertTrue("test" in stats)
+        self.assertTrue("page_in" in stats["test"])
+
 def test_suite():
     suite = unittest.TestSuite()
 

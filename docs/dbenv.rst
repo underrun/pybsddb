@@ -43,6 +43,157 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_open.html>`__
 
+.. function:: memp_stat(flags=0)
+
+   Returns the memory pool (that is, the buffer cache) subsystem
+   statistics.
+
+   The returning value is a tuple. The first element is a dictionary
+   with the general stats. The second element is another dictionary,
+   keyed by filename, and the values are the stats for each file.
+   
+   The first dictionary contains these data:
+
+    +-------------------+---------------------------------------------+
+    | gbytes            | Gigabytes of cache (total cache size is     |
+    |                   | st_gbytes + st_bytes).                      |
+    +-------------------+---------------------------------------------+
+    | bytes             | Bytes of cache (total cache size is         |
+    |                   | st_gbytes + st_bytes).                      |
+    +-------------------+---------------------------------------------+
+    | ncache            | Number of caches.                           |
+    +-------------------+---------------------------------------------+
+    | max_ncache        | Maximum number of caches, as configured     |
+    |                   | with the DB_ENV->set_cache_max() method.    |
+    +-------------------+---------------------------------------------+
+    | regsize           | Individual cache size, in bytes.            |
+    +-------------------+---------------------------------------------+
+    | mmapsize          | Maximum memory-mapped file size.            |
+    +-------------------+---------------------------------------------+
+    | maxopenfd         | Maximum open file descriptors.              |
+    +-------------------+---------------------------------------------+
+    | maxwrite          | Maximum sequential buffer writes.           |
+    +-------------------+---------------------------------------------+
+    | maxwrite_sleep    | Microseconds to pause after writing maximum |
+    |                   | sequential buffers.                         |
+    +-------------------+---------------------------------------------+
+    | map               | Requested pages mapped into the process'    |
+    |                   | address space (there is no available        |
+    |                   | information about whether or not this       |
+    |                   | request caused disk I/O, although examining |
+    |                   | the application page fault rate may be      |
+    |                   | helpful).                                   |
+    +-------------------+---------------------------------------------+
+    | cache_hit         | Requested pages found in the cache.         |
+    +-------------------+---------------------------------------------+
+    | cache_miss        | Requested pages not found in the cache.     |
+    +-------------------+---------------------------------------------+
+    | page_create       | Pages created in the cache.                 |
+    +-------------------+---------------------------------------------+
+    | page_in           | Pages read into the cache.                  |
+    +-------------------+---------------------------------------------+
+    | page_out          | Pages written from the cache to the backing |
+    |                   | file.                                       |
+    +-------------------+---------------------------------------------+
+    | ro_evict          | Clean pages forced from the cache.          |
+    +-------------------+---------------------------------------------+
+    | rw_evict          | Dirty pages forced from the cache.          |
+    +-------------------+---------------------------------------------+
+    | page_trickle      | Dirty pages written using the               |
+    |                   | DB_ENV->memp_trickle() method.              |
+    +-------------------+---------------------------------------------+
+    | pages             | Pages in the cache.                         |
+    +-------------------+---------------------------------------------+
+    | page_clean        | Clean pages currently in the cache.         |
+    +-------------------+---------------------------------------------+
+    | page_dirty        | Dirty pages currently in the cache.         |
+    +-------------------+---------------------------------------------+
+    | hash_buckets      | Number of hash buckets in buffer hash       |
+    |                   | table.                                      |
+    +-------------------+---------------------------------------------+
+    | hash_searches     | Total number of buffer hash table lookups.  |
+    +-------------------+---------------------------------------------+
+    | hash_longest      | Longest chain ever encountered in buffer    |
+    |                   | hash table lookups.                         |
+    +-------------------+---------------------------------------------+
+    | hash_examined     | Total number of hash elements traversed     |
+    |                   | during hash table lookups.                  |
+    +-------------------+---------------------------------------------+
+    | hash_nowait       | Number of times that a thread of control    |
+    |                   | was able to obtain a hash bucket lock       |
+    |                   | without waiting.                            |
+    +-------------------+---------------------------------------------+
+    | hash_wait         | Number of times that a thread of control    |
+    |                   | was forced to wait before obtaining a hash  |
+    |                   | bucket lock.                                |
+    +-------------------+---------------------------------------------+
+    | hash_max_nowait   | The number of times a thread of control was |
+    |                   | able to obtain the hash bucket lock without |
+    |                   | waiting on the bucket which had the maximum |
+    |                   | number of times that a thread of control    |
+    |                   | needed to wait.                             |
+    +-------------------+---------------------------------------------+
+    | hash_max_wait     | Maximum number of times any hash bucket     |
+    |                   | lock was waited for by a thread of control. |
+    +-------------------+---------------------------------------------+
+    | region_wait       | Number of times that a thread of control    |
+    |                   | was forced to wait before obtaining a cache |
+    |                   | region mutex.                               |
+    +-------------------+---------------------------------------------+
+    | region_nowait     | Number of times that a thread of control    |
+    |                   | was able to obtain a cache region mutex     |
+    |                   | without waiting.                            |
+    +-------------------+---------------------------------------------+
+    | mvcc_frozen       | Number of buffers frozen.                   |
+    +-------------------+---------------------------------------------+
+    | mvcc_thawed       | Number of buffers thawed.                   |
+    +-------------------+---------------------------------------------+
+    | mvcc_freed        | Number of frozen buffers freed.             |
+    +-------------------+---------------------------------------------+
+    | alloc             | Number of page allocations.                 |
+    +-------------------+---------------------------------------------+
+    | alloc_buckets     | Number of hash buckets checked during       |
+    |                   | allocation.                                 |
+    +-------------------+---------------------------------------------+
+    | alloc_max_buckets | Maximum number of hash buckets checked      |
+    |                   | during an allocation.                       |
+    +-------------------+---------------------------------------------+
+    | alloc_pages       | Number of pages checked during allocation.  |
+    +-------------------+---------------------------------------------+
+    | alloc_max_pages   | Maximum number of pages checked during an   |
+    |                   | allocation.                                 |
+    +-------------------+---------------------------------------------+
+    | io_wait           | Number of operations blocked waiting for    |
+    |                   | I/O to complete.                            |
+    +-------------------+---------------------------------------------+
+    | sync_interrupted  | Number of mpool sync operations             |
+    |                   | interrupted.                                |
+    +-------------------+---------------------------------------------+
+
+   The second dictionary contains these data:
+
+    +-------------------+---------------------------------------------+
+    | pagesize          | Page size in bytes.                         |
+    +-------------------+---------------------------------------------+
+    | cache_hit         | Requested pages found in the cache.         |
+    +-------------------+---------------------------------------------+
+    | cache_miss        | Requested pages not found in the cache.     |
+    +-------------------+---------------------------------------------+
+    | map               | Requested pages mapped into the process'    |
+    |                   | address space.                              |
+    +-------------------+---------------------------------------------+
+    | page_create       | Pages created in the cache.                 |
+    +-------------------+---------------------------------------------+
+    | page_in           | Pages read into the cache.                  |
+    +-------------------+---------------------------------------------+
+    | page_out          | Pages written from the cache to the backing |
+    |                   | file.                                       |
+    +-------------------+---------------------------------------------+
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/mempstat.html>`__
+
 .. function:: memp_stat_print(flags=0)
 
    Displays cache subsystem statistical information.
