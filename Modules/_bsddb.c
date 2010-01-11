@@ -3149,6 +3149,7 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
     return d;
 }
 
+#if (DBVER >= 43)
 static PyObject*
 DB_stat_print(DBObject* self, PyObject* args, PyObject *kwargs)
 {
@@ -3168,6 +3169,7 @@ DB_stat_print(DBObject* self, PyObject* args, PyObject *kwargs)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+#endif
 
 
 static PyObject*
@@ -5539,6 +5541,7 @@ DBEnv_set_tmp_dir(DBEnvObject* self, PyObject* args)
 }
 
 
+#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_tmp_dir(DBEnvObject* self)
 {
@@ -5555,6 +5558,7 @@ DBEnv_get_tmp_dir(DBEnvObject* self)
 
     return PyBytes_FromString(dirpp);
 }
+#endif
 
 
 static PyObject*
@@ -5871,6 +5875,7 @@ DBEnv_lsn_reset(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 #endif /* DBVER >= 4.4 */
 
 
+#if (DBVER >= 43)
 static PyObject*
 DBEnv_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
 {
@@ -5890,6 +5895,7 @@ DBEnv_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+#endif
 
 
 static PyObject*
@@ -5953,6 +5959,7 @@ DBEnv_log_stat(DBEnvObject* self, PyObject* args)
 } /* DBEnv_log_stat */
 
 
+#if (DBVER >= 43)
 static PyObject*
 DBEnv_log_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
 {
@@ -5972,6 +5979,7 @@ DBEnv_log_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+#endif
 
 
 static PyObject*
@@ -6053,6 +6061,7 @@ DBEnv_lock_stat(DBEnvObject* self, PyObject* args)
     return d;
 }
 
+#if (DBVER >= 43)
 static PyObject*
 DBEnv_lock_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
 {
@@ -6072,6 +6081,7 @@ DBEnv_lock_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+#endif
 
 
 static PyObject*
@@ -6182,6 +6192,7 @@ DBEnv_mutex_stat(DBEnvObject* self, PyObject* args)
 #endif
 
 
+#if (DBVER >= 44)
 static PyObject*
 DBEnv_mutex_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
 {
@@ -6201,6 +6212,7 @@ DBEnv_mutex_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+#endif
 
 
 #if (DBVER >= 43)
@@ -8026,8 +8038,10 @@ static PyMethodDef DB_methods[] = {
     {"get_priority",    (PyCFunction)DB_get_priority,   METH_NOARGS},
 #endif
     {"stat",            (PyCFunction)DB_stat,           METH_VARARGS|METH_KEYWORDS},
+#if (DBVER >= 43)
     {"stat_print",      (PyCFunction)DB_stat_print,
         METH_VARARGS|METH_KEYWORDS},
+#endif
     {"sync",            (PyCFunction)DB_sync,           METH_VARARGS},
     {"truncate",        (PyCFunction)DB_truncate,       METH_VARARGS|METH_KEYWORDS},
     {"type",            (PyCFunction)DB_get_type,       METH_NOARGS},
@@ -8144,8 +8158,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"mutex_get_tas_spins", (PyCFunction)DBEnv_mutex_get_tas_spins,
         METH_NOARGS},
     {"mutex_stat",      (PyCFunction)DBEnv_mutex_stat,      METH_VARARGS},
+#if (DBVER >= 44)
     {"mutex_stat_print", (PyCFunction)DBEnv_mutex_stat_print,
                                          METH_VARARGS|METH_KEYWORDS},
+#endif
 #endif
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
 #if (DBVER >= 42)
@@ -8202,11 +8218,15 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 42)
     {"get_lk_max_objects", (PyCFunction)DBEnv_get_lk_max_objects, METH_NOARGS},
 #endif
+#if (DBVER >= 43)
     {"stat_print",          (PyCFunction)DBEnv_stat_print,
         METH_VARARGS|METH_KEYWORDS},
+#endif
     {"set_mp_mmapsize", (PyCFunction)DBEnv_set_mp_mmapsize, METH_VARARGS},
     {"set_tmp_dir",     (PyCFunction)DBEnv_set_tmp_dir,     METH_VARARGS},
+#if (DBVER >= 42)
     {"get_tmp_dir",     (PyCFunction)DBEnv_get_tmp_dir,     METH_NOARGS},
+#endif
     {"txn_begin",       (PyCFunction)DBEnv_txn_begin,       METH_VARARGS|METH_KEYWORDS},
     {"txn_checkpoint",  (PyCFunction)DBEnv_txn_checkpoint,  METH_VARARGS},
     {"txn_stat",        (PyCFunction)DBEnv_txn_stat,        METH_VARARGS},
@@ -8226,13 +8246,17 @@ static PyMethodDef DBEnv_methods[] = {
     {"lock_id_free",    (PyCFunction)DBEnv_lock_id_free,    METH_VARARGS},
     {"lock_put",        (PyCFunction)DBEnv_lock_put,        METH_VARARGS},
     {"lock_stat",       (PyCFunction)DBEnv_lock_stat,       METH_VARARGS},
+#if (DBVER >= 43)
     {"lock_stat_print", (PyCFunction)DBEnv_lock_stat_print,
         METH_VARARGS|METH_KEYWORDS},
+#endif
     {"log_archive",     (PyCFunction)DBEnv_log_archive,     METH_VARARGS},
     {"log_flush",       (PyCFunction)DBEnv_log_flush,       METH_NOARGS},
     {"log_stat",        (PyCFunction)DBEnv_log_stat,        METH_VARARGS},
+#if (DBVER >= 43)
     {"log_stat_print",  (PyCFunction)DBEnv_log_stat_print,
         METH_VARARGS|METH_KEYWORDS},
+#endif
 #if (DBVER >= 44)
     {"fileid_reset",    (PyCFunction)DBEnv_fileid_reset,    METH_VARARGS|METH_KEYWORDS},
     {"lsn_reset",       (PyCFunction)DBEnv_lsn_reset,       METH_VARARGS|METH_KEYWORDS},
@@ -9064,7 +9088,9 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
     ADD_INT(d, DB_OVERWRITE);
 
+#if (DBVER >= 43)
     ADD_INT(d, DB_STAT_SUBSYSTEM);
+#endif
 
 #if (DBVER >= 48)
     ADD_INT(d, DB_OVERWRITE_DUP);

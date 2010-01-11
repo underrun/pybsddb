@@ -25,11 +25,6 @@ class DBEnv(unittest.TestCase):
         test_support.rmtree(self.homeDir)
 
 class DBEnv_general(DBEnv) :
-    def test_tmp_dir(self) :
-        for i in ["a", "bb", "ccc"] :
-            self.env.set_tmp_dir(i)
-            self.assertEqual(i, self.env.get_tmp_dir())
-
     if db.version() >= (4, 7) :
         def test_lk_partitions(self) :
             for i in [10, 20, 40] :
@@ -64,6 +59,11 @@ class DBEnv_general(DBEnv) :
                 self.assertEqual(i, self.env.get_lg_filemode())
 
     if db.version() >= (4, 2) :
+        def test_tmp_dir(self) :
+            for i in ["a", "bb", "ccc"] :
+                self.env.set_tmp_dir(i)
+                self.assertEqual(i, self.env.get_tmp_dir())
+
         def test_flags(self) :
             self.env.set_flags(db.DB_AUTO_COMMIT, 1)
             self.assertEqual(db.DB_AUTO_COMMIT, self.env.get_flags())
