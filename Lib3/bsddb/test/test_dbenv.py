@@ -58,6 +58,12 @@ class DBEnv_general(DBEnv) :
                 self.env.set_lg_filemode(i)
                 self.assertEqual(i, self.env.get_lg_filemode())
 
+    if db.version() >= (4, 3) :
+        def test_mp_max_openfd(self) :
+            for i in [17, 31, 42] :
+                self.env.set_mp_max_openfd(i)
+                self.assertEqual(i, self.env.get_mp_max_openfd())
+
     if db.version() >= (4, 2) :
         def test_tmp_dir(self) :
             for i in ["a", "bb", "ccc"] :

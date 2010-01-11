@@ -6356,6 +6356,41 @@ DBEnv_set_rpc_server(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 }
 #endif
 
+#if (DBVER >= 43)
+static PyObject*
+DBEnv_set_mp_max_openfd(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int maxopenfd;
+
+    if (!PyArg_ParseTuple(args, "i:set_mp_max_openfd", &maxopenfd)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_mp_max_openfd(self->db_env, maxopenfd);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_get_mp_max_openfd(DBEnvObject* self)
+{
+    int err;
+    int maxopenfd;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_mp_max_openfd(self->db_env, &maxopenfd);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(maxopenfd);
+}
+#endif
+
+
 static PyObject*
 DBEnv_set_verbose(DBEnvObject* self, PyObject* args)
 {
@@ -8266,6 +8301,10 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER < 48)
     {"set_rpc_server",  (PyCFunction)DBEnv_set_rpc_server,
         METH_VARARGS||METH_KEYWORDS},
+#endif
+#if (DBVER >= 43)
+    {"set_mp_max_openfd", (PyCFunction)DBEnv_set_mp_max_openfd, METH_VARARGS},
+    {"get_mp_max_openfd", (PyCFunction)DBEnv_get_mp_max_openfd, METH_NOARGS},
 #endif
     {"set_verbose",     (PyCFunction)DBEnv_set_verbose,     METH_VARARGS},
 #if (DBVER >= 42)
