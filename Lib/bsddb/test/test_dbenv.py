@@ -64,6 +64,14 @@ class DBEnv_general(DBEnv) :
                 self.env.set_mp_max_openfd(i)
                 self.assertEqual(i, self.env.get_mp_max_openfd())
 
+        def test_mp_max_write(self) :
+            for i in [100, 200, 300] :
+                for j in [1, 2, 3] :
+                    j *= 1000000
+                    self.env.set_mp_max_write(i, j)
+                    v=self.env.get_mp_max_write()
+                    self.assertEqual((i, j), v)
+
     if db.version() >= (4, 2) :
         def test_tmp_dir(self) :
             for i in ["a", "bb", "ccc"] :

@@ -6388,6 +6388,44 @@ DBEnv_get_mp_max_openfd(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(maxopenfd);
 }
+
+
+static PyObject*
+DBEnv_set_mp_max_write(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int maxwrite, maxwrite_sleep;
+
+    if (!PyArg_ParseTuple(args, "ii:set_mp_max_write", &maxwrite,
+                &maxwrite_sleep)) {
+        return NULL;
+    }
+    CHECK_ENV_NOT_CLOSED(self);
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_mp_max_write(self->db_env, maxwrite,
+            maxwrite_sleep);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_get_mp_max_write(DBEnvObject* self)
+{
+    int err;
+    int maxwrite;
+    db_timeout_t maxwrite_sleep;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_mp_max_write(self->db_env, &maxwrite,
+            &maxwrite_sleep);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+
+    return Py_BuildValue("(ii)", maxwrite, (int)maxwrite_sleep);
+}
 #endif
 
 
@@ -8305,6 +8343,8 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 43)
     {"set_mp_max_openfd", (PyCFunction)DBEnv_set_mp_max_openfd, METH_VARARGS},
     {"get_mp_max_openfd", (PyCFunction)DBEnv_get_mp_max_openfd, METH_NOARGS},
+    {"set_mp_max_write", (PyCFunction)DBEnv_set_mp_max_write, METH_VARARGS},
+    {"get_mp_max_write", (PyCFunction)DBEnv_get_mp_max_write, METH_NOARGS},
 #endif
     {"set_verbose",     (PyCFunction)DBEnv_set_verbose,     METH_VARARGS},
 #if (DBVER >= 42)

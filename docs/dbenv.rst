@@ -163,6 +163,23 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_reference/C/mempset_mp_max_openfd.html>`__
 
+.. function:: get_mp_max_write()
+
+   Returns a tuple with the current maximum number of sequential write
+   operations and microseconds to pause that the library can schedule
+   when flushing dirty pages from the cache.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/mempget_mp_max_write.html>`__
+
+.. function:: set_mp_max_write(maxwrite, maxwrite_sleep)
+
+   Limits the number of sequential write operations scheduled by the
+   library when flushing dirty pages from the cache. 
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/mempset_mp_max_write.html>`__
+
 .. function:: set_shm_key(key)
 
    Specify a base segment ID for Berkeley DB environment shared memory
