@@ -5543,7 +5543,7 @@ static PyObject*
 DBEnv_get_tmp_dir(DBEnvObject* self)
 {
     int err;
-    const char **dirpp;
+    const char *dirpp;
 
     CHECK_ENV_NOT_CLOSED(self);
 
