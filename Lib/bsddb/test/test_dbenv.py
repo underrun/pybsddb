@@ -47,6 +47,12 @@ class DBEnv_general(DBEnv) :
                 self.assertTrue(2*size > size2[1])
 
     if db.version() >= (4, 4) :
+        def test_mutex_stat(self) :
+            self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL |
+                    db.DB_INIT_LOCK)
+            stat = self.env.mutex_stat()
+            self.assertTrue("mutex_inuse_max" in stat)
+
         def test_lg_filemode(self) :
             for i in [0600, 0660, 0666] :
                 self.env.set_lg_filemode(i)

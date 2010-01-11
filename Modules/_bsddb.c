@@ -5831,6 +5831,7 @@ DBEnv_lsn_reset(DBEnvObject* self, PyObject* args, PyObject* kwargs)
 }
 #endif /* DBVER >= 4.4 */
 
+
 static PyObject*
 DBEnv_log_stat(DBEnvObject* self, PyObject* args)
 {
@@ -6032,6 +6033,51 @@ DBEnv_log_archive(DBEnvObject* self, PyObject* args)
     }
     return list;
 }
+
+
+#if (DBVER >= 44)
+static PyObject*
+DBEnv_mutex_stat(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    DB_MUTEX_STAT* statp = NULL;
+    PyObject* d = NULL;
+    u_int32_t flags = 0;
+
+    if (!PyArg_ParseTuple(args, "|i:mutex_stat", &flags))
+        return NULL;
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->mutex_stat(self->db_env, &statp, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+
+    /* Turn the stat structure into a dictionary */
+    d = PyDict_New();
+    if (d == NULL) {
+        if (statp)
+            free(statp);
+        return NULL;
+    }
+
+#define MAKE_ENTRY(name)  _addIntToDict(d, #name, statp->st_##name)
+
+    MAKE_ENTRY(mutex_align);
+    MAKE_ENTRY(mutex_tas_spins);
+    MAKE_ENTRY(mutex_cnt);
+    MAKE_ENTRY(mutex_free);
+    MAKE_ENTRY(mutex_inuse);
+    MAKE_ENTRY(mutex_inuse_max);
+    MAKE_ENTRY(regsize);
+    MAKE_ENTRY(region_wait);
+    MAKE_ENTRY(region_nowait);
+
+#undef MAKE_ENTRY
+    free(statp);
+    return d;
+}
+#endif
 
 
 #if (DBVER >= 43)
@@ -7972,6 +8018,7 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS},
     {"mutex_get_tas_spins", (PyCFunction)DBEnv_mutex_get_tas_spins,
         METH_NOARGS},
+    {"mutex_stat",      (PyCFunction)DBEnv_mutex_stat,      METH_VARARGS},
 #endif
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
 #if (DBVER >= 42)

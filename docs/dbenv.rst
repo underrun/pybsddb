@@ -876,6 +876,40 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_event_notify.html>`__
 
+.. function:: mutex_stat(flags=0)
+
+   Returns a dictionary of mutex subsystem statistics with the following
+   keys:
+
+    +-----------------+--------------------------------------------+
+    | mutex_align     | The mutex alignment, in bytes.             |
+    +-----------------+--------------------------------------------+
+    | mutex_tas_spins | The number of times test-and-set mutexes   |
+    |                 | will spin without blocking.                |
+    +-----------------+--------------------------------------------+
+    | mutex_cnt       | The total number of mutexes configured.    |
+    +-----------------+--------------------------------------------+
+    | mutex_free      | The number of mutexes currently available. |
+    +-----------------+--------------------------------------------+
+    | mutex_inuse     | The number of mutexes currently in use.    |
+    +-----------------+--------------------------------------------+
+    | mutex_inuse_max | The maximum number of mutexes ever in use. |
+    +-----------------+--------------------------------------------+
+    | regsize         | The size of the mutex region, in bytes.    |
+    +-----------------+--------------------------------------------+
+    | region_wait     | The number of times that a thread of       |
+    |                 | control was forced to wait before          |
+    |                 | obtaining the mutex region mutex.          |
+    +-----------------+--------------------------------------------+
+    | region_nowait   | The number of times that a thread of       |
+    |                 | control was able to obtain the mutex       |
+    |                 | region mutex without waiting.              |
+    +-----------------+--------------------------------------------+
+
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/mutexstat.html>`__
+
 .. function:: mutex_set_max(value)
 
    Configure the total number of mutexes to allocate.
