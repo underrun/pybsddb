@@ -4,5 +4,7 @@ docs/tools/docutils/
 docs/tools/pygments/
 docs/tools/sphinx/
 build/
+dist/
+bsddb3.egg-info/
 *.pyc
 *.pyo
