@@ -153,3 +153,6 @@
 
 * 20091206: Review ALL documentation, text and comments in code.
 
+* 20100111: If "DB_ENV->set/get_mp_mmapsize()" is 32 bits in
+  64 bits architecture, it is not going to be enough.
+

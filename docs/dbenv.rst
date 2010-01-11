@@ -493,6 +493,14 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_set_lk_max_lockers.html>`__
 
+.. function:: get_mp_mmapsize()
+
+   Returns the the maximum file size, in bytes, for a file to be mapped
+   into the process address space.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/envget_mp_mmapsize.html>`__
+
 .. function:: set_mp_mmapsize(size)
 
    Files that are opened read-only in the memory pool (and that satisfy

@@ -73,6 +73,12 @@ class DBEnv_general(DBEnv) :
                     self.assertEqual((i, j), v)
 
     if db.version() >= (4, 2) :
+        def test_mp_mmapsize(self) :
+            for i in [16, 32, 64] :
+                i *= 1024*1024
+                self.env.set_mp_mmapsize(i)
+                self.assertEqual(i, self.env.get_mp_mmapsize())
+
         def test_tmp_dir(self) :
             for i in ["a", "bb", "ccc"] :
                 self.env.set_tmp_dir(i)

@@ -5506,6 +5506,24 @@ DBEnv_get_lk_max_objects(DBEnvObject* self)
 }
 #endif
 
+#if (DBVER >= 42)
+static PyObject*
+DBEnv_get_mp_mmapsize(DBEnvObject* self)
+{
+    int err;
+    size_t mmapsize;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_mp_mmapsize(self->db_env, &mmapsize);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(mmapsize);
+}
+#endif
+
+
 static PyObject*
 DBEnv_set_mp_mmapsize(DBEnvObject* self, PyObject* args)
 {
@@ -8296,6 +8314,9 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS|METH_KEYWORDS},
 #endif
     {"set_mp_mmapsize", (PyCFunction)DBEnv_set_mp_mmapsize, METH_VARARGS},
+#if (DBVER >= 42)
+    {"get_mp_mmapsize", (PyCFunction)DBEnv_get_mp_mmapsize, METH_NOARGS},
+#endif
     {"set_tmp_dir",     (PyCFunction)DBEnv_set_tmp_dir,     METH_VARARGS},
 #if (DBVER >= 42)
     {"get_tmp_dir",     (PyCFunction)DBEnv_get_tmp_dir,     METH_NOARGS},
