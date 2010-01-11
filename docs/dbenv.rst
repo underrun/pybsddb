@@ -845,6 +845,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/log_stat.html>`__
 
+.. function:: log_stat_print(flags=0)
+
+   Displays the logging subsystem statistical information.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/logstat_print.html>`__
+
 .. function:: txn_recover()
 
    Returns a list of tuples (GID, TXN) of transactions prepared but

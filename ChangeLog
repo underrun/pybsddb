@@ -3,6 +3,7 @@
   * Support for "DB_ENV->mutex_stat()" and "DB_ENV->mutex_stat_print()".
   * Support for "DB->stat_print()".
   * Support for "DB_ENV->lock_stat_print()".
+  * Support for "DB_ENV->log_stat_print()".
 
 4.8.2:
   * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",
