@@ -3801,27 +3801,23 @@ DBLogCursor_close(DBLogCursorObject* self)
 
 
 static PyObject*
-DBLogCursor_get(DBLogCursorObject* self, PyObject* args, PyObject *kwargs)
+_DBLogCursor_get(DBLogCursorObject* self, int flag, DB_LSN *lsn2)
 {
-    int err, flags;
+    int err;
     DBT data;
     DB_LSN lsn = {0, 0};
     PyObject *dummy, *retval;
-    static char* kwnames[] = {"flags", "lsn", NULL };
 
     CLEAR_DBT(data);
     data.flags = DB_DBT_MALLOC; /* Berkeley DB must do the malloc */
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|(ii):get", kwnames,
-				     &flags, &lsn.file, &lsn.offset))
-    {
-        return NULL;
-    }
-
     CHECK_LOGCURSOR_NOT_CLOSED(self);
 
+    if (lsn2)
+        lsn = *lsn2;
+
     MYDB_BEGIN_ALLOW_THREADS;
-    err = self->logc->get(self->logc, &lsn, &data, flags);
+    err = self->logc->get(self->logc, &lsn, &data, flag);
     MYDB_END_ALLOW_THREADS;
 
     if (err == DB_NOTFOUND) {
@@ -3842,6 +3838,48 @@ DBLogCursor_get(DBLogCursorObject* self, PyObject* args, PyObject *kwargs)
     FREE_DBT(data);
     return retval;
 }
+
+static PyObject*
+DBLogCursor_current(DBLogCursorObject* self)
+{
+    return _DBLogCursor_get(self, DB_CURRENT, NULL);
+}
+
+static PyObject*
+DBLogCursor_first(DBLogCursorObject* self)
+{
+    return _DBLogCursor_get(self, DB_FIRST, NULL);
+}
+
+static PyObject*
+DBLogCursor_last(DBLogCursorObject* self)
+{
+    return _DBLogCursor_get(self, DB_LAST, NULL);
+}
+
+static PyObject*
+DBLogCursor_next(DBLogCursorObject* self)
+{
+    return _DBLogCursor_get(self, DB_NEXT, NULL);
+}
+
+static PyObject*
+DBLogCursor_prev(DBLogCursorObject* self)
+{
+    return _DBLogCursor_get(self, DB_PREV, NULL);
+}
+
+static PyObject*
+DBLogCursor_set(DBLogCursorObject* self, PyObject* args)
+{
+    DB_LSN lsn;
+
+    if (!PyArg_ParseTuple(args, "(ii):set", &lsn.file, &lsn.offset))
+        return NULL;
+
+    return _DBLogCursor_get(self, DB_SET, &lsn);
+}
+
 
 
 /* --------------------------------------------------------------------- */
@@ -8512,8 +8550,13 @@ static PyMethodDef DBCursor_methods[] = {
 
 
 static PyMethodDef DBLogCursor_methods[] = {
-    {"close",           (PyCFunction)DBLogCursor_close, METH_NOARGS},
-    {"get",             (PyCFunction)DBLogCursor_get,   METH_VARARGS|METH_KEYWORDS},
+    {"close",   (PyCFunction)DBLogCursor_close,     METH_NOARGS},
+    {"current", (PyCFunction)DBLogCursor_current,   METH_NOARGS},
+    {"first",   (PyCFunction)DBLogCursor_first,     METH_NOARGS},
+    {"last",    (PyCFunction)DBLogCursor_last,      METH_NOARGS},
+    {"next",    (PyCFunction)DBLogCursor_next,      METH_NOARGS},
+    {"prev",    (PyCFunction)DBLogCursor_prev,      METH_NOARGS},
+    {"set",     (PyCFunction)DBLogCursor_set,       METH_VARARGS},
     {NULL,      NULL}       /* sentinel */
 };
 

@@ -362,78 +362,78 @@ class DBEnv_logcursor(DBEnv):
     # Preserve test order
     def test_1_first(self) :
         logc = self.env.log_cursor()
-        v = logc.get(db.DB_FIRST)
+        v = logc.first()
         self._check_return(v)
         self.assertTrue((1, 1) < v[0])
         self.assertTrue(len(v[1])>0)
 
     def test_2_last(self) :
         logc = self.env.log_cursor()
-        lsn_first = logc.get(db.DB_FIRST) [0]
-        v = logc.get(db.DB_LAST)
+        lsn_first = logc.first()[0]
+        v = logc.last()
         self._check_return(v)
         self.assertTrue(lsn_first < v[0])
 
     def test_3_next(self) :
         logc = self.env.log_cursor()
-        lsn_last = logc.get(db.DB_LAST)[0]
-        self.assertEqual(logc.get(db.DB_NEXT), None)
-        lsn_first = logc.get(db.DB_FIRST)[0]
-        v = logc.get(db.DB_NEXT)
+        lsn_last = logc.last()[0]
+        self.assertEqual(next(logc), None)
+        lsn_first = logc.first()[0]
+        v = next(logc)
         self._check_return(v)
         self.assertTrue(lsn_first < v[0])
         self.assertTrue(lsn_last > v[0])
 
-        v2 = logc.get(db.DB_NEXT)
+        v2 = next(logc)
         self.assertTrue(v2[0] > v[0])
         self.assertTrue(lsn_last > v2[0])
 
-        v3 = logc.get(db.DB_NEXT)
+        v3 = next(logc)
         self.assertTrue(v3[0] > v2[0])
         self.assertTrue(lsn_last > v3[0])
 
     def test_4_prev(self) :
         logc = self.env.log_cursor()
-        lsn_first = logc.get(db.DB_FIRST)[0]
-        self.assertEqual(logc.get(db.DB_PREV), None)
-        lsn_last = logc.get(db.DB_LAST)[0]
-        v = logc.get(db.DB_PREV)
+        lsn_first = logc.first()[0]
+        self.assertEqual(logc.prev(), None)
+        lsn_last = logc.last()[0]
+        v = logc.prev()
         self._check_return(v)
         self.assertTrue(lsn_first < v[0])
         self.assertTrue(lsn_last > v[0])
 
-        v2 = logc.get(db.DB_PREV)
+        v2 = logc.prev()
         self.assertTrue(v2[0] < v[0])
         self.assertTrue(lsn_first < v2[0])
 
-        v3 = logc.get(db.DB_PREV)
+        v3 = logc.prev()
         self.assertTrue(v3[0] < v2[0])
         self.assertTrue(lsn_first < v3[0])
 
     def test_5_current(self) :
         logc = self.env.log_cursor()
-        logc.get(db.DB_FIRST)
-        v = logc.get(db.DB_NEXT)
-        self.assertEqual(v, logc.get(db.DB_CURRENT))
+        logc.first()
+        v = next(logc)
+        self.assertEqual(v, logc.current())
 
     def test_6_set(self) :
         logc = self.env.log_cursor()
-        logc.get(db.DB_FIRST)
-        v = logc.get(db.DB_NEXT)
-        self.assertNotEqual(v, logc.get(db.DB_NEXT))
-        self.assertNotEqual(v, logc.get(db.DB_NEXT))
-        self.assertEqual(v, logc.get(db.DB_SET, v[0]))
+        logc.first()
+        v = next(logc)
+        self.assertNotEqual(v, next(logc))
+        self.assertNotEqual(v, next(logc))
+        self.assertEqual(v, logc.set(v[0]))
 
     def test_explicit_close(self) :
         logc = self.env.log_cursor()
         logc.close()
-        self.assertRaises(db.DBCursorClosedError, logc.get, db.DB_NEXT)
+        self.assertRaises(db.DBCursorClosedError, logc.__next__)
 
     def test_implicit_close(self) :
         logc =  [self.env.log_cursor() for i in range(10)]
         self.env.close()  # This close should close too all its tree
         for i in logc :
-            self.assertRaises(db.DBCursorClosedError, i.get, db.DB_NEXT)
+            self.assertRaises(db.DBCursorClosedError, i.__next__)
 
 def test_suite():
     suite = unittest.TestSuite()

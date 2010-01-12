@@ -160,3 +160,5 @@
   objects. These can keep parent objects around, so better
   allow GC of them to close the entire object tree.
 
+* 20100112: LogCursors should be iterable.
+
