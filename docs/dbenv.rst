@@ -43,6 +43,13 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_c/env_open.html>`__
 
+.. function:: log_cursor()
+
+   Returns a created log cursor.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/logcursor.html>`__
+
 .. function:: memp_stat(flags=0)
 
    Returns the memory pool (that is, the buffer cache) subsystem

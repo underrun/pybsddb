@@ -34,6 +34,7 @@ Documentation Index
   dbenv.rst
   db.rst
   dbcursor.rst
+  dblogcursor.rst
   dbtxn.rst
   dblock.rst
   dbsequence.rst

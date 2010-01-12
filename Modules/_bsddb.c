@@ -73,6 +73,10 @@
  * DBLock       (A lock handle)
  * DBSequence   (Sequence)
  *
+ * More datatypes added:
+ *
+ * DBLogCursor  (Log Cursor)
+ *
  */
 
 /* --------------------------------------------------------------------- */
@@ -247,7 +251,7 @@ static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 #endif
 
 staticforward PyTypeObject DB_Type, DBCursor_Type, DBEnv_Type, DBTxn_Type,
-              DBLock_Type;
+              DBLock_Type, DBLogCursor_Type;
 #if (DBVER >= 43)
 staticforward PyTypeObject DBSequence_Type;
 #endif
@@ -259,6 +263,7 @@ staticforward PyTypeObject DBSequence_Type;
 
 #define DBObject_Check(v)           (Py_TYPE(v) == &DB_Type)
 #define DBCursorObject_Check(v)     (Py_TYPE(v) == &DBCursor_Type)
+#define DBLogCursorObject_Check(v)  (Py_TYPE(v) == &DBLogCursor_Type)
 #define DBEnvObject_Check(v)        (Py_TYPE(v) == &DBEnv_Type)
 #define DBTxnObject_Check(v)        (Py_TYPE(v) == &DBTxn_Type)
 #define DBLockObject_Check(v)       (Py_TYPE(v) == &DBLock_Type)
@@ -363,6 +368,9 @@ staticforward PyTypeObject DBSequence_Type;
 
 #define CHECK_CURSOR_NOT_CLOSED(curs) \
         _CHECK_OBJECT_NOT_CLOSED(curs->dbc, DBCursorClosedError, DBCursor)
+
+#define CHECK_LOGCURSOR_NOT_CLOSED(logcurs) \
+        _CHECK_OBJECT_NOT_CLOSED(logcurs->logc, DBCursorClosedError, DBLogCursor)
 
 #if (DBVER >= 43)
 #define CHECK_SEQUENCE_NOT_CLOSED(curs) \
@@ -1078,6 +1086,54 @@ DBCursor_dealloc(DBCursorObject* self)
 }
 
 
+static DBLogCursorObject*
+newDBLogCursorObject(DB_LOGC* dblogc, DBEnvObject* env)
+{
+    DBLogCursorObject* self;
+
+    self = PyObject_New(DBLogCursorObject, &DBLogCursor_Type);
+
+    if (self == NULL)
+        return NULL;
+
+    self->logc = dblogc;
+    self->env = env;
+
+    INSERT_IN_DOUBLE_LINKED_LIST(self->env->children_logcursors, self);
+
+    self->in_weakreflist = NULL;
+    Py_INCREF(self->env);
+    return self;
+}
+
+
+/* Forward declaration */
+static PyObject *DBLogCursor_close_internal(DBLogCursorObject* self);
+
+static void
+DBLogCursor_dealloc(DBLogCursorObject* self)
+{
+    PyObject *dummy;
+
+    if (self->logc != NULL) {
+        dummy = DBLogCursor_close_internal(self);
+        /*
+        ** Raising exceptions while doing
+        ** garbage collection is a fatal error.
+        */
+        if (dummy)
+            Py_DECREF(dummy);
+        else
+            PyErr_Clear();
+    }
+    if (self->in_weakreflist != NULL) {
+        PyObject_ClearWeakRefs((PyObject *) self);
+    }
+    Py_DECREF(self->env);
+    PyObject_Del(self);
+}
+
+
 static DBEnvObject*
 newDBEnvObject(int flags)
 {
@@ -1093,6 +1149,7 @@ newDBEnvObject(int flags)
     self->moduleFlags.cursorSetReturnsNone = DEFAULT_CURSOR_SET_RETURNS_NONE;
     self->children_dbs = NULL;
     self->children_txns = NULL;
+    self->children_logcursors = NULL ;
     Py_INCREF(Py_None);
     self->private_obj = Py_None;
     Py_INCREF(Py_None);
@@ -3716,6 +3773,78 @@ DB_values(DBObject* self, PyObject* args)
 }
 
 /* --------------------------------------------------------------------- */
+/* DBLogCursor methods */
+
+
+static PyObject*
+DBLogCursor_close_internal(DBLogCursorObject* self)
+{
+    int err = 0;
+
+    if (self->logc != NULL) {
+        EXTRACT_FROM_DOUBLE_LINKED_LIST(self);
+
+        MYDB_BEGIN_ALLOW_THREADS;
+        err = self->logc->close(self->logc, 0);
+        MYDB_END_ALLOW_THREADS;
+        self->logc = NULL;
+    }
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBLogCursor_close(DBLogCursorObject* self)
+{
+    return DBLogCursor_close_internal(self);
+}
+
+
+static PyObject*
+DBLogCursor_get(DBLogCursorObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err, flags;
+    DBT data;
+    DB_LSN lsn = {0, 0};
+    PyObject *dummy, *retval;
+    static char* kwnames[] = {"flags", "lsn", NULL };
+
+    CLEAR_DBT(data);
+    data.flags = DB_DBT_MALLOC; /* Berkeley DB must do the malloc */
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|(ii):get", kwnames,
+				     &flags, &lsn.file, &lsn.offset))
+    {
+        return NULL;
+    }
+
+    CHECK_LOGCURSOR_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->logc->get(self->logc, &lsn, &data, flags);
+    MYDB_END_ALLOW_THREADS;
+
+    if (err == DB_NOTFOUND) {
+        Py_INCREF(Py_None);
+        retval = Py_None;
+    }
+    else if (makeDBError(err)) {
+        retval = NULL;
+    }
+    else {
+        retval = dummy = BuildValue_S(data.data, data.size);
+        if (dummy) {
+            retval = Py_BuildValue("(ii)O", lsn.file, lsn.offset, dummy);
+            Py_DECREF(dummy);
+        }
+    }
+
+    FREE_DBT(data);
+    return retval;
+}
+
+
+/* --------------------------------------------------------------------- */
 /* DBCursor methods */
 
 
@@ -3917,7 +4046,7 @@ DBC_pget(DBCursorObject* self, PyObject* args, PyObject *kwargs)
     {
         PyErr_Clear();
         if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi|ii:pget",
-                                         kwnames_keyOnly, 
+                                         kwnames_keyOnly,
 					 &keyobj, &flags, &dlen, &doff))
         {
             PyErr_Clear();
@@ -4493,12 +4622,16 @@ DBEnv_close_internal(DBEnvObject* self, int flags)
 
     if (!self->closed) {      /* Don't close more than once */
         while(self->children_txns) {
-          dummy=DBTxn_abort_discard_internal(self->children_txns,0);
-          Py_XDECREF(dummy);
+            dummy = DBTxn_abort_discard_internal(self->children_txns, 0);
+            Py_XDECREF(dummy);
         }
         while(self->children_dbs) {
-          dummy=DB_close_internal(self->children_dbs, 0, 0);
-          Py_XDECREF(dummy);
+            dummy = DB_close_internal(self->children_dbs, 0, 0);
+            Py_XDECREF(dummy);
+        }
+        while(self->children_logcursors) {
+            dummy = DBLogCursor_close_internal(self->children_logcursors);
+            Py_XDECREF(dummy);
         }
     }
 
@@ -6255,6 +6388,22 @@ DBEnv_lock_stat_print(DBEnvObject* self, PyObject* args, PyObject *kwargs)
     RETURN_NONE();
 }
 #endif
+
+
+static PyObject*
+DBEnv_log_cursor(DBEnvObject* self)
+{
+    int err;
+    DB_LOGC* dblogc;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->log_cursor(self->db_env, &dblogc, 0);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return (PyObject*) newDBLogCursorObject(dblogc, self);
+}
 
 
 static PyObject*
@@ -8362,6 +8511,13 @@ static PyMethodDef DBCursor_methods[] = {
 };
 
 
+static PyMethodDef DBLogCursor_methods[] = {
+    {"close",           (PyCFunction)DBLogCursor_close, METH_NOARGS},
+    {"get",             (PyCFunction)DBLogCursor_get,   METH_VARARGS|METH_KEYWORDS},
+    {NULL,      NULL}       /* sentinel */
+};
+
+
 static PyMethodDef DBEnv_methods[] = {
     {"close",           (PyCFunction)DBEnv_close,            METH_VARARGS},
     {"open",            (PyCFunction)DBEnv_open,             METH_VARARGS},
@@ -8508,6 +8664,7 @@ static PyMethodDef DBEnv_methods[] = {
     {"lock_stat_print", (PyCFunction)DBEnv_lock_stat_print,
         METH_VARARGS|METH_KEYWORDS},
 #endif
+    {"log_cursor",      (PyCFunction)DBEnv_log_cursor,      METH_NOARGS},
     {"log_archive",     (PyCFunction)DBEnv_log_archive,     METH_VARARGS},
     {"log_flush",       (PyCFunction)DBEnv_log_flush,       METH_NOARGS},
     {"log_stat",        (PyCFunction)DBEnv_log_stat,        METH_VARARGS},
@@ -8752,6 +8909,49 @@ statichere PyTypeObject DBCursor_Type = {
     0,          /*tp_iter*/
     0,          /*tp_iternext*/
     DBCursor_methods, /*tp_methods*/
+    0,          /*tp_members*/
+};
+
+
+statichere PyTypeObject DBLogCursor_Type = {
+#if (PY_VERSION_HEX < 0x03000000)
+    PyObject_HEAD_INIT(NULL)
+    0,                  /*ob_size*/
+#else
+    PyVarObject_HEAD_INIT(NULL, 0)
+#endif
+    "DBLogCursor",         /*tp_name*/
+    sizeof(DBLogCursorObject),  /*tp_basicsize*/
+    0,          /*tp_itemsize*/
+    /* methods */
+    (destructor)DBLogCursor_dealloc,/*tp_dealloc*/
+    0,          /*tp_print*/
+    0,          /*tp_getattr*/
+    0,          /*tp_setattr*/
+    0,          /*tp_compare*/
+    0,          /*tp_repr*/
+    0,          /*tp_as_number*/
+    0,          /*tp_as_sequence*/
+    0,          /*tp_as_mapping*/
+    0,          /*tp_hash*/
+    0,          /*tp_call*/
+    0,          /*tp_str*/
+    0,          /*tp_getattro*/
+    0,          /*tp_setattro*/
+    0,          /*tp_as_buffer*/
+#if (PY_VERSION_HEX < 0x03000000)
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_WEAKREFS,      /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT,      /* tp_flags */
+#endif
+    0,          /* tp_doc */
+    0,          /* tp_traverse */
+    0,          /* tp_clear */
+    0,          /* tp_richcompare */
+    offsetof(DBLogCursorObject, in_weakreflist),   /* tp_weaklistoffset */
+    0,          /*tp_iter*/
+    0,          /*tp_iternext*/
+    DBLogCursor_methods, /*tp_methods*/
     0,          /*tp_members*/
 };
 
@@ -9059,6 +9259,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     /* Initialize object types */
     if ((PyType_Ready(&DB_Type) < 0)
         || (PyType_Ready(&DBCursor_Type) < 0)
+        || (PyType_Ready(&DBLogCursor_Type) < 0)
         || (PyType_Ready(&DBEnv_Type) < 0)
         || (PyType_Ready(&DBTxn_Type) < 0)
         || (PyType_Ready(&DBLock_Type) < 0)
@@ -9631,16 +9832,17 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
 #undef MAKE_EX
 
-    /* Initiliase the C API structure and add it to the module */
-    bsddb_api.db_type         = &DB_Type;
-    bsddb_api.dbcursor_type   = &DBCursor_Type;
-    bsddb_api.dbenv_type      = &DBEnv_Type;
-    bsddb_api.dbtxn_type      = &DBTxn_Type;
-    bsddb_api.dblock_type     = &DBLock_Type;
+    /* Initialise the C API structure and add it to the module */
+    bsddb_api.db_type          = &DB_Type;
+    bsddb_api.dbcursor_type    = &DBCursor_Type;
+    bsddb_api.dblogcursor_type = &DBLogCursor_Type;
+    bsddb_api.dbenv_type       = &DBEnv_Type;
+    bsddb_api.dbtxn_type       = &DBTxn_Type;
+    bsddb_api.dblock_type      = &DBLock_Type;
 #if (DBVER >= 43)
-    bsddb_api.dbsequence_type = &DBSequence_Type;
+    bsddb_api.dbsequence_type  = &DBSequence_Type;
 #endif
-    bsddb_api.makeDBError     = makeDBError;
+    bsddb_api.makeDBError      = makeDBError;
 
     /*
     ** Capsules exist from Python 3.1, but I

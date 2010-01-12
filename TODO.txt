@@ -156,3 +156,7 @@
 * 20100111: If "DB_ENV->set/get_mp_mmapsize()" is 32 bits in
   64 bits architecture, it is not going to be enough.
 
+* 20100112: Currently we increment refcounts of the parent
+  objects. These can keep parent objects around, so better
+  allow GC of them to close the entire object tree.
+

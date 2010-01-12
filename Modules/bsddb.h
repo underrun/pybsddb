@@ -70,6 +70,10 @@
  * DBLock       (A lock handle)
  * DBSequence   (Sequence)
  *
+ * New datatypes:
+ *
+ * DBLogCursor  (Log Cursor)
+ *
  */
 
 /* --------------------------------------------------------------------- */
@@ -105,7 +109,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "4.8.3devel4"
+#define PY_BSDDB_VERSION "4.8.3devel5"
 
 /* Python object definitions */
 
@@ -122,6 +126,7 @@ struct behaviourFlags {
 
 struct DBObject;          /* Forward declaration */
 struct DBCursorObject;    /* Forward declaration */
+struct DBLogCursorObject; /* Forward declaration */
 struct DBTxnObject;       /* Forward declaration */
 struct DBSequenceObject;  /* Forward declaration */
 
@@ -134,6 +139,7 @@ typedef struct {
     PyObject*       event_notifyCallback;
     struct DBObject *children_dbs;
     struct DBTxnObject *children_txns;
+    struct DBLogCursorObject *children_logcursors;
     PyObject        *private_obj;
     PyObject        *rep_transport;
     PyObject        *in_weakreflist; /* List of weak references */
@@ -193,6 +199,16 @@ typedef struct DBTxnObject {
 } DBTxnObject;
 
 
+typedef struct DBLogCursorObject {
+    PyObject_HEAD
+    DB_LOGC*        logc;
+    DBEnvObject*    env;
+    struct DBLogCursorObject **sibling_prev_p;
+    struct DBLogCursorObject *sibling_next;
+    PyObject        *in_weakreflist; /* List of weak references */
+} DBLogCursorObject;
+
+
 typedef struct {
     PyObject_HEAD
     DB_LOCK         lock;
@@ -248,6 +264,7 @@ typedef struct {
     /* Type objects */
     PyTypeObject* db_type;
     PyTypeObject* dbcursor_type;
+    PyTypeObject* dblogcursor_type;
     PyTypeObject* dbenv_type;
     PyTypeObject* dbtxn_type;
     PyTypeObject* dblock_type;

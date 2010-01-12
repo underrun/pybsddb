@@ -300,22 +300,17 @@ setup(name = 'bsddb3',
       version = VERSION,
       description = 'Python interface for Berkeley DB',
       long_description = """\
-This module provides a nearly complete wrapping
-of the Oracle/Sleepycat C API for the Database
-Environment, Database, Cursor, Sequence and Transaction
-objects, and each of these is exposed as a Python
-type in the bsddb3.db module. The database objects
-can use various access methods: btree, hash, recno,
-and queue. Complete support of Berkeley DB distributed
-transactions. Complete support for Berkeley DB
-Replication Manager. Complete support for Berkeley DB
-Base Replication. Support for RPC.
+This module provides a nearly complete wrapping of the Oracle/Sleepycat C API
+for the Database Environment, Database, Cursor, Log Cursor, Sequence and
+Transaction objects, and each of these is exposed as a Python type in the
+bsddb3.db module. The database objects can use various access methods: btree,
+hash, recno, and queue.  Complete support of Berkeley DB distributed
+transactions. Complete support for Berkeley DB Replication Manager. Complete
+support for Berkeley DB Base Replication. Support for RPC.
 
-Please see the documents in the docs
-directory of the source distribution or at the
-website for more details on the types and methods
-provided. The goal is to mirror most of the real
-Berkeley DB API so fall back to the Oracle Berkeley DB
+Please see the documents in the docs directory of the source distribution or at
+the website for more details on the types and methods provided. The goal is to
+mirror most of the real Berkeley DB API so fall back to the Oracle Berkeley DB
 documentation as appropriate.
 
 `Homepage <http://www.jcea.es/programacion/
