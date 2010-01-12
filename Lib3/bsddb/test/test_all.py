@@ -15,6 +15,18 @@ except ImportError:
 if sys.version_info[0] >= 3 :
     charset = "iso8859-1"  # Full 8 bit
 
+    class logcursor_py3k(object) :
+        def __init__(self, env) :
+            self._logcursor = env.log_cursor()
+
+        def __getattr__(self, v) :
+            return getattr(self._logcursor, v)
+
+        def __next__(self) :
+            return getattr(self._logcursor, "next")()
+
+        next = __next__
+
     class cursor_py3k(object) :
         def __init__(self, db, *args, **kwargs) :
             self._dbcursor = db.cursor(*args, **kwargs)
@@ -71,12 +83,12 @@ if sys.version_info[0] >= 3 :
             v = self._dbcursor.next_nodup()
             return self._fix(v)
 
-        def put(self, key, value, flags=0, dlen=-1, doff=-1) :
+        def put(self, key, data, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
-            if isinstance(value, str) :
-                value = bytes(value, charset)
-            return self._dbcursor.put(key, value, flags=flags, dlen=dlen,
+            if isinstance(data, str) :
+                value = bytes(data, charset)
+            return self._dbcursor.put(key, data, flags=flags, dlen=dlen,
                     doff=doff)
 
         def current(self, flags=0, dlen=-1, doff=-1) :
@@ -217,12 +229,12 @@ if sys.version_info[0] >= 3 :
            source = self._db.get_re_source()
            return source.decode(charset)
 
-        def put(self, key, value, txn=None, flags=0, dlen=-1, doff=-1) :
+        def put(self, key, data, txn=None, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
                 key = bytes(key, charset)
-            if isinstance(value, str) :
-                value = bytes(value, charset)
-            return self._db.put(key, value, flags=flags, txn=txn, dlen=dlen,
+            if isinstance(data, str) :
+                value = bytes(data, charset)
+            return self._db.put(key, data, flags=flags, txn=txn, dlen=dlen,
                     doff=doff)
 
         def append(self, value, txn=None) :
@@ -337,8 +349,14 @@ if sys.version_info[0] >= 3 :
         def __getattr__(self, v) :
             return getattr(self._dbenv, v)
 
+        def log_cursor(self, flags=0) :
+            return logcursor_py3k(self._dbenv)
+
         def get_lg_dir(self) :
             return self._dbenv.get_lg_dir().decode(charset)
+
+        def get_tmp_dir(self) :
+            return self._dbenv.get_tmp_dir().decode(charset)
 
         def get_data_dirs(self) :
             # Have to use a list comprehension and not

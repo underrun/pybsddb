@@ -333,6 +333,13 @@ class DBEnv_memp(DBEnv):
 
 class DBEnv_logcursor(DBEnv):
     def setUp(self):
+
+        import sys
+        if sys.version_info[0] < 3 :
+            self._data_type = str
+        else :
+            self._data_type = bytes
+
         DBEnv.setUp(self)
         self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL |
                 db.DB_INIT_LOG | db.DB_INIT_TXN)
@@ -357,7 +364,7 @@ class DBEnv_logcursor(DBEnv):
         self.assertEqual(len(value[0]), 2)
         self.assertTrue(isinstance(value[0][0], int))
         self.assertTrue(isinstance(value[0][1], int))
-        self.assertTrue(isinstance(value[1], str))
+        self.assertTrue(isinstance(value[1], self._data_type))
 
     # Preserve test order
     def test_1_first(self) :
@@ -447,3 +454,4 @@ def test_suite():
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
+
