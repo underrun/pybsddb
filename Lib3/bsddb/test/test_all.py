@@ -23,9 +23,42 @@ if sys.version_info[0] >= 3 :
             return getattr(self._logcursor, v)
 
         def __next__(self) :
-            return getattr(self._logcursor, "next")()
+            v = getattr(self._logcursor, "next")()
+            if v!=None :
+                v = (v[0], v[1].decode(charset))
+            return v
 
         next = __next__
+
+        def first(self) :
+            v = self._logcursor.first()
+            if v!=None :
+                v = (v[0], v[1].decode(charset))
+            return v
+
+        def last(self) :
+            v = self._logcursor.last()
+            if v!=None :
+                v = (v[0], v[1].decode(charset))
+            return v
+
+        def prev(self) :
+            v = self._logcursor.prev()
+            if v!=None :
+                v = (v[0], v[1].decode(charset))
+            return v
+
+        def current(self) :
+            v = self._logcursor.current()
+            if v!=None :
+                v = (v[0], v[1].decode(charset))
+            return v
+
+        def set(self, lsn) :
+            v = self._logcursor.set(lsn)
+            if v!=None :
+                v = (v[0], v[1].decode(charset))
+            return v
 
     class cursor_py3k(object) :
         def __init__(self, db, *args, **kwargs) :

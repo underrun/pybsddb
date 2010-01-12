@@ -700,6 +700,14 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_reference/C/logfile.html>`__
 
+.. function:: log_printf(string, txn=None)
+
+   Appends an informational message to the Berkeley DB database
+   environment log files.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/logprintf.html>`__
+
 .. function:: log_archive(flags=0)
 
    Returns a list of log or database file names. By default,

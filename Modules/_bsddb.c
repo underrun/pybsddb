@@ -6507,6 +6507,38 @@ DBEnv_log_file(DBEnvObject* self, PyObject* args)
 }
 
 
+#if (DBVER >= 44)
+static PyObject*
+DBEnv_log_printf(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    char *string;
+    PyObject *txnobj = NULL;
+    DB_TXN *txn = NULL;
+    static char* kwnames[] = {"string", "txn", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|O:log_printf", kwnames,
+                &string, &txnobj))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    if (!checkTxnObj(txnobj, &txn))
+        return NULL;
+
+    /*
+    ** Do not use the format string directly, to avoid attacks.
+    */
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->log_printf(self->db_env, txn, "%s", string);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
+
+
 static PyObject*
 DBEnv_log_archive(DBEnvObject* self, PyObject* args)
 {
@@ -8757,6 +8789,10 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
     {"log_cursor",      (PyCFunction)DBEnv_log_cursor,      METH_NOARGS},
     {"log_file",        (PyCFunction)DBEnv_log_file,        METH_VARARGS},
+#if (DBVER >= 44)
+    {"log_printf",      (PyCFunction)DBEnv_log_printf,
+        METH_VARARGS|METH_KEYWORDS},
+#endif
     {"log_archive",     (PyCFunction)DBEnv_log_archive,     METH_VARARGS},
     {"log_flush",       (PyCFunction)DBEnv_log_flush,       METH_NOARGS},
     {"log_stat",        (PyCFunction)DBEnv_log_stat,        METH_VARARGS},

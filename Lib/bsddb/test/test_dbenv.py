@@ -275,8 +275,15 @@ class DBEnv_log(DBEnv) :
 
     def test_log_file(self) :
         log_file = self.env.log_file((1, 1))
-        self.assertTrue(14<=len(log_file))
         self.assertEqual("log.0000000001", log_file[-14:])
+
+    if db.version() >= (4, 4) :
+        # The version with transactions is checked in other test object
+        def test_log_printf(self) :
+            msg = "This is a test..."
+            self.env.log_printf(msg)
+            logc = self.env.log_cursor()
+            self.assertTrue(msg in (logc.last()[1]))
 
     if db.version() >= (4, 7) :
         def test_log_config(self) :
@@ -287,6 +294,37 @@ class DBEnv_log(DBEnv) :
             self.assertTrue(self.env.log_get_config(db.DB_LOG_DSYNC))
             self.assertFalse(self.env.log_get_config(db.DB_LOG_ZERO))
 
+
+class DBEnv_log_txn(DBEnv) :
+    def setUp(self):
+        DBEnv.setUp(self)
+        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL |
+                db.DB_INIT_LOG | db.DB_INIT_TXN)
+
+    if db.version() >= (4, 4) :
+        # The version without transactions is checked in other test object
+        def test_log_printf(self) :
+            msg = "This is a test..."
+            txn = self.env.txn_begin()
+            self.env.log_printf(msg, txn=txn)
+            txn.commit()
+            logc = self.env.log_cursor()
+            logc.last()  # Skip the commit
+            self.assertTrue(msg in (logc.prev()[1]))
+
+            msg = "This is another test..."
+            txn = self.env.txn_begin()
+            self.env.log_printf(msg, txn=txn)
+            txn.abort()  # Do not store the new message
+            logc.last()  # Skip the abort
+            self.assertTrue(msg not in (logc.prev()[1]))
+
+            msg = "This is a third test..."
+            txn = self.env.txn_begin()
+            self.env.log_printf(msg, txn=txn)
+            txn.commit()  # Do not store the new message
+            logc.last()  # Skip the commit
+            self.assertTrue(msg in (logc.prev()[1]))
 
 class DBEnv_memp(DBEnv):
     def setUp(self):
@@ -338,13 +376,6 @@ class DBEnv_memp(DBEnv):
 
 class DBEnv_logcursor(DBEnv):
     def setUp(self):
-
-        import sys
-        if sys.version_info[0] < 3 :
-            self._data_type = str
-        else :
-            self._data_type = bytes
-
         DBEnv.setUp(self)
         self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL |
                 db.DB_INIT_LOG | db.DB_INIT_TXN)
@@ -369,7 +400,7 @@ class DBEnv_logcursor(DBEnv):
         self.assertEqual(len(value[0]), 2)
         self.assertTrue(isinstance(value[0][0], int))
         self.assertTrue(isinstance(value[0][1], int))
-        self.assertTrue(isinstance(value[1], self._data_type))
+        self.assertTrue(isinstance(value[1], str))
 
     # Preserve test order
     def test_1_first(self) :
@@ -451,9 +482,10 @@ def test_suite():
     suite = unittest.TestSuite()
 
     suite.addTest(unittest.makeSuite(DBEnv_general))
-    suite.addTest(unittest.makeSuite(DBEnv_log))
     suite.addTest(unittest.makeSuite(DBEnv_memp))
     suite.addTest(unittest.makeSuite(DBEnv_logcursor))
+    suite.addTest(unittest.makeSuite(DBEnv_log))
+    suite.addTest(unittest.makeSuite(DBEnv_log_txn))
 
     return suite
 
