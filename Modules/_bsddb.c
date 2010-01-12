@@ -2249,8 +2249,8 @@ DB_join(DBObject* self, PyObject* args)
     length = PyObject_Length(cursorsObj);
     cursors = malloc((length+1) * sizeof(DBC*));
     if (!cursors) {
-	PyErr_NoMemory();
-	return NULL;
+        PyErr_NoMemory();
+        return NULL;
     }
 
     cursors[length] = NULL;
@@ -6460,6 +6460,54 @@ DBEnv_log_flush(DBEnvObject* self)
 }
 
 static PyObject*
+DBEnv_log_file(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    DB_LSN lsn = {0, 0};
+    int size = 20;
+    char *name = NULL;
+    PyObject *retval;
+
+    if (!PyArg_ParseTuple(args, "(ii):log_file", &lsn.file, &lsn.offset))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    do {
+        name = malloc(size);
+        if (!name) {
+            PyErr_NoMemory();
+            return NULL;
+        }
+        MYDB_BEGIN_ALLOW_THREADS;
+        err = self->db_env->log_file(self->db_env, &lsn, name, size);
+        MYDB_END_ALLOW_THREADS;
+        if (err == EINVAL) {
+            free(name);
+            size *= 2;
+        } else if (err) {
+            free(name);
+            RETURN_IF_ERR();
+            assert(0);  /* Unreachable... supposely */
+            return NULL;
+        }
+/*
+** If the final buffer we try is too small, we will
+** get this exception:
+** DBInvalidArgError:
+**    (22, 'Invalid argument -- DB_ENV->log_file: name buffer is too short')
+*/
+    } while ((err == EINVAL) && (size<(1<<17)));
+
+    RETURN_IF_ERR();  /* Maybe the size is not the problem */
+
+    retval = Py_BuildValue("s", name);
+    free(name);
+    return retval;
+}
+
+
+static PyObject*
 DBEnv_log_archive(DBEnvObject* self, PyObject* args)
 {
     int flags=0;
@@ -8708,6 +8756,7 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS|METH_KEYWORDS},
 #endif
     {"log_cursor",      (PyCFunction)DBEnv_log_cursor,      METH_NOARGS},
+    {"log_file",        (PyCFunction)DBEnv_log_file,        METH_VARARGS},
     {"log_archive",     (PyCFunction)DBEnv_log_archive,     METH_VARARGS},
     {"log_flush",       (PyCFunction)DBEnv_log_flush,       METH_NOARGS},
     {"log_stat",        (PyCFunction)DBEnv_log_stat,        METH_VARARGS},

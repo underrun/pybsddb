@@ -692,6 +692,14 @@ DBEnv Methods
    <http://www.oracle.com/technology/documentation/berkeley-db/db/
    api_reference/C/envstat.html>`__
 
+.. function:: log_file(lsn)
+
+   Maps lsn to filenames, returning the name of the file
+   containing the named record.
+   `More info...
+   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   api_reference/C/logfile.html>`__
+
 .. function:: log_archive(flags=0)
 
    Returns a list of log or database file names. By default,

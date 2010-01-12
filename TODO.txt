@@ -162,3 +162,6 @@
 
 * 20100112: LogCursors should be iterable.
 
+* 20100112: "DBEnv->log_file()" use an iterative method to
+  calculate the space. Improve it.
+

@@ -12,6 +12,7 @@
   * New DataType: DBLogCursor. If you are using the C api, you could need
     to recompile your code because the changes in the api interface
     structure.
+  * Support for "DB_ENV->log_file()".
 
 4.8.2:
   * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",

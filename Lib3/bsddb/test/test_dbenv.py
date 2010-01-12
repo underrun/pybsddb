@@ -273,6 +273,11 @@ class DBEnv_log(DBEnv) :
         DBEnv.setUp(self)
         self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL | db.DB_INIT_LOG)
 
+    def test_log_file(self) :
+        log_file = self.env.log_file((1, 1))
+        self.assertTrue(14<=len(log_file))
+        self.assertEqual("log.0000000001", log_file[-14:])
+
     if db.version() >= (4, 7) :
         def test_log_config(self) :
             self.env.log_set_config(db.DB_LOG_DSYNC | db.DB_LOG_ZERO, 1)
