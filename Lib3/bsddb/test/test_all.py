@@ -486,8 +486,12 @@ def print_versions():
     print('bsddb.db.version():   %s' % (db.version(), ))
     print('bsddb.db.__version__: %s' % db.__version__)
     print('bsddb.db.cvsid:       %s' % db.cvsid)
-    print('py module:            %s' % bsddb.__file__)
-    print('extension module:     %s' % bsddb._bsddb.__file__)
+
+    # Workaround for allowing generating an EGGs as a ZIP files.
+    suffix="__"
+    print('py module:            %s' % getattr(bsddb, "__file"+suffix))
+    print('extension module:     %s' % getattr(bsddb, "__file"+suffix))
+
     print('python version:       %s' % sys.version)
     print('My pid:               %s' % os.getpid())
     print('-=' * 38)

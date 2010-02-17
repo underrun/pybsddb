@@ -17,6 +17,9 @@
     transaction object.
   * We protect ourselves of failures in creation of Locks and Sequences
     objects.
+  * EGG file is a ZIP file again, not a directory. This requires that
+    any program importing the module can write in the ".python-eggs"
+    of its user.
 
 4.8.2:
   * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",
