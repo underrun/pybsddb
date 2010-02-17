@@ -797,7 +797,6 @@ static int _DB_delete(DBObject* self, DB_TXN *txn, DBT *key, int flags)
     if (makeDBError(err)) {
         return -1;
     }
-    self->haveStat = 0;
     return 0;
 }
 
@@ -814,7 +813,6 @@ static int _DB_put(DBObject* self, DB_TXN *txn, DBT *key, DBT *data, int flags)
     if (makeDBError(err)) {
         return -1;
     }
-    self->haveStat = 0;
     return 0;
 }
 
@@ -939,7 +937,6 @@ newDBObject(DBEnvObject* arg, int flags)
     if (self == NULL)
         return NULL;
 
-    self->haveStat = 0;
     self->flags = 0;
     self->setflags = 0;
     self->myenvobj = NULL;
@@ -3124,8 +3121,6 @@ DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
 
-    self->haveStat = 1;
-
     /* Turn the stat structure into a dictionary */
     type = _DB_get_type(self);
     if ((type == -1) || ((d = PyDict_New()) == NULL)) {
@@ -3412,7 +3407,6 @@ Py_ssize_t DB_length(PyObject* _self)
 {
     int err;
     Py_ssize_t size = 0;
-    int flags = 0;
     void* sp;
     DBObject* self = (DBObject*)_self;
 
@@ -3425,40 +3419,20 @@ Py_ssize_t DB_length(PyObject* _self)
         return -1;
     }
 
-    if (self->haveStat) {  /* Has the stat function been called recently?  If
-                              so, we can use the cached value. */
-        flags = DB_FAST_STAT;
-    }
-
     MYDB_BEGIN_ALLOW_THREADS;
-redo_stat_for_length:
 #if (DBVER >= 43)
-    err = self->db->stat(self->db, /*txnid*/ NULL, &sp, flags);
+    err = self->db->stat(self->db, /*txnid*/ NULL, &sp, 0);
 #else
-    err = self->db->stat(self->db, &sp, flags);
+    err = self->db->stat(self->db, &sp, 0);
 #endif
+    MYDB_END_ALLOW_THREADS;
 
     /* All the stat structures have matching fields upto the ndata field,
        so we can use any of them for the type cast */
     size = ((DB_BTREE_STAT*)sp)->bt_ndata;
 
-    /* A size of 0 could mean that Berkeley DB no longer had the stat values cached.
-     * redo a full stat to make sure.
-     *   Fixes SF python bug 1493322, pybsddb bug 1184012
-     */
-    if (size == 0 && (flags & DB_FAST_STAT)) {
-        flags = 0;
-        if (!err)
-            free(sp);
-        goto redo_stat_for_length;
-    }
-
-    MYDB_END_ALLOW_THREADS;
-
     if (err)
         return -1;
-
-    self->haveStat = 1;
 
     free(sp);
     return size;
@@ -3970,7 +3944,6 @@ DBC_delete(DBCursorObject* self, PyObject* args)
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
 
-    self->mydb->haveStat = 0;
     RETURN_NONE();
 }
 
@@ -4258,7 +4231,6 @@ DBC_put(DBCursorObject* self, PyObject* args, PyObject* kwargs)
     MYDB_END_ALLOW_THREADS;
     FREE_DBT(key);  /* 'make_key_dbt' could do a 'malloc' */
     RETURN_IF_ERR();
-    self->mydb->haveStat = 0;
     RETURN_NONE();
 }
 

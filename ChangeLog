@@ -13,13 +13,18 @@
     to recompile your code because the changes in the api interface
     structure.
   * Support for "DB_ENV->log_file()", "DB_ENV->log_printf()".
-  * Solve a core dump if something bad happens trying to create a
+  * Solve a core dump if something bad happens while trying to create a
     transaction object.
   * We protect ourselves of failures in creation of Locks and Sequences
     objects.
   * EGG file is a ZIP file again, not a directory. This requires that
     any program importing the module can write in the ".python-eggs"
     of its user.
+  * Keeping a cached copy of the database stats is a bad idea if we have
+    several processes working together. We drop all this code. So "len()"
+    will require a database scanning always, not only when there is any
+    write. If you need an accurate and fast "len()", the application must
+    keep that information manually in a database register.
 
 4.8.2:
   * Support for "DB_OVERWRITE_DUP", "DB_FOREIGN_ABORT",

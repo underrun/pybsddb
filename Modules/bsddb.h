@@ -109,7 +109,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "4.8.3devel9"
+#define PY_BSDDB_VERSION "4.8.3devel10"
 
 /* Python object definitions */
 
@@ -151,7 +151,6 @@ typedef struct DBObject {
     DBEnvObject*    myenvobj;  /* PyObject containing the DB_ENV */
     u_int32_t       flags;     /* saved flags from open() */
     u_int32_t       setflags;  /* saved flags from set_flags() */
-    int             haveStat;
     struct behaviourFlags moduleFlags;
     struct DBTxnObject *txn;
     struct DBCursorObject *children_cursors;
