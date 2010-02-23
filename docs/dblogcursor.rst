@@ -1,4 +1,4 @@
-.. $Id$
+.. $Id: dblogcursor.rst,v 29db1eedb7d8 2010/01/12 19:44:22 jcea $
 
 ===========
 DBLogCursor

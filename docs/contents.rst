@@ -1,4 +1,4 @@
-.. $Id$
+.. $Id: contents.rst,v 29db1eedb7d8 2010/01/12 19:44:22 jcea $
 
 =============================================
  Python Bindings for Berkeley DB 4.1 thru 4.8

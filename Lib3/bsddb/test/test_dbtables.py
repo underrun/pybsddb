@@ -18,7 +18,7 @@
 #
 #   --  Gregory P. Smith <greg@krypto.org>
 #
-# $Id$
+# $Id: test_dbtables.py,v 31d65cf0e3ad 2009/12/06 05:09:44 jcea $
 
 import os, re, sys
 

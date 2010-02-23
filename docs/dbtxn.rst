@@ -1,4 +1,4 @@
-.. $Id$
+.. $Id: dbtxn.rst,v d347c240ef45 2009/11/30 18:41:28 jcea $
 
 =====
 DBTxn

@@ -99,7 +99,7 @@
 #include "bsddb.h"
 #undef COMPILING_BSDDB_C
 
-static char *rcs_id = "$Id$";
+static char *rcs_id = "$Id: _bsddb.c,v 41f21c3a890b 2010/01/12 23:40:34 jcea $";
 
 /* --------------------------------------------------------------------- */
 /* Various macro definitions */
@@ -9779,7 +9779,13 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_REP_PERMANENT);
 
 #if (DBVER >= 44)
+#if (DBVER >= 50)
+    ADD_INT(d, DB_REP_CONF_AUTOINIT);
+#else
     ADD_INT(d, DB_REP_CONF_NOAUTOINIT);
+#endif /* 5.0 */
+#endif /* 4.4 */
+#if (DBVER >= 44)
     ADD_INT(d, DB_REP_CONF_DELAYCLIENT);
     ADD_INT(d, DB_REP_CONF_BULK);
     ADD_INT(d, DB_REP_CONF_NOWAIT);
