@@ -12,6 +12,7 @@
     * Py3k warnings in Python >=2.6: #7092 - http://bugs.python.org/issue7092
     * Correct path for tests:
       #7269 - http://bugs.python.org/issue7269 - Florent Xicluna
+    * Shebang: benjamin.peterson
 
 4.8.3:
   * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
