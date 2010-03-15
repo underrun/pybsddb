@@ -32,7 +32,7 @@ _expected_lexical_test_data = ['', 'CCCP', 'a', 'aaa', 'b', 'c', 'cccce', 'ccccf
 _expected_lowercase_test_data = ['', 'a', 'aaa', 'b', 'c', 'CC', 'cccce', 'ccccf', 'CCCP']
 
 class ComparatorTests (unittest.TestCase):
-    if sys.version_info[:3] < (2, 4, 0):
+    if sys.version_info < (2, 4) :
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
 
@@ -41,7 +41,7 @@ class ComparatorTests (unittest.TestCase):
 
         import sys
         if sys.version_info[0] < 3 :
-            if sys.version_info[:3] < (2, 4, 0):
+            if sys.version_info < (2, 4) :
                 data.sort(comparator)
             else :
                 data.sort(cmp=comparator)
@@ -57,7 +57,7 @@ class ComparatorTests (unittest.TestCase):
                     data2.append(i)
             data = data2
 
-        self.assertTrue (data == expected_data,
+        self.assertEqual(data, expected_data,
                          "comparator `%s' is not right: %s vs. %s"
                          % (comparator, expected_data, data))
     def test_lexical_comparator (self):
@@ -75,7 +75,7 @@ class AbstractBtreeKeyCompareTestCase (unittest.TestCase):
     env = None
     db = None
 
-    if sys.version_info[:3] < (2, 4, 0):
+    if sys.version_info < (2, 4) :
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
 
@@ -129,14 +129,14 @@ class AbstractBtreeKeyCompareTestCase (unittest.TestCase):
             rec = curs.first ()
             while rec:
                 key, ignore = rec
-                self.assertTrue(index < len (expected),
+                self.assertLess(index, len (expected),
                                  "to many values returned from cursor")
-                self.assertTrue(expected[index] == key,
+                self.assertEqual(expected[index], key,
                                  "expected value `%s' at %d but got `%s'"
                                  % (expected[index], index, key))
                 index = index + 1
                 rec = curs.next ()
-            self.assertTrue(index == len (expected),
+            self.assertEqual(index, len (expected),
                              "not enough values returned from cursor")
         finally:
             curs.close ()
@@ -251,14 +251,9 @@ class BtreeExceptionsTestCase (AbstractBtreeKeyCompareTestCase):
         def my_compare (a, b):
             return 0
 
-        self.startTest ()
-        self.createDB (my_compare)
-        try:
-            self.db.set_bt_compare (my_compare)
-            self.assert_(0, "this set should fail")
-
-        except RuntimeError, msg:
-            pass
+        self.startTest()
+        self.createDB(my_compare)
+        self.assertRaises (RuntimeError, self.db.set_bt_compare, my_compare)
 
 def test_suite ():
     res = unittest.TestSuite ()

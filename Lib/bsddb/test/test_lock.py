@@ -20,7 +20,7 @@ if have_threads :
 
 class LockingTestCase(unittest.TestCase):
     import sys
-    if sys.version_info[:3] < (2, 4, 0):
+    if sys.version_info < (2, 4) :
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
 

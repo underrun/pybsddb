@@ -24,7 +24,7 @@ if sys.version_info[0] >= 3 :
 
         def __next__(self) :
             v = getattr(self._logcursor, "next")()
-            if v!=None :
+            if v is not None :
                 v = (v[0], v[1].decode(charset))
             return v
 
@@ -32,31 +32,31 @@ if sys.version_info[0] >= 3 :
 
         def first(self) :
             v = self._logcursor.first()
-            if v!=None :
+            if v is not None :
                 v = (v[0], v[1].decode(charset))
             return v
 
         def last(self) :
             v = self._logcursor.last()
-            if v!=None :
+            if v is not None :
                 v = (v[0], v[1].decode(charset))
             return v
 
         def prev(self) :
             v = self._logcursor.prev()
-            if v!=None :
+            if v is not None :
                 v = (v[0], v[1].decode(charset))
             return v
 
         def current(self) :
             v = self._logcursor.current()
-            if v!=None :
+            if v is not None :
                 v = (v[0], v[1].decode(charset))
             return v
 
         def set(self, lsn) :
             v = self._logcursor.set(lsn)
-            if v!=None :
+            if v is not None :
                 v = (v[0], v[1].decode(charset))
             return v
 
@@ -68,7 +68,7 @@ if sys.version_info[0] >= 3 :
             return getattr(self._dbcursor, v)
 
         def _fix(self, v) :
-            if v == None : return None
+            if v is None : return None
             key, value = v
             if isinstance(key, bytes) :
                 key = key.decode(charset)
@@ -135,7 +135,7 @@ if sys.version_info[0] >= 3 :
         def pget(self, key=None, data=None, flags=0) :
             # Incorrect because key can be a bare number,
             # but enough to pass testsuite
-            if isinstance(key, int) and (data==None) and (flags==0) :
+            if isinstance(key, int) and (data is None) and (flags==0) :
                 flags = key
                 key = None
             if isinstance(key, str) :
@@ -146,7 +146,7 @@ if sys.version_info[0] >= 3 :
             if isinstance(data, str) :
                 data = bytes(data, charset)
             v=self._dbcursor.pget(key=key, data=data, flags=flags)
-            if v != None :
+            if v is not None :
                 v1, v2, v3 = v
                 if isinstance(v1, bytes) :
                     v1 = v1.decode(charset)
@@ -159,7 +159,7 @@ if sys.version_info[0] >= 3 :
 
         def join_item(self) :
             v = self._dbcursor.join_item()
-            if v != None :
+            if v is not None :
                 v = v.decode(charset)
             return v
 
@@ -179,7 +179,7 @@ if sys.version_info[0] >= 3 :
                 args =(k, d, f)
 
             v = self._dbcursor.get(*args, **kwargs)
-            if v != None :
+            if v is not None :
                 k, v = v
                 if isinstance(k, bytes) :
                     k = k.decode(charset)
@@ -221,7 +221,7 @@ if sys.version_info[0] >= 3 :
             if isinstance(k, str) :
                 k = bytes(k, charset)
             v = self._db[k]
-            if v != None :
+            if v is not None :
                 v = v.decode(charset)
             return v
 
@@ -294,7 +294,7 @@ if sys.version_info[0] >= 3 :
             else :
                 v=self._db.get(key, txn=txn, flags=flags,
                         dlen=dlen, doff=doff)
-            if (v != None) and isinstance(v, bytes) :
+            if (v is not None) and isinstance(v, bytes) :
                 v = v.decode(charset)
             return v
 
@@ -302,7 +302,7 @@ if sys.version_info[0] >= 3 :
             if isinstance(key, str) :
                 key = bytes(key, charset)
             v=self._db.pget(key, txn=txn)
-            if v != None :
+            if v is not None :
                 v1, v2 = v
                 if isinstance(v1, bytes) :
                     v1 = v1.decode(charset)
@@ -316,7 +316,7 @@ if sys.version_info[0] >= 3 :
             if isinstance(value, str) :
                 value = bytes(value, charset)
             v=self._db.get_both(key, value, txn=txn, flags=flags)
-            if v != None :
+            if v is not None :
                 v = v.decode(charset)
             return v
 

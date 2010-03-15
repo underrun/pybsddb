@@ -13,7 +13,7 @@ from test_all import db, test_support, have_threads, verbose, \
 
 class DBReplication(unittest.TestCase) :
     import sys
-    if sys.version_info[:3] < (2, 4, 0):
+    if sys.version_info < (2, 4) :
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
 
@@ -181,11 +181,11 @@ class DBReplicationManager(DBReplication) :
         import time
         timeout=time.time()+10
         v=None
-        while (time.time()<timeout) and (v==None) :
+        while (time.time()<timeout) and (v is None) :
             txn=self.dbenvClient.txn_begin()
             v=self.dbClient.get("ABC", txn=txn)
             txn.commit()
-            if v==None :
+            if v is None :
                 time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
         self.assertEquals("123", v)
@@ -194,11 +194,11 @@ class DBReplicationManager(DBReplication) :
         self.dbMaster.delete("ABC", txn=txn)
         txn.commit()
         timeout=time.time()+10
-        while (time.time()<timeout) and (v!=None) :
+        while (time.time()<timeout) and (v is not None) :
             txn=self.dbenvClient.txn_begin()
             v=self.dbClient.get("ABC", txn=txn)
             txn.commit()
-            if v==None :
+            if v is None :
                 time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
         self.assertEquals(None, v)
@@ -302,7 +302,7 @@ class DBBaseReplication(DBReplication) :
         def thread_do(env, q, envid, election_status, must_be_master) :
             while True :
                 v=q.get()
-                if v == None : return
+                if v is None : return
                 env.rep_process_message(v[0], v[1], envid)
 
         self.thread_do = thread_do
@@ -358,11 +358,11 @@ class DBBaseReplication(DBReplication) :
         import time
         timeout=time.time()+10
         v=None
-        while (time.time()<timeout) and (v==None) :
+        while (time.time()<timeout) and (v is None) :
             txn=self.dbenvClient.txn_begin()
             v=self.dbClient.get("ABC", txn=txn)
             txn.commit()
-            if v==None :
+            if v is None :
                 time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
         self.assertEquals("123", v)
@@ -371,11 +371,11 @@ class DBBaseReplication(DBReplication) :
         self.dbMaster.delete("ABC", txn=txn)
         txn.commit()
         timeout=time.time()+10
-        while (time.time()<timeout) and (v!=None) :
+        while (time.time()<timeout) and (v is not None) :
             txn=self.dbenvClient.txn_begin()
             v=self.dbClient.get("ABC", txn=txn)
             txn.commit()
-            if v==None :
+            if v is None :
                 time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
         self.assertEquals(None, v)
@@ -398,7 +398,7 @@ class DBBaseReplication(DBReplication) :
             def thread_do(env, q, envid, election_status, must_be_master) :
                 while True :
                     v=q.get()
-                    if v == None : return
+                    if v is None : return
                     r = env.rep_process_message(v[0],v[1],envid)
                     if must_be_master and self.confirmed_master :
                         self.dbenvMaster.rep_start(flags = db.DB_REP_MASTER)

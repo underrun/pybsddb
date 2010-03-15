@@ -8,7 +8,7 @@ from test_all import db, test_support, get_new_environment_path, \
 
 class DB(unittest.TestCase):
     import sys
-    if sys.version_info[:3] < (2, 4, 0):
+    if sys.version_info < (2, 4) :
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
 

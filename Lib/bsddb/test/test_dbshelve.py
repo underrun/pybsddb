@@ -118,7 +118,7 @@ class DBShelveTestCase(unittest.TestCase):
         dbvalues = d.values()
         self.assertEqual(len(dbvalues), len(d.keys()))
         import sys
-        if sys.version_info[0] < 3 :
+        if sys.version_info < (2, 6) :
             values.sort()
             dbvalues.sort()
             self.assertEqual(values, dbvalues)
