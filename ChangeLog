@@ -10,6 +10,8 @@
       #5073 - http://bugs.python.org/issue5073 - Mark Dickinson
     * Orthograpy: #5341 - http://bugs.python.org/issue5341
     * Py3k warnings in Python >=2.6: #7092 - http://bugs.python.org/issue7092
+    * Correct path for tests:
+      #7269 - http://bugs.python.org/issue7269 - Florent Xicluna
 
 4.8.3:
   * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
