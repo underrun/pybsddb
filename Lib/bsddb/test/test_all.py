@@ -135,7 +135,7 @@ if sys.version_info[0] >= 3 :
         def pget(self, key=None, data=None, flags=0) :
             # Incorrect because key can be a bare number,
             # but enough to pass testsuite
-            if isinstance(key, int) and (data is None) and (flags==0) :
+            if isinstance(key, int) and (data is None) and (flags == 0) :
                 flags = key
                 key = None
             if isinstance(key, str) :

@@ -4,6 +4,8 @@
   * Split dependencies in the Replication testsuite.
   * Help the Gargabe Collection freeing resources when the
     replication testsuite is completed.
+  * Import warning when used as stdlib "bsddb" instead of
+    pybsddb project as "bsddb3".
   * Patches ported from Python:
     * Memory leaks: #7808 - http://bugs.python.org/issue7808 - Florent Xicluna
     * Floating point rounding in testcases:
