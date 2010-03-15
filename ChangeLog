@@ -6,7 +6,8 @@
     replication testsuite is completed.
   * Patches ported from Python:
     * Memory leaks: #7808 - http://bugs.python.org/issue7808 - Florent Xicluna
-    * 
+    * Floating point rounding in testcases:
+      #5073 - http://bugs.python.org/issue5073 - Mark Dickinson
 
 4.8.3:
   * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
