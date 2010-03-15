@@ -715,7 +715,11 @@ class BasicTransactionTestCase(BasicTestCase):
     import sys
     if sys.version_info < (2, 4):
         def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
+            return self.failUnless(expr,msg=msg)
+
+    if sys.version_info < (2, 7) :
+        def assertIn(self, a, b, msg=None) :
+            return self.assertTrue(a in b, msg=msg)
 
     dbopenflags = db.DB_THREAD | db.DB_AUTO_COMMIT
     useEnv = 1

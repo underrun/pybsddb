@@ -33,8 +33,8 @@ _expected_lowercase_test_data = ['', 'a', 'aaa', 'b', 'c', 'CC', 'cccce', 'ccccf
 
 class ComparatorTests (unittest.TestCase):
     if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
+        def assertTrue(self, expr, msg=None) :
+            return self.failUnless(expr,msg=msg)
 
     def comparator_test_helper (self, comparator, expected_data):
         data = expected_data[:]
@@ -78,6 +78,10 @@ class AbstractBtreeKeyCompareTestCase (unittest.TestCase):
     if sys.version_info < (2, 4) :
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
+
+    if sys.version_info < (2, 7) :
+        def assertLess(self, a, b, msg=None) :
+            return self.assertTrue(a<b, msg=msg)
 
     def setUp (self):
         self.filename = self.__class__.__name__ + '.db'

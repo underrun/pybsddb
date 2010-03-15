@@ -16,7 +16,14 @@ letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 class SimpleRecnoTestCase(unittest.TestCase):
     if sys.version_info < (2, 4) :
         def assertFalse(self, expr, msg=None):
-            self.failIf(expr,msg=msg)
+            return self.failIf(expr,msg=msg)
+
+    if sys.version_info < (2, 7) :
+        def assertIsInstance(self, obj, datatype, msg=None) :
+            return self.assertEqual(type(obj), datatype, msg=msg)
+        def assertGreaterEqual(self, a, b, msg=None) :
+            return self.assertTrue(a>=b, msg=msg)
+
 
     def setUp(self):
         self.filename = get_new_database_path()
