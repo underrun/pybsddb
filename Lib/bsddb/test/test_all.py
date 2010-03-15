@@ -573,29 +573,7 @@ else :
 
 def suite(module_prefix='', timing_check=None):
     test_modules = [
-        'test_associate',
-        'test_basics',
-        'test_dbenv',
-        'test_db',
-        'test_compare',
-        'test_compat',
-        'test_cursor_pget_bug',
-        'test_dbobj',
-        'test_dbshelve',
-        'test_dbtables',
-        'test_distributed_transactions',
-        'test_early_close',
-        'test_fileid',
-        'test_get_none',
-        'test_join',
-        'test_lock',
-        'test_misc',
-        'test_pickle',
-        'test_queue',
-        'test_recno',
         'test_replication',
-        'test_sequence',
-        'test_thread',
         ]
 
     alltests = unittest.TestSuite()
