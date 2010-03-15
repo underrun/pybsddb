@@ -8,6 +8,7 @@
     * Memory leaks: #7808 - http://bugs.python.org/issue7808 - Florent Xicluna
     * Floating point rounding in testcases:
       #5073 - http://bugs.python.org/issue5073 - Mark Dickinson
+    * Orthograpy: #5341 - http://bugs.python.org/issue5341
 
 4.8.3:
   * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
