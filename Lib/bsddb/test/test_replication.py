@@ -12,7 +12,7 @@ from test_all import db, test_support, have_threads, verbose, \
 
 #----------------------------------------------------------------------
 
-class DBReplicationManager(unittest.TestCase):
+class DBReplication(unittest.TestCase) :
     import sys
     if sys.version_info[:3] < (2, 4, 0):
         def assertTrue(self, expr, msg=None):
@@ -68,6 +68,7 @@ class DBReplicationManager(unittest.TestCase):
         test_support.rmtree(self.homeDirClient)
         test_support.rmtree(self.homeDirMaster)
 
+class DBReplicationManager(DBReplication) :
     def test01_basic_replication(self) :
         master_port = test_support.find_unused_port()
         self.dbenvMaster.repmgr_set_local_site("127.0.0.1", master_port)
@@ -197,9 +198,9 @@ class DBReplicationManager(unittest.TestCase):
         self.assertTrue(time.time()<timeout)
         self.assertEquals(None, v)
 
-class DBBaseReplication(DBReplicationManager):
+class DBBaseReplication(DBReplication) :
     def setUp(self) :
-        DBReplicationManager.setUp(self)
+        DBReplication.setUp(self)
         wr = weakref.ref(self)
         def confirmed_master(a,b,c) :
             if (b == db.DB_EVENT_REP_MASTER) or (b == db.DB_EVENT_REP_ELECTED) :
