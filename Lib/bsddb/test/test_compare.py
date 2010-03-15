@@ -40,7 +40,7 @@ class ComparatorTests (unittest.TestCase):
         data = expected_data[:]
 
         import sys
-        if sys.version_info[0] < 3 :
+        if sys.version_info < (2, 6) :
             if sys.version_info < (2, 4) :
                 data.sort(comparator)
             else :
