@@ -15,8 +15,10 @@ letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 class SimpleRecnoTestCase(unittest.TestCase):
     if sys.version_info < (2, 4) :
-        def assertFalse(self, expr, msg=None):
+        def assertFalse(self, expr, msg=None) :
             return self.failIf(expr,msg=msg)
+        def assertTrue(self, expr, msg=None) :
+            return self.assert_(expr, msg=msg)
 
     if sys.version_info < (2, 7) :
         def assertIsInstance(self, obj, datatype, msg=None) :
