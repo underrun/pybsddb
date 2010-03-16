@@ -6,7 +6,6 @@
     replication testsuite is completed.
   * Import warning when used as stdlib "bsddb" instead of
     pybsddb project as "bsddb3".
-  * Use new Python 2.7 assert()'s.
   * Patches ported from Python developers:
     * Memory leaks: #7808 - http://bugs.python.org/issue7808 - Florent Xicluna
     * Floating point rounding in testcases:
@@ -16,6 +15,7 @@
     * Correct path for tests:
       #7269 - http://bugs.python.org/issue7269 - Florent Xicluna
     * Shebang: benjamin.peterson
+    * Use new Python 2.7 assert()'s: Florent Xicluna
 
 4.8.3:
   * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
