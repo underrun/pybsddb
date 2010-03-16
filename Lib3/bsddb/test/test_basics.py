@@ -717,7 +717,8 @@ class BasicTransactionTestCase(BasicTestCase):
         def assertTrue(self, expr, msg=None):
             return self.failUnless(expr,msg=msg)
 
-    if sys.version_info < (2, 7) :
+    if (sys.version_info < (2, 7)) or ((sys.version_info >= (3, 0)) and
+            (sys.version_info < (3, 2))) :
         def assertIn(self, a, b, msg=None) :
             return self.assertTrue(a in b, msg=msg)
 

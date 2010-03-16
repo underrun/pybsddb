@@ -20,7 +20,8 @@ class SimpleRecnoTestCase(unittest.TestCase):
         def assertTrue(self, expr, msg=None) :
             return self.assert_(expr, msg=msg)
 
-    if sys.version_info < (2, 7) :
+    if (sys.version_info < (2, 7)) or ((sys.version_info >= (3, 0)) and
+            (sys.version_info < (3, 2))) :
         def assertIsInstance(self, obj, datatype, msg=None) :
             return self.assertEqual(type(obj), datatype, msg=msg)
         def assertGreaterEqual(self, a, b, msg=None) :

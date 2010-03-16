@@ -79,7 +79,8 @@ class AbstractBtreeKeyCompareTestCase (unittest.TestCase):
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
 
-    if sys.version_info < (2, 7) :
+    if (sys.version_info < (2, 7)) or ((sys.version_info >= (3,0)) and
+            (sys.version_info < (3, 2))) :
         def assertLess(self, a, b, msg=None) :
             return self.assertTrue(a<b, msg=msg)
 
@@ -211,7 +212,8 @@ class BtreeExceptionsTestCase (AbstractBtreeKeyCompareTestCase):
             errorOut = temp.getvalue()
             if not successRe.search(errorOut):
                 self.fail("unexpected stderr output:\n"+errorOut)
-        sys.exc_info()[2] = sys.last_traceback = None
+        if sys.version_info < (3, 0) :  # XXX: How to do this in Py3k ???
+            sys.exc_info()[2] = sys.last_traceback = None
 
     def _test_compare_function_exception (self):
         self.startTest ()
