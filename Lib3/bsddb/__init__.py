@@ -42,6 +42,12 @@ instead.  It mirrors the Oracle Berkeley DB C API.
 import sys
 absolute_import = (sys.version_info[0] >= 3)
 
+if sys.py3kwarning and (__name__ != 'bsddb3') :
+    import warnings
+    warnings.warnpy3k("in 3.x, the bsddb module has been removed; "
+                      "please use the pybsddb project instead",
+                      DeprecationWarning, 2)
+
 try:
     if __name__ == 'bsddb3':
         # import _pybsddb binary as it should be the more recent version from
@@ -75,7 +81,7 @@ import sys, os
 
 from weakref import ref
 
-if sys.version_info[0:2] <= (2, 5) :
+if sys.version_info < (2, 6) :
     import UserDict
     MutableMapping = UserDict.DictMixin
 else :
@@ -250,7 +256,7 @@ class _DBWithCursor(_iter_mixin):
         self._checkOpen()
         return _DeadlockWrap(lambda: len(self.db))  # len(self.db)
 
-    if sys.version_info[0:2] >= (2, 6) :
+    if sys.version_info >= (2, 6) :
         def __repr__(self) :
             if self.isOpen() :
                 return repr(dict(_DeadlockWrap(self.db.items)))

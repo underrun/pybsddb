@@ -1,7 +1,7 @@
 """TestCases for exercising a Recno DB.
 """
 
-import os
+import os, sys
 import errno
 from pprint import pprint
 import unittest
@@ -14,10 +14,16 @@ letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 #----------------------------------------------------------------------
 
 class SimpleRecnoTestCase(unittest.TestCase):
-    import sys
-    if sys.version_info[:3] < (2, 4, 0):
+    if sys.version_info < (2, 4) :
         def assertFalse(self, expr, msg=None):
-            self.failIf(expr,msg=msg)
+            return self.failIf(expr,msg=msg)
+
+    if sys.version_info < (2, 7) :
+        def assertIsInstance(self, obj, datatype, msg=None) :
+            return self.assertEqual(type(obj), datatype, msg=msg)
+        def assertGreaterEqual(self, a, b, msg=None) :
+            return self.assertTrue(a>=b, msg=msg)
+
 
     def setUp(self):
         self.filename = get_new_database_path()
@@ -38,8 +44,8 @@ class SimpleRecnoTestCase(unittest.TestCase):
 
         for x in letters:
             recno = d.append(x * 60)
-            self.assertEqual(type(recno), type(0))
-            self.assert_(recno >= 1)
+            self.assertIsInstance(recno, int)
+            self.assertGreaterEqual(recno, 1)
             if verbose:
                 print(recno, end=' ')
 
@@ -54,14 +60,13 @@ class SimpleRecnoTestCase(unittest.TestCase):
             if verbose:
                 print(data)
 
-            self.assertEqual(type(data), type(""))
+            self.assertIsInstance(data, str)
             self.assertEqual(data, d.get(recno))
 
         try:
             data = d[0]  # This should raise a KeyError!?!?!
         except db.DBInvalidArgError as val:
-            import sys
-            if sys.version_info[0] < 3 :
+            if sys.version_info < (2, 6) :
                 self.assertEqual(val[0], db.EINVAL)
             else :
                 self.assertEqual(val.args[0], db.EINVAL)
@@ -95,21 +100,21 @@ class SimpleRecnoTestCase(unittest.TestCase):
         keys = list(d.keys())
         if verbose:
             print(keys)
-        self.assertEqual(type(keys), type([]))
-        self.assertEqual(type(keys[0]), type(123))
+        self.assertIsInstance(keys, list)
+        self.assertIsInstance(keys[0], int)
         self.assertEqual(len(keys), len(d))
 
         items = list(d.items())
         if verbose:
             pprint(items)
-        self.assertEqual(type(items), type([]))
-        self.assertEqual(type(items[0]), type(()))
+        self.assertIsInstance(items, list)
+        self.assertIsInstance(items[0], tuple)
         self.assertEqual(len(items[0]), 2)
-        self.assertEqual(type(items[0][0]), type(123))
-        self.assertEqual(type(items[0][1]), type(""))
+        self.assertIsInstance(items[0][0], int)
+        self.assertIsInstance(items[0][1], str)
         self.assertEqual(len(items), len(d))
 
-        self.assert_(25 in d)
+        self.assertTrue(25 in d)
 
         del d[25]
         self.assertFalse(25 in d)
@@ -150,7 +155,7 @@ class SimpleRecnoTestCase(unittest.TestCase):
         if verbose:
             print(rec)
 
-        # test that non-existant key lookups work (and that
+        # test that non-existent key lookups work (and that
         # DBC_set_range doesn't have a memleak under valgrind)
         rec = c.set_range(999999)
         self.assertEqual(rec, None)
@@ -181,7 +186,10 @@ class SimpleRecnoTestCase(unittest.TestCase):
             if get_returns_none:
                 self.fail("unexpected DBKeyEmptyError exception")
             else:
-                self.assertEqual(val[0], db.DB_KEYEMPTY)
+                if sys.version_info < (2, 6) :
+                    self.assertEqual(val[0], db.DB_KEYEMPTY)
+                else :
+                    self.assertEqual(val.args[0], db.DB_KEYEMPTY)
                 if verbose: print(val)
         else:
             if not get_returns_none:
@@ -269,8 +277,7 @@ class SimpleRecnoTestCase(unittest.TestCase):
         try:                    # this one will fail
             d.append('bad' * 20)
         except db.DBInvalidArgError as val:
-            import sys
-            if sys.version_info[0] < 3 :
+            if sys.version_info < (2, 6) :
                 self.assertEqual(val[0], db.EINVAL)
             else :
                 self.assertEqual(val.args[0], db.EINVAL)

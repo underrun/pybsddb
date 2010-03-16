@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 #------------------------------------------------------------------------
 #           Copyright (c) 1997-2001 by Total Control Software
 #                         All Rights Reserved
@@ -41,12 +41,12 @@ else :
     from . import db
 
 #At version 2.3 cPickle switched to using protocol instead of bin
-if sys.version_info[:3] >= (2, 3, 0):
+if sys.version_info >= (2, 3):
     HIGHEST_PROTOCOL = pickle.HIGHEST_PROTOCOL
 # In python 2.3.*, "cPickle.dumps" accepts no
 # named parameters. "pickle.dumps" accepts them,
 # so this seems a bug.
-    if sys.version_info[:3] < (2, 4, 0):
+    if sys.version_info < (2, 4):
         def _dumps(object, protocol):
             return pickle.dumps(object, protocol)
     else :
@@ -59,7 +59,7 @@ else:
         return pickle.dumps(object, bin=protocol)
 
 
-if sys.version_info[0:2] <= (2, 5) :
+if sys.version_info < (2, 6) :
     try:
         from UserDict import DictMixin
     except ImportError:
@@ -157,12 +157,12 @@ class DBShelf(MutableMapping):
 
 
     def keys(self, txn=None):
-        if txn != None:
+        if txn is not None:
             return self.db.keys(txn)
         else:
             return list(self.db.keys())
 
-    if sys.version_info[0:2] >= (2, 6) :
+    if sys.version_info >= (2, 6) :
         def __iter__(self) :
             return self.db.__iter__()
 
@@ -185,7 +185,7 @@ class DBShelf(MutableMapping):
 
 
     def items(self, txn=None):
-        if txn != None:
+        if txn is not None:
             items = self.db.items(txn)
         else:
             items = list(self.db.items())
@@ -196,7 +196,7 @@ class DBShelf(MutableMapping):
         return newitems
 
     def values(self, txn=None):
-        if txn != None:
+        if txn is not None:
             values = self.db.values(txn)
         else:
             values = list(self.db.values())

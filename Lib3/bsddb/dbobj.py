@@ -29,7 +29,7 @@ if absolute_import :
 else :
     from . import db
 
-if sys.version_info[0:2] <= (2, 5) :
+if sys.version_info < (2, 6) :
     try:
         from UserDict import DictMixin
     except ImportError:
@@ -128,7 +128,7 @@ class DBEnv:
 class DB(MutableMapping):
     def __init__(self, dbenv, *args, **kwargs):
         # give it the proper DBEnv C object that its expecting
-        self._cobj = db.DB(*(dbenv._cobj,) + args, **kwargs)
+        self._cobj = db.DB(*((dbenv._cobj,) + args), **kwargs)
 
     # TODO are there other dict methods that need to be overridden?
     def __len__(self):
@@ -140,7 +140,7 @@ class DB(MutableMapping):
     def __delitem__(self, arg):
         del self._cobj[arg]
 
-    if sys.version_info[0:2] >= (2, 6) :
+    if sys.version_info >= (2, 6) :
         def __iter__(self) :
             return self._cobj.__iter__()
 

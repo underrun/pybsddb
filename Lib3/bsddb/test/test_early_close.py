@@ -163,11 +163,20 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
         c1 = d.cursor(txn)
         c2 = c1.dup()
         self.assertEquals(("XXX", "yyy"), c1.first())
+
         import warnings
         # Not interested in warnings about implicit close.
+        #
+        # When we drop support for python 2.3 and 2.4
+        # we could use:
+        #
+        #    with warnings.catch_warnings():
+        #        warnings.simplefilter("ignore")
+        #        txn.commit()
         warnings.simplefilter("ignore")
         txn.commit()
         warnings.resetwarnings()
+
         self.assertRaises(db.DBCursorClosedError, c2.first)
 
     if db.version() > (4,3,0) :

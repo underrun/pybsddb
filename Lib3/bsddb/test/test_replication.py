@@ -11,9 +11,9 @@ from .test_all import db, test_support, have_threads, verbose, \
 
 #----------------------------------------------------------------------
 
-class DBReplicationManager(unittest.TestCase):
+class DBReplication(unittest.TestCase) :
     import sys
-    if sys.version_info[:3] < (2, 4, 0):
+    if sys.version_info < (2, 4) :
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
 
@@ -59,11 +59,21 @@ class DBReplicationManager(unittest.TestCase):
             self.dbClient.close()
         if self.dbMaster :
             self.dbMaster.close()
+
+        # Here we assign dummy event handlers to allow GC of the test object.
+        # Since the dummy handler doesn't use any outer scope variable, it
+        # doesn't keep any reference to the test object.
+        def dummy(*args) :
+            pass
+        self.dbenvMaster.set_event_notify(dummy)
+        self.dbenvClient.set_event_notify(dummy)
+
         self.dbenvClient.close()
         self.dbenvMaster.close()
         test_support.rmtree(self.homeDirClient)
         test_support.rmtree(self.homeDirMaster)
 
+class DBReplicationManager(DBReplication) :
     def test01_basic_replication(self) :
         master_port = test_support.find_unused_port()
         self.dbenvMaster.repmgr_set_local_site("127.0.0.1", master_port)
@@ -171,11 +181,11 @@ class DBReplicationManager(unittest.TestCase):
         import time
         timeout=time.time()+10
         v=None
-        while (time.time()<timeout) and (v==None) :
+        while (time.time()<timeout) and (v is None) :
             txn=self.dbenvClient.txn_begin()
             v=self.dbClient.get("ABC", txn=txn)
             txn.commit()
-            if v==None :
+            if v is None :
                 time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
         self.assertEquals("123", v)
@@ -184,18 +194,18 @@ class DBReplicationManager(unittest.TestCase):
         self.dbMaster.delete("ABC", txn=txn)
         txn.commit()
         timeout=time.time()+10
-        while (time.time()<timeout) and (v!=None) :
+        while (time.time()<timeout) and (v is not None) :
             txn=self.dbenvClient.txn_begin()
             v=self.dbClient.get("ABC", txn=txn)
             txn.commit()
-            if v==None :
+            if v is None :
                 time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
         self.assertEquals(None, v)
 
-class DBBaseReplication(DBReplicationManager):
+class DBBaseReplication(DBReplication) :
     def setUp(self) :
-        DBReplicationManager.setUp(self)
+        DBReplication.setUp(self)
         def confirmed_master(a,b,c) :
             if (b == db.DB_EVENT_REP_MASTER) or (b == db.DB_EVENT_REP_ELECTED) :
                 self.confirmed_master = True
@@ -269,6 +279,17 @@ class DBBaseReplication(DBReplicationManager):
         self.c2m.put(None)
         self.t_m.join()
         self.t_c.join()
+
+        # Here we assign dummy event handlers to allow GC of the test object.
+        # Since the dummy handler doesn't use any outer scope variable, it
+        # doesn't keep any reference to the test object.
+        def dummy(*args) :
+            pass
+        self.dbenvMaster.set_event_notify(dummy)
+        self.dbenvClient.set_event_notify(dummy)
+        self.dbenvMaster.rep_set_transport(13,dummy)
+        self.dbenvClient.rep_set_transport(3,dummy)
+
         self.dbenvClient.close()
         self.dbenvMaster.close()
         test_support.rmtree(self.homeDirClient)
@@ -281,7 +302,7 @@ class DBBaseReplication(DBReplicationManager):
         def thread_do(env, q, envid, election_status, must_be_master) :
             while True :
                 v=q.get()
-                if v == None : return
+                if v is None : return
                 env.rep_process_message(v[0], v[1], envid)
 
         self.thread_do = thread_do
@@ -337,11 +358,11 @@ class DBBaseReplication(DBReplicationManager):
         import time
         timeout=time.time()+10
         v=None
-        while (time.time()<timeout) and (v==None) :
+        while (time.time()<timeout) and (v is None) :
             txn=self.dbenvClient.txn_begin()
             v=self.dbClient.get("ABC", txn=txn)
             txn.commit()
-            if v==None :
+            if v is None :
                 time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
         self.assertEquals("123", v)
@@ -350,11 +371,11 @@ class DBBaseReplication(DBReplicationManager):
         self.dbMaster.delete("ABC", txn=txn)
         txn.commit()
         timeout=time.time()+10
-        while (time.time()<timeout) and (v!=None) :
+        while (time.time()<timeout) and (v is not None) :
             txn=self.dbenvClient.txn_begin()
             v=self.dbClient.get("ABC", txn=txn)
             txn.commit()
-            if v==None :
+            if v is None :
                 time.sleep(0.02)
         self.assertTrue(time.time()<timeout)
         self.assertEquals(None, v)
@@ -377,7 +398,7 @@ class DBBaseReplication(DBReplicationManager):
             def thread_do(env, q, envid, election_status, must_be_master) :
                 while True :
                     v=q.get()
-                    if v == None : return
+                    if v is None : return
                     r = env.rep_process_message(v[0],v[1],envid)
                     if must_be_master and self.confirmed_master :
                         self.dbenvMaster.rep_start(flags = db.DB_REP_MASTER)
