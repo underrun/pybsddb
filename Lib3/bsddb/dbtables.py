@@ -31,12 +31,6 @@ except ImportError:
     # For Python 2.3
     from bsddb import db
 
-# XXX(nnorwitz): is this correct? DBIncompleteError is conditional in _bsddb.c
-if not hasattr(db,"DBIncompleteError") :
-    class DBIncompleteError(Exception):
-        pass
-    db.DBIncompleteError = DBIncompleteError
-
 class TableDBError(Exception):
     pass
 class TableAlreadyExists(TableDBError):
@@ -261,16 +255,10 @@ class bsdTableDB :
             self.env = None
 
     def checkpoint(self, mins=0):
-        try:
-            self.env.txn_checkpoint(mins)
-        except db.DBIncompleteError:
-            pass
+        self.env.txn_checkpoint(mins)
 
     def sync(self):
-        try:
-            self.db.sync()
-        except db.DBIncompleteError:
-            pass
+        self.db.sync()
 
     def _db_print(self) :
         """Print the database to stdout for debugging"""

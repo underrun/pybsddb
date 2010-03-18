@@ -778,10 +778,7 @@ class BasicTransactionTestCase(BasicTestCase):
         self.txn.commit()
 
         # flush pending updates
-        try:
-            self.env.txn_checkpoint (0, 0, 0)
-        except db.DBIncompleteError:
-            pass
+        self.env.txn_checkpoint (0, 0, 0)
 
         statDict = self.env.log_stat(0);
         self.assertIn('magic', statDict)

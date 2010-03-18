@@ -96,7 +96,8 @@ Each exception derives from the DBError exception class so if you just
 want to catch generic errors you can use DBError to do it. Since
 DBNotFoundError is raised when a given key is not found in the database,
 DBNotFoundError also derives from the standard KeyError exception to
-help make a DB look and act like a dictionary.
+help make a DB look and act like a dictionary. We do the same trick with
+DBKeyEmptyError.
 
 When any of these exceptions is raised, the associated value is a tuple
 containing an integer representing the error code and a string for the
@@ -105,9 +106,7 @@ error message itself.
     +---------------------------+-------------------------------------------+
     | **DBError**               | Base class, all others derive from this   |
     +---------------------------+-------------------------------------------+
-    | **DBIncompleteError**     | DB_INCOMPLETE                             |
-    +---------------------------+-------------------------------------------+
-    | **DBKeyEmptyError**       | DB_KEYEMPTY                               |
+    | **DBKeyEmptyError**       | DB_KEYEMPTY (also derives from KeyError)  |
     +---------------------------+-------------------------------------------+
     | **DBKeyExistError**       | DB_KEYEXIST                               |
     +---------------------------+-------------------------------------------+
@@ -175,7 +174,7 @@ A full unit test suite is being developed to exercise the various object
 types, their methods and the various usage modes described in the
 introduction. `PyUnit <http://pyunit.sourceforge.net/>`__ is used and
 the tests are structured such that they can be run unattended and
-automated. There are currently almost 300 test cases!  (March 2008)
+automated. There are currently 481 test cases!  (March 2010)
 
 Reference
 ---------

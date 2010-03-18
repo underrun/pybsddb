@@ -20,6 +20,10 @@
     * Shebang: benjamin.peterson
     * Use new Python 2.7 assert()'s: Florent Xicluna
   * Solve a spurious stdlib warning in python >=2.6 with -3 flags.
+  * Remove "DBIncompleteError", for sure this time. There were traces
+    in "dbtables", in some tests and in the docs.
+  * Document that DBKeyEmptyError exception derives also from KeyError.
+  * Update documentation to describe all exceptions provided by this module.
 
 4.8.3:
   * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
