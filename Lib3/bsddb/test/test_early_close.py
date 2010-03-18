@@ -2,7 +2,7 @@
 is closed before its DB objects.
 """
 
-import os
+import os, sys
 import unittest
 
 from .test_all import db, test_support, verbose, get_new_environment_path, get_new_database_path
@@ -164,18 +164,33 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
         c2 = c1.dup()
         self.assertEquals(("XXX", "yyy"), c1.first())
 
-        import warnings
         # Not interested in warnings about implicit close.
-        #
-        # When we drop support for python 2.3 and 2.4
-        # we could use:
-        #
-        #    with warnings.catch_warnings():
-        #        warnings.simplefilter("ignore")
-        #        txn.commit()
-        warnings.simplefilter("ignore")
-        txn.commit()
-        warnings.resetwarnings()
+        import warnings
+        if sys.version_info < (2, 6) :
+            # Completely resetting the warning state is
+            # problematic with python >=2.6 with -3 (py3k warning),
+            # because some stdlib modules selectively ignores warnings.
+            warnings.simplefilter("ignore")
+            txn.commit()
+            warnings.resetwarnings()
+        else :
+            # When we drop support for python 2.3 and 2.4
+            # we could use: (in 2.5 we need a __future__ statement)
+            #
+            #    with warnings.catch_warnings():
+            #        warnings.simplefilter("ignore")
+            #        txn.commit()
+            #
+            # We can not use "with" as is, because it would be invalid syntax
+            # in python 2.3, 2.4 and (with no __future__) 2.5.
+            # Here we simulate "with" following PEP 343 :
+            w = warnings.catch_warnings()
+            w.__enter__()
+            try :
+                warnings.simplefilter("ignore")
+                txn.commit()
+            finally :
+                w.__exit__()
 
         self.assertRaises(db.DBCursorClosedError, c2.first)
 
