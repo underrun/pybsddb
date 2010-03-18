@@ -5,7 +5,8 @@
   * Help the Gargabe Collection freeing resources when the
     replication testsuite is completed.
   * Import warning when used as stdlib "bsddb" instead of
-    pybsddb project as "bsddb3".
+    pybsddb project as "bsddb3", when using python >=2.6 and
+    py3k warnings are active.
   * Old regression: dbshelve objects are iterable again. The bug was
     introduced in pybsddb 4.7.2. Added relevant testcases.
   * Patches ported from Python developers:
@@ -18,6 +19,7 @@
       #7269 - http://bugs.python.org/issue7269 - Florent Xicluna
     * Shebang: benjamin.peterson
     * Use new Python 2.7 assert()'s: Florent Xicluna
+  * Solve a spurious stdlib warning in python >=2.6 with -3 flags.
 
 4.8.3:
   * "bsddb.h" inclusion in PYPI is inconsistent. Solved.
