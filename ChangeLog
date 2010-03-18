@@ -22,7 +22,11 @@
   * Solve a spurious stdlib warning in python >=2.6 with -3 flags.
   * Remove "DBIncompleteError", for sure this time. There were traces
     in "dbtables", in some tests and in the docs.
-  * Document that DBKeyEmptyError exception derives also from KeyError.
+  * The DBKeyEmptyError exception raised by the library is not the same
+    DBKeyEmptyError available in the lib. So the raised exception was
+    uncatchable unless you catch DBError. And you can not identify it.
+  * Solved last point, document that DBKeyEmptyError exception derives also
+    from KeyError, just like DBNotFoundError exception.
   * Update documentation to describe all exceptions provided by this module.
 
 4.8.3:

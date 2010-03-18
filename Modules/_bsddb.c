@@ -9905,7 +9905,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #endif
 
     MAKE_EX(DBCursorClosedError);
-    MAKE_EX(DBKeyEmptyError);
     MAKE_EX(DBKeyExistError);
     MAKE_EX(DBLockDeadlockError);
     MAKE_EX(DBLockNotGrantedError);
