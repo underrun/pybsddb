@@ -163,8 +163,15 @@ class DBShelf(MutableMapping):
             return list(self.db.keys())
 
     if sys.version_info >= (2, 6) :
-        def __iter__(self) :
-            return self.db.__iter__()
+        def __iter__(self) :  # XXX: Load all keys in memory :-(
+            for k in list(self.db.keys()) :
+                yield k
+
+        # Do this when "DB"  support iteration
+        # Or is it enough to pass thru "getattr"?
+        #
+        # def __iter__(self) :
+        #    return self.db.__iter__()
 
 
     def open(self, *args, **kwargs):

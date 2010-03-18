@@ -164,3 +164,7 @@
 * 20100217: When a "Lock" is garbage collected, we leak it
   and we do not release it.
 
+* 20100318: Iterate keys in dbshelve load all keys in memory first.
+
+* 20100318: Implement "__iter__()" in DB, maybe thru a DBCursor.
+

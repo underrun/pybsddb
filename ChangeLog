@@ -6,6 +6,8 @@
     replication testsuite is completed.
   * Import warning when used as stdlib "bsddb" instead of
     pybsddb project as "bsddb3".
+  * Old regression: dbshelve objects are iterable again. The bug was
+    introduced in pybsddb 4.7.2. Added relevant testcases.
   * Patches ported from Python developers:
     * Memory leaks: #7808 - http://bugs.python.org/issue7808 - Florent Xicluna
     * Floating point rounding in testcases:
