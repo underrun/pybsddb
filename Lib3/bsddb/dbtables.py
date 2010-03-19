@@ -22,7 +22,35 @@ import sys
 import copy
 import random
 import struct
-import pickle as pickle
+
+
+if sys.version_info[0] >= 3 :
+    import pickle
+else :
+    if sys.version_info < (2, 6) :
+        import pickle as pickle
+    else :
+        # When we drop support for python 2.3 and 2.4
+        # we could use: (in 2.5 we need a __future__ statement)
+        #
+        #    with warnings.catch_warnings():
+        #        warnings.filterwarnings(...)
+        #        ...
+        #
+        # We can not use "with" as is, because it would be invalid syntax
+        # in python 2.3, 2.4 and (with no __future__) 2.5.
+        # Here we simulate "with" following PEP 343 :
+        import warnings
+        w = warnings.catch_warnings()
+        w.__enter__()
+        try :
+            warnings.filterwarnings('ignore',
+                message='the cPickle module has been removed in Python 3.0',
+                category=DeprecationWarning)
+            import pickle as pickle
+        finally :
+            w.__exit__()
+        del w
 
 try:
     # For Pythons w/distutils pybsddb

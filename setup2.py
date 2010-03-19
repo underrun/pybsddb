@@ -7,6 +7,28 @@ import re
 import sys
 import glob
 
+if (sys.version_info[0] < 3) and (sys.version_info >= (2, 6)) :
+    # Silence deprecation warnings during "setup"
+    import warnings
+    warnings.filterwarnings('ignore',
+            message='in 3.x, bsddb has been removed; ' \
+                    'please use the pybsddb project instead',
+            category=DeprecationWarning)
+    warnings.filterwarnings('ignore',
+            message='in 3.x, the bsddb module has been removed; ' \
+                    'please use the pybsddb project instead',
+            category=DeprecationWarning)
+
+    # setuptools warnings
+    warnings.filterwarnings('ignore',
+            message='tuple parameter unpacking has been removed in 3.x',
+            category=SyntaxWarning)
+    warnings.filterwarnings('ignore',
+            message='the dl module has been removed in Python 3.0; ' \
+                    'use the ctypes module instead',
+            category=DeprecationWarning)
+
+
 try :
   from setuptools import setup, Extension
 except :

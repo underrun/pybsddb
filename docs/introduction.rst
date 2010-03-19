@@ -190,7 +190,7 @@ A full unit test suite is being developed to exercise the various object
 types, their methods and the various usage modes described in the
 introduction. `PyUnit <http://pyunit.sourceforge.net/>`__ is used and
 the tests are structured such that they can be run unattended and
-automated. There are currently 481 test cases!  (March 2010)
+automated. There are currently 482 test cases!  (March 2010)
 
 Reference
 ---------
