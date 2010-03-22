@@ -255,12 +255,12 @@ if sys.version_info[0] >= 3 :
 
         def set_re_pad(self, c) :
             if isinstance(c, str) :  # We can use a numeric value byte too
-               c = bytes(c, charset)
+                c = bytes(c, charset)
             return self._db.set_re_pad(c)
 
         def get_re_source(self) :
-           source = self._db.get_re_source()
-           return source.decode(charset)
+            source = self._db.get_re_source()
+            return source.decode(charset)
 
         def put(self, key, data, txn=None, flags=0, dlen=-1, doff=-1) :
             if isinstance(key, str) :
