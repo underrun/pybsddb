@@ -528,7 +528,8 @@ def get_new_database_path() :
 
 # This path can be overriden via "set_test_path_prefix()".
 import os, os.path
-get_new_path.prefix=os.path.join(os.sep,"tmp","z-Berkeley_DB")
+get_new_path.prefix=os.path.join(os.environ.get("TMPDIR",
+    os.path.join(os.sep,"tmp")), "z-Berkeley_DB")
 get_new_path.num=0
 
 def get_test_path_prefix() :
