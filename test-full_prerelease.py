@@ -22,9 +22,9 @@ def do_matrix_check() :
       print
       print "*** Testing bindings for Python %s and Berkeley DB %s" %(py,bdb)
       # Extra flags for 3.x
-      extra_params = [] if float(py)<=2.999 else ["-bb"]
+      extra_params = [] if float(py)<=2.999 else ["-bb -Wd -tt"]
       # Extra flags for >=2.6
-      extra_params = [] if ((float(py)<=2.599) or (float(py)>=2.999)) else ["-3"]
+      extra_params = [] if ((float(py)<=2.599) or (float(py)>=2.999)) else ["-3 -Wd -tt"]
       params = extra_params + ["setup.py", "-q", \
                  "--berkeley-db=/usr/local/BerkeleyDB."+bdb,"build", "-f"]
       ret=subprocess.call(["/usr/local/bin/python"+py] + params)
