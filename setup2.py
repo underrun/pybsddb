@@ -101,7 +101,7 @@ if os.name == 'posix':
     incdir = libdir = None
     if not BERKELEYDB_DIR and not BERKELEYDB_LIBDIR and not BERKELEYDB_INCDIR:
         # NOTE: when updating these, also change the tuples in the for loops below
-        max_db_ver = (4, 8)
+        max_db_ver = (5, 0)
         min_db_ver = (4, 1)
 
         # construct a list of paths to look for the header file in on
@@ -123,6 +123,14 @@ if os.name == 'posix':
             db_inc_paths.append('/usr/local/include/db4%d' % x)
             db_inc_paths.append('/pkg/db-4.%d/include' % x)
             db_inc_paths.append('/opt/db-4.%d/include' % x)
+
+        # 5.x minor number specific paths
+        for x in range(max_db_ver[1]+1):
+            db_inc_paths.append('/usr/include/db5%d' % x)
+            db_inc_paths.append('/usr/local/BerkeleyDB.5.%d/include' % x)
+            db_inc_paths.append('/usr/local/include/db5%d' % x)
+            db_inc_paths.append('/pkg/db-5.%d/include' % x)
+            db_inc_paths.append('/opt/db-5.%d/include' % x)
 
         db_ver_inc_map = {}
 
@@ -289,7 +297,7 @@ elif os.name == 'nt':
             continue
         fullverstr = match.group(1)
         ver = fullverstr[0] + fullverstr[2]   # 31 == 3.1, 32 == 3.2, etc.
-    assert ver in ('41', '42', '43', '44', '45', '46', '47', '48'), (
+    assert ver in ('41', '42', '43', '44', '45', '46', '47', '48', '50'), (
         "pybsddb untested with this Berkeley DB version", ver)
     print 'Detected Berkeley DB version', ver, 'from db.h'
 
@@ -381,7 +389,6 @@ pybsddb_doc/>`__ --
                     'Programming Language :: Python :: 2.6',
                     'Programming Language :: Python :: 2.7',
                     'Programming Language :: Python :: 3',
-                    'Programming Language :: Python :: 3.0',
                     'Programming Language :: Python :: 3.1',
                     'Programming Language :: Python :: 3.2',
                     ],

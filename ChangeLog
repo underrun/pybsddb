@@ -1,4 +1,6 @@
-4.8.5:
+5.0.0:
+  * Support for Berkeley DB 5.0.
+  * Drop support for Python 3.0.
   * Now you can use TMPDIR env variable to override default
     test directory ("/tmp").
 
