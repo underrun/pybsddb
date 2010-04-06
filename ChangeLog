@@ -3,6 +3,9 @@
   * Drop support for Python 3.0.
   * Now you can use TMPDIR env variable to override default
     test directory ("/tmp").
+  * Versioning of C API. If you use the code from C, please
+    check the bsddb_api->api_version number against
+    PYBSDDB_API_VERSION macro.
 
 4.8.4:
   * When doing the full matrix testing with python >=2.6, we

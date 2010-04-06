@@ -9953,6 +9953,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #undef MAKE_EX
 
     /* Initialise the C API structure and add it to the module */
+    bsddb_api.api_version      = PYBSDDB_API_VERSION;
     bsddb_api.db_type          = &DB_Type;
     bsddb_api.dbcursor_type    = &DBCursor_Type;
     bsddb_api.dblogcursor_type = &DBLogCursor_Type;

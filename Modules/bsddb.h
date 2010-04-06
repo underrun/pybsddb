@@ -109,7 +109,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "5.0.0devel1"
+#define PY_BSDDB_VERSION "5.0.0devel2"
 
 /* Python object definitions */
 
@@ -257,10 +257,14 @@ typedef struct DBSequenceObject {
      bsddb_api = (void **)PyCapsule_Import("bsddb._bsddb.api", 1);
 
 
+   Check "api_version" number before trying to use the API.
+
    The structure's members must not be changed.
 */
 
+#define PYBSDDB_API_VERSION 1
 typedef struct {
+    int api_version;
     /* Type objects */
     PyTypeObject* db_type;
     PyTypeObject* dbcursor_type;
