@@ -21,7 +21,7 @@
   * Capsule support was buggy. The string passed in to PyCapsule_New() must
     outlive the capsule.  (Larry Hastings)
   * Solve an "Overflow" warning in the testsuite running under python 2.3.
-  * When doing complete full-matrix test, any warning will be considered
+  * When doing a complete full-matrix test, any warning will be considered
     an error.
 
 4.8.4:

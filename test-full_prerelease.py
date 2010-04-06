@@ -22,11 +22,11 @@ def do_matrix_check() :
     for bdb in berkeleydb_versions :
       print
       print "*** Testing bindings for Python %s and Berkeley DB %s" %(py,bdb)
+      extra_params = warning_level
       # Extra flags for 3.x
-      extra_params = [] if float(py)<=2.999 else ["-bb -tt"]+warning_level
+      extra_params += [] if float(py)<=2.999 else ["-bb -tt"]
       # Extra flags for >=2.6
-      extra_params = [] if ((float(py)<=2.599) or (float(py)>=2.999)) \
-              else ["-3 -tt"]+warning_level
+      extra_params += [] if ((float(py)<=2.599) or (float(py)>=2.999)) else ["-3 -tt"]
       params = extra_params + ["setup.py", "-q", \
                  "--berkeley-db=/usr/local/BerkeleyDB."+bdb,"build", "-f"]
       params = ["/usr/local/bin/python"+py] + params
@@ -37,8 +37,9 @@ def do_matrix_check() :
         print ">>> Testsuite skipped"
         print
       else :
-        params = extra_params + ["test.py","-p"]
-        subprocess.call(["/usr/local/bin/python"+py] + params)
+        params = ["/usr/local/bin/python"+py] + extra_params + ["test.py","-p"]
+        print "EXECUTING:", " ".join(params)
+        subprocess.call(params)
 
 if __name__=="__main__" :
   print __doc__
