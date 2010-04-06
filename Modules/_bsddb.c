@@ -9962,6 +9962,8 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     bsddb_api.dblock_type      = &DBLock_Type;
 #if (DBVER >= 43)
     bsddb_api.dbsequence_type  = &DBSequence_Type;
+#else
+    bsddb_api.dbsequence_type  = NULL;
 #endif
     bsddb_api.makeDBError      = makeDBError;
 

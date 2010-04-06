@@ -6,6 +6,12 @@
   * Versioning of C API. If you use the code from C, please
     check the bsddb_api->api_version number against
     PYBSDDB_API_VERSION macro.
+  * In C code, the bsddb_api->dbsequence_type component is always available,
+    even if the Berkeley DB version used doesn't support sequences. In that
+    case, the component will be NULL.
+  * In C code, "DBSequenceObject_Check()" macro always exists, even if the
+    Berkeley DB version used doesn't suport sequences. In that case, the test
+    macro always returns "false".
 
 4.8.4:
   * When doing the full matrix testing with python >=2.6, we

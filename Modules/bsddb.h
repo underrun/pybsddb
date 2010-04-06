@@ -264,7 +264,7 @@ typedef struct DBSequenceObject {
 
 #define PYBSDDB_API_VERSION 1
 typedef struct {
-    int api_version;
+    unsigned int api_version;
     /* Type objects */
     PyTypeObject* db_type;
     PyTypeObject* dbcursor_type;
@@ -272,9 +272,7 @@ typedef struct {
     PyTypeObject* dbenv_type;
     PyTypeObject* dbtxn_type;
     PyTypeObject* dblock_type;
-#if (DBVER >= 43)
-    PyTypeObject* dbsequence_type;
-#endif
+    PyTypeObject* dbsequence_type;  /* If DBVER < 43 -> NULL */
 
     /* Functions */
     int (*makeDBError)(int err);
@@ -293,9 +291,9 @@ typedef struct {
 #define DBEnvObject_Check(v)    ((v)->ob_type == bsddb_api->dbenv_type)
 #define DBTxnObject_Check(v)    ((v)->ob_type == bsddb_api->dbtxn_type)
 #define DBLockObject_Check(v)   ((v)->ob_type == bsddb_api->dblock_type)
-#if (DBVER >= 43)
-#define DBSequenceObject_Check(v)  ((v)->ob_type == bsddb_api->dbsequence_type)
-#endif
+#define DBSequenceObject_Check(v)  \
+    ((bsddb_api->dbsequence_type) && \
+        ((v)->ob_type == bsddb_api->dbsequence_type))
 
 #endif /* COMPILING_BSDDB_C */
 

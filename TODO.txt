@@ -170,3 +170,5 @@
 
 * 20100319: Cursors in dbtables should be iterable.
 
+* 20100406: Document in the manual the use of the C API.
+
