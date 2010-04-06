@@ -9328,6 +9328,11 @@ static BSDDB_api bsddb_api;
  */
 #define ADD_INT(dict, NAME)         _addIntToDict(dict, #NAME, NAME)
 
+/*
+** We can rename the module at import time, so the string allocated
+** must be big enough, and any use of the name must use this particular
+** string.
+*/
 #define MODULE_NAME_MAX_LEN     11
 static char _bsddbModuleName[MODULE_NAME_MAX_LEN+1] = "_bsddb";
 
@@ -9968,15 +9973,19 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     bsddb_api.makeDBError      = makeDBError;
 
     /*
-    ** Capsules exist from Python 3.1, but I
-    ** don't want to break the API compatibility
-    ** for already published Python versions.
+    ** Capsules exist from Python 2.7 and 3.1.
+    ** We don't support Python 3.0 anymore, so...
+    ** #if (PY_VERSION_HEX < ((PY_MAJOR_VERSION < 3) ? 0x02070000 : 0x03020000))
     */
-#if (PY_VERSION_HEX < 0x03020000)
+#if (PY_VERSION_HEX < 0x02070000)
     py_api = PyCObject_FromVoidPtr((void*)&bsddb_api, NULL);
 #else
     {
-        char py_api_name[250];
+        /*
+        ** The data must outlive the call!!. So, the static definition.
+        ** The buffer must be big enough...
+        */
+        static char py_api_name[MODULE_NAME_MAX_LEN+10];
 
         strcpy(py_api_name, _bsddbModuleName);
         strcat(py_api_name, ".api");

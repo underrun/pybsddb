@@ -172,3 +172,5 @@
 
 * 20100406: Document in the manual the use of the C API.
 
+* 20100406: The "_bsddb"/"_pybsddb" import renaming should go away.
+

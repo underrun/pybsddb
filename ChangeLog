@@ -12,6 +12,14 @@
   * In C code, "DBSequenceObject_Check()" macro always exists, even if the
     Berkeley DB version used doesn't suport sequences. In that case, the test
     macro always returns "false".
+  * For a long time, the API has been accesible via C using "_bsddb.api" or
+    "_pybsddb.api". If you are using Python >=2.7, you acquire access to that
+    API via the new Capsule protocol (see "bsddb.h").  If you use the C API and
+    upgrade to Python 2.7 and up, you must update the access code (see
+    "bsddb.h"). The Capsule protocol is not supported in Python 3.0, but
+    pybsddb 5.0.x doesn't support Python 3.0 anymore.
+  * Capsule support was buggy. The string passed in to PyCapsule_New() must
+    outlive the capsule.  (Larry Hastings)
 
 4.8.4:
   * When doing the full matrix testing with python >=2.6, we
