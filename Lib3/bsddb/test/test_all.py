@@ -1,6 +1,10 @@
 """Run all test cases.
 """
 
+import warnings
+# Simulate "python -Werror"
+warnings.simplefilter('error')
+
 import sys
 import os
 import unittest

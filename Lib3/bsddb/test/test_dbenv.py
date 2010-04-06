@@ -115,7 +115,7 @@ class DBEnv_general(DBEnv) :
                 self.assertEqual(i, self.env.get_lk_max_lockers())
 
         def test_lg_regionmax(self) :
-            for i in [128, 256, 1024] :
+            for i in [128, 256, 1000] :
                 i = i*1024*1024
                 self.env.set_lg_regionmax(i)
                 j = self.env.get_lg_regionmax()

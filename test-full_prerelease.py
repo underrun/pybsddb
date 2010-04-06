@@ -15,6 +15,7 @@ def do_matrix_check() :
   python_versions=("2.3","2.4","2.5","2.6","2.7","3.1","3.2")
   berkeleydb_versions=("4.1","4.2","4.3","4.4","4.5","4.6","4.7","4.8","5.0")
 
+  warning_level=(["-Wdefault"], ["-Werror"])[1]
   import subprocess
 
   for py in python_versions :
@@ -22,12 +23,15 @@ def do_matrix_check() :
       print
       print "*** Testing bindings for Python %s and Berkeley DB %s" %(py,bdb)
       # Extra flags for 3.x
-      extra_params = [] if float(py)<=2.999 else ["-bb -Wd -tt"]
+      extra_params = [] if float(py)<=2.999 else ["-bb -tt"]+warning_level
       # Extra flags for >=2.6
-      extra_params = [] if ((float(py)<=2.599) or (float(py)>=2.999)) else ["-3 -Wd -tt"]
+      extra_params = [] if ((float(py)<=2.599) or (float(py)>=2.999)) \
+              else ["-3 -tt"]+warning_level
       params = extra_params + ["setup.py", "-q", \
                  "--berkeley-db=/usr/local/BerkeleyDB."+bdb,"build", "-f"]
-      ret=subprocess.call(["/usr/local/bin/python"+py] + params)
+      params = ["/usr/local/bin/python"+py] + params
+      print "EXECUTING:", " ".join(params)
+      ret=subprocess.call(params)
       if ret :
         print
         print ">>> Testsuite skipped"

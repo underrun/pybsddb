@@ -118,6 +118,14 @@ Extreme (yet useful) examples:
     to make sure all tests still pass.
 """
 
+import warnings
+# Simulate "python -Wdefault".
+# http://docs.python.org/dev/library/warnings.html#updating-code-for-new-versions-of-python
+# Command line argument has priority, so the full matrix check can be more
+# strict.
+warnings.simplefilter('default')
+
+
 import gc
 import os
 import re
