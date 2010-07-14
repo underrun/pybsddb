@@ -101,7 +101,7 @@ if os.name == 'posix':
     incdir = libdir = None
     if not BERKELEYDB_DIR and not BERKELEYDB_LIBDIR and not BERKELEYDB_INCDIR:
         # NOTE: when updating these, also change the tuples in the for loops below
-        max_db_ver = (5, 0)
+        max_db_ver = (5, 1)
         min_db_ver = (4, 1)
 
         # construct a list of paths to look for the header file in on
@@ -297,7 +297,7 @@ elif os.name == 'nt':
             continue
         fullverstr = match.group(1)
         ver = fullverstr[0] + fullverstr[2]   # 31 == 3.1, 32 == 3.2, etc.
-    assert ver in ('41', '42', '43', '44', '45', '46', '47', '48', '50'), (
+    assert ver in ('41', '42', '43', '44', '45', '46', '47', '48', '50', '51'), (
         "pybsddb untested with this Berkeley DB version", ver)
     print('Detected Berkeley DB version', ver, 'from db.h')
 
