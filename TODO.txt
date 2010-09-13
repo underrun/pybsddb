@@ -174,3 +174,7 @@
 
 * 20100406: The "_bsddb"/"_pybsddb" import renaming should go away.
 
+* 20100429: "setuptools" should work correctly under Python 3 (PYPI).
+
+* 20100908: Use PEP 384: "Defining a Stable ABI", when approved.
+
