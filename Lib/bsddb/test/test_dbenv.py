@@ -173,7 +173,11 @@ class DBEnv_general(DBEnv) :
             cachesize = (0, 2*1024*1024, 1)
             self.assertRaises(db.DBInvalidArgError,
                 self.env.set_cachesize, *cachesize)
-            self.assertEqual(cachesize2, self.env.get_cachesize())
+            cachesize3 = self.env.get_cachesize()
+            self.assertEqual(cachesize2[0], cachesize3[0])
+            self.assertEqual(cachesize2[2], cachesize3[2])
+            # In Berkeley DB 5.1, the cachesize can change when opening the Env
+            self.assertTrue(cachesize2[1] <= cachesize3[1])
 
         def test_set_cachesize_dbenv_db(self) :
             # You can not configure the cachesize using
