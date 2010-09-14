@@ -15,7 +15,7 @@ include ChangeLog
 include test.py
 
 recursive-include bsddb3 *.py
-recursive-include docs *.html *.css *.gif *.jpg *.txt
+recursive-include docs *.rst *.html *.css *.gif *.jpg *.png *.js *.json *.txt
 recursive-include patches *.txt *.patch
 recursive-include Modules _bsddb.c bsddb.h
 recursive-include test *.py

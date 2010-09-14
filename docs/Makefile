@@ -51,6 +51,8 @@ build: checkout
 html: BUILDER = html
 html: build
 	@echo "Build finished. The HTML pages are in build/html."
+	rm -rf html
+	cp -a build/html .
 
 web: BUILDER = web
 web: build
