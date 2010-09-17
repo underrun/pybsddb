@@ -29,7 +29,7 @@ DB Methods
    number is returned.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbput.html#DB_APPEND>`__
+   C/dbput.html#dbput_DB_APPEND>`__
 
 .. function:: associate(secondaryDB, callback, flags=0, txn=None)
 
@@ -69,7 +69,7 @@ DB Methods
    the queue.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget.html#DB_CONSUME>`__
+   C/dbget.html#dbget_DB_CONSUME>`__
 
 .. function:: consume_wait(txn=None, flags=0)
 
@@ -79,7 +79,7 @@ DB Methods
    will wait until there is data in the queue before returning.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget.html#DB_CONSUME_WAIT>`__
+   C/dbget.html#dbget_DB_CONSUME_WAIT>`__
 
 .. function:: cursor(txn=None, flags=0)
 
@@ -160,7 +160,8 @@ DB Methods
 
 .. function:: set_private(object)
 
-   Link an arbitrary object to the DB.
+   Link an object to the DB object. This allows to pass around an
+   arbitrary object. For instance, for callback context.
 
 .. function:: get_private()
 
@@ -174,7 +175,7 @@ DB Methods
    of a record in the database when duplicate keys are allowed.)
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget.html#DB_GET_BOTH>`__
+   C/dbget.html#dbget_DB_GET_BOTH>`__
 
 .. function:: get_byteswapped()
 
@@ -264,7 +265,7 @@ DB Methods
    Returns the encryption flags.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_encrypt.html>`__
+   C/dbget_encrypt_flags.html>`__
  
 .. function:: set_bt_compare(compareFunc)
 
@@ -307,7 +308,7 @@ DB Methods
    Returns a tuple with the current size and composition of the cache.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_cachesize.html>`__
+   C/dbget_cachesize.html>`__
 
 .. function:: set_get_returns_none(flag)
 

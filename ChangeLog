@@ -2,6 +2,11 @@
   * Support for Berkeley DB 5.1. 
   * Include documentation source (*.rst) in the EGG.
   * Include processed HTML documentation in the EGG.
+  * Update the external links in documentation, since Oracle changed its web
+    structure.
+  * Some link fixes for external documentation.
+  * Links added in the documentation to Oracle Berkeley DB programmer
+    reference.
 
 5.0.0:
   * Support for Berkeley DB 5.0.

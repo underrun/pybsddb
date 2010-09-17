@@ -178,3 +178,9 @@
 
 * 20100908: Use PEP 384: "Defining a Stable ABI", when approved.
 
+* 20100917: Review and update all documentation.
+
+* 20100917: Some errors are exported as integer values, beside the
+  proper exception. For instance, DB_SECONDARY_BAD. Evaluate if it
+  is convenient or not.
+
