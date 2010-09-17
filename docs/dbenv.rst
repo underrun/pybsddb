@@ -4,6 +4,14 @@
 DBEnv
 =====
 
+Read `Oracle documentation
+<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+for better understanding.
+
+`More info...
+<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+C/dbenv.html>`__
+
 DBEnv Attributes
 ----------------
 
@@ -48,7 +56,7 @@ DBEnv Methods
    Returns a created log cursor.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logcursor.html>`__
+   C/logcursor.html>`__
 
 .. function:: memp_stat(flags=0)
 
@@ -199,14 +207,14 @@ DBEnv Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/mempstat.html>`__
+   C/mempstat.html>`__
 
 .. function:: memp_stat_print(flags=0)
 
    Displays cache subsystem statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/mempstat_print.html>`__
+   C/mempstat_print.html>`__
 
 .. function:: memp_sync(lsn=None)
 
@@ -214,7 +222,7 @@ DBEnv Methods
    provided, lsn is a tuple: (file, offset).
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/mempsync.html>`__
+   C/mempsync.html>`__
   
 .. function:: memp_trickle(percent)
 
@@ -222,7 +230,7 @@ DBEnv Methods
    by writing dirty pages to their backing files.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/memptrickle.html>`__
+   C/memptrickle.html>`__
    
 .. function:: remove(homedir, flags=0)
 
@@ -268,7 +276,7 @@ DBEnv Methods
    method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_thread_count.html>`__
+   C/envget_thread_count.html>`__
 
 .. function:: set_thread_count(count)
 
@@ -280,7 +288,7 @@ DBEnv Methods
    thread control block reclamation policy.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envset_thread_count.html>`__
+   C/envset_thread_count.html>`__
 
 .. function:: set_encrypt(passwd, flags=0)
 
@@ -318,7 +326,7 @@ DBEnv Methods
    concurrently when flushing dirty pages from the cache.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/mempget_mp_max_openfd.html>`__
+   C/mempget_mp_max_openfd.html>`__
 
 .. function:: set_mp_max_openfd(max_open_fd)
 
@@ -326,7 +334,7 @@ DBEnv Methods
    concurrently when flushing dirty pages from the cache. 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/mempset_mp_max_openfd.html>`__
+   C/mempset_mp_max_openfd.html>`__
 
 .. function:: get_mp_max_write()
 
@@ -335,7 +343,7 @@ DBEnv Methods
    when flushing dirty pages from the cache.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/mempget_mp_max_write.html>`__
+   C/mempget_mp_max_write.html>`__
 
 .. function:: set_mp_max_write(maxwrite, maxwrite_sleep)
 
@@ -343,7 +351,7 @@ DBEnv Methods
    library when flushing dirty pages from the cache. 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/mempset_mp_max_write.html>`__
+   C/mempset_mp_max_write.html>`__
 
 .. function:: set_shm_key(key)
 
@@ -371,7 +379,7 @@ DBEnv Methods
    to the initial cache size.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envset_cache_max.html>`__
+   C/envset_cache_max.html>`__
 
 .. function:: get_cache_max()
 
@@ -379,7 +387,7 @@ DBEnv Methods
    DB_ENV->set_cache_max() method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_cache_max.html>`__
+   C/envget_cache_max.html>`__
 
 .. function:: set_cachesize(gbytes, bytes, ncache=0)
 
@@ -415,7 +423,7 @@ DBEnv Methods
    Returns the configuration flags set for a DB_ENV handle.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_flags.html>`__
+   C/envget_flags.html>`__
 
 .. function:: set_flags(flags, onoff)
 
@@ -437,7 +445,7 @@ DBEnv Methods
    Returns the database environment temporary file directory.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_tmp_dir.html>`__
+   C/envget_tmp_dir.html>`__
 
 .. function:: set_get_returns_none(flag)
 
@@ -509,21 +517,21 @@ DBEnv Methods
    Returns the log file mode.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_lg_filemode.html>`__
+   C/envget_lg_filemode.html>`__
 
 .. function:: set_lg_filemode(filemode)
 
    Set the absolute file mode for created log files.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envset_lg_filemode.html>`__
+   C/envset_lg_filemode.html>`__
 
 .. function:: get_lg_bsize()
 
    Returns the size of the log buffer, in bytes.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_lg_bsize.html>`__
+   C/envget_lg_bsize.html>`__
 
 .. function:: set_lg_bsize(size)
 
@@ -537,7 +545,7 @@ DBEnv Methods
    Returns the log directory, which is the location for logging files.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_lg_dir.html>`__
+   C/envget_lg_dir.html>`__
 
 .. function:: set_lg_dir(dir)
 
@@ -567,7 +575,7 @@ DBEnv Methods
    Returns the size of the underlying logging subsystem region.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_lg_regionmax.html>`__
+   C/envget_lg_regionmax.html>`__
 
 .. function:: set_lg_regionmax(size)
 
@@ -582,7 +590,7 @@ DBEnv Methods
    environment.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_lk_partitions.html>`__
+   C/envget_lk_partitions.html>`__
 
 .. function:: set_lk_partitions(partitions)
 
@@ -590,14 +598,14 @@ DBEnv Methods
    environment.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envset_lk_partitions.html>`__
+   C/envset_lk_partitions.html>`__
 
 .. function:: get_lk_detect()
 
    Returns the deadlock detector configuration.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_lk_detect.html>`__
+   C/envget_lk_detect.html>`__
 
 .. function:: set_lk_detect(mode)
 
@@ -618,7 +626,7 @@ DBEnv Methods
    Returns the maximum number of potential locks.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_lk_max_locks.html>`__
+   C/envget_lk_max_locks.html>`__
 
 .. function:: set_lk_max_locks(max)
 
@@ -633,7 +641,7 @@ DBEnv Methods
    Returns the maximum number of potential lockers.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_lk_max_lockers.html>`__
+   C/envget_lk_max_lockers.html>`__
 
 .. function:: set_lk_max_lockers(max)
 
@@ -648,7 +656,7 @@ DBEnv Methods
    Returns the maximum number of locked objects.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_lk_max_objects.html>`__
+   C/envget_lk_max_objects.html>`__
 
 .. function:: set_lk_max_objects(max)
 
@@ -664,7 +672,7 @@ DBEnv Methods
    into the process address space.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envget_mp_mmapsize.html>`__
+   C/envget_mp_mmapsize.html>`__
 
 .. function:: set_mp_mmapsize(size)
 
@@ -690,7 +698,7 @@ DBEnv Methods
    Displays the default subsystem statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envstat.html>`__
+   C/envstat.html>`__
 
 .. function:: log_file(lsn)
 
@@ -698,7 +706,7 @@ DBEnv Methods
    containing the named record.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logfile.html>`__
+   C/logfile.html>`__
 
 .. function:: log_printf(string, txn=None)
 
@@ -706,7 +714,7 @@ DBEnv Methods
    environment log files.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logprintf.html>`__
+   C/logprintf.html>`__
 
 .. function:: log_archive(flags=0)
 
@@ -735,7 +743,7 @@ DBEnv Methods
    method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/envlog_get_config.html>`__
+   C/envlog_get_config.html>`__
 
 .. function:: log_set_config(flags, onoff)
 
@@ -889,7 +897,7 @@ DBEnv Methods
    Displays the locking subsystem statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/lockstat_print.html>`__
+   C/lockstat_print.html>`__
 
 .. function:: get_tx_max()
 
@@ -925,7 +933,7 @@ DBEnv Methods
    Creates and begins a new transaction. A DBTxn object is returned.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_begin.html>`__
+   C/txnbegin.html>`__
 
 .. function:: txn_checkpoint(kbyte=0, min=0, flag=0)
 
@@ -933,7 +941,7 @@ DBEnv Methods
    log and then flushes the log.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_checkpoint.html>`__
+   C/txncheckpoint.html>`__
 
 .. function:: txn_stat(flags=0)
 
@@ -988,14 +996,14 @@ DBEnv Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_stat.html>`__
+   C/txnstat.html>`__
 
 .. function:: txn_stat_print(flags=0)
 
    Displays the transaction subsystem statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_stat.html>`__
+   C/txnstat.html>`__
 
 .. function:: lsn_reset(file=None,flags=0)
 
@@ -1086,7 +1094,7 @@ DBEnv Methods
    Displays the logging subsystem statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logstat_print.html>`__
+   C/logstat_print.html>`__
 
 .. function:: txn_recover()
 
@@ -1098,7 +1106,7 @@ DBEnv Methods
    should be called after DBEnv recovery.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_recover.html>`__
+   C/txnrecover.html>`__
 
 .. function:: set_verbose(which, onoff)
 
@@ -1158,14 +1166,14 @@ DBEnv Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/mutexstat.html>`__
+   C/mutexstat.html>`__
 
 .. function:: mutex_stat_print(flags=0)
 
    Displays the mutex subsystem statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/mutexstat_print.html>`__
+   C/mutexstat_print.html>`__
 
 .. function:: mutex_set_max(value)
 

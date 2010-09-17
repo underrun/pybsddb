@@ -4,6 +4,14 @@
 DB
 ==
 
+Read `Oracle documentation
+<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+for better understanding.
+
+`More info...
+<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+C/db.html>`__
+
 DB Methods
 ----------
 
@@ -12,7 +20,7 @@ DB Methods
    Constructor.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbclass.html>`__
+   C/dbcreate.html>`__
 
 .. function:: append(data, txn=None)
 
@@ -131,7 +139,7 @@ DB Methods
    This priority value is set using the DB->set_priority() method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_priority.html>`__
+   C/dbget_priority.html>`__
 
 .. function:: set_priority(priority)
 
@@ -148,7 +156,7 @@ DB Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbset_priority.html>`__
+   C/dbset_priority.html>`__
 
 .. function:: set_private(object)
 
@@ -277,7 +285,7 @@ DB Methods
    DB->set_bt_minkey() method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_bt_minkey.html>`__
+   C/dbget_bt_minkey.html>`__
 
 .. function:: set_bt_minkey(minKeys)
 
@@ -315,7 +323,7 @@ DB Methods
    method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_flags.html>`__
+   C/dbget_flags.html>`__
 
 .. function:: set_flags(flags)
 
@@ -330,7 +338,7 @@ DB Methods
    method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_h_ffactor.html>`__
+   C/dbget_h_ffactor.html>`__
 
 .. function:: set_h_ffactor(ffactor)
 
@@ -345,7 +353,7 @@ DB Methods
    DB->set_h_nelem() method. 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_h_nelem.html>`__
+   C/dbget_h_nelem.html>`__
 
 .. function:: set_h_nelem(nelem)
 
@@ -361,7 +369,7 @@ DB Methods
    order. This value is set using the DB->set_lorder() method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_lorder.html>`__
+   C/dbget_lorder.html>`__
 
 .. function:: set_lorder(lorder)
 
@@ -376,7 +384,7 @@ DB Methods
    DB->set_pagesize() method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_pagesize.html>`__
+   C/dbget_pagesize.html>`__
 
 .. function:: set_pagesize(pagesize)
 
@@ -393,7 +401,7 @@ DB Methods
    The return value will be a numeric byte value.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_re_delim.html>`__
+   C/dbget_re_delim.html>`__
 
 .. function:: set_re_delim(delim)
 
@@ -410,7 +418,7 @@ DB Methods
    database. This value can be set using the DB->set_re_len() method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_re_len.html>`__
+   C/dbget_re_len.html>`__
 
 .. function:: set_re_len(length)
 
@@ -428,7 +436,7 @@ DB Methods
    value.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_re_pad.html>`__
+   C/dbget_re_pad.html>`__
 
 .. function:: set_re_pad(pad)
 
@@ -446,7 +454,7 @@ DB Methods
    method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_re_source.html>`__
+   C/dbget_re_source.html>`__
 
 .. function:: set_re_source(source)
 
@@ -461,7 +469,7 @@ DB Methods
    Queue databases and is set using the DB->set_q_extentsize() method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbget_q_extentsize.html>`__
+   C/dbget_q_extentsize.html>`__
 
 .. function:: set_q_extentsize(extentsize)
 
@@ -618,7 +626,7 @@ DB Methods
    Displays the database statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/dbstat_print.html>`__
+   C/dbstat_print.html>`__
 
 .. function:: sync(flags=0)
 

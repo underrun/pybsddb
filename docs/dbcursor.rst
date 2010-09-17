@@ -4,6 +4,14 @@
 DBCursor
 ========
 
+Read `Oracle documentation
+<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+for better understanding.
+
+`More info...
+<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+C/dbc.html>`__
+
 DBCursor Methods
 ----------------
 
@@ -36,7 +44,7 @@ DBCursor Methods
    Create a new cursor.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcdel.html>`__
+   C/dbcdup.html>`__
 
 .. function:: set_priority(priority)
 
@@ -50,7 +58,7 @@ DBCursor Methods
    Returns the cache priority for pages referenced by the DBC handle.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcset_priority.html>`__
+   C/dbcget_priority.html>`__
 
 .. function:: put(key, data, flags=0, dlen=-1, doff=-1)
 
@@ -108,7 +116,7 @@ C API.
    Returns the key/data pair currently referenced by the cursor.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_CURRENT>`__
+   C/dbcget.html#dbcget_DB_CURRENT>`__
 
 .. function:: get_current_size()
 
@@ -120,28 +128,28 @@ C API.
    Position the cursor to the first key/data pair and return it.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_FIRST>`__
+   C/dbcget.html#dbcget_DB_FIRST>`__
 
 .. function:: last(flags=0, dlen=-1, doff=-1)
 
    Position the cursor to the last key/data pair and return it.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_LAST>`__
+   C/dbcget.html#dbcget_DB_LAST>`__
 
 .. function:: next(flags=0, dlen=-1, doff=-1)
 
    Position the cursor to the next key/data pair and return it.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_NEXT>`__
+   C/dbcget.html#dbcget_DB_NEXT>`__
 
 .. function:: prev(flags=0, dlen=-1, doff=-1)
 
    Position the cursor to the previous key/data pair and return it.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_PREV>`__
+   C/dbcget.html#dbcget_DB_PREV>`__
 
 .. function:: consume(flags=0, dlen=-1, doff=-1)
 
@@ -159,7 +167,7 @@ C API.
    me...)
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_GET_BOTH>`__
+   C/dbcget.html#dbcget_DB_GET_BOTH>`__
 
 .. function:: get_recno()
 
@@ -168,7 +176,7 @@ C API.
    DB_RECNUM flag.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_GET_RECNO>`__
+   C/dbcget.html#dbcget_DB_GET_RECNO>`__
 
 .. function:: join_item(flags=0)
 
@@ -176,7 +184,7 @@ C API.
    key value from the joined cursors.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_JOIN_ITEM>`__
+   C/dbcget.html#dbcget_DB_JOIN_ITEM>`__
 
 .. function:: next_dup(flags=0, dlen=-1, doff=-1)
 
@@ -185,7 +193,7 @@ C API.
    pair of the database, and that pair is returned.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_NEXT_DUP>`__
+   C/dbcget.html#dbcget_DB_NEXT_DUP>`__
 
 .. function:: next_nodup(flags=0, dlen=-1, doff=-1)
 
@@ -193,7 +201,7 @@ C API.
    database, and that pair is returned.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_NEXT_NODUP>`__
+   C/dbcget.html#dbcget_DB_NEXT_NODUP>`__
 
 .. function:: prev_dup(flags=0, dlen=-1, doff=-1)
 
@@ -202,7 +210,7 @@ C API.
    previous key/data pair of the database, and that pair is returned. 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_PREV_DUP>`__
+   C/dbcget.html#dbcget_DB_PREV_DUP>`__
 
 .. function:: prev_nodup(flags=0, dlen=-1, doff=-1)
 
@@ -210,7 +218,7 @@ C API.
    the database, and that pair is returned.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_PREV_NODUP>`__
+   C/dbcget.html#dbcget_DB_PREV_NODUP>`__
 
 .. function:: set(key, flags=0, dlen=-1, doff=-1)
 
@@ -218,7 +226,7 @@ C API.
    key/data pair found there.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_SET>`__
+   C/dbcget.html#dbcget_DB_SET>`__
 
 .. function:: set_range(key, flags=0, dlen=-1, doff=-1)
 
@@ -228,7 +236,7 @@ C API.
    function), permitting partial key matches and range searches.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_SET_RANGE>`__
+   C/dbcget.html#dbcget_DB_SET_RANGE>`__
 
 .. function:: set_recno(recno, flags=0, dlen=-1, doff=-1)
 
@@ -237,7 +245,7 @@ C API.
    of type Btree and it must have been created with the DB_RECNUM flag.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_SET_RECNO>`__
+   C/dbcget.html#dbcget_DB_SET_RECNO>`__
 
 .. function:: set_both(key, data, flags=0)
 
@@ -245,5 +253,5 @@ C API.
    using set_get_returns_none(2).
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#DB_GET_BOTH>`__
+   C/dbcget.html#dbcget_DB_GET_BOTH>`__
 

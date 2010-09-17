@@ -12,7 +12,7 @@ DBLogCursor Methods
    Discards the log cursor.scards the log cursor.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logcclose.html>`__
+   C/logcclose.html>`__
 
 DBLogCursor Get Methods
 -----------------------
@@ -31,7 +31,7 @@ None.
    Return the log record to which the log currently refers.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logcget.html#get_DB_CURRENT>`__
+   C/logcget.html#get_DB_CURRENT>`__
 
 .. function:: first()
 
@@ -42,7 +42,7 @@ None.
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logcget.html#get_DB_FIRST>`__
+   C/logcget.html#get_DB_FIRST>`__
 
 .. function:: last()
 
@@ -52,7 +52,7 @@ None.
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logcget.html#get_DB_LAST>`__
+   C/logcget.html#get_DB_LAST>`__
 
 .. function:: next()
 
@@ -64,7 +64,7 @@ None.
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logcget.html#get_DB_NEXT>`__
+   C/logcget.html#get_DB_NEXT>`__
 
 .. function:: prev()
 
@@ -76,7 +76,7 @@ None.
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logcget.html#get_DB_PREV>`__
+   C/logcget.html#get_DB_PREV>`__
 
 .. function:: set(lsn)
 
@@ -84,5 +84,5 @@ None.
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   api_reference/C/logcget.html#get_DB_SET>`__
+   C/logcget.html#get_DB_SET>`__
 

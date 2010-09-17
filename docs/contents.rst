@@ -7,7 +7,7 @@
 Introduction
 ------------
 
-.. _Berkeley DB: http://www.oracle.com/database/berkeley-db.html
+.. _Berkeley DB: http://www.oracle.com/technetwork/database/berkeleydb/overview/index.html
 
 This handcrafted package contains Python wrappers for `Berkeley DB`_,
 the Open Source embedded database system. Berkeley DB is a programmatic
@@ -24,6 +24,11 @@ length, keyed either by strings or integers depending on the database
 access method. With the use of another module in the package standard
 shelve-like functionality is provided allowing you to store any
 picklable Python object! 
+
+Berkeley DB is very powerful and versatile, but it is complex to
+use correctly. `Oracle documentation 
+<http://download.oracle.com/docs/cd/E17076_02/html/toc.htm>`__ is very
+complete. Please, review it.
 
 Documentation Index
 -------------------

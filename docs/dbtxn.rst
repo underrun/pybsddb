@@ -12,14 +12,14 @@ DBTxn Methods
    Aborts the transaction
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_abort.html>`__
+   C/txnabort.html>`__
 
 .. function:: commit(flags=0)
 
    Ends the transaction, committing any changes to the databases.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_commit.html>`__
+   C/txncommit.html>`__
 
 .. function:: id()
 
@@ -27,7 +27,7 @@ DBTxn Methods
    the specified transaction.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_id.html>`__
+   C/txnid.html>`__
 
 .. function:: prepare(gid)
 
@@ -36,7 +36,7 @@ DBTxn Methods
    involved in the commit. It must be a string of DB_GID_SIZE bytes.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_prepare.html>`__
+   C/txnprepare.html>`__
 
 .. function:: discard()
 
@@ -55,7 +55,7 @@ DBTxn Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_discard.html>`__
+   C/txndiscard.html>`__
 
 .. function:: set_timeout(timeout, flags)
 
@@ -63,19 +63,19 @@ DBTxn Methods
    transaction.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_set_timeout.html>`__
+   C/txnset_timeout.html>`__
 
 .. function:: get_name(name)
 
    Returns the string associated with the transaction.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_set_name.html>`__
+   C/txnset_name.html>`__
 
 .. function:: set_name(name)
 
    Associates the specified string with the transaction.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txn_set_name.html>`__
+   C/txnset_name.html>`__
 
