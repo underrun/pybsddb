@@ -4,12 +4,20 @@
 DBLogCursor
 ===========
 
+Read `Oracle documentation
+<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+for better understanding.
+
+`More info...
+<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+C/logc.html>`__
+
 DBLogCursor Methods
 -------------------
 
 .. function:: close()
 
-   Discards the log cursor.scards the log cursor.
+   Discards the log cursor.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/logcclose.html>`__

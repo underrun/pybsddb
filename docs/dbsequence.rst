@@ -4,6 +4,10 @@
 DBSequence
 ==========
 
+Read `Oracle documentation
+<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+for better understanding.
+
 Sequences provide an arbitrary number of persistent objects that return
 an increasing or decreasing sequence of integers. Opening a sequence
 handle associates it with a record in a database. The handle can
@@ -12,7 +16,7 @@ is not needed as the application allocates a value.
 
 `More info...
 <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-ref/sequence/intro.html>`__
+C/seq.html>`__
 
 DBSequence Methods
 ------------------
@@ -22,7 +26,7 @@ DBSequence Methods
    Constructor.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/seqclass.html>`__
+   C/seqcreate.html>`__
 
 .. function:: open(key, txn=None, flags=0)
 
@@ -59,14 +63,14 @@ DBSequence Methods
    Returns the DB object associated to the DBSequence.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/seqopen.html>`__
+   C/seqget_dbp.html>`__
 
 .. function:: get_key()
 
    Returns the key for the sequence.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/seqopen.html>`__
+   C/seqget_key.html>`__
 
 .. function:: remove(txn=None, flags=0)
 
@@ -81,7 +85,7 @@ DBSequence Methods
    Returns the current cache size.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/seqset_cachesize.html>`__
+   C/seqget_cachesize.html>`__
 
 .. function:: set_cachesize(size)
 
@@ -95,7 +99,7 @@ DBSequence Methods
    Returns the current flags.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/seqset_flags.html>`__
+   C/seqget_flags.html>`__
 
 .. function:: set_flags(flags)
 
@@ -142,14 +146,14 @@ DBSequence Methods
    Prints diagnostic information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/seqstat.html>`__
+   C/seqstat_print.html>`__
 
 .. function:: get_range()
 
    Returns a tuple representing the range of values in the sequence.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/seqset_range.html>`__
+   C/seqget_range.html>`__
 
 .. function:: set_range((min,max))
 

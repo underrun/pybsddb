@@ -4,6 +4,14 @@
 DBTxn
 =====
 
+Read `Oracle documentation
+<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+for better understanding.
+
+`More info...
+<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+C/txn.html>`__
+
 DBTxn Methods
 -------------
 
@@ -70,7 +78,7 @@ DBTxn Methods
    Returns the string associated with the transaction.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txnset_name.html>`__
+   C/txnget_name.html>`__
 
 .. function:: set_name(name)
 

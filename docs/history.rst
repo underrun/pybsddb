@@ -16,7 +16,8 @@ behalf of `Digital Creations`_ to complete the SWIG-less wrapping of the DB
 Robin is now busy with another project (wxPython_) and Greg has returned
 as maintainer.
 
-Jesus Cea Avion is the maintainer of this code since February 2008.
+`Jesus Cea Avion <http://www.jcea.es/programacion/pybsddb.htm>`__
+is the maintainer of this code since February 2008.
 
 This module is included in the standard python >= 2.3 distribution as
 the bsddb module. The only reason you should look here is for
