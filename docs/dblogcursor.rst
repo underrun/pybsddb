@@ -11,7 +11,7 @@ DBLogCursor Methods
 
    Discards the log cursor.scards the log cursor.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logcclose.html>`__
 
 DBLogCursor Get Methods
@@ -30,7 +30,7 @@ None.
 
    Return the log record to which the log currently refers.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logcget.html#get_DB_CURRENT>`__
 
 .. function:: first()
@@ -41,7 +41,7 @@ None.
    This method will return None if the log is empty. 
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logcget.html#get_DB_FIRST>`__
 
 .. function:: last()
@@ -51,7 +51,7 @@ None.
    This method will return None if the log is empty. 
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logcget.html#get_DB_LAST>`__
 
 .. function:: next()
@@ -63,7 +63,7 @@ None.
    This method will return None if the log is empty. 
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logcget.html#get_DB_NEXT>`__
 
 .. function:: prev()
@@ -75,7 +75,7 @@ None.
    This method will return None if the log is empty. 
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logcget.html#get_DB_PREV>`__
 
 .. function:: set(lsn)
@@ -83,6 +83,6 @@ None.
    Retrieve the record specified by the lsn parameter.
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logcget.html#get_DB_SET>`__
 

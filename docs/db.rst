@@ -11,8 +11,8 @@ DB Methods
 
    Constructor.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_class.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbclass.html>`__
 
 .. function:: append(data, txn=None)
 
@@ -20,8 +20,8 @@ DB Methods
    databases. The DB_APPEND flag is automatically used, and the record
    number is returned.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_put.html#DB_APPEND>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbput.html#DB_APPEND>`__
 
 .. function:: associate(secondaryDB, callback, flags=0, txn=None)
 
@@ -32,15 +32,15 @@ DB Methods
    parameters the callback will receive are the primaryKey and
    primaryData values.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_associate.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbassociate.html>`__
 
 .. function:: close(flags=0)
 
    Flushes cached data and closes the database.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_close.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbclose.html>`__
 
 .. function:: compact(start=None, stop=None, flags=0,
    compact_fillpercent=0, compact_pages=0, compact_timeout=0)
@@ -51,8 +51,8 @@ DB Methods
 
    The method returns the number of pages returned to the filesystem.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_compact.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbcompact.html>`__
 
 .. function:: consume(txn=None, flags=0)
 
@@ -60,8 +60,8 @@ DB Methods
    number and data from the first available record and deletes it from
    the queue.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_get.html#DB_CONSUME>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbget.html#DB_CONSUME>`__
 
 .. function:: consume_wait(txn=None, flags=0)
 
@@ -70,8 +70,8 @@ DB Methods
    the queue. If the Queue database is empty, the thread of control
    will wait until there is data in the queue before returning.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_get.html#DB_CONSUME_WAIT>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbget.html#DB_CONSUME_WAIT>`__
 
 .. function:: cursor(txn=None, flags=0)
 
@@ -80,29 +80,29 @@ DB Methods
    transaction and you *must* be sure to close the cursor before
    commiting the transaction.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_cursor.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbcursor.html>`__
 
 .. function:: delete(key, txn=None, flags=0)
 
    Removes a key/data pair from the database.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_del.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbdel.html>`__
 
 .. function:: exists(key, txn=None, flags=0)
 
    Test if a key exists in the database. Returns True or False.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_exists.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbexists.html>`__
 
 .. function:: fd()
 
    Returns a file descriptor for the database.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_fd.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbfd.html>`__
 
 .. function:: get(key, default=None, txn=None, flags=0, dlen=-1, doff=-1)
 
@@ -114,23 +114,23 @@ DB Methods
    sure to not read beyond the end of the actual data or you may get
    garbage.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_get.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbget.html>`__
 
 .. function:: pget(key, default=None, txn=None, flags=0, dlen=-1, doff=-1)
 
    This method is available only on secondary databases. It will return
    the primary key, given the secondary one, and associated data.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_get.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbget.html>`__
 
 .. function:: get_priority()
 
    Returns the cache priority for pages referenced by the DB handle.
    This priority value is set using the DB->set_priority() method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_priority.html>`__
 
 .. function:: set_priority(priority)
@@ -147,7 +147,7 @@ DB Methods
    The value provided must be symbolic. Check the Oracle documentation.
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbset_priority.html>`__
 
 .. function:: set_private(object)
@@ -165,16 +165,16 @@ DB Methods
    value are found in the database. (Can be used to verify the presence
    of a record in the database when duplicate keys are allowed.)
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_get.html#DB_GET_BOTH>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbget.html#DB_GET_BOTH>`__
 
 .. function:: get_byteswapped()
 
    May be used to determine if the database was created on a machine
    with the same endianess as the current machine.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_get_byteswapped.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbget_byteswapped.html>`__
 
 .. function:: get_size(key, txn=None)
 
@@ -184,24 +184,24 @@ DB Methods
 
    Return the database's access method type.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_get_type.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbget_type.html>`__
 
 .. function:: join(cursorList, flags=0)
 
    Create and return a specialized cursor for use in performing joins on
    secondary indices.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_join.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbjoin.html>`__
 
 .. function:: key_range(key, txn=None, flags=0)
 
    Returns an estimate of the proportion of keys that are less than,
    equal to and greater than the specified key.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_key_range.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbkey_range.html>`__
 
 .. function:: open(filename, dbname=None, dbtype=DB_UNKNOWN, flags=0, mode=0660, txn=None)
 
@@ -213,8 +213,8 @@ DB Methods
    be shared or preserved on disk may be created by setting both the
    filename and dbname arguments to None.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_open.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbopen.html>`__
 
 .. function:: put(key, data, txn=None, flags=0, dlen=-1, doff=-1)
 
@@ -223,22 +223,22 @@ DB Methods
    the record number allocated to the data is returned. Partial data
    objects can be written using dlen and doff.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_put.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbput.html>`__
 
 .. function:: remove(filename, dbname=None, flags=0)
 
    Remove a database.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_remove.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbremove.html>`__
 
 .. function:: rename(filename, dbname, newname, flags=0)
 
    Rename a database.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_rename.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbrename.html>`__
 
 .. function:: set_encrypt(passwd, flags=0)
 
@@ -248,15 +248,15 @@ DB Methods
    an error to attempt to set a password in a database created within an
    environment.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_encrypt.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_encrypt.html>`__
 
 .. function:: get_encrypt_flags()
 
    Returns the encryption flags.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_encrypt.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_encrypt.html>`__
  
 .. function:: set_bt_compare(compareFunc)
 
@@ -267,8 +267,8 @@ DB Methods
    foot, beware!  Read the Berkeley DB docs for the full details of
    how the comparison function MUST behave.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_bt_compare.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_bt_compare.html>`__
 
 .. function:: get_bt_minkey()
 
@@ -276,7 +276,7 @@ DB Methods
    any single Btree leaf page. This value can be set using the
    DB->set_bt_minkey() method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_bt_minkey.html>`__
 
 .. function:: set_bt_minkey(minKeys)
@@ -284,22 +284,22 @@ DB Methods
    Set the minimum number of keys that will be stored on any single
    BTree page.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_bt_minkey.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_bt_minkey.html>`__
 
 .. function:: set_cachesize(gbytes, bytes, ncache=0)
 
    Set the size of the database's shared memory buffer pool.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_cachesize.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_cachesize.html>`__
 
 .. function:: get_cachesize()
 
    Returns a tuple with the current size and composition of the cache.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_cachesize.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_cachesize.html>`__
 
 .. function:: set_get_returns_none(flag)
 
@@ -314,45 +314,45 @@ DB Methods
    Returns the current database flags as set by the DB->set_flags()
    method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_flags.html>`__
 
 .. function:: set_flags(flags)
 
    Set additional flags on the database before opening.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_flags.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_flags.html>`__
 
 .. function:: get_h_ffactor()
 
    Returns the hash table density as set by the DB->set_h_ffactor()
    method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_h_ffactor.html>`__
 
 .. function:: set_h_ffactor(ffactor)
 
    Set the desired density within the hash table.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_h_ffactor.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_h_ffactor.html>`__
 
 .. function:: get_h_nelem()
 
    Returns the estimate of the final size of the hash table as set by the
    DB->set_h_nelem() method. 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_h_nelem.html>`__
 
 .. function:: set_h_nelem(nelem)
 
    Set an estimate of the final size of the hash table.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_h_nelem.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_h_nelem.html>`__
 
 .. function:: get_lorder()
 
@@ -360,22 +360,22 @@ DB Methods
    big endian order, and a byte order of 1,234 indicates a little endian
    order. This value is set using the DB->set_lorder() method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_lorder.html>`__
 
 .. function:: set_lorder(lorder)
 
    Set the byte order for integers in the stored database metadata.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_lorder.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_lorder.html>`__
 
 .. function:: get_pagesize()
 
    Returns the database's current page size, as set by the
    DB->set_pagesize() method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_pagesize.html>`__
 
 .. function:: set_pagesize(pagesize)
@@ -383,8 +383,8 @@ DB Methods
    Set the size of the pages used to hold items in the database, in
    bytes.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_pagesize.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_pagesize.html>`__
 
 .. function:: get_re_delim()
 
@@ -392,7 +392,7 @@ DB Methods
    record in the backing source file for the Recno access method.
    The return value will be a numeric byte value.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_re_delim.html>`__
 
 .. function:: set_re_delim(delim)
@@ -401,15 +401,15 @@ DB Methods
    backing source file for the Recno access method. You can
    specify a char or a numeric byte value.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_re_delim.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_re_delim.html>`__
 
 .. function:: get_re_len()
 
    Returns the length of the records held in a Queue access method
    database. This value can be set using the DB->set_re_len() method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_re_len.html>`__
 
 .. function:: set_re_len(length)
@@ -418,8 +418,8 @@ DB Methods
    length. For the Recno access method, specify that the records are
    fixed-length, not byte delimited, and are of length length.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_re_len.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_re_len.html>`__
 
 .. function:: get_re_pad()
 
@@ -427,7 +427,7 @@ DB Methods
    by the Queue and Recno access methods. The method returns a byte
    value.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_re_pad.html>`__
 
 .. function:: set_re_pad(pad)
@@ -436,8 +436,8 @@ DB Methods
    Queue and Recno access methods. You can specify a char or a numeric
    byte value.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_re_pad.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_re_pad.html>`__
 
 .. function:: get_re_source()
 
@@ -445,22 +445,22 @@ DB Methods
    configured for the Recno access method using the DB->set_re_source()
    method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_re_source.html>`__
 
 .. function:: set_re_source(source)
 
    Set the underlying source file for the Recno access method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_re_source.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_re_source.html>`__
 
 .. function:: get_q_extentsize()
 
    Returns the number of pages in an extent. This value is used only for
    Queue databases and is set using the DB->set_q_extentsize() method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbget_q_extentsize.html>`__
 
 .. function:: set_q_extentsize(extentsize)
@@ -470,8 +470,8 @@ DB Methods
    physical file. If no extent size is set, the default behavior is to
    create only a single underlying database file.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_set_q_extentsize.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_q_extentsize.html>`__
 
 .. function:: stat(flags=0, txn=None)
 
@@ -610,38 +610,38 @@ DB Methods
         +-------------+-----------------------------------------------+
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_stat.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbstat.html>`__
 
 .. function:: stat_print(flags=0)
 
    Displays the database statistical information.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/dbstat_print.html>`__
 
 .. function:: sync(flags=0)
 
    Flushes any cached information to disk.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_sync.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbsync.html>`__
 
 .. function:: truncate(txn=None, flags=0)
 
    Empties the database, discarding all records it contains. The number
    of records discarded from the database is returned.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_truncate.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbtruncate.html>`__
 
 .. function:: upgrade(filename, flags=0)
 
    Upgrades all of the databases included in the file filename, if
    necessary.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_upgrade.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbupgrade.html>`__
 
 .. function:: verify(filename, dbname=None, outfile=None, flags=0)
 
@@ -649,8 +649,8 @@ DB Methods
    filename argument, and optionally outputs the databases' key/data
    pairs to a file.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/db_verify.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbverify.html>`__
 
 DB Mapping and Compatibility Methods
 ------------------------------------

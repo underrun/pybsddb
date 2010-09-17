@@ -18,36 +18,36 @@ DBEnv Methods
 
    Constructor.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_class.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envclass.html>`__
 
 .. function:: set_rpc_server(host, cl_timeout=0, sv_timeout=0)
 
    Establishes a connection for this dbenv to a RPC server.
    This function is not available if linked to Berkeley DB 4.8 or up.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_rpc_server.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_rpc_server.html>`__
 
 .. function:: close(flags=0)
 
    Close the database environment, freeing resources.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_close.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envclose.html>`__
 
 .. function:: open(homedir, flags=0, mode=0660)
 
    Prepare the database environment for use.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_open.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envopen.html>`__
 
 .. function:: log_cursor()
 
    Returns a created log cursor.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logcursor.html>`__
 
 .. function:: memp_stat(flags=0)
@@ -198,14 +198,14 @@ DBEnv Methods
     +-------------------+---------------------------------------------+
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/mempstat.html>`__
 
 .. function:: memp_stat_print(flags=0)
 
    Displays cache subsystem statistical information.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/mempstat_print.html>`__
 
 .. function:: memp_sync(lsn=None)
@@ -213,7 +213,7 @@ DBEnv Methods
    Flushes modified pages in the cache to their backing files. If
    provided, lsn is a tuple: (file, offset).
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/mempsync.html>`__
   
 .. function:: memp_trickle(percent)
@@ -221,15 +221,15 @@ DBEnv Methods
    Ensures that a specified percent of the pages in the cache are clean,
    by writing dirty pages to their backing files.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/memptrickle.html>`__
    
 .. function:: remove(homedir, flags=0)
 
    Remove a database environment.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_remove.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envremove.html>`__
 
 .. function:: dbremove(file, database=None, txn=None, flags=0)
 
@@ -237,8 +237,8 @@ DBEnv Methods
    If no database is specified, the underlying file represented by file
    is removed, incidentally removing all of the databases it contained.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_dbremove.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envdbremove.html>`__
 
 .. function:: dbrename(file, database=None, newname, txn=None, flags=0)
 
@@ -247,8 +247,8 @@ DBEnv Methods
    by file is renamed, incidentally renaming all of the databases it
    contained.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_dbrename.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envdbrename.html>`__
 
 .. function:: fileid_reset(file, flags=0)
 
@@ -259,15 +259,15 @@ DBEnv Methods
    method creates new ID strings for all of the databases in the
    physical file.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_fileid_reset.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envfileid_reset.html>`__
 
 .. function:: get_thread_count()
 
    Returns the thread count as set by the DB_ENV->set_thread_count()
    method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_thread_count.html>`__
 
 .. function:: set_thread_count(count)
@@ -279,7 +279,7 @@ DBEnv Methods
    number of threads but is used to determine memory sizing and the
    thread control block reclamation policy.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envset_thread_count.html>`__
 
 .. function:: set_encrypt(passwd, flags=0)
@@ -287,37 +287,37 @@ DBEnv Methods
    Set the password used by the Berkeley DB library to perform
    encryption and decryption.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_encrypt.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_encrypt.html>`__
 
 .. function:: get_encrypt_flags()
 
    Returns the encryption flags.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_encrypt.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_encrypt.html>`__
 
 .. function:: get_timeout(flags)
 
    Returns a timeout value, in microseconds.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_timeout.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_timeout.html>`__
 
 .. function:: set_timeout(timeout, flags)
 
    Sets timeout values for locks or transactions in the database
    environment.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_timeout.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_timeout.html>`__
 
 .. function:: get_mp_max_openfd()
 
    Returns the maximum number of file descriptors the library will open
    concurrently when flushing dirty pages from the cache.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/mempget_mp_max_openfd.html>`__
 
 .. function:: set_mp_max_openfd(max_open_fd)
@@ -325,7 +325,7 @@ DBEnv Methods
    Limits the number of file descriptors the library will open
    concurrently when flushing dirty pages from the cache. 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/mempset_mp_max_openfd.html>`__
 
 .. function:: get_mp_max_write()
@@ -334,7 +334,7 @@ DBEnv Methods
    operations and microseconds to pause that the library can schedule
    when flushing dirty pages from the cache.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/mempget_mp_max_write.html>`__
 
 .. function:: set_mp_max_write(maxwrite, maxwrite_sleep)
@@ -342,7 +342,7 @@ DBEnv Methods
    Limits the number of sequential write operations scheduled by the
    library when flushing dirty pages from the cache. 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/mempset_mp_max_write.html>`__
 
 .. function:: set_shm_key(key)
@@ -352,15 +352,15 @@ DBEnv Methods
    X/Open-style shared memory interfaces; for example, UNIX systems
    supporting shmget(2) and related System V IPC interfaces.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_shm_key.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_shm_key.html>`__
 
 .. function:: get_shm_key()
 
    Returns the base segment ID.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_shm_key.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_shm_key.html>`__
 
 .. function:: set_cache_max(gbytes, bytes)
 
@@ -370,7 +370,7 @@ DBEnv Methods
    DB_ENV->set_cachesize() method. If no value is specified, it defaults
    to the initial cache size.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envset_cache_max.html>`__
 
 .. function:: get_cache_max()
@@ -378,43 +378,43 @@ DBEnv Methods
    Returns the maximum size of the cache as set using the
    DB_ENV->set_cache_max() method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_cache_max.html>`__
 
 .. function:: set_cachesize(gbytes, bytes, ncache=0)
 
    Set the size of the shared memory buffer pool.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_cachesize.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_cachesize.html>`__
 
 .. function:: get_cachesize()
 
    Returns a tuple with the current size and composition of the cache.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_cachesize.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_cachesize.html>`__
 
 .. function:: set_data_dir(dir)
 
    Set the environment data directory. You can call this function
    multiple times, adding new directories.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_data_dir.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_data_dir.html>`__
 
 .. function:: get_data_dirs()
 
    Return a tuple with the directories.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_data_dir.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_data_dir.html>`__
 
 .. function:: get_flags()
 
    Returns the configuration flags set for a DB_ENV handle.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_flags.html>`__
 
 .. function:: set_flags(flags, onoff)
@@ -422,21 +422,21 @@ DBEnv Methods
    Set additional flags for the DBEnv. The onoff parameter specifes if
    the flag is set or cleared.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_flags.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_flags.html>`__
 
 .. function:: set_tmp_dir(dir)
 
    Set the directory to be used for temporary files.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_tmp_dir.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_tmp_dir.html>`__
 
 .. function:: get_tmp_dir()
 
    Returns the database environment temporary file directory.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_tmp_dir.html>`__
 
 .. function:: set_get_returns_none(flag)
@@ -508,35 +508,35 @@ DBEnv Methods
 
    Returns the log file mode.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_lg_filemode.html>`__
 
 .. function:: set_lg_filemode(filemode)
 
    Set the absolute file mode for created log files.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envset_lg_filemode.html>`__
 
 .. function:: get_lg_bsize()
 
    Returns the size of the log buffer, in bytes.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_lg_bsize.html>`__
 
 .. function:: set_lg_bsize(size)
 
    Set the size of the in-memory log buffer, in bytes.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lg_bsize.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lg_bsize.html>`__
 
 .. function:: get_lg_dir()
 
    Returns the log directory, which is the location for logging files.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_lg_dir.html>`__
 
 .. function:: set_lg_dir(dir)
@@ -545,43 +545,43 @@ DBEnv Methods
    Log files created by the Log Manager subsystem will be created in
    this directory.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lg_dir.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lg_dir.html>`__
 
 .. function:: set_lg_max(size)
 
    Set the maximum size of a single file in the log, in bytes.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lg_max.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lg_max.html>`__
 
 .. function:: get_lg_max(size)
 
    Returns the maximum log file size.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lg_max.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lg_max.html>`__
 
 .. function:: get_lg_regionmax()
 
    Returns the size of the underlying logging subsystem region.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_lg_regionmax.html>`__
 
 .. function:: set_lg_regionmax(size)
 
    Set the maximum size of a single region in the log, in bytes.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lg_regionmax.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lg_regionmax.html>`__
 
 .. function:: get_lk_partitions()
 
    Returns the number of lock table partitions used in the Berkeley DB
    environment.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_lk_partitions.html>`__
 
 .. function:: set_lk_partitions(partitions)
@@ -589,35 +589,35 @@ DBEnv Methods
    Set the number of lock table partitions in the Berkeley DB
    environment.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envset_lk_partitions.html>`__
 
 .. function:: get_lk_detect()
 
    Returns the deadlock detector configuration.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_lk_detect.html>`__
 
 .. function:: set_lk_detect(mode)
 
    Set the automatic deadlock detection mode.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lk_detect.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lk_detect.html>`__
 
 .. function:: set_lk_max(max)
 
    Set the maximum number of locks. (This method is deprecated.)
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lk_max.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lk_max.html>`__
 
 .. function:: get_lk_max_locks()
 
    Returns the maximum number of potential locks.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_lk_max_locks.html>`__
 
 .. function:: set_lk_max_locks(max)
@@ -625,14 +625,14 @@ DBEnv Methods
    Set the maximum number of locks supported by the Berkeley DB lock
    subsystem.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lk_max_locks.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lk_max_locks.html>`__
 
 .. function:: get_lk_max_lockers()
 
    Returns the maximum number of potential lockers.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_lk_max_lockers.html>`__
 
 .. function:: set_lk_max_lockers(max)
@@ -640,14 +640,14 @@ DBEnv Methods
    Set the maximum number of simultaneous locking entities supported by
    the Berkeley DB lock subsystem.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lk_max_lockers.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lk_max_lockers.html>`__
 
 .. function:: get_lk_max_objects()
 
    Returns the maximum number of locked objects.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_lk_max_objects.html>`__
 
 .. function:: set_lk_max_objects(max)
@@ -655,15 +655,15 @@ DBEnv Methods
    Set the maximum number of simultaneously locked objects supported by
    the Berkeley DB lock subsystem.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_lk_max_lockers.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_lk_max_lockers.html>`__
 
 .. function:: get_mp_mmapsize()
 
    Returns the the maximum file size, in bytes, for a file to be mapped
    into the process address space.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envget_mp_mmapsize.html>`__
 
 .. function:: set_mp_mmapsize(size)
@@ -682,14 +682,14 @@ DBEnv Methods
    mapped into the process address space. If no value is specified, it
    defaults to 10MB.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_mp_mmapsize.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_mp_mmapsize.html>`__
 
 .. function:: stat_print(flags=0)
 
    Displays the default subsystem statistical information.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envstat.html>`__
 
 .. function:: log_file(lsn)
@@ -697,7 +697,7 @@ DBEnv Methods
    Maps lsn to filenames, returning the name of the file
    containing the named record.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logfile.html>`__
 
 .. function:: log_printf(string, txn=None)
@@ -705,7 +705,7 @@ DBEnv Methods
    Appends an informational message to the Berkeley DB database
    environment log files.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logprintf.html>`__
 
 .. function:: log_archive(flags=0)
@@ -716,8 +716,8 @@ DBEnv Methods
    that may safely be archived for catastrophic recovery and then
    removed from the system.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/log_archive.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/log_archive.html>`__
 
 .. function:: log_flush()
 
@@ -725,8 +725,8 @@ DBEnv Methods
    transactions are used as ACI, instead of ACID. For example, if the
    environment is opened as DB_TXN_NOSYNC.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/log_flush.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/log_flush.html>`__
 
 .. function:: log_get_config(which)
 
@@ -734,23 +734,23 @@ DBEnv Methods
    not. You can manage this value using the DB_ENV->log_set_config()
    method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/envlog_get_config.html>`__
 
 .. function:: log_set_config(flags, onoff)
 
    Configures the Berkeley DB logging subsystem.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_log_set_config.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envlog_set_config.html>`__
 
 .. function:: lock_detect(atype, flags=0)
 
    Run one iteration of the deadlock detector, returns the number of
    transactions aborted.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/lock_detect.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/lock_detect.html>`__
 
 .. function:: lock_get(locker, obj, lock_mode, flags=0)
 
@@ -758,30 +758,30 @@ DBEnv Methods
    locker parameter is an integer representing the entity doing the
    locking, and obj is an object representing the item to be locked.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/lock_get.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/lock_get.html>`__
 
 .. function:: lock_id()
 
    Acquires a locker id, guaranteed to be unique across all threads and
    processes that have the DBEnv open.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/lock_id.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/lock_id.html>`__
 
 .. function:: lock_id_free(id)
 
    Frees a locker ID allocated by the "dbenv.lock_id()" method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/lock_id_free.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/lock_id_free.html>`__
 
 .. function:: lock_put(lock)
 
    Release the lock.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/lock_put.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/lock_put.html>`__
 
 .. function:: lock_stat(flags=0)
 
@@ -881,59 +881,59 @@ DBEnv Methods
     +----------------+---------------------------------------------+
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/lock_stat.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/lock_stat.html>`__
 
 .. function:: lock_stat_print(flags=0)
 
    Displays the locking subsystem statistical information.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/lockstat_print.html>`__
 
 .. function:: get_tx_max()
 
    Returns the number of active transactions.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_tx_max.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_tx_max.html>`__
 
 .. function:: set_tx_max(max)
 
    Set the maximum number of active transactions.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_tx_max.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_tx_max.html>`__
 
 .. function:: get_tx_timestamp()
 
    Returns the recovery timestamp.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_tx_timestamp.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_tx_timestamp.html>`__
 
 .. function:: set_tx_timestamp(timestamp)
 
    Recover to the time specified by timestamp rather than to the most
    current possible date.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_tx_timestamp.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_tx_timestamp.html>`__
 
 .. function:: txn_begin(parent=None, flags=0)
 
    Creates and begins a new transaction. A DBTxn object is returned.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_begin.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_begin.html>`__
 
 .. function:: txn_checkpoint(kbyte=0, min=0, flag=0)
 
    Flushes the underlying memory pool, writes a checkpoint record to the
    log and then flushes the log.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_checkpoint.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_checkpoint.html>`__
 
 .. function:: txn_stat(flags=0)
 
@@ -987,23 +987,23 @@ DBEnv Methods
     +--------------+---------------------------------------------+
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_stat.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_stat.html>`__
 
 .. function:: txn_stat_print(flags=0)
 
    Displays the transaction subsystem statistical information.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_stat.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_stat.html>`__
 
 .. function:: lsn_reset(file=None,flags=0)
 
    This method allows database files to be moved from one transactional
    database environment to another.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_lsn_reset.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envlsn_reset.html>`__
 
 .. function:: log_stat(flags=0)
 
@@ -1078,14 +1078,14 @@ DBEnv Methods
     +-------------------+---------------------------------------------+
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/log_stat.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/log_stat.html>`__
 
 .. function:: log_stat_print(flags=0)
 
    Displays the logging subsystem statistical information.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/logstat_print.html>`__
 
 .. function:: txn_recover()
@@ -1097,8 +1097,8 @@ DBEnv Methods
    This method must be called only from a single thread at a time. It
    should be called after DBEnv recovery.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_recover.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_recover.html>`__
 
 .. function:: set_verbose(which, onoff)
 
@@ -1107,24 +1107,24 @@ DBEnv Methods
    messages, verbose messages must also be configured for the
    application.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_verbose.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_verbose.html>`__
 
 .. function:: get_verbose(which)
 
    Returns whether the specified *which* parameter is currently set or
    not.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_set_verbose.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_verbose.html>`__
 
 .. function:: set_event_notify(eventFunc)
 
    Configures a callback function which is called to notify the process
    of specific Berkeley DB events.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/env_event_notify.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envevent_notify.html>`__
 
 .. function:: mutex_stat(flags=0)
 
@@ -1157,72 +1157,72 @@ DBEnv Methods
     +-----------------+--------------------------------------------+
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/mutexstat.html>`__
 
 .. function:: mutex_stat_print(flags=0)
 
    Displays the mutex subsystem statistical information.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    api_reference/C/mutexstat_print.html>`__
 
 .. function:: mutex_set_max(value)
 
    Configure the total number of mutexes to allocate.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/mutex_set_max.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/mutex_set_max.html>`__
 
 .. function:: mutex_get_max()
 
    Returns the total number of mutexes allocated.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/mutex_set_max.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/mutex_set_max.html>`__
 
 .. function:: mutex_set_increment(value)
 
    Configure the number of additional mutexes to allocate.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/mutex_set_max.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/mutex_set_max.html>`__
 
 .. function:: mutex_get_increment()
 
    Returns the number of additional mutexes to allocate.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/mutex_set_max.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/mutex_set_max.html>`__
 
 .. function:: mutex_set_align(align)
 
    Set the mutex alignment, in bytes.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/mutex_set_align.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/mutex_set_align.html>`__
 
 .. function:: mutex_get_align()
 
    Returns the mutex alignment, in bytes.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/mutex_set_align.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/mutex_set_align.html>`__
 
 .. function:: mutex_set_tas_spins(tas_spins)
 
    Specify that test-and-set mutexes should spin tas_spins times without
    blocking. Check the default values in the Oracle webpage.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/mutex_set_tas_spins.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/mutex_set_tas_spins.html>`__
 
 .. function:: mutex_get_tas_spins()
 
    Returns the test-and-set spin count.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/mutex_set_tas_spins.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/mutex_set_tas_spins.html>`__
 
 DBEnv Replication Manager Methods
 ---------------------------------
@@ -1239,16 +1239,16 @@ it if you want to be able to use the Replication Manager.
 
    Starts the replication manager.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/repmgr_start.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/repmgr_start.html>`__
 
 .. function:: repmgr_set_local_site(host, port, flags=0)
 
    Specifies the host identification string and port number for the
    local system.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/repmgr_local_site.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/repmgr_local_site.html>`__
 
 .. function:: repmgr_add_remote_site(host, port, flags=0)
 
@@ -1258,23 +1258,23 @@ it if you want to be able to use the Replication Manager.
 
    Method returns the environment ID assigned to the remote site.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/repmgr_remote_site.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/repmgr_remote_site.html>`__
 
 .. function:: repmgr_set_ack_policy(ack_policy)
 
    Specifies how master and client sites will handle acknowledgment of
    replication messages which are necessary for "permanent" records.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/repmgr_ack_policy.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/repmgr_ack_policy.html>`__
 
 .. function:: repmgr_get_ack_policy()
 
    Returns the replication manager's client acknowledgment policy.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/repmgr_ack_policy.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/repmgr_ack_policy.html>`__
 
 .. function:: repmgr_site_list()
 
@@ -1289,8 +1289,8 @@ it if you want to be able to use the Replication Manager.
    and the link status.
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/repmgr_site_list.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/repmgr_site_list.html>`__
 
 .. function:: repmgr_stat(flags=0)
 
@@ -1326,15 +1326,15 @@ it if you want to be able to use the Replication Manager.
    +-----------------+-------------------------------------------------+
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/repmgr_stat.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/repmgr_stat.html>`__
 
 .. function:: repmgr_stat_print(flags=0)
 
    Displays the replication manager statistical information.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/repmgr_stat.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/repmgr_stat.html>`__
 
 
 DBEnv Replication Methods
@@ -1344,16 +1344,16 @@ DBEnv Replication Methods
 
    Holds an election for the master of a replication group.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_elect.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_elect.html>`__
 
 .. function:: rep_set_transport(envid, transportFunc)
 
    Initializes the communication infrastructure for a database
    environment participating in a replicated application.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_transport.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_transport.html>`__
 
 .. function:: rep_process_messsage(control, rec, envid)
 
@@ -1363,8 +1363,8 @@ DBEnv Replication Methods
    Returns a two element tuple.
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_message.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_message.html>`__
 
 .. function:: rep_start(flags, cdata=None)
 
@@ -1378,8 +1378,8 @@ DBEnv Replication Methods
    replication manager framework.
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_start.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_start.html>`__
 
 .. function:: rep_sync()
 
@@ -1387,23 +1387,23 @@ DBEnv Replication Methods
    is the other half of setting the DB_REP_CONF_DELAYCLIENT flag via the
    DB_ENV->rep_set_config method.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_sync.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_sync.html>`__
 
 .. function:: rep_set_config(which, onoff)
 
    Configures the Berkeley DB replication subsystem.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_config.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_config.html>`__
 
 .. function:: rep_get_config(which)
 
    Returns whether the specified which parameter is currently set or
    not.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_config.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_config.html>`__
 
 .. function:: rep_set_limit(bytes)
 
@@ -1413,8 +1413,8 @@ DBEnv Replication Methods
    limit, and the record that exceeds the limit is the last record to be
    sent.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_limit.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_limit.html>`__
 
 .. function:: rep_get_limit()
 
@@ -1424,8 +1424,8 @@ DBEnv Replication Methods
    limit, and the record that exceeds the limit is the last record to be
    sent.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_limit.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_limit.html>`__
 
 .. function:: rep_set_request(minimum, maximum)
 
@@ -1438,30 +1438,30 @@ DBEnv Replication Methods
    missing record again, and so on, up to a maximum threshold of max
    microseconds.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_request.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_request.html>`__
 
 .. function:: rep_get_request()
 
    Returns a tuple with the minimum and maximum number of microseconds a
    client waits before requesting retransmission.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_request.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_request.html>`__
 
 .. function:: rep_set_nsites(nsites)
 
    Specifies the total number of sites in a replication group.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_nsites.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_nsites.html>`__
 
 .. function:: rep_get_nsites()
 
    Returns the total number of sites in the replication group.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_nsites.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_nsites.html>`__
 
 .. function:: rep_set_priority(priority)
 
@@ -1469,29 +1469,29 @@ DBEnv Replication Methods
    elections. The priority must be a positive integer, or 0 if this
    environment cannot be a replication group master.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_priority.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_priority.html>`__
 
 .. function:: rep_get_priority()
 
    Returns the database environment priority.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_priority.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_priority.html>`__
 
 .. function:: rep_set_timeout(which, timeout)
 
    Specifies a variety of replication timeout values.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_timeout.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_timeout.html>`__
 
 .. function:: rep_get_timeout(which)
 
    Returns the timeout value for the specified *which* parameter.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_timeout.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_timeout.html>`__
 
 .. function:: rep_set_clockskew(fast, slow)
 
@@ -1499,15 +1499,15 @@ DBEnv Replication Methods
    the fastest and slowest measurements among the group for use with
    master leases.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_clockskew.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_clockskew.html>`__
 
 .. function:: rep_get_clockskew()
 
    Returns a tuple with the current clock skew values.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_clockskew.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_clockskew.html>`__
    
 .. function:: rep_stat(flags=0)
 
@@ -1694,13 +1694,13 @@ DBEnv Replication Methods
    +---------------------+---------------------------------------------+
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_stat.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_stat.html>`__
 
 .. function:: rep_stat_print(flags=0)
 
    Displays the replication subsystem statistical information.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/rep_stat.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/rep_stat.html>`__
 

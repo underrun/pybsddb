@@ -11,23 +11,23 @@ DBTxn Methods
 
    Aborts the transaction
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_abort.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_abort.html>`__
 
 .. function:: commit(flags=0)
 
    Ends the transaction, committing any changes to the databases.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_commit.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_commit.html>`__
 
 .. function:: id()
 
    The txn_id function returns the unique transaction id associated with
    the specified transaction.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_id.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_id.html>`__
 
 .. function:: prepare(gid)
 
@@ -35,8 +35,8 @@ DBTxn Methods
    parameter is required, which is a value unique across all processes
    involved in the commit. It must be a string of DB_GID_SIZE bytes.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_prepare.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_prepare.html>`__
 
 .. function:: discard()
 
@@ -54,28 +54,28 @@ DBTxn Methods
    "txn.discard()".
 
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_discard.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_discard.html>`__
 
 .. function:: set_timeout(timeout, flags)
 
    Sets timeout values for locks or transactions for the specified
    transaction.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_set_timeout.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_set_timeout.html>`__
 
 .. function:: get_name(name)
 
    Returns the string associated with the transaction.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_set_name.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_set_name.html>`__
 
 .. function:: set_name(name)
 
    Associates the specified string with the transaction.
    `More info...
-   <http://www.oracle.com/technology/documentation/berkeley-db/db/
-   api_c/txn_set_name.html>`__
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/txn_set_name.html>`__
 
