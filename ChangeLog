@@ -7,6 +7,7 @@
   * Some link fixes for external documentation.
   * Links added in the documentation to Oracle Berkeley DB programmer
     reference.
+  * Support for "DB->get_transactional()".
 
 5.0.0:
   * Support for Berkeley DB 5.0.

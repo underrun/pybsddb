@@ -11,6 +11,8 @@ class DB(unittest.TestCase):
     if sys.version_info < (2, 4) :
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
+        def assertFalse(self, expr, msg=None):
+            self.failIf(expr,msg=msg)
 
     def setUp(self):
         self.path = get_new_database_path()
@@ -43,6 +45,12 @@ class DB_general(DB) :
             for flag in flags :
                 self.db.set_priority(flag)
                 self.assertEqual(flag, self.db.get_priority())
+
+    if db.version() >= (4, 3) :
+        def test_get_transactional(self) :
+            self.assertFalse(self.db.get_transactional())
+            self.db.open("XXX", dbtype=db.DB_HASH, flags = db.DB_CREATE)
+            self.assertFalse(self.db.get_transactional())
 
 class DB_hash(DB) :
     if db.version() >= (4, 2) :
@@ -91,6 +99,14 @@ class DB_txn(DB) :
             self.db.set_flags(db.DB_TXN_NOT_DURABLE)
             self.assertEqual(db.DB_TXN_NOT_DURABLE | db.DB_CHKSUM,
                     self.db.get_flags())
+
+    if db.version() >= (4, 3) :
+        def test_get_transactional(self) :
+            self.assertFalse(self.db.get_transactional())
+            # DB_AUTO_COMMIT = Implicit transaction
+            self.db.open("XXX", dbtype=db.DB_HASH,
+                    flags = db.DB_CREATE | db.DB_AUTO_COMMIT)
+            self.assertTrue(self.db.get_transactional())
 
 class DB_recno(DB) :
     if db.version() >= (4, 2) :

@@ -2814,6 +2814,36 @@ DB_get_flags(DBObject* self)
 }
 #endif
 
+#if (DBVER >= 43)
+static PyObject*
+DB_get_transactional(DBObject* self)
+{
+    int err;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_transactional(self->db);
+    MYDB_END_ALLOW_THREADS;
+
+    if(err == 0) {
+        Py_INCREF(Py_False);
+        return Py_False;
+    } else if(err == 1) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    }
+
+    /*
+    ** If we reach there, there was an error. The
+    ** "return" should be unreachable.
+    */
+    RETURN_IF_ERR();
+    assert(0);  /* This coude SHOULD be unreachable */
+    return NULL;
+}
+#endif
+
 static PyObject*
 DB_set_h_ffactor(DBObject* self, PyObject* args)
 {
@@ -8498,6 +8528,9 @@ static PyMethodDef DB_methods[] = {
     {"set_flags",       (PyCFunction)DB_set_flags,      METH_VARARGS},
 #if (DBVER >= 42)
     {"get_flags",       (PyCFunction)DB_get_flags,      METH_NOARGS},
+#endif
+#if (DBVER >= 43)
+    {"get_transactional", (PyCFunction)DB_get_transactional, METH_NOARGS},
 #endif
     {"set_h_ffactor",   (PyCFunction)DB_set_h_ffactor,  METH_VARARGS},
 #if (DBVER >= 42)
