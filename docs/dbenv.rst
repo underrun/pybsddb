@@ -10,7 +10,7 @@ for better understanding.
 
 `More info...
 <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-C/dbenv.html>`__
+C/env.html>`__
 
 DBEnv Attributes
 ----------------
@@ -27,7 +27,7 @@ DBEnv Methods
    Constructor.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envclass.html>`__
+   C/envcreate.html>`__
 
 .. function:: set_rpc_server(host, cl_timeout=0, sv_timeout=0)
 
@@ -303,14 +303,14 @@ DBEnv Methods
    Returns the encryption flags.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envset_encrypt.html>`__
+   C/envget_encrypt_flags.html>`__
 
 .. function:: get_timeout(flags)
 
    Returns a timeout value, in microseconds.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envset_timeout.html>`__
+   C/envget_timeout.html>`__
 
 .. function:: set_timeout(timeout, flags)
 
@@ -368,7 +368,7 @@ DBEnv Methods
    Returns the base segment ID.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envset_shm_key.html>`__
+   C/envget_shm_key.html>`__
 
 .. function:: set_cache_max(gbytes, bytes)
 
@@ -401,7 +401,7 @@ DBEnv Methods
    Returns a tuple with the current size and composition of the cache.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envset_cachesize.html>`__
+   C/envget_cachesize.html>`__
 
 .. function:: set_data_dir(dir)
 
@@ -416,7 +416,7 @@ DBEnv Methods
    Return a tuple with the directories.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envset_data_dir.html>`__
+   C/envget_data_dirs.html>`__
 
 .. function:: get_flags()
 
@@ -506,7 +506,8 @@ DBEnv Methods
 
 .. function:: set_private(object)
 
-   Link an arbitrary object to the DBEnv.
+   Link an object to the DBEnv object. This allows to pass around an
+   arbitrary object. For instance, for callback context.
 
 .. function:: get_private()
 
@@ -725,7 +726,7 @@ DBEnv Methods
    removed from the system.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/log_archive.html>`__
+   C/logarchive.html>`__
 
 .. function:: log_flush()
 
@@ -734,7 +735,7 @@ DBEnv Methods
    environment is opened as DB_TXN_NOSYNC.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/log_flush.html>`__
+   C/logflush.html>`__
 
 .. function:: log_get_config(which)
 
@@ -758,7 +759,7 @@ DBEnv Methods
    transactions aborted.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/lock_detect.html>`__
+   C/lockdetect.html>`__
 
 .. function:: lock_get(locker, obj, lock_mode, flags=0)
 
@@ -767,7 +768,7 @@ DBEnv Methods
    locking, and obj is an object representing the item to be locked.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/lock_get.html>`__
+   C/lockget.html>`__
 
 .. function:: lock_id()
 
@@ -775,21 +776,21 @@ DBEnv Methods
    processes that have the DBEnv open.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/lock_id.html>`__
+   C/lockid.html>`__
 
 .. function:: lock_id_free(id)
 
    Frees a locker ID allocated by the "dbenv.lock_id()" method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/lock_id_free.html>`__
+   C/lockid_free.html>`__
 
 .. function:: lock_put(lock)
 
    Release the lock.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/lock_put.html>`__
+   C/lockput.html>`__
 
 .. function:: lock_stat(flags=0)
 
@@ -890,7 +891,7 @@ DBEnv Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/lock_stat.html>`__
+   C/lockstat.html>`__
 
 .. function:: lock_stat_print(flags=0)
 
@@ -904,7 +905,7 @@ DBEnv Methods
    Returns the number of active transactions.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envset_tx_max.html>`__
+   C/envget_tx_max.html>`__
 
 .. function:: set_tx_max(max)
 
@@ -918,7 +919,7 @@ DBEnv Methods
    Returns the recovery timestamp.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envset_tx_timestamp.html>`__
+   C/envget_tx_timestamp.html>`__
 
 .. function:: set_tx_timestamp(timestamp)
 
@@ -1003,7 +1004,7 @@ DBEnv Methods
    Displays the transaction subsystem statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txnstat.html>`__
+   C/txnstat_print.html>`__
 
 .. function:: lsn_reset(file=None,flags=0)
 
@@ -1087,7 +1088,7 @@ DBEnv Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/log_stat.html>`__
+   C/logstat.html>`__
 
 .. function:: log_stat_print(flags=0)
 
@@ -1124,7 +1125,7 @@ DBEnv Methods
    not.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envset_verbose.html>`__
+   C/envget_verbose.html>`__
 
 .. function:: set_event_notify(eventFunc)
 
@@ -1180,42 +1181,42 @@ DBEnv Methods
    Configure the total number of mutexes to allocate.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/mutex_set_max.html>`__
+   C/mutexset_max.html>`__
 
 .. function:: mutex_get_max()
 
    Returns the total number of mutexes allocated.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/mutex_set_max.html>`__
+   C/mutexget_max.html>`__
 
 .. function:: mutex_set_increment(value)
 
    Configure the number of additional mutexes to allocate.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/mutex_set_max.html>`__
+   C/mutexset_increment.html>`__
 
 .. function:: mutex_get_increment()
 
    Returns the number of additional mutexes to allocate.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/mutex_set_max.html>`__
+   C/mutexget_increment.html>`__
 
 .. function:: mutex_set_align(align)
 
    Set the mutex alignment, in bytes.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/mutex_set_align.html>`__
+   C/mutexset_align.html>`__
 
 .. function:: mutex_get_align()
 
    Returns the mutex alignment, in bytes.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/mutex_set_align.html>`__
+   C/mutexget_align.html>`__
 
 .. function:: mutex_set_tas_spins(tas_spins)
 
@@ -1223,14 +1224,14 @@ DBEnv Methods
    blocking. Check the default values in the Oracle webpage.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/mutex_set_tas_spins.html>`__
+   C/mutexset_tas_spins.html>`__
 
 .. function:: mutex_get_tas_spins()
 
    Returns the test-and-set spin count.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/mutex_set_tas_spins.html>`__
+   C/mutexget_tas_spins.html>`__
 
 DBEnv Replication Manager Methods
 ---------------------------------
@@ -1240,15 +1241,16 @@ abilities in a Berkeley DB system. The module is fairly limited, but
 enough in many cases. Users more demanding must use the **full** Base
 Replication API.
 
-This module requires POSIX support, so you must compile Berkeley DB with
-it if you want to be able to use the Replication Manager.
+This module requires pthread support (in Unix), so you must compile
+Berkeley DB with it if you want to be able to use the Replication
+Manager.
 
 .. function:: repmgr_start(nthreads, flags)
 
    Starts the replication manager.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgr_start.html>`__
+   C/repmgrstart.html>`__
 
 .. function:: repmgr_set_local_site(host, port, flags=0)
 
@@ -1256,7 +1258,7 @@ it if you want to be able to use the Replication Manager.
    local system.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgr_local_site.html>`__
+   C/repmgrlocal_site.html>`__
 
 .. function:: repmgr_add_remote_site(host, port, flags=0)
 
@@ -1267,7 +1269,7 @@ it if you want to be able to use the Replication Manager.
    Method returns the environment ID assigned to the remote site.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgr_remote_site.html>`__
+   C/repmgrremote_site.html>`__
 
 .. function:: repmgr_set_ack_policy(ack_policy)
 
@@ -1275,14 +1277,14 @@ it if you want to be able to use the Replication Manager.
    replication messages which are necessary for "permanent" records.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgr_ack_policy.html>`__
+   C/repmgrset_ack_policy.html>`__
 
 .. function:: repmgr_get_ack_policy()
 
    Returns the replication manager's client acknowledgment policy.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgr_ack_policy.html>`__
+   C/repmgrget_ack_policy.html>`__
 
 .. function:: repmgr_site_list()
 
@@ -1298,7 +1300,7 @@ it if you want to be able to use the Replication Manager.
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgr_site_list.html>`__
+   C/repmgrsite_list.html>`__
 
 .. function:: repmgr_stat(flags=0)
 
@@ -1335,25 +1337,28 @@ it if you want to be able to use the Replication Manager.
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgr_stat.html>`__
+   C/repmgrstat.html>`__
 
 .. function:: repmgr_stat_print(flags=0)
 
    Displays the replication manager statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgr_stat.html>`__
+   C/repmgrstat_print.html>`__
 
 
 DBEnv Replication Methods
 -------------------------
+
+This section provides the raw methods for replication. If possible,
+it is recommended to use the Replication Manager.
 
 .. function:: rep_elect(nsites, nvotes)
 
    Holds an election for the master of a replication group.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_elect.html>`__
+   C/repelect.html>`__
 
 .. function:: rep_set_transport(envid, transportFunc)
 
@@ -1361,7 +1366,7 @@ DBEnv Replication Methods
    environment participating in a replicated application.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_transport.html>`__
+   C/reptransport.html>`__
 
 .. function:: rep_process_messsage(control, rec, envid)
 
@@ -1372,7 +1377,7 @@ DBEnv Replication Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_message.html>`__
+   C/repmessage.html>`__
 
 .. function:: rep_start(flags, cdata=None)
 
@@ -1387,7 +1392,7 @@ DBEnv Replication Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_start.html>`__
+   C/repstart.html>`__
 
 .. function:: rep_sync()
 
@@ -1396,14 +1401,14 @@ DBEnv Replication Methods
    DB_ENV->rep_set_config method.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_sync.html>`__
+   C/repsync.html>`__
 
 .. function:: rep_set_config(which, onoff)
 
    Configures the Berkeley DB replication subsystem.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_config.html>`__
+   C/repconfig.html>`__
 
 .. function:: rep_get_config(which)
 
@@ -1411,7 +1416,7 @@ DBEnv Replication Methods
    not.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_config.html>`__
+   C/repget_config.html>`__
 
 .. function:: rep_set_limit(bytes)
 
@@ -1422,7 +1427,7 @@ DBEnv Replication Methods
    sent.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_limit.html>`__
+   C/repset_limit.html>`__
 
 .. function:: rep_get_limit()
 
@@ -1433,7 +1438,7 @@ DBEnv Replication Methods
    sent.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_limit.html>`__
+   C/repget_limit.html>`__
 
 .. function:: rep_set_request(minimum, maximum)
 
@@ -1447,7 +1452,7 @@ DBEnv Replication Methods
    microseconds.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_request.html>`__
+   C/repset_request.html>`__
 
 .. function:: rep_get_request()
 
@@ -1455,21 +1460,21 @@ DBEnv Replication Methods
    client waits before requesting retransmission.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_request.html>`__
+   C/repget_request.html>`__
 
 .. function:: rep_set_nsites(nsites)
 
    Specifies the total number of sites in a replication group.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_nsites.html>`__
+   C/repnsites.html>`__
 
 .. function:: rep_get_nsites()
 
    Returns the total number of sites in the replication group.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_nsites.html>`__
+   C/repget_nsites.html>`__
 
 .. function:: rep_set_priority(priority)
 
@@ -1478,28 +1483,28 @@ DBEnv Replication Methods
    environment cannot be a replication group master.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_priority.html>`__
+   C/reppriority.html>`__
 
 .. function:: rep_get_priority()
 
    Returns the database environment priority.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_priority.html>`__
+   C/repget_priority.html>`__
 
 .. function:: rep_set_timeout(which, timeout)
 
    Specifies a variety of replication timeout values.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_timeout.html>`__
+   C/repset_timeout.html>`__
 
 .. function:: rep_get_timeout(which)
 
    Returns the timeout value for the specified *which* parameter.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_timeout.html>`__
+   C/repget_timeout.html>`__
 
 .. function:: rep_set_clockskew(fast, slow)
 
@@ -1508,14 +1513,14 @@ DBEnv Replication Methods
    master leases.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_clockskew.html>`__
+   C/repclockskew.html>`__
 
 .. function:: rep_get_clockskew()
 
    Returns a tuple with the current clock skew values.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_clockskew.html>`__
+   C/repget_clockskew.html>`__
    
 .. function:: rep_stat(flags=0)
 
@@ -1703,12 +1708,12 @@ DBEnv Replication Methods
 
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_stat.html>`__
+   C/repstat.html>`__
 
 .. function:: rep_stat_print(flags=0)
 
    Displays the replication subsystem statistical information.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/rep_stat.html>`__
+   C/repstat_print.html>`__
 
