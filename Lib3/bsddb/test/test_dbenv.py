@@ -72,135 +72,134 @@ class DBEnv_general(DBEnv) :
                     v=self.env.get_mp_max_write()
                     self.assertEqual((i, j), v)
 
-    if db.version() >= (4, 2) :
-        def test_invalid_txn(self) :
-            # This environment doesn't support transactions
-            self.assertRaises(db.DBInvalidArgError, self.env.txn_begin)
+    def test_invalid_txn(self) :
+        # This environment doesn't support transactions
+        self.assertRaises(db.DBInvalidArgError, self.env.txn_begin)
 
-        def test_mp_mmapsize(self) :
-            for i in [16, 32, 64] :
-                i *= 1024*1024
-                self.env.set_mp_mmapsize(i)
-                self.assertEqual(i, self.env.get_mp_mmapsize())
+    def test_mp_mmapsize(self) :
+        for i in [16, 32, 64] :
+            i *= 1024*1024
+            self.env.set_mp_mmapsize(i)
+            self.assertEqual(i, self.env.get_mp_mmapsize())
 
-        def test_tmp_dir(self) :
-            for i in ["a", "bb", "ccc"] :
-                self.env.set_tmp_dir(i)
-                self.assertEqual(i, self.env.get_tmp_dir())
+    def test_tmp_dir(self) :
+        for i in ["a", "bb", "ccc"] :
+            self.env.set_tmp_dir(i)
+            self.assertEqual(i, self.env.get_tmp_dir())
 
-        def test_flags(self) :
-            self.env.set_flags(db.DB_AUTO_COMMIT, 1)
-            self.assertEqual(db.DB_AUTO_COMMIT, self.env.get_flags())
-            self.env.set_flags(db.DB_TXN_NOSYNC, 1)
-            self.assertEqual(db.DB_AUTO_COMMIT | db.DB_TXN_NOSYNC,
-                    self.env.get_flags())
-            self.env.set_flags(db.DB_AUTO_COMMIT, 0)
-            self.assertEqual(db.DB_TXN_NOSYNC, self.env.get_flags())
-            self.env.set_flags(db.DB_TXN_NOSYNC, 0)
-            self.assertEqual(0, self.env.get_flags())
+    def test_flags(self) :
+        self.env.set_flags(db.DB_AUTO_COMMIT, 1)
+        self.assertEqual(db.DB_AUTO_COMMIT, self.env.get_flags())
+        self.env.set_flags(db.DB_TXN_NOSYNC, 1)
+        self.assertEqual(db.DB_AUTO_COMMIT | db.DB_TXN_NOSYNC,
+                self.env.get_flags())
+        self.env.set_flags(db.DB_AUTO_COMMIT, 0)
+        self.assertEqual(db.DB_TXN_NOSYNC, self.env.get_flags())
+        self.env.set_flags(db.DB_TXN_NOSYNC, 0)
+        self.assertEqual(0, self.env.get_flags())
 
-        def test_lk_max_objects(self) :
-            for i in [1000, 2000, 3000] :
-                self.env.set_lk_max_objects(i)
-                self.assertEqual(i, self.env.get_lk_max_objects())
+    def test_lk_max_objects(self) :
+        for i in [1000, 2000, 3000] :
+            self.env.set_lk_max_objects(i)
+            self.assertEqual(i, self.env.get_lk_max_objects())
 
-        def test_lk_max_locks(self) :
-            for i in [1000, 2000, 3000] :
-                self.env.set_lk_max_locks(i)
-                self.assertEqual(i, self.env.get_lk_max_locks())
+    def test_lk_max_locks(self) :
+        for i in [1000, 2000, 3000] :
+            self.env.set_lk_max_locks(i)
+            self.assertEqual(i, self.env.get_lk_max_locks())
 
-        def test_lk_max_lockers(self) :
-            for i in [1000, 2000, 3000] :
-                self.env.set_lk_max_lockers(i)
-                self.assertEqual(i, self.env.get_lk_max_lockers())
+    def test_lk_max_lockers(self) :
+        for i in [1000, 2000, 3000] :
+            self.env.set_lk_max_lockers(i)
+            self.assertEqual(i, self.env.get_lk_max_lockers())
 
-        def test_lg_regionmax(self) :
-            for i in [128, 256, 1000] :
-                i = i*1024*1024
-                self.env.set_lg_regionmax(i)
-                j = self.env.get_lg_regionmax()
-                self.assertTrue(i <= j)
-                self.assertTrue(2*i > j)
+    def test_lg_regionmax(self) :
+        for i in [128, 256, 1000] :
+            i = i*1024*1024
+            self.env.set_lg_regionmax(i)
+            j = self.env.get_lg_regionmax()
+            self.assertTrue(i <= j)
+            self.assertTrue(2*i > j)
 
-        def test_lk_detect(self) :
-            flags= [db.DB_LOCK_DEFAULT, db.DB_LOCK_EXPIRE, db.DB_LOCK_MAXLOCKS,
-                    db.DB_LOCK_MINLOCKS, db.DB_LOCK_MINWRITE,
-                    db.DB_LOCK_OLDEST, db.DB_LOCK_RANDOM, db.DB_LOCK_YOUNGEST]
+    def test_lk_detect(self) :
+        flags= [db.DB_LOCK_DEFAULT, db.DB_LOCK_EXPIRE, db.DB_LOCK_MAXLOCKS,
+                db.DB_LOCK_MINLOCKS, db.DB_LOCK_MINWRITE,
+                db.DB_LOCK_OLDEST, db.DB_LOCK_RANDOM, db.DB_LOCK_YOUNGEST]
 
-            if db.version() >= (4, 3) :
-                flags.append(db.DB_LOCK_MAXWRITE)
+        if db.version() >= (4, 3) :
+            flags.append(db.DB_LOCK_MAXWRITE)
 
-            for i in flags :
-                self.env.set_lk_detect(i)
-                self.assertEqual(i, self.env.get_lk_detect())
+        for i in flags :
+            self.env.set_lk_detect(i)
+            self.assertEqual(i, self.env.get_lk_detect())
 
-        def test_lg_dir(self) :
-            for i in ["a", "bb", "ccc", "dddd"] :
-                self.env.set_lg_dir(i)
-                self.assertEqual(i, self.env.get_lg_dir())
+    def test_lg_dir(self) :
+        for i in ["a", "bb", "ccc", "dddd"] :
+            self.env.set_lg_dir(i)
+            self.assertEqual(i, self.env.get_lg_dir())
 
-        def test_lg_bsize(self) :
-            log_size = 70*1024
-            self.env.set_lg_bsize(log_size)
-            self.assertTrue(self.env.get_lg_bsize() >= log_size)
-            self.assertTrue(self.env.get_lg_bsize() < 4*log_size)
-            self.env.set_lg_bsize(4*log_size)
-            self.assertTrue(self.env.get_lg_bsize() >= 4*log_size)
+    def test_lg_bsize(self) :
+        log_size = 70*1024
+        self.env.set_lg_bsize(log_size)
+        self.assertTrue(self.env.get_lg_bsize() >= log_size)
+        self.assertTrue(self.env.get_lg_bsize() < 4*log_size)
+        self.env.set_lg_bsize(4*log_size)
+        self.assertTrue(self.env.get_lg_bsize() >= 4*log_size)
 
-        def test_setget_data_dirs(self) :
-            dirs = ("a", "b", "c", "d")
-            for i in dirs :
-                self.env.set_data_dir(i)
-            self.assertEqual(dirs, self.env.get_data_dirs())
+    def test_setget_data_dirs(self) :
+        dirs = ("a", "b", "c", "d")
+        for i in dirs :
+            self.env.set_data_dir(i)
+        self.assertEqual(dirs, self.env.get_data_dirs())
 
-        def test_setget_cachesize(self) :
-            cachesize = (0, 512*1024*1024, 3)
-            self.env.set_cachesize(*cachesize)
-            self.assertEqual(cachesize, self.env.get_cachesize())
+    def test_setget_cachesize(self) :
+        cachesize = (0, 512*1024*1024, 3)
+        self.env.set_cachesize(*cachesize)
+        self.assertEqual(cachesize, self.env.get_cachesize())
 
-            cachesize = (0, 1*1024*1024, 5)
-            self.env.set_cachesize(*cachesize)
-            cachesize2 = self.env.get_cachesize()
-            self.assertEqual(cachesize[0], cachesize2[0])
-            self.assertEqual(cachesize[2], cachesize2[2])
-            # Berkeley DB expands the cache 25% accounting overhead,
-            # if the cache is small.
-            self.assertEqual(125, int(100.0*cachesize2[1]/cachesize[1]))
+        cachesize = (0, 1*1024*1024, 5)
+        self.env.set_cachesize(*cachesize)
+        cachesize2 = self.env.get_cachesize()
+        self.assertEqual(cachesize[0], cachesize2[0])
+        self.assertEqual(cachesize[2], cachesize2[2])
+        # Berkeley DB expands the cache 25% accounting overhead,
+        # if the cache is small.
+        self.assertEqual(125, int(100.0*cachesize2[1]/cachesize[1]))
 
-            # You can not change configuration after opening
-            # the environment.
-            self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL)
-            cachesize = (0, 2*1024*1024, 1)
-            self.assertRaises(db.DBInvalidArgError,
-                self.env.set_cachesize, *cachesize)
-            cachesize3 = self.env.get_cachesize()
-            self.assertEqual(cachesize2[0], cachesize3[0])
-            self.assertEqual(cachesize2[2], cachesize3[2])
-            # In Berkeley DB 5.1, the cachesize can change when opening the Env
-            self.assertTrue(cachesize2[1] <= cachesize3[1])
+        # You can not change configuration after opening
+        # the environment.
+        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL)
+        cachesize = (0, 2*1024*1024, 1)
+        self.assertRaises(db.DBInvalidArgError,
+            self.env.set_cachesize, *cachesize)
+        cachesize3 = self.env.get_cachesize()
+        self.assertEqual(cachesize2[0], cachesize3[0])
+        self.assertEqual(cachesize2[2], cachesize3[2])
+        # In Berkeley DB 5.1, the cachesize can change when opening the Env
+        self.assertTrue(cachesize2[1] <= cachesize3[1])
 
-        def test_set_cachesize_dbenv_db(self) :
-            # You can not configure the cachesize using
-            # the database handle, if you are using an environment.
-            d = db.DB(self.env)
-            self.assertRaises(db.DBInvalidArgError,
-                d.set_cachesize, 0, 1024*1024, 1)
+    def test_set_cachesize_dbenv_db(self) :
+        # You can not configure the cachesize using
+        # the database handle, if you are using an environment.
+        d = db.DB(self.env)
+        self.assertRaises(db.DBInvalidArgError,
+            d.set_cachesize, 0, 1024*1024, 1)
 
-        def test_setget_shm_key(self) :
-            shm_key=137
-            self.env.set_shm_key(shm_key)
-            self.assertEqual(shm_key, self.env.get_shm_key())
-            self.env.set_shm_key(shm_key+1)
-            self.assertEqual(shm_key+1, self.env.get_shm_key())
+    def test_setget_shm_key(self) :
+        shm_key=137
+        self.env.set_shm_key(shm_key)
+        self.assertEqual(shm_key, self.env.get_shm_key())
+        self.env.set_shm_key(shm_key+1)
+        self.assertEqual(shm_key+1, self.env.get_shm_key())
 
-            # You can not change configuration after opening
-            # the environment.
-            self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL)
-            # If we try to reconfigure cache after opening the
-            # environment, core dump.
-            self.assertRaises(db.DBInvalidArgError,
-                self.env.set_shm_key, shm_key)
-            self.assertEqual(shm_key+1, self.env.get_shm_key())
+        # You can not change configuration after opening
+        # the environment.
+        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL)
+        # If we try to reconfigure cache after opening the
+        # environment, core dump.
+        self.assertRaises(db.DBInvalidArgError,
+            self.env.set_shm_key, shm_key)
+        self.assertEqual(shm_key+1, self.env.get_shm_key())
 
     if db.version() >= (4, 4) :
         def test_mutex_setget_max(self) :

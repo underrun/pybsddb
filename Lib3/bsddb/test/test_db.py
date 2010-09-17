@@ -24,18 +24,17 @@ class DB(unittest.TestCase):
         test_support.rmtree(self.path)
 
 class DB_general(DB) :
-    if db.version() >= (4, 2) :
-        def test_bt_minkey(self) :
-            for i in [17, 108, 1030] :
-                self.db.set_bt_minkey(i)
-                self.assertEqual(i, self.db.get_bt_minkey())
+    def test_bt_minkey(self) :
+        for i in [17, 108, 1030] :
+            self.db.set_bt_minkey(i)
+            self.assertEqual(i, self.db.get_bt_minkey())
 
-        def test_lorder(self) :
-            self.db.set_lorder(1234)
-            self.assertEqual(1234, self.db.get_lorder())
-            self.db.set_lorder(4321)
-            self.assertEqual(4321, self.db.get_lorder())
-            self.assertRaises(db.DBInvalidArgError, self.db.set_lorder, 9182)
+    def test_lorder(self) :
+        self.db.set_lorder(1234)
+        self.assertEqual(1234, self.db.get_lorder())
+        self.db.set_lorder(4321)
+        self.assertEqual(4321, self.db.get_lorder())
+        self.assertRaises(db.DBInvalidArgError, self.db.set_lorder, 9182)
 
     if db.version() >= (4, 6) :
         def test_priority(self) :
@@ -53,29 +52,28 @@ class DB_general(DB) :
             self.assertFalse(self.db.get_transactional())
 
 class DB_hash(DB) :
-    if db.version() >= (4, 2) :
-        def test_h_ffactor(self) :
-            for ffactor in [4, 16, 256] :
-                self.db.set_h_ffactor(ffactor)
-                self.assertEqual(ffactor, self.db.get_h_ffactor())
+    def test_h_ffactor(self) :
+        for ffactor in [4, 16, 256] :
+            self.db.set_h_ffactor(ffactor)
+            self.assertEqual(ffactor, self.db.get_h_ffactor())
 
-        def test_h_nelem(self) :
-            for nelem in [1, 2, 4] :
-                nelem = nelem*1024*1024  # Millions
-                self.db.set_h_nelem(nelem)
-                self.assertEqual(nelem, self.db.get_h_nelem())
+    def test_h_nelem(self) :
+        for nelem in [1, 2, 4] :
+            nelem = nelem*1024*1024  # Millions
+            self.db.set_h_nelem(nelem)
+            self.assertEqual(nelem, self.db.get_h_nelem())
 
-        def test_pagesize(self) :
-            for i in range(9, 17) :  # From 512 to 65536
-                i = 1<<i
-                self.db.set_pagesize(i)
-                self.assertEqual(i, self.db.get_pagesize())
+    def test_pagesize(self) :
+        for i in range(9, 17) :  # From 512 to 65536
+            i = 1<<i
+            self.db.set_pagesize(i)
+            self.assertEqual(i, self.db.get_pagesize())
 
-            # The valid values goes from 512 to 65536
-            # Test 131072 bytes...
-            self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<17)
-            # Test 256 bytes...
-            self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<8)
+        # The valid values goes from 512 to 65536
+        # Test 131072 bytes...
+        self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<17)
+        # Test 256 bytes...
+        self.assertRaises(db.DBInvalidArgError, self.db.set_pagesize, 1<<8)
 
 class DB_txn(DB) :
     def setUp(self) :
@@ -92,13 +90,12 @@ class DB_txn(DB) :
         del self.env
         test_support.rmtree(self.homeDir)
 
-    if db.version() >= (4, 2) :
-        def test_flags(self) :
-            self.db.set_flags(db.DB_CHKSUM)
-            self.assertEqual(db.DB_CHKSUM, self.db.get_flags())
-            self.db.set_flags(db.DB_TXN_NOT_DURABLE)
-            self.assertEqual(db.DB_TXN_NOT_DURABLE | db.DB_CHKSUM,
-                    self.db.get_flags())
+    def test_flags(self) :
+        self.db.set_flags(db.DB_CHKSUM)
+        self.assertEqual(db.DB_CHKSUM, self.db.get_flags())
+        self.db.set_flags(db.DB_TXN_NOT_DURABLE)
+        self.assertEqual(db.DB_TXN_NOT_DURABLE | db.DB_CHKSUM,
+                self.db.get_flags())
 
     if db.version() >= (4, 3) :
         def test_get_transactional(self) :
@@ -109,30 +106,28 @@ class DB_txn(DB) :
             self.assertTrue(self.db.get_transactional())
 
 class DB_recno(DB) :
-    if db.version() >= (4, 2) :
-        def test_re_pad(self) :
-            for i in [' ', '*'] :  # Check chars
-                self.db.set_re_pad(i)
-                self.assertEqual(ord(i), self.db.get_re_pad())
-            for i in [97, 65] :  # Check integers
-                self.db.set_re_pad(i)
-                self.assertEqual(i, self.db.get_re_pad())
+    def test_re_pad(self) :
+        for i in [' ', '*'] :  # Check chars
+            self.db.set_re_pad(i)
+            self.assertEqual(ord(i), self.db.get_re_pad())
+        for i in [97, 65] :  # Check integers
+            self.db.set_re_pad(i)
+            self.assertEqual(i, self.db.get_re_pad())
 
-        def test_re_delim(self) :
-            for i in [' ', '*'] :  # Check chars
-                self.db.set_re_delim(i)
-                self.assertEqual(ord(i), self.db.get_re_delim())
-            for i in [97, 65] :  # Check integers
-                self.db.set_re_delim(i)
-                self.assertEqual(i, self.db.get_re_delim())
+    def test_re_delim(self) :
+        for i in [' ', '*'] :  # Check chars
+            self.db.set_re_delim(i)
+            self.assertEqual(ord(i), self.db.get_re_delim())
+        for i in [97, 65] :  # Check integers
+            self.db.set_re_delim(i)
+            self.assertEqual(i, self.db.get_re_delim())
 
-        def test_re_source(self) :
-            for i in ["test", "test2", "test3"] :
-                self.db.set_re_source(i)
-                self.assertEqual(i, self.db.get_re_source())
+    def test_re_source(self) :
+        for i in ["test", "test2", "test3"] :
+            self.db.set_re_source(i)
+            self.assertEqual(i, self.db.get_re_source())
 
 class DB_queue(DB) :
-    if db.version() >= (4, 2) :
         def test_re_len(self) :
             for i in [33, 65, 300, 2000] :
                 self.db.set_re_len(i)

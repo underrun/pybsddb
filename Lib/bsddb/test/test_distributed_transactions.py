@@ -37,15 +37,11 @@ class DBTxn_distributed(unittest.TestCase):
         self.db = db.DB(self.dbenv)
         self.db.set_re_len(db.DB_GID_SIZE)
         if must_open_db :
-            if db.version() >= (4,2) :
-                txn=self.dbenv.txn_begin()
-                self.db.open(self.filename,
-                        db.DB_QUEUE, db.DB_CREATE | db.DB_THREAD, 0666,
-                        txn=txn)
-                txn.commit()
-            else :
-                self.db.open(self.filename,
-                        db.DB_QUEUE, db.DB_CREATE | db.DB_THREAD, 0666)
+            txn=self.dbenv.txn_begin()
+            self.db.open(self.filename,
+                    db.DB_QUEUE, db.DB_CREATE | db.DB_THREAD, 0666,
+                    txn=txn)
+            txn.commit()
 
     def setUp(self) :
         self.homeDir = get_new_environment_path()

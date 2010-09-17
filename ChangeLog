@@ -1,5 +1,8 @@
 5.1.0:
   * Support for Berkeley DB 5.1. 
+  * Drop support for Berkeley DB 4.1. Our reference
+    is Red Had Enterprise Linux 4, until February 2012.
+    After that, RHEL5 has Python 2.3??? and BDB 4.2???. <- Esto es RHEL4
   * Include documentation source (*.rst) in the EGG.
   * Include processed HTML documentation in the EGG.
   * Update the external links in documentation, since Oracle changed its web

@@ -202,9 +202,7 @@ static PyObject* DBFileExistsError;     /* EEXIST */
 static PyObject* DBNoSuchFileError;     /* ENOENT */
 static PyObject* DBPermissionsError;    /* EPERM  */
 
-#if (DBVER >= 42)
 static PyObject* DBRepHandleDeadError;  /* DB_REP_HANDLE_DEAD */
-#endif
 #if (DBVER >= 44)
 static PyObject* DBRepLockoutError;     /* DB_REP_LOCKOUT */
 #endif
@@ -715,9 +713,7 @@ static int makeDBError(int err)
         case ENOENT:  errObj = DBNoSuchFileError;   break;
         case EPERM :  errObj = DBPermissionsError;  break;
 
-#if (DBVER >= 42)
         case DB_REP_HANDLE_DEAD : errObj = DBRepHandleDeadError; break;
-#endif
 #if (DBVER >= 44)
         case DB_REP_LOCKOUT : errObj = DBRepLockoutError; break;
 #endif
@@ -2385,9 +2381,7 @@ DB_open(DBObject* self, PyObject* args, PyObject* kwargs)
         return NULL;
     }
 
-#if (DBVER >= 42)
     self->db->get_flags(self->db, &self->setflags);
-#endif
 
     self->flags = flags;
 
@@ -2555,7 +2549,6 @@ DB_set_q_extentsize(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_q_extentsize(DBObject* self)
 {
@@ -2570,7 +2563,6 @@ DB_get_q_extentsize(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(extentsize);
 }
-#endif
 
 static PyObject*
 DB_set_bt_minkey(DBObject* self, PyObject* args)
@@ -2588,7 +2580,6 @@ DB_set_bt_minkey(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_bt_minkey(DBObject* self)
 {
@@ -2603,7 +2594,6 @@ DB_get_bt_minkey(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(bt_minkey);
 }
-#endif
 
 static int
 _default_cmp(const DBT *leftKey,
@@ -2759,7 +2749,6 @@ DB_set_cachesize(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_cachesize(DBObject* self)
 {
@@ -2777,7 +2766,6 @@ DB_get_cachesize(DBObject* self)
 
     return Py_BuildValue("(iii)", gbytes, bytes, ncache);
 }
-#endif
 
 static PyObject*
 DB_set_flags(DBObject* self, PyObject* args)
@@ -2797,7 +2785,6 @@ DB_set_flags(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_flags(DBObject* self)
 {
@@ -2812,7 +2799,6 @@ DB_get_flags(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(flags);
 }
-#endif
 
 #if (DBVER >= 43)
 static PyObject*
@@ -2860,7 +2846,6 @@ DB_set_h_ffactor(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_h_ffactor(DBObject* self)
 {
@@ -2875,7 +2860,6 @@ DB_get_h_ffactor(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(ffactor);
 }
-#endif
 
 static PyObject*
 DB_set_h_nelem(DBObject* self, PyObject* args)
@@ -2893,7 +2877,6 @@ DB_set_h_nelem(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_h_nelem(DBObject* self)
 {
@@ -2908,7 +2891,6 @@ DB_get_h_nelem(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(nelem);
 }
-#endif
 
 static PyObject*
 DB_set_lorder(DBObject* self, PyObject* args)
@@ -2926,7 +2908,6 @@ DB_set_lorder(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_lorder(DBObject* self)
 {
@@ -2941,7 +2922,6 @@ DB_get_lorder(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(lorder);
 }
-#endif
 
 static PyObject*
 DB_set_pagesize(DBObject* self, PyObject* args)
@@ -2959,7 +2939,6 @@ DB_set_pagesize(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_pagesize(DBObject* self)
 {
@@ -2974,7 +2953,6 @@ DB_get_pagesize(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(pagesize);
 }
-#endif
 
 static PyObject*
 DB_set_re_delim(DBObject* self, PyObject* args)
@@ -2997,7 +2975,6 @@ DB_set_re_delim(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_re_delim(DBObject* self)
 {
@@ -3011,7 +2988,6 @@ DB_get_re_delim(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(re_delim);
 }
-#endif
 
 static PyObject*
 DB_set_re_len(DBObject* self, PyObject* args)
@@ -3029,7 +3005,6 @@ DB_set_re_len(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_re_len(DBObject* self)
 {
@@ -3044,7 +3019,6 @@ DB_get_re_len(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(re_len);
 }
-#endif
 
 static PyObject*
 DB_set_re_pad(DBObject* self, PyObject* args)
@@ -3066,7 +3040,6 @@ DB_set_re_pad(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_re_pad(DBObject* self)
 {
@@ -3080,7 +3053,6 @@ DB_get_re_pad(DBObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(re_pad);
 }
-#endif
 
 static PyObject*
 DB_set_re_source(DBObject* self, PyObject* args)
@@ -3099,7 +3071,6 @@ DB_set_re_source(DBObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_re_source(DBObject* self)
 {
@@ -3114,7 +3085,6 @@ DB_get_re_source(DBObject* self)
     RETURN_IF_ERR();
     return PyBytes_FromString(source);
 }
-#endif
 
 static PyObject*
 DB_stat(DBObject* self, PyObject* args, PyObject* kwargs)
@@ -3411,7 +3381,6 @@ DB_set_encrypt(DBObject* self, PyObject* args, PyObject* kwargs)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DB_get_encrypt_flags(DBObject* self)
 {
@@ -3426,7 +3395,6 @@ DB_get_encrypt_flags(DBObject* self)
 
     return NUMBER_FromLong(flags);
 }
-#endif
 
 
 
@@ -5017,7 +4985,6 @@ DBEnv_set_encrypt(DBEnvObject* self, PyObject* args, PyObject* kwargs)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_encrypt_flags(DBEnvObject* self)
 {
@@ -5055,7 +5022,6 @@ DBEnv_get_timeout(DBEnvObject* self, PyObject* args, PyObject* kwargs)
     RETURN_IF_ERR();
     return NUMBER_FromLong(timeout);
 }
-#endif
 
 
 static PyObject*
@@ -5094,7 +5060,6 @@ DBEnv_set_shm_key(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_shm_key(DBEnvObject* self)
 {
@@ -5111,7 +5076,6 @@ DBEnv_get_shm_key(DBEnvObject* self)
 
     return NUMBER_FromLong(shm_key);
 }
-#endif
 
 #if (DBVER >= 46)
 static PyObject*
@@ -5200,7 +5164,6 @@ DBEnv_set_cachesize(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_cachesize(DBEnvObject* self)
 {
@@ -5218,7 +5181,6 @@ DBEnv_get_cachesize(DBEnvObject* self)
 
     return Py_BuildValue("(iii)", gbytes, bytes, ncache);
 }
-#endif
 
 
 static PyObject*
@@ -5238,7 +5200,6 @@ DBEnv_set_flags(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_flags(DBEnvObject* self)
 {
@@ -5253,7 +5214,6 @@ DBEnv_get_flags(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(flags);
 }
-#endif
 
 #if (DBVER >= 47)
 static PyObject*
@@ -5453,7 +5413,6 @@ DBEnv_set_data_dir(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_data_dirs(DBEnvObject* self)
 {
@@ -5493,7 +5452,6 @@ DBEnv_get_data_dirs(DBEnvObject* self)
     }
     return tuple;
 }
-#endif
 
 #if (DBVER >= 44)
 static PyObject*
@@ -5543,7 +5501,6 @@ DBEnv_set_lg_bsize(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_lg_bsize(DBEnvObject* self)
 {
@@ -5558,7 +5515,6 @@ DBEnv_get_lg_bsize(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(lg_bsize);
 }
-#endif
 
 static PyObject*
 DBEnv_set_lg_dir(DBEnvObject* self, PyObject* args)
@@ -5577,7 +5533,6 @@ DBEnv_set_lg_dir(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_lg_dir(DBEnvObject* self)
 {
@@ -5592,7 +5547,6 @@ DBEnv_get_lg_dir(DBEnvObject* self)
     RETURN_IF_ERR();
     return PyBytes_FromString(dirp);
 }
-#endif
 
 static PyObject*
 DBEnv_set_lg_max(DBEnvObject* self, PyObject* args)
@@ -5610,7 +5564,6 @@ DBEnv_set_lg_max(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_lg_max(DBEnvObject* self)
 {
@@ -5625,8 +5578,6 @@ DBEnv_get_lg_max(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(lg_max);
 }
-#endif
-
 
 static PyObject*
 DBEnv_set_lg_regionmax(DBEnvObject* self, PyObject* args)
@@ -5644,7 +5595,6 @@ DBEnv_set_lg_regionmax(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_lg_regionmax(DBEnvObject* self)
 {
@@ -5659,7 +5609,6 @@ DBEnv_get_lg_regionmax(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(lg_regionmax);
 }
-#endif
 
 #if (DBVER >= 47)
 static PyObject*
@@ -5710,7 +5659,6 @@ DBEnv_set_lk_detect(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_lk_detect(DBEnvObject* self)
 {
@@ -5725,8 +5673,6 @@ DBEnv_get_lk_detect(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(lk_detect);
 }
-#endif
-
 
 #if (DBVER < 45)
 static PyObject*
@@ -5764,7 +5710,6 @@ DBEnv_set_lk_max_locks(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_lk_max_locks(DBEnvObject* self)
 {
@@ -5779,7 +5724,6 @@ DBEnv_get_lk_max_locks(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(lk_max);
 }
-#endif
 
 static PyObject*
 DBEnv_set_lk_max_lockers(DBEnvObject* self, PyObject* args)
@@ -5797,7 +5741,6 @@ DBEnv_set_lk_max_lockers(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_lk_max_lockers(DBEnvObject* self)
 {
@@ -5812,7 +5755,6 @@ DBEnv_get_lk_max_lockers(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(lk_max);
 }
-#endif
 
 static PyObject*
 DBEnv_set_lk_max_objects(DBEnvObject* self, PyObject* args)
@@ -5830,7 +5772,6 @@ DBEnv_set_lk_max_objects(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_lk_max_objects(DBEnvObject* self)
 {
@@ -5845,9 +5786,7 @@ DBEnv_get_lk_max_objects(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(lk_max);
 }
-#endif
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_mp_mmapsize(DBEnvObject* self)
 {
@@ -5862,8 +5801,6 @@ DBEnv_get_mp_mmapsize(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(mmapsize);
 }
-#endif
-
 
 static PyObject*
 DBEnv_set_mp_mmapsize(DBEnvObject* self, PyObject* args)
@@ -5899,8 +5836,6 @@ DBEnv_set_tmp_dir(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_tmp_dir(DBEnvObject* self)
 {
@@ -5917,8 +5852,6 @@ DBEnv_get_tmp_dir(DBEnvObject* self)
 
     return PyBytes_FromString(dirpp);
 }
-#endif
-
 
 static PyObject*
 DBEnv_txn_recover(DBEnvObject* self)
@@ -6033,8 +5966,6 @@ DBEnv_txn_checkpoint(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_tx_max(DBEnvObject* self)
 {
@@ -6049,8 +5980,6 @@ DBEnv_get_tx_max(DBEnvObject* self)
     RETURN_IF_ERR();
     return PyLong_FromUnsignedLong(max);
 }
-#endif
-
 
 static PyObject*
 DBEnv_set_tx_max(DBEnvObject* self, PyObject* args)
@@ -6068,8 +5997,6 @@ DBEnv_set_tx_max(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_tx_timestamp(DBEnvObject* self)
 {
@@ -6084,7 +6011,6 @@ DBEnv_get_tx_timestamp(DBEnvObject* self)
     RETURN_IF_ERR();
     return NUMBER_FromLong(timestamp);
 }
-#endif
 
 static PyObject*
 DBEnv_set_tx_timestamp(DBEnvObject* self, PyObject* args)
@@ -6905,7 +6831,6 @@ DBEnv_set_verbose(DBEnvObject* self, PyObject* args)
     RETURN_NONE();
 }
 
-#if (DBVER >= 42)
 static PyObject*
 DBEnv_get_verbose(DBEnvObject* self, PyObject* args)
 {
@@ -6923,7 +6848,6 @@ DBEnv_get_verbose(DBEnvObject* self, PyObject* args)
     RETURN_IF_ERR();
     return PyBool_FromLong(verbose);
 }
-#endif
 
 #if (DBVER >= 45)
 static void
@@ -7005,9 +6929,7 @@ DBEnv_rep_process_message(DBEnvObject* self, PyObject* args)
     PyObject *control_py, *rec_py;
     DBT control, rec;
     int envid;
-#if (DBVER >= 42)
     DB_LSN lsn;
-#endif
 
     if (!PyArg_ParseTuple(args, "OOi:rep_process_message", &control_py,
                 &rec_py, &envid))
@@ -7024,13 +6946,8 @@ DBEnv_rep_process_message(DBEnvObject* self, PyObject* args)
     err = self->db_env->rep_process_message(self->db_env, &control, &rec,
             envid, &lsn);
 #else
-#if (DBVER >= 42)
     err = self->db_env->rep_process_message(self->db_env, &control, &rec,
             &envid, &lsn);
-#else
-    err = self->db_env->rep_process_message(self->db_env, &control, &rec,
-            &envid);
-#endif
 #endif
     MYDB_END_ALLOW_THREADS;
     switch (err) {
@@ -7059,12 +6976,10 @@ DBEnv_rep_process_message(DBEnvObject* self, PyObject* args)
                 return r;
                 break;
             }
-#if (DBVER >= 42)
         case DB_REP_NOTPERM :
         case DB_REP_ISPERM :
             return Py_BuildValue("(i(ll))", err, lsn.file, lsn.offset);
             break;
-#endif
     }
     RETURN_IF_ERR();
     return Py_BuildValue("(OO)", Py_None, Py_None);
@@ -7116,20 +7031,6 @@ _DBEnv_rep_transportCallback(DB_ENV* db_env, const DBT* control, const DBT* rec,
     return ret;
 }
 
-#if (DBVER <= 41)
-static int
-_DBEnv_rep_transportCallbackOLD(DB_ENV* db_env, const DBT* control, const DBT* rec,
-        int envid, u_int32_t flags)
-{
-    DB_LSN lsn;
-
-    lsn.file = -1;  /* Dummy values */
-    lsn.offset = -1;
-    return _DBEnv_rep_transportCallback(db_env, control, rec, &lsn, envid,
-            flags);
-}
-#endif
-
 static PyObject*
 DBEnv_rep_set_transport(DBEnvObject* self, PyObject* args)
 {
@@ -7150,13 +7051,8 @@ DBEnv_rep_set_transport(DBEnvObject* self, PyObject* args)
     err = self->db_env->rep_set_transport(self->db_env, envid,
             &_DBEnv_rep_transportCallback);
 #else
-#if (DBVER >= 42)
     err = self->db_env->set_rep_transport(self->db_env, envid,
             &_DBEnv_rep_transportCallback);
-#else
-    err = self->db_env->set_rep_transport(self->db_env, envid,
-            &_DBEnv_rep_transportCallbackOLD);
-#endif
 #endif
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
@@ -8512,62 +8408,35 @@ static PyMethodDef DB_methods[] = {
     {"remove",          (PyCFunction)DB_remove,         METH_VARARGS|METH_KEYWORDS},
     {"rename",          (PyCFunction)DB_rename,         METH_VARARGS},
     {"set_bt_minkey",   (PyCFunction)DB_set_bt_minkey,  METH_VARARGS},
-#if (DBVER >= 42)
     {"get_bt_minkey",   (PyCFunction)DB_get_bt_minkey,  METH_NOARGS},
-#endif
     {"set_bt_compare",  (PyCFunction)DB_set_bt_compare, METH_O},
     {"set_cachesize",   (PyCFunction)DB_set_cachesize,  METH_VARARGS},
-#if (DBVER >= 42)
     {"get_cachesize",   (PyCFunction)DB_get_cachesize,  METH_NOARGS},
-#endif
     {"set_encrypt",     (PyCFunction)DB_set_encrypt,    METH_VARARGS|METH_KEYWORDS},
-#if (DBVER >= 42)
     {"get_encrypt_flags", (PyCFunction)DB_get_encrypt_flags, METH_NOARGS},
-#endif
-
     {"set_flags",       (PyCFunction)DB_set_flags,      METH_VARARGS},
-#if (DBVER >= 42)
     {"get_flags",       (PyCFunction)DB_get_flags,      METH_NOARGS},
-#endif
 #if (DBVER >= 43)
     {"get_transactional", (PyCFunction)DB_get_transactional, METH_NOARGS},
 #endif
     {"set_h_ffactor",   (PyCFunction)DB_set_h_ffactor,  METH_VARARGS},
-#if (DBVER >= 42)
     {"get_h_ffactor",   (PyCFunction)DB_get_h_ffactor,  METH_NOARGS},
-#endif
     {"set_h_nelem",     (PyCFunction)DB_set_h_nelem,    METH_VARARGS},
-#if (DBVER >= 42)
     {"get_h_nelem",     (PyCFunction)DB_get_h_nelem,    METH_NOARGS},
-#endif
     {"set_lorder",      (PyCFunction)DB_set_lorder,     METH_VARARGS},
-#if (DBVER >= 42)
     {"get_lorder",      (PyCFunction)DB_get_lorder,     METH_NOARGS},
-#endif
     {"set_pagesize",    (PyCFunction)DB_set_pagesize,   METH_VARARGS},
-#if (DBVER >= 42)
     {"get_pagesize",    (PyCFunction)DB_get_pagesize,   METH_NOARGS},
-#endif
     {"set_re_delim",    (PyCFunction)DB_set_re_delim,   METH_VARARGS},
-#if (DBVER >= 42)
     {"get_re_delim",    (PyCFunction)DB_get_re_delim,   METH_NOARGS},
-#endif
     {"set_re_len",      (PyCFunction)DB_set_re_len,     METH_VARARGS},
-#if (DBVER >= 42)
     {"get_re_len",      (PyCFunction)DB_get_re_len,     METH_NOARGS},
-#endif
     {"set_re_pad",      (PyCFunction)DB_set_re_pad,     METH_VARARGS},
-#if (DBVER >= 42)
     {"get_re_pad",      (PyCFunction)DB_get_re_pad,     METH_NOARGS},
-#endif
     {"set_re_source",   (PyCFunction)DB_set_re_source,  METH_VARARGS},
-#if (DBVER >= 42)
     {"get_re_source",   (PyCFunction)DB_get_re_source,  METH_NOARGS},
-#endif
     {"set_q_extentsize",(PyCFunction)DB_set_q_extentsize, METH_VARARGS},
-#if (DBVER >= 42)
     {"get_q_extentsize",(PyCFunction)DB_get_q_extentsize, METH_NOARGS},
-#endif
     {"set_private",     (PyCFunction)DB_set_private,    METH_O},
     {"get_private",     (PyCFunction)DB_get_private,    METH_NOARGS},
 #if (DBVER >= 46)
@@ -8672,24 +8541,18 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_thread_count", (PyCFunction)DBEnv_get_thread_count, METH_NOARGS},
 #endif
     {"set_encrypt",     (PyCFunction)DBEnv_set_encrypt,      METH_VARARGS|METH_KEYWORDS},
-#if (DBVER >= 42)
     {"get_encrypt_flags", (PyCFunction)DBEnv_get_encrypt_flags, METH_NOARGS},
     {"get_timeout",     (PyCFunction)DBEnv_get_timeout,
         METH_VARARGS|METH_KEYWORDS},
-#endif
     {"set_timeout",     (PyCFunction)DBEnv_set_timeout,     METH_VARARGS|METH_KEYWORDS},
     {"set_shm_key",     (PyCFunction)DBEnv_set_shm_key,     METH_VARARGS},
-#if (DBVER >= 42)
     {"get_shm_key",     (PyCFunction)DBEnv_get_shm_key,     METH_NOARGS},
-#endif
 #if (DBVER >= 46)
     {"set_cache_max",   (PyCFunction)DBEnv_set_cache_max,   METH_VARARGS},
     {"get_cache_max",   (PyCFunction)DBEnv_get_cache_max,   METH_NOARGS},
 #endif
     {"set_cachesize",   (PyCFunction)DBEnv_set_cachesize,   METH_VARARGS},
-#if (DBVER >= 42)
     {"get_cachesize",   (PyCFunction)DBEnv_get_cachesize,   METH_NOARGS},
-#endif
     {"memp_trickle",    (PyCFunction)DBEnv_memp_trickle,    METH_VARARGS},
     {"memp_sync",       (PyCFunction)DBEnv_memp_sync,       METH_VARARGS},
     {"memp_stat",       (PyCFunction)DBEnv_memp_stat,
@@ -8718,33 +8581,21 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
 #endif
     {"set_data_dir",    (PyCFunction)DBEnv_set_data_dir,    METH_VARARGS},
-#if (DBVER >= 42)
     {"get_data_dirs",   (PyCFunction)DBEnv_get_data_dirs,   METH_NOARGS},
-#endif
-#if (DBVER >= 42)
     {"get_flags",       (PyCFunction)DBEnv_get_flags,       METH_NOARGS},
-#endif
     {"set_flags",       (PyCFunction)DBEnv_set_flags,       METH_VARARGS},
 #if (DBVER >= 47)
     {"log_set_config",  (PyCFunction)DBEnv_log_set_config,  METH_VARARGS},
     {"log_get_config",  (PyCFunction)DBEnv_log_get_config,  METH_VARARGS},
 #endif
     {"set_lg_bsize",    (PyCFunction)DBEnv_set_lg_bsize,    METH_VARARGS},
-#if (DBVER >= 42)
     {"get_lg_bsize",    (PyCFunction)DBEnv_get_lg_bsize,    METH_NOARGS},
-#endif
     {"set_lg_dir",      (PyCFunction)DBEnv_set_lg_dir,      METH_VARARGS},
-#if (DBVER >= 42)
     {"get_lg_dir",      (PyCFunction)DBEnv_get_lg_dir,      METH_NOARGS},
-#endif
     {"set_lg_max",      (PyCFunction)DBEnv_set_lg_max,      METH_VARARGS},
-#if (DBVER >= 42)
     {"get_lg_max",      (PyCFunction)DBEnv_get_lg_max,      METH_NOARGS},
-#endif
     {"set_lg_regionmax",(PyCFunction)DBEnv_set_lg_regionmax, METH_VARARGS},
-#if (DBVER >= 42)
     {"get_lg_regionmax",(PyCFunction)DBEnv_get_lg_regionmax, METH_NOARGS},
-#endif
 #if (DBVER >= 44)
     {"set_lg_filemode", (PyCFunction)DBEnv_set_lg_filemode, METH_VARARGS},
     {"get_lg_filemode", (PyCFunction)DBEnv_get_lg_filemode, METH_NOARGS},
@@ -8754,36 +8605,24 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_lk_partitions", (PyCFunction)DBEnv_get_lk_partitions, METH_NOARGS},
 #endif
     {"set_lk_detect",   (PyCFunction)DBEnv_set_lk_detect,   METH_VARARGS},
-#if (DBVER >= 42)
     {"get_lk_detect",   (PyCFunction)DBEnv_get_lk_detect,   METH_NOARGS},
-#endif
 #if (DBVER < 45)
     {"set_lk_max",      (PyCFunction)DBEnv_set_lk_max,      METH_VARARGS},
 #endif
     {"set_lk_max_locks", (PyCFunction)DBEnv_set_lk_max_locks, METH_VARARGS},
-#if (DBVER >= 42)
     {"get_lk_max_locks", (PyCFunction)DBEnv_get_lk_max_locks, METH_NOARGS},
-#endif
     {"set_lk_max_lockers", (PyCFunction)DBEnv_set_lk_max_lockers, METH_VARARGS},
-#if (DBVER >= 42)
     {"get_lk_max_lockers", (PyCFunction)DBEnv_get_lk_max_lockers, METH_NOARGS},
-#endif
     {"set_lk_max_objects", (PyCFunction)DBEnv_set_lk_max_objects, METH_VARARGS},
-#if (DBVER >= 42)
     {"get_lk_max_objects", (PyCFunction)DBEnv_get_lk_max_objects, METH_NOARGS},
-#endif
 #if (DBVER >= 43)
     {"stat_print",          (PyCFunction)DBEnv_stat_print,
         METH_VARARGS|METH_KEYWORDS},
 #endif
     {"set_mp_mmapsize", (PyCFunction)DBEnv_set_mp_mmapsize, METH_VARARGS},
-#if (DBVER >= 42)
     {"get_mp_mmapsize", (PyCFunction)DBEnv_get_mp_mmapsize, METH_NOARGS},
-#endif
     {"set_tmp_dir",     (PyCFunction)DBEnv_set_tmp_dir,     METH_VARARGS},
-#if (DBVER >= 42)
     {"get_tmp_dir",     (PyCFunction)DBEnv_get_tmp_dir,     METH_NOARGS},
-#endif
     {"txn_begin",       (PyCFunction)DBEnv_txn_begin,       METH_VARARGS|METH_KEYWORDS},
     {"txn_checkpoint",  (PyCFunction)DBEnv_txn_checkpoint,  METH_VARARGS},
     {"txn_stat",        (PyCFunction)DBEnv_txn_stat,        METH_VARARGS},
@@ -8791,10 +8630,8 @@ static PyMethodDef DBEnv_methods[] = {
     {"txn_stat_print",  (PyCFunction)DBEnv_txn_stat_print,
         METH_VARARGS|METH_KEYWORDS},
 #endif
-#if (DBVER >= 42)
     {"get_tx_max",      (PyCFunction)DBEnv_get_tx_max,      METH_NOARGS},
     {"get_tx_timestamp", (PyCFunction)DBEnv_get_tx_timestamp, METH_NOARGS},
-#endif
     {"set_tx_max",      (PyCFunction)DBEnv_set_tx_max,      METH_VARARGS},
     {"set_tx_timestamp", (PyCFunction)DBEnv_set_tx_timestamp, METH_VARARGS},
     {"lock_detect",     (PyCFunction)DBEnv_lock_detect,     METH_VARARGS},
@@ -8837,9 +8674,7 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_mp_max_write", (PyCFunction)DBEnv_get_mp_max_write, METH_NOARGS},
 #endif
     {"set_verbose",     (PyCFunction)DBEnv_set_verbose,     METH_VARARGS},
-#if (DBVER >= 42)
     {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
-#endif
     {"set_private",     (PyCFunction)DBEnv_set_private,       METH_O},
     {"get_private",     (PyCFunction)DBEnv_get_private,       METH_NOARGS},
     {"rep_start",       (PyCFunction)DBEnv_rep_start,
@@ -8955,13 +8790,9 @@ DBEnv_db_home_get(DBEnvObject* self)
 
     CHECK_ENV_NOT_CLOSED(self);
 
-#if (DBVER >= 42)
     MYDB_BEGIN_ALLOW_THREADS;
     self->db_env->get_home(self->db_env, &home);
     MYDB_END_ALLOW_THREADS;
-#else
-    home=self->db_env->db_home;
-#endif
 
     if (home == NULL) {
         RETURN_NONE();
@@ -9466,13 +9297,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_MAX_RECORDS);
 
 #if (DBVER < 48)
-#if (DBVER >= 42)
     ADD_INT(d, DB_RPCCLIENT);
-#else
-    ADD_INT(d, DB_CLIENT);
-    /* allow apps to be written using DB_RPCCLIENT on older Berkeley DB */
-    _addIntToDict(d, "DB_RPCCLIENT", DB_CLIENT);
-#endif
 #endif
 
 #if (DBVER < 48)
@@ -9599,9 +9424,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_ARCH_ABS);
     ADD_INT(d, DB_ARCH_DATA);
     ADD_INT(d, DB_ARCH_LOG);
-#if (DBVER >= 42)
     ADD_INT(d, DB_ARCH_REMOVE);
-#endif
 
     ADD_INT(d, DB_BTREE);
     ADD_INT(d, DB_HASH);
@@ -9629,9 +9452,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_CACHED_COUNTS);
 #endif
 
-#if (DBVER <= 41)
-    ADD_INT(d, DB_COMMIT);
-#endif
     ADD_INT(d, DB_CONSUME);
     ADD_INT(d, DB_CONSUME_WAIT);
     ADD_INT(d, DB_CURRENT);
@@ -9728,7 +9548,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_EID_INVALID);
     ADD_INT(d, DB_EID_BROADCAST);
 
-#if (DBVER >= 42)
     ADD_INT(d, DB_TIME_NOTGRANTED);
     ADD_INT(d, DB_TXN_NOT_DURABLE);
     ADD_INT(d, DB_TXN_WRITE_NOSYNC);
@@ -9736,9 +9555,8 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_INIT_REP);
     ADD_INT(d, DB_ENCRYPT);
     ADD_INT(d, DB_CHKSUM);
-#endif
 
-#if (DBVER >= 42) && (DBVER < 47)
+#if (DBVER < 47)
     ADD_INT(d, DB_LOG_AUTOREMOVE);
     ADD_INT(d, DB_DIRECT_LOG);
 #endif
@@ -9792,10 +9610,8 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_REP_IGNORE);
     ADD_INT(d, DB_REP_JOIN_FAILURE);
 #endif
-#if (DBVER >= 42)
     ADD_INT(d, DB_REP_ISPERM);
     ADD_INT(d, DB_REP_NOTPERM);
-#endif
     ADD_INT(d, DB_REP_NEWSITE);
 
     ADD_INT(d, DB_REP_MASTER);
@@ -9818,9 +9634,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_REP_REREQUEST);
 #endif
 
-#if (DBVER >= 42)
     ADD_INT(d, DB_REP_NOBUFFER);
-#endif
 
 #if (DBVER >= 46)
     ADD_INT(d, DB_REP_LEASE_EXPIRED);
@@ -9971,9 +9785,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     MAKE_EX(DBNoSuchFileError);
     MAKE_EX(DBPermissionsError);
 
-#if (DBVER >= 42)
     MAKE_EX(DBRepHandleDeadError);
-#endif
 #if (DBVER >= 44)
     MAKE_EX(DBRepLockoutError);
 #endif

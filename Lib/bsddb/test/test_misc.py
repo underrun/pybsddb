@@ -97,10 +97,6 @@ class MiscTestCase(unittest.TestCase):
             test_support.unlink(self.filename)
 
     def test07_DB_set_flags_persists(self):
-        if db.version() < (4,2):
-            # The get_flags API required for this to work is only available
-            # in Berkeley DB >= 4.2
-            return
         try:
             db1 = db.DB()
             db1.set_flags(db.DB_DUPSORT)

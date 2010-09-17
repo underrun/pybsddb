@@ -74,14 +74,13 @@ class BasicTestCase(unittest.TestCase):
         # create and open the DB
         self.d = db.DB(self.env)
         if not self.useEnv :
-            if db.version() >= (4, 2) :
-                self.d.set_cachesize(*self.cachesize)
-                cachesize = self.d.get_cachesize()
-                self.assertEqual(cachesize[0], self.cachesize[0])
-                self.assertEqual(cachesize[2], self.cachesize[2])
-                # Berkeley DB expands the cache 25% accounting overhead,
-                # if the cache is small.
-                self.assertEqual(125, int(100.0*cachesize[1]/self.cachesize[1]))
+            self.d.set_cachesize(*self.cachesize)
+            cachesize = self.d.get_cachesize()
+            self.assertEqual(cachesize[0], self.cachesize[0])
+            self.assertEqual(cachesize[2], self.cachesize[2])
+            # Berkeley DB expands the cache 25% accounting overhead,
+            # if the cache is small.
+            self.assertEqual(125, int(100.0*cachesize[1]/self.cachesize[1]))
         self.d.set_flags(self.dbsetflags)
         if self.dbname:
             self.d.open(self.filename, self.dbname, self.dbtype,
@@ -792,9 +791,8 @@ class BasicTransactionTestCase(BasicTestCase):
         for log in logs:
             if verbose:
                 print 'log file: ' + log
-        if db.version() >= (4,2):
-            logs = self.env.log_archive(db.DB_ARCH_REMOVE)
-            self.assertTrue(not logs)
+        logs = self.env.log_archive(db.DB_ARCH_REMOVE)
+        self.assertTrue(not logs)
 
         self.txn = self.env.txn_begin()
 
@@ -875,12 +873,11 @@ class BasicTransactionTestCase(BasicTestCase):
 
     #----------------------------------------
 
-    if db.version() >= (4, 2) :
-        def test_get_tx_max(self) :
-            self.assertEqual(self.env.get_tx_max(), 30)
+    def test_get_tx_max(self) :
+        self.assertEqual(self.env.get_tx_max(), 30)
 
-        def test_get_tx_timestamp(self) :
-            self.assertEqual(self.env.get_tx_timestamp(), self._t)
+    def test_get_tx_timestamp(self) :
+        self.assertEqual(self.env.get_tx_timestamp(), self._t)
 
 
 
