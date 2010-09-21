@@ -133,6 +133,13 @@ DB Methods
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/dbget.html>`__
 
+.. function:: get_transactional()
+
+   Returns True if the database is transactional. False if not.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbget_transactional.html>`__
+
 .. function:: get_priority()
 
    Returns the cache priority for pages referenced by the DB handle.
