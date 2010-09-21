@@ -2,7 +2,12 @@
   * Support for Berkeley DB 5.1. 
   * Drop support for Berkeley DB 4.1. Our reference
     is Red Had Enterprise Linux 4, until February 2012.
-    After that, RHEL5 has Python 2.3??? and BDB 4.2???. <- Esto es RHEL4
+    After that, RHEL5 has Python 2.4 and BDB 4.3.
+    * According to http://superuser.com/questions/189931/python-and-berkeley-db-versions-in-redhat-enterprise-linux-3-4-5-and-upcoming-6 :
+      * RHEL3: Python 2.2.3, BDB 4.1.25
+      * RHEL4: Python 2.3.4, BDB 4.2.52
+      * RHEL5: Python 2.4.3, BDB 4.3.29
+      * RHEL6: Python 2.6.2, BDB 4.7.25 (Currently in BETA)
   * Include documentation source (*.rst) in the EGG.
   * Include processed HTML documentation in the EGG.
   * Update the external links in documentation, since Oracle changed its web
