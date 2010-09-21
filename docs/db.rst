@@ -175,7 +175,7 @@ DB Methods
    of a record in the database when duplicate keys are allowed.)
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget.html#dbget_DB_GET_BOTH>`__
+   C/dbget.html#get_DB_GET_BOTH>`__
 
 .. function:: get_byteswapped()
 
