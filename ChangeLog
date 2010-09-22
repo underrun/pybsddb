@@ -16,6 +16,7 @@
   * Links added in the documentation to Oracle Berkeley DB programmer
     reference.
   * Support for "DB->get_transactional()".
+  * Support for "DB_REPMGR_ACKS_ALL_AVAILABLE".
 
 5.0.0:
   * Support for Berkeley DB 5.0.
