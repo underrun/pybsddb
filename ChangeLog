@@ -1,6 +1,9 @@
 5.1.1:
   * Recent pre-releases of Python 3.2 issue ResourceWarnings about
     fileshandles deallocated without being closed first. Fix testsuite.
+  * Current "*.pyc" and "*.pyo" cleaning is not working in a PEP 3147
+    world ("__pycache__"). I don't think this code is actually
+    necessary anymore. Deleted.
 
 5.1.0:
   * Support for Berkeley DB 5.1. 

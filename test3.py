@@ -431,23 +431,8 @@ def runner(files, test_filter, debug):
             raise
 
 
-def remove_stale_bytecode(arg, dirname, names):
-    names = list(map(os.path.normcase, names))
-    for name in names:
-        if name.endswith(".pyc") or name.endswith(".pyo"):
-            srcname = name[:-1]
-            if srcname not in names:
-                fullname = os.path.join(dirname, name)
-                print("Removing stale bytecode file", fullname)
-                os.unlink(fullname)
-
-
 def main(module_filter, test_filter):
     global pathinit
-
-    for root, dirs, files in os.walk(os.curdir) :
-        if len(files) :
-            remove_stale_bytecode(None, root, files)
 
     # Get the log.ini file from the current directory instead of possibly
     # buried in the build directory.  XXX This isn't perfect because if
