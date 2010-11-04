@@ -236,7 +236,9 @@ class SimpleRecnoTestCase(unittest.TestCase):
         d.close()
 
         # get the text from the backing source
-        text = open(source, 'r').read()
+        f = open(source, 'r')
+        text = f.read()
+        f.close()
         text = text.strip()
         if verbose:
             print(text)
@@ -256,7 +258,9 @@ class SimpleRecnoTestCase(unittest.TestCase):
         d.sync()
         d.close()
 
-        text = open(source, 'r').read()
+        f = open(source, 'r')
+        text = f.read()
+        f.close()
         text = text.strip()
         if verbose:
             print(text)
