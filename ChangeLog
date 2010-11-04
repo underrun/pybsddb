@@ -4,6 +4,7 @@
   * Current "*.pyc" and "*.pyo" cleaning is not working in a PEP 3147
     world ("__pycache__"). I don't think this code is actually
     necessary anymore. Deleted.
+  * Python 2.7.0 deprecates CObject incorrectly. See Python issue #9675.
 
 5.1.0:
   * Support for Berkeley DB 5.1. 

@@ -19,6 +19,27 @@ if (sys.version_info[0] < 3) and (sys.version_info >= (2, 6)) :
                     'please use the pybsddb project instead',
             category=DeprecationWarning)
 
+    if sys.version_info[:2] == (2, 7) :
+        # We should use "with", but it is not available until Python 2.5.
+        context = warnings.catch_warnings()
+        context.__enter__()
+        try :
+            # Python 2.7.0
+            warnings.filterwarnings('ignore',
+                message='The CObject type is marked Pending Deprecation ' \
+                        'in Python 2.7.  Please use capsule objects instead.',
+                category=PendingDeprecationWarning)
+
+            # Python 2.7.1
+            warnings.filterwarnings('ignore',
+                message='CObject type is not supported in 3.x. ' \
+                        'Please use capsule objects instead.',
+                category=DeprecationWarning)
+
+            import bsddb  # Import the 2.7 version, that uses CObject
+        finally :
+            context.__exit__()
+
     # setuptools warnings
     warnings.filterwarnings('ignore',
             message='tuple parameter unpacking has been removed in 3.x',
@@ -237,6 +258,7 @@ if os.name == 'posix':
     # Test if the old bsddb is built-in
     static = 0
     try:
+        # Possibly already imported in the "warning" section (python 2.7)
         import bsddb
         if str(bsddb).find('built-in') >= 0:
             static = 1
