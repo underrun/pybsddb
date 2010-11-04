@@ -21,7 +21,7 @@ class DB(unittest.TestCase):
     def tearDown(self):
         self.db.close()
         del self.db
-        test_support.rmtree(self.path)
+        test_support.unlink(self.path)
 
 class DB_general(DB) :
     def test_bt_minkey(self) :
@@ -48,7 +48,7 @@ class DB_general(DB) :
     if db.version() >= (4, 3) :
         def test_get_transactional(self) :
             self.assertFalse(self.db.get_transactional())
-            self.db.open("XXX", dbtype=db.DB_HASH, flags = db.DB_CREATE)
+            self.db.open(self.path, dbtype=db.DB_HASH, flags = db.DB_CREATE)
             self.assertFalse(self.db.get_transactional())
 
 class DB_hash(DB) :
