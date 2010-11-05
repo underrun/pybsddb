@@ -7,6 +7,8 @@
   * Python 2.7.0 deprecates CObject incorrectly. See Python issue #9675.
   * Testsuite for "DB->get_transactional()" should not create databases
     outside the TMP directory, neither leave the files behind.
+  * If something happens while creating the CObject/Capsule object,
+    keep going, even without exporting the C API, instead of crashing.
 
 5.1.0:
   * Support for Berkeley DB 5.1. 
