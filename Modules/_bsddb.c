@@ -9593,6 +9593,20 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_VERB_REPLICATION);
     ADD_INT(d, DB_VERB_WAITSFOR);
 
+#if (DBVER >= 50)
+    ADD_INT(d, DB_VERB_REP_SYSTEM);
+#endif
+
+#if (DBVER >= 47)
+    ADD_INT(d, DB_VERB_REP_ELECT);
+    ADD_INT(d, DB_VERB_REP_LEASE);
+    ADD_INT(d, DB_VERB_REP_MISC);
+    ADD_INT(d, DB_VERB_REP_MSGS);
+    ADD_INT(d, DB_VERB_REP_SYNC);
+    ADD_INT(d, DB_VERB_REPMGR_CONNFAIL);
+    ADD_INT(d, DB_VERB_REPMGR_MISC);
+#endif
+
 #if (DBVER >= 45)
     ADD_INT(d, DB_EVENT_PANIC);
     ADD_INT(d, DB_EVENT_REP_CLIENT);
