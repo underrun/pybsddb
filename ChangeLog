@@ -9,13 +9,16 @@
     outside the TMP directory, neither leave the files behind.
   * If something happens while creating the CObject/Capsule object,
     keep going, even without exporting the C API, instead of crashing.
-  * Support for "DB_FORCESYNC", "DB_FAILCHK", "DB_EVENT_REG_ALIVE",
-    "DB_EVENT_REG_PANIC", "DB_EVENT_REP_DUPMASTER", "DB_REPMGR_CONF_ELECTIONS",
-    "DB_EVENT_REP_ELECTION_FAILED", "DB_EVENT_REP_MASTER_FAILURE",
-    "DB_TXN_BULK", "DB_HOTBACKUP_IN_PROGRESS", "DB_SET_REG_TIMEOUT",
-    "DB_VERB_REP_ELECT", "DB_VERB_REP_LEASE", "DB_VERB_REP_MISC",
+  * Support for "DB_FORCESYNC", "DB_FAILCHK", "DB_SET_REG_TIMEOUT",
+    "DB_TXN_BULK", "DB_HOTBACKUP_IN_PROGRESS".
+  * Support "DB_EVENT_REG_ALIVE", "DB_EVENT_REG_PANIC",
+    "DB_EVENT_REP_DUPMASTER", "DB_REPMGR_CONF_ELECTIONS",
+    "DB_EVENT_REP_ELECTION_FAILED", "DB_EVENT_REP_MASTER_FAILURE".
+  * Support for "DB_VERB_REP_ELECT", "DB_VERB_REP_LEASE", "DB_VERB_REP_MISC",
     "DB_VERB_REP_MSGS", "DB_VERB_REP_SYNC", "DB_VERB_REP_SYSTEM",
     "DB_VERB_REPMGR_CONNFAIL", "DB_VERB_REPMGR_MISC".
+  * Support for "DB_STAT_LOCK_CONF", "DB_STAT_LOCK_LOCKERS",
+    "DB_STAT_LOCK_OBJECTS", "DB_STAT_LOCK_PARAMS".
 
 5.1.0:
   * Support for Berkeley DB 5.1. 

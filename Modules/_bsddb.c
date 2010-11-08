@@ -9533,6 +9533,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #if (DBVER >= 43)
     ADD_INT(d, DB_STAT_SUBSYSTEM);
     ADD_INT(d, DB_STAT_MEMP_HASH);
+    ADD_INT(d, DB_STAT_LOCK_CONF);
+    ADD_INT(d, DB_STAT_LOCK_LOCKERS);
+    ADD_INT(d, DB_STAT_LOCK_OBJECTS);
+    ADD_INT(d, DB_STAT_LOCK_PARAMS);
 #endif
 
 #if (DBVER >= 48)
