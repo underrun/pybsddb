@@ -9,6 +9,7 @@
     outside the TMP directory, neither leave the files behind.
   * If something happens while creating the CObject/Capsule object,
     keep going, even without exporting the C API, instead of crashing.
+  * Support for "DB_FORCESYNC".
 
 5.1.0:
   * Support for Berkeley DB 5.1. 

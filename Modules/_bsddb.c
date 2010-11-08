@@ -9681,6 +9681,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_REPMGR_ACKS_ALL_AVAILABLE);
 #endif
 
+#if (DBVER >= 50)
+    ADD_INT(d, DB_FORCESYNC);
+#endif
+
 #if (DBVER >= 43)
     ADD_INT(d, DB_BUFFER_SMALL);
     ADD_INT(d, DB_SEQ_DEC);
