@@ -9745,6 +9745,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_SET_LOCK_TIMEOUT);
     ADD_INT(d, DB_SET_TXN_TIMEOUT);
 
+#if (DBVER >= 48)
+    ADD_INT(d, DB_SET_REG_TIMEOUT);
+#endif
+
     /* The exception name must be correct for pickled exception *
      * objects to unpickle properly.                            */
 #ifdef PYBSDDB_STANDALONE  /* different value needed for standalone pybsddb */
