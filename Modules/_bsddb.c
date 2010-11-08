@@ -9604,6 +9604,17 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_EVENT_WRITE_FAILED);
 #endif
 
+#if (DBVER >= 50)
+    ADD_INT(d, DB_REPMGR_CONF_ELECTIONS);
+    ADD_INT(d, DB_EVENT_REP_MASTER_FAILURE);
+    ADD_INT(d, DB_EVENT_REP_DUPMASTER);
+    ADD_INT(d, DB_EVENT_REP_ELECTION_FAILED);
+#endif
+#if (DBVER >= 48)
+    ADD_INT(d, DB_EVENT_REG_ALIVE);
+    ADD_INT(d, DB_EVENT_REG_PANIC);
+#endif
+
     ADD_INT(d, DB_REP_DUPMASTER);
     ADD_INT(d, DB_REP_HOLDELECTION);
 #if (DBVER >= 44)

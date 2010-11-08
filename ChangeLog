@@ -9,7 +9,9 @@
     outside the TMP directory, neither leave the files behind.
   * If something happens while creating the CObject/Capsule object,
     keep going, even without exporting the C API, instead of crashing.
-  * Support for "DB_FORCESYNC", "DB_FAILCHK".
+  * Support for "DB_FORCESYNC", "DB_FAILCHK", "DB_EVENT_REG_ALIVE",
+    "DB_EVENT_REG_PANIC", "DB_EVENT_REP_DUPMASTER", "DB_REPMGR_CONF_ELECTIONS",
+    "DB_EVENT_REP_ELECTION_FAILED", "DB_EVENT_REP_MASTER_FAILURE".
 
 5.1.0:
   * Support for Berkeley DB 5.1. 
