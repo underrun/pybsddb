@@ -9718,6 +9718,8 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_REP_CONF_INMEM);
 #endif
 
+    ADD_INT(d, DB_TIMEOUT);
+
 #if (DBVER >= 50)
     ADD_INT(d, DB_FORCESYNC);
 #endif
