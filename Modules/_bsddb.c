@@ -9344,6 +9344,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_TXN_BULK);
 #endif
 
+#if (DBVER >= 48)
+    ADD_INT(d, DB_CURSOR_BULK);
+#endif
+
 #if (DBVER >= 46)
     ADD_INT(d, DB_TXN_WAIT);
 #endif

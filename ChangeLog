@@ -21,6 +21,7 @@
     "DB_STAT_LOCK_OBJECTS", "DB_STAT_LOCK_PARAMS".
   * Support for "DB_REP_CONF_INMEM".
   * Support for "DB_TIMEOUT ".
+  * Support for "DB_CURSOR_BULK".
 
 5.1.0:
   * Support for Berkeley DB 5.1. 
