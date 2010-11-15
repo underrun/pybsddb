@@ -1,3 +1,8 @@
+5.1.2:
+  * 5.1.1 install fails if the bsddb in the standard library is not installed,
+    under Python 2.7. Reported by Arfrever Frehtes Taifersar Arahesis.
+  *
+
 5.1.1:
   * Recent pre-releases of Python 3.2 issue ResourceWarnings about
     fileshandles deallocated without being closed first. Fix testsuite.

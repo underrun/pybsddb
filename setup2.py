@@ -36,7 +36,10 @@ if (sys.version_info[0] < 3) and (sys.version_info >= (2, 6)) :
                         'Please use capsule objects instead.',
                 category=DeprecationWarning)
 
-            import bsddb  # Import the 2.7 version, that uses CObject
+            try :  # 'bsddb' library could be not available
+                import bsddb  # Import the 2.7 version, that uses CObject
+            except ImportError :
+                pass
         finally :
             context.__exit__()
 
