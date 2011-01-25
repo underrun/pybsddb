@@ -124,37 +124,30 @@ if os.name == 'posix':
     dblib = 'db'
     incdir = libdir = None
     if not BERKELEYDB_DIR and not BERKELEYDB_LIBDIR and not BERKELEYDB_INCDIR:
-        # NOTE: when updating these, also change the tuples in the for loops below
-        max_db_ver = (5, 1)
-        min_db_ver = (4, 2)
+        # Supported Berkeley DB versions, in order of preference.
+        db_ver_list = ((5, 1), (5, 0),
+                (4, 8), (4, 7), (4, 6), (4, 5), (4, 4), (4, 3), (4, 2))
 
         # construct a list of paths to look for the header file in on
         # top of the normal inc_dirs.
-        db_inc_paths = [
-            '/usr/include/db4',
-            '/usr/local/include/db4',
-            '/opt/sfw/include/db4',
-            '/sw/include/db4',
-            '/usr/include/db3',
-            '/usr/local/include/db3',
-            '/opt/sfw/include/db3',
-            '/sw/include/db3',
-        ]
-        # 4.x minor number specific paths
-        for x in range(max_db_ver[1]+1):
-            db_inc_paths.append('/usr/include/db4%d' % x)
-            db_inc_paths.append('/usr/local/BerkeleyDB.4.%d/include' % x)
-            db_inc_paths.append('/usr/local/include/db4%d' % x)
-            db_inc_paths.append('/pkg/db-4.%d/include' % x)
-            db_inc_paths.append('/opt/db-4.%d/include' % x)
+        db_inc_paths = []
+        db_major = {}  # We can use a SET when we drop Python 2.3 support
+        for major, minor in db_ver_list :
+            if major not in db_major :
+                db_major[major] = None
+                db_inc_paths.extend([
+                    '/usr/include/db%d' % major,
+                    '/usr/local/include/db%d' %major,
+                    '/opt/sfw/include/db%d' %major,
+                    '/sw/include/db%d' %major,
+                    ])
 
-        # 5.x minor number specific paths
-        for x in range(max_db_ver[1]+1):
-            db_inc_paths.append('/usr/include/db5%d' % x)
-            db_inc_paths.append('/usr/local/BerkeleyDB.5.%d/include' % x)
-            db_inc_paths.append('/usr/local/include/db5%d' % x)
-            db_inc_paths.append('/pkg/db-5.%d/include' % x)
-            db_inc_paths.append('/opt/db-5.%d/include' % x)
+            db_inc_paths.append('/usr/include/db%d%d' % (major, minor))
+            db_inc_paths.append('/usr/local/BerkeleyDB.%d.%d/include' % (major,
+                minor))
+            db_inc_paths.append('/usr/local/include/db%d%d' % (major, minor))
+            db_inc_paths.append('/pkg/db-%d.%d/include' % (major, minor))
+            db_inc_paths.append('/opt/db-%d.%d/include' % (major, minor))
 
         db_ver_inc_map = {}
 
@@ -184,7 +177,7 @@ if os.name == 'posix':
                         db_ver = (db_major, db_minor)
 
                         if ( (not db_ver_inc_map.has_key(db_ver)) and
-                           (db_ver <= max_db_ver and db_ver >= min_db_ver) ):
+                           (db_ver in db_ver_list) ):
                             # save the include directory with the db.h version
                             # (first occurrance only)
                             db_ver_inc_map[db_ver] = d
@@ -322,7 +315,7 @@ elif os.name == 'nt':
             continue
         fullverstr = match.group(1)
         ver = fullverstr[0] + fullverstr[2]   # 31 == 3.1, 32 == 3.2, etc.
-    assert ver in ('42', '43', '44', '45', '46', '47', '48', '50', '51'), (
+    assert (fullverstr[0], fullverstr[2]) in db_ver_list, (
         "pybsddb untested with this Berkeley DB version", ver)
     print 'Detected Berkeley DB version', ver, 'from db.h'
 
