@@ -3,7 +3,7 @@
     under Python 2.7. Reported by Arfrever Frehtes Taifersar Arahesis.
   * Since 5.0.0, we can't find 4.x libraries unless we specify a
     "--berkeley-db=/path/to/bsddb" option. Reported by Wen Heping.
-  * Support for "DB->get_dbname()".
+  * Support for "DB->get_dbname()", "DB->get_open_flags()".
 
 5.1.1:
   * Recent pre-releases of Python 3.2 issue ResourceWarnings about

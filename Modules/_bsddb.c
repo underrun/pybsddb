@@ -2549,6 +2549,21 @@ DB_get_dbname(DBObject* self)
 }
 
 static PyObject*
+DB_get_open_flags(DBObject* self)
+{
+    int err;
+    unsigned int flags;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_open_flags(self->db, &flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(flags);
+}
+
+static PyObject*
 DB_set_q_extentsize(DBObject* self, PyObject* args)
 {
     int err;
@@ -8460,6 +8475,7 @@ static PyMethodDef DB_methods[] = {
     {"get_priority",    (PyCFunction)DB_get_priority,   METH_NOARGS},
 #endif
     {"get_dbname",      (PyCFunction)DB_get_dbname,     METH_NOARGS},
+    {"get_open_flags",  (PyCFunction)DB_get_open_flags, METH_NOARGS},
     {"stat",            (PyCFunction)DB_stat,           METH_VARARGS|METH_KEYWORDS},
 #if (DBVER >= 43)
     {"stat_print",      (PyCFunction)DB_stat_print,

@@ -24,6 +24,15 @@ class DB(unittest.TestCase):
         test_support.unlink(self.path)
 
 class DB_general(DB) :
+    def test_get_open_flags(self) :
+        self.db.open(self.path, dbtype=db.DB_HASH, flags = db.DB_CREATE)
+        self.assertEqual(db.DB_CREATE, self.db.get_open_flags())
+
+    def test_get_open_flags2(self) :
+        self.db.open(self.path, dbtype=db.DB_HASH, flags = db.DB_CREATE |
+                db.DB_THREAD)
+        self.assertEqual(db.DB_CREATE | db.DB_THREAD, self.db.get_open_flags())
+
     def test_get_dbname_filename(self) :
         self.db.open(self.path, dbtype=db.DB_HASH, flags = db.DB_CREATE)
         self.assertEqual((self.path, None), self.db.get_dbname())
