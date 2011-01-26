@@ -305,6 +305,35 @@ DBEnv Methods
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/envget_encrypt_flags.html>`__
 
+.. function:: get_intermediate_dir_mode()
+
+   Returns the intermediate directory permissions.
+
+   Intermediate directories are directories needed for recovery.
+   Normally, Berkeley DB does not create these directories and will do
+   so only if the DB_ENV->set_intermediate_dir_mode() method is called. 
+
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envget_intermediate_dir_mode.html>`__
+
+.. function:: set_intermediate_dir_mode(mode)
+
+   By default, Berkeley DB does not create intermediate directories
+   needed for recovery, that is, if the file /a/b/c/mydatabase is being
+   recovered, and the directory path b/c does not exist, recovery will
+   fail. This default behavior is because Berkeley DB does not know what
+   permissions are appropriate for intermediate directory creation, and
+   creating the directory might result in a security problem.
+
+   The DB_ENV->set_intermediate_dir_mode() method causes Berkeley DB to
+   create any intermediate directories needed during recovery, using the
+   specified permissions.
+
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envset_intermediate_dir_mode.html>`__
+
 .. function:: get_timeout(flags)
 
    Returns a timeout value, in microseconds.

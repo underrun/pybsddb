@@ -6743,6 +6743,41 @@ DBEnv_set_private(DBEnvObject* self, PyObject* private_obj)
     RETURN_NONE();
 }
 
+#if (DBVER >= 47)
+static PyObject*
+DBEnv_set_intermediate_dir_mode(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    const char *mode;
+
+    if (!PyArg_ParseTuple(args,"s:set_intermediate_dir_mode", &mode))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_intermediate_dir_mode(self->db_env, mode);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBEnv_get_intermediate_dir_mode(DBEnvObject* self)
+{
+    int err;
+    const char *mode;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_intermediate_dir_mode(self->db_env, &mode);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return Py_BuildValue("s", mode);
+}
+#endif
+
 static PyObject*
 DBEnv_get_open_flags(DBEnvObject* self)
 {
@@ -8725,6 +8760,12 @@ static PyMethodDef DBEnv_methods[] = {
     {"set_private",     (PyCFunction)DBEnv_set_private,     METH_O},
     {"get_private",     (PyCFunction)DBEnv_get_private,     METH_NOARGS},
     {"get_open_flags",  (PyCFunction)DBEnv_get_open_flags,  METH_NOARGS},
+#if (DBVER >= 47)
+    {"set_intermediate_dir_mode", (PyCFunction)DBEnv_set_intermediate_dir_mode,
+        METH_VARARGS},
+    {"get_intermediate_dir_mode", (PyCFunction)DBEnv_get_intermediate_dir_mode,
+        METH_NOARGS},
+#endif
     {"rep_start",       (PyCFunction)DBEnv_rep_start,
         METH_VARARGS|METH_KEYWORDS},
     {"rep_set_transport", (PyCFunction)DBEnv_rep_set_transport, METH_VARARGS},

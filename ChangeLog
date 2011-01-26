@@ -3,7 +3,8 @@
     under Python 2.7. Reported by Arfrever Frehtes Taifersar Arahesis.
   * Since 5.0.0, we can't find 4.x libraries unless we specify a
     "--berkeley-db=/path/to/bsddb" option. Reported by Wen Heping.
-  * Support "DB_ENV->get_open_flags()".
+  * Support "DB_ENV->get_open_flags()", "DB_ENV->set_intermediate_dir_mode()",
+    "DB_ENV->get_intermediate_dir_mode()".
   * Support "DB->get_dbname()", "DB->get_open_flags()".
   * Support "db_full_version()".
   * Document "version()". This top-level function has been supported forever.

@@ -42,6 +42,14 @@ class DBEnv_general(DBEnv) :
                 self.env.set_lk_partitions(i)
                 self.assertEqual(i, self.env.get_lk_partitions())
 
+        def test_getset_intermediate_dir_mode(self) :
+            self.assertEqual(None, self.env.get_intermediate_dir_mode())
+            for mode in ["rwx------", "rw-rw-rw-", "rw-r--r--"] :
+                self.env.set_intermediate_dir_mode(mode)
+                self.assertEqual(mode, self.env.get_intermediate_dir_mode())
+            self.assertRaises(db.DBInvalidArgError,
+                    self.env.set_intermediate_dir_mode, "abcde")
+
     if db.version() >= (4, 6) :
         def test_thread(self) :
             for i in [16, 100, 1000] :
