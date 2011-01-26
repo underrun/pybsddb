@@ -25,6 +25,17 @@ class DBEnv(unittest.TestCase):
         test_support.rmtree(self.homeDir)
 
 class DBEnv_general(DBEnv) :
+    def test_get_open_flags(self) :
+        flags = db.DB_CREATE | db.DB_INIT_MPOOL
+        self.env.open(self.homeDir, flags)
+        self.assertEqual(flags, self.env.get_open_flags())
+
+    def test_get_open_flags2(self) :
+        flags = db.DB_CREATE | db.DB_INIT_MPOOL | \
+                db.DB_INIT_LOCK | db.DB_THREAD
+        self.env.open(self.homeDir, flags)
+        self.assertEqual(flags, self.env.get_open_flags())
+
     if db.version() >= (4, 7) :
         def test_lk_partitions(self) :
             for i in [10, 20, 40] :

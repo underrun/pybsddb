@@ -513,6 +513,14 @@ DBEnv Methods
 
    Give the object linked to the DBEnv.
 
+.. function:: get_open_flags()
+
+   Returns the current open method flags. That is, this method returns
+   the flags that were specified when DB_ENV->open() was called.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envget_open_flags.html>`__
+
 .. function:: get_lg_filemode()
 
    Returns the log file mode.

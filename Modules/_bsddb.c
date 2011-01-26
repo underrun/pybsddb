@@ -6743,6 +6743,20 @@ DBEnv_set_private(DBEnvObject* self, PyObject* private_obj)
     RETURN_NONE();
 }
 
+static PyObject*
+DBEnv_get_open_flags(DBEnvObject* self)
+{
+    int err;
+    unsigned int flags;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->get_open_flags(self->db_env, &flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(flags);
+}
 
 #if (DBVER < 48)
 static PyObject*
@@ -8707,9 +8721,10 @@ static PyMethodDef DBEnv_methods[] = {
     {"get_mp_max_write", (PyCFunction)DBEnv_get_mp_max_write, METH_NOARGS},
 #endif
     {"set_verbose",     (PyCFunction)DBEnv_set_verbose,     METH_VARARGS},
-    {"get_verbose",     (PyCFunction)DBEnv_get_verbose,       METH_VARARGS},
-    {"set_private",     (PyCFunction)DBEnv_set_private,       METH_O},
-    {"get_private",     (PyCFunction)DBEnv_get_private,       METH_NOARGS},
+    {"get_verbose",     (PyCFunction)DBEnv_get_verbose,     METH_VARARGS},
+    {"set_private",     (PyCFunction)DBEnv_set_private,     METH_O},
+    {"get_private",     (PyCFunction)DBEnv_get_private,     METH_NOARGS},
+    {"get_open_flags",  (PyCFunction)DBEnv_get_open_flags,  METH_NOARGS},
     {"rep_start",       (PyCFunction)DBEnv_rep_start,
         METH_VARARGS|METH_KEYWORDS},
     {"rep_set_transport", (PyCFunction)DBEnv_rep_set_transport, METH_VARARGS},
