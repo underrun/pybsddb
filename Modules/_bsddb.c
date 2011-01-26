@@ -9195,9 +9195,24 @@ bsddb_version(PyObject* self)
 {
     int major, minor, patch;
 
+    /* This should be instantaneous, no need to release the GIL */
     db_version(&major, &minor, &patch);
     return Py_BuildValue("(iii)", major, minor, patch);
 }
+
+#if (DBVER >= 50)
+static PyObject*
+bsddb_version_full(PyObject* self)
+{
+    char *version_string;
+    int family, release, major, minor, patch;
+
+    /* This should be instantaneous, no need to release the GIL */
+    version_string = db_full_version(&family, &release, &major, &minor, &patch);
+    return Py_BuildValue("(siiiii)",
+            version_string, family, release, major, minor, patch);
+}
+#endif
 
 
 /* List of functions defined in the module */
@@ -9208,6 +9223,9 @@ static PyMethodDef bsddb_methods[] = {
     {"DBSequence",  (PyCFunction)DBSequence_construct,  METH_VARARGS | METH_KEYWORDS },
 #endif
     {"version",     (PyCFunction)bsddb_version,         METH_NOARGS, bsddb_version_doc},
+#if (DBVER >= 50)
+    {"full_version", (PyCFunction)bsddb_version_full, METH_NOARGS},
+#endif
     {NULL,      NULL}       /* sentinel */
 };
 

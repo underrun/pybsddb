@@ -484,6 +484,8 @@ def print_versions():
     print('-=' * 38)
     print(db.DB_VERSION_STRING)
     print('bsddb.db.version():   %s' % (db.version(), ))
+    if db.version() >= (5, 0) :
+        print('bsddb.db.full_version(): %s' %repr(db.full_version()))
     print('bsddb.db.__version__: %s' % db.__version__)
     print('bsddb.db.cvsid:       %s' % db.cvsid)
 
