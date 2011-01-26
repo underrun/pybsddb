@@ -5,6 +5,7 @@
     "--berkeley-db=/path/to/bsddb" option. Reported by Wen Heping.
   * Support for "DB->get_dbname()", "DB->get_open_flags()",
     "db_full_version()".
+  * Document "version()". This top-level function has been supported forever.
 
 5.1.1:
   * Recent pre-releases of Python 3.2 issue ResourceWarnings about

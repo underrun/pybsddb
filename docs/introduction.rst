@@ -77,6 +77,24 @@ The bsddb3.db extension module provides the following object types:
   objects that return an increasing or decreasing sequence of integers.
   Opening a sequence handle associates it with a record in a database.
 
+Top level functions
+-------------------
+
+.. function:: version()
+
+   Returns a tuple with major, minor and patch level.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envversion.html>`__
+
+.. function:: full_version()
+
+   Returns a tuple with the full version string, family, release,
+   major, minor and patch level.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/envfullversion.html>`__
+
 Exceptions Provided
 -------------------
 
