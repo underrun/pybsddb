@@ -24,6 +24,16 @@ class DB(unittest.TestCase):
         test_support.unlink(self.path)
 
 class DB_general(DB) :
+    def test_get_dbname_filename(self) :
+        self.db.open(self.path, dbtype=db.DB_HASH, flags = db.DB_CREATE)
+        self.assertEqual((self.path, None), self.db.get_dbname())
+
+    def test_get_dbname_filename_database(self) :
+        name = "jcea-random-name"
+        self.db.open(self.path, dbname=name, dbtype=db.DB_HASH,
+                flags = db.DB_CREATE)
+        self.assertEqual((self.path, name), self.db.get_dbname())
+
     def test_bt_minkey(self) :
         for i in [17, 108, 1030] :
             self.db.set_bt_minkey(i)

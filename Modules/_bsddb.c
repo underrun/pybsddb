@@ -2533,6 +2533,22 @@ DB_get_priority(DBObject* self)
 #endif
 
 static PyObject*
+DB_get_dbname(DBObject* self)
+{
+    int err;
+    const char *filename, *dbname;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db->get_dbname(self->db, &filename, &dbname);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    /* If "dbname==NULL", it is correctly converted to "None" */
+    return Py_BuildValue("(ss)", filename, dbname);
+}
+
+static PyObject*
 DB_set_q_extentsize(DBObject* self, PyObject* args)
 {
     int err;
@@ -8443,6 +8459,7 @@ static PyMethodDef DB_methods[] = {
     {"set_priority",    (PyCFunction)DB_set_priority,   METH_VARARGS},
     {"get_priority",    (PyCFunction)DB_get_priority,   METH_NOARGS},
 #endif
+    {"get_dbname",      (PyCFunction)DB_get_dbname,     METH_NOARGS},
     {"stat",            (PyCFunction)DB_stat,           METH_VARARGS|METH_KEYWORDS},
 #if (DBVER >= 43)
     {"stat_print",      (PyCFunction)DB_stat_print,

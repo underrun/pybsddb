@@ -148,6 +148,14 @@ DB Methods
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/dbget_priority.html>`__
 
+.. function:: get_dbname()
+
+   Returns a tuple with the filename and the database name. If
+   there is no database name, the value returned will be None.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbget_dbname.html>`__
+
 .. function:: set_priority(priority)
 
    Set the cache priority for pages referenced by the DB handle.
