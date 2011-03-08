@@ -84,7 +84,7 @@ class DBTxn_distributed(unittest.TestCase):
     # Get "to be recovered" transactions but
     # let them be garbage collected.
         recovered_txns=self.dbenv.txn_recover()
-        self.assertEquals(self.num_txns,len(recovered_txns))
+        self.assertEqual(self.num_txns,len(recovered_txns))
         for gid,txn in recovered_txns :
             self.assert_(gid in txns)
         del txn
@@ -95,7 +95,7 @@ class DBTxn_distributed(unittest.TestCase):
     # Get "to be recovered" transactions. Commit, abort and
     # discard them.
         recovered_txns=self.dbenv.txn_recover()
-        self.assertEquals(self.num_txns,len(recovered_txns))
+        self.assertEqual(self.num_txns,len(recovered_txns))
         discard_txns=set()
         committed_txns=set()
         state=0
@@ -118,7 +118,7 @@ class DBTxn_distributed(unittest.TestCase):
     # Verify the discarded transactions are still
     # around, and dispose them.
         recovered_txns=self.dbenv.txn_recover()
-        self.assertEquals(len(discard_txns),len(recovered_txns))
+        self.assertEqual(len(discard_txns),len(recovered_txns))
         for gid,txn in recovered_txns :
             txn.abort()
         del txn
@@ -130,7 +130,7 @@ class DBTxn_distributed(unittest.TestCase):
     # Check also database size.
         recovered_txns=self.dbenv.txn_recover()
         self.assert_(len(recovered_txns)==0)
-        self.assertEquals(len(committed_txns),self.db.stat()["nkeys"])
+        self.assertEqual(len(committed_txns),self.db.stat()["nkeys"])
 
 class DBTxn_distributedSYNC(DBTxn_distributed):
     nosync=False
