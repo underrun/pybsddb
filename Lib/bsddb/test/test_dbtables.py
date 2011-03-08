@@ -38,6 +38,11 @@ from test_all import db, dbtables, test_support, verbose, \
 #----------------------------------------------------------------------
 
 class TableDBTestCase(unittest.TestCase):
+    import sys
+    if sys.version_info < (2, 4) :
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
     db_name = 'test-table.db'
 
     def setUp(self):
@@ -84,8 +89,8 @@ class TableDBTestCase(unittest.TestCase):
             colval = pickle.loads(values[0][colname])
         else :
             colval = pickle.loads(bytes(values[0][colname], "iso8859-1"))
-        self.assert_(colval > 3.141)
-        self.assert_(colval < 3.142)
+        self.assertTrue(colval > 3.141)
+        self.assertTrue(colval < 3.142)
 
 
     def test02(self):

@@ -11,6 +11,11 @@ from test_all import db, hashopen, btopen, rnopen, verbose, \
 
 
 class CompatibilityTestCase(unittest.TestCase):
+    import sys
+    if sys.version_info < (2, 4) :
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
     def setUp(self):
         self.filename = get_new_database_path()
 
@@ -119,7 +124,7 @@ class CompatibilityTestCase(unittest.TestCase):
             if verbose:
                 print rec
 
-        self.assert_(f.has_key('f'), 'Error, missing key!')
+        self.assertTrue(f.has_key('f'), 'Error, missing key!')
 
         # test that set_location() returns the next nearest key, value
         # on btree databases and raises KeyError on others.

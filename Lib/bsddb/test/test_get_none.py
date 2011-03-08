@@ -11,6 +11,11 @@ from test_all import db, verbose, get_new_database_path
 #----------------------------------------------------------------------
 
 class GetReturnsNoneTestCase(unittest.TestCase):
+    import sys
+    if sys.version_info < (2, 4) :
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
     def setUp(self):
         self.filename = get_new_database_path()
 
@@ -76,7 +81,7 @@ class GetReturnsNoneTestCase(unittest.TestCase):
                 break
 
         self.assertNotEqual(rec, None)
-        self.assert_(exceptionHappened)
+        self.assertTrue(exceptionHappened)
         self.assertEqual(count, len(string.letters))
 
         c.close()

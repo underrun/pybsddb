@@ -611,7 +611,7 @@ class BasicTestCase(unittest.TestCase):
 
         d.put("abcde", "ABCDE");
         num = d.truncate()
-        self.assert_(num >= 1, "truncate returned <= 0 on non-empty database")
+        self.assertTrue(num >= 1, "truncate returned <= 0 on non-empty database")
         num = d.truncate()
         self.assertEqual(num, 0,
                 "truncate on empty DB returned nonzero (%r)" % (num,))
@@ -630,9 +630,9 @@ class BasicTestCase(unittest.TestCase):
     if db.version() >= (4, 6):
         def test08_exists(self) :
             self.d.put("abcde", "ABCDE")
-            self.assert_(self.d.exists("abcde") == True,
+            self.assertTrue(self.d.exists("abcde") == True,
                     "DB->exists() returns wrong value")
-            self.assert_(self.d.exists("x") == False,
+            self.assertTrue(self.d.exists("x") == False,
                     "DB->exists() returns wrong value")
 
     #----------------------------------------
@@ -804,9 +804,9 @@ class BasicTransactionTestCase(BasicTestCase):
             self.d.put("abcde", "ABCDE", txn=txn)
             txn.commit()
             txn = self.env.txn_begin()
-            self.assert_(self.d.exists("abcde", txn=txn) == True,
+            self.assertTrue(self.d.exists("abcde", txn=txn) == True,
                     "DB->exists() returns wrong value")
-            self.assert_(self.d.exists("x", txn=txn) == False,
+            self.assertTrue(self.d.exists("x", txn=txn) == False,
                     "DB->exists() returns wrong value")
             txn.abort()
 
@@ -821,7 +821,7 @@ class BasicTransactionTestCase(BasicTestCase):
         d.put("abcde", "ABCDE");
         txn = self.env.txn_begin()
         num = d.truncate(txn)
-        self.assert_(num >= 1, "truncate returned <= 0 on non-empty database")
+        self.assertTrue(num >= 1, "truncate returned <= 0 on non-empty database")
         num = d.truncate(txn)
         self.assertEqual(num, 0,
                 "truncate on empty DB returned nonzero (%r)" % (num,))

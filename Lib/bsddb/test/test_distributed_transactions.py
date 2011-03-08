@@ -19,6 +19,11 @@ from test_all import verbose
 #----------------------------------------------------------------------
 
 class DBTxn_distributed(unittest.TestCase):
+    import sys
+    if sys.version_info < (2, 4) :
+        def assertTrue(self, expr, msg=None):
+            self.failUnless(expr,msg=msg)
+
     num_txns=1234
     nosync=True
     must_open_db=False
@@ -86,7 +91,7 @@ class DBTxn_distributed(unittest.TestCase):
         recovered_txns=self.dbenv.txn_recover()
         self.assertEqual(self.num_txns,len(recovered_txns))
         for gid,txn in recovered_txns :
-            self.assert_(gid in txns)
+            self.assertTrue(gid in txns)
         del txn
         del recovered_txns
 
@@ -129,7 +134,7 @@ class DBTxn_distributed(unittest.TestCase):
     # Be sure there are not pending transactions.
     # Check also database size.
         recovered_txns=self.dbenv.txn_recover()
-        self.assert_(len(recovered_txns)==0)
+        self.assertTrue(len(recovered_txns)==0)
         self.assertEqual(len(committed_txns),self.db.stat()["nkeys"])
 
 class DBTxn_distributedSYNC(DBTxn_distributed):
