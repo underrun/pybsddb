@@ -8,6 +8,8 @@
   * Support "DB->get_dbname()", "DB->get_open_flags()".
   * Support "db_full_version()".
   * Document "version()". This top-level function has been supported forever.
+  * Bugfix when calling "DB->get_size()" on a zero length record.
+    Reported by Austin Bingham.
 
 5.1.1:
   * Recent pre-releases of Python 3.2 issue ResourceWarnings about

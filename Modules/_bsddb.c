@@ -2128,7 +2128,7 @@ DB_get_size(DBObject* self, PyObject* args, PyObject* kwargs)
     MYDB_BEGIN_ALLOW_THREADS;
     err = self->db->get(self->db, txn, &key, &data, flags);
     MYDB_END_ALLOW_THREADS;
-    if (err == DB_BUFFER_SMALL) {
+    if ((err == DB_BUFFER_SMALL) || (err == 0)) {
         retval = NUMBER_FromLong((long)data.size);
         err = 0;
     }

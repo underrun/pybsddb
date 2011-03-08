@@ -302,6 +302,18 @@ class SimpleRecnoTestCase(unittest.TestCase):
         c.close()
         d.close()
 
+    def test04_get_size_empty(self) :
+        d = db.DB()
+        d.open(self.filename, dbtype=db.DB_RECNO, flags=db.DB_CREATE)
+
+        row_id = d.append(data=' ')
+        self.assertEqual(1, d.get_size(key=row_id))
+        row_id = d.append(data='')
+        self.assertEqual(0, d.get_size(key=row_id))
+
+
+
+
 
 #----------------------------------------------------------------------
 
