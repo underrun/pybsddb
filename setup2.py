@@ -74,6 +74,9 @@ for line in _srcFile.readlines():
     if m:
         VERSION = m.group(1)
         continue
+
+# We close first, to avoid a "ResourceWarning" under Python 3.2
+_srcFile.close()
 del _srcFile
 del _ver_re
 del m

@@ -10,6 +10,9 @@
   * Document "version()". This top-level function has been supported forever.
   * Bugfix when calling "DB->get_size()" on a zero length record.
     Reported by Austin Bingham.
+  * 'assertEquals()' is deprecated in Python 3.2.
+  * 'assert_()' is deprecated in Python 3.2.
+  * Solved 'ResourceWarning' under Python 3.2.
 
 5.1.1:
   * Recent pre-releases of Python 3.2 issue ResourceWarnings about
