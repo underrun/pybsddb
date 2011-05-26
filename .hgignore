@@ -1,0 +1,11 @@
+syntax: glob
+docs/build/
+docs/tools/docutils/
+docs/tools/pygments/
+docs/tools/sphinx/
+docs/html/
+build/
+dist/
+bsddb3.egg-info/
+*.pyc
+*.pyo
