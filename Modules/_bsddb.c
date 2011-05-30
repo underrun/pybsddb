@@ -6651,6 +6651,31 @@ DBEnv_log_archive(DBEnvObject* self, PyObject* args)
 }
 
 
+#if (DBVER >= 52)
+static PyObject*
+DBEnv_repmgr_site(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    DB_SITE* site;
+    char *host;
+    u_int port;
+    static char* kwnames[] = {"host", "port", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "si:repmgr_site", kwnames,
+                                     &host, &port))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_site(self->db_env, host, port, &site, 0);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return (PyObject*) newDBSiteObject(site, self);
+}
+#endif
+
+
 #if (DBVER >= 44)
 static PyObject*
 DBEnv_mutex_stat(DBEnvObject* self, PyObject* args)
@@ -7792,7 +7817,7 @@ DBEnv_repmgr_site_list(DBEnvObject* self)
 {
     int err;
     unsigned int countp;
-    DB_SITE *site;
+    DB_REPMGR_SITE *listp;
     PyObject *stats, *key, *tuple;
 
     CHECK_ENV_NOT_CLOSED(self);
