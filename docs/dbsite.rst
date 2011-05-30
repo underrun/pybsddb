@@ -24,3 +24,14 @@ DBSite Methods
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/dbsite_close.html>`__
 
+.. function:: remove()
+
+   Removes the site from the replication group. If called at the master
+   site, repmgr updates the membership database directly. If called from
+   a client, this method causes a request to be sent to the master to
+   perform the operation. The method then awaits confirmation.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbsite_remove.html>`__
+
+

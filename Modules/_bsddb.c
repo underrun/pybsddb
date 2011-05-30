@@ -381,6 +381,11 @@ staticforward PyTypeObject DBSequence_Type;
         _CHECK_OBJECT_NOT_CLOSED(curs->sequence, DBError, DBSequence)
 #endif
 
+#if (DBVER >= 52)
+#define CHECK_SITE_NOT_CLOSED(site) \
+         _CHECK_OBJECT_NOT_CLOSED(site->site, DBError, DBSite)
+#endif
+
 #define CHECK_DBFLAG(mydb, flag)    (((mydb)->flags & (flag)) || \
                                      (((mydb)->myenvobj != NULL) && ((mydb)->myenvobj->flags & (flag))))
 
@@ -3982,6 +3987,21 @@ static PyObject*
 DBSite_close(DBSiteObject* self)
 {
     return DBSite_close_internal(self);
+}
+
+static PyObject*
+DBSite_remove(DBSiteObject* self)
+{
+    int err = 0;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->remove(self->site);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
 }
 #endif
 
