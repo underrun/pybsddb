@@ -4069,6 +4069,30 @@ DBSite_get_config(DBSiteObject* self, PyObject* args, PyObject* kwargs)
         return Py_False;
     }
 }
+
+static PyObject*
+DBSite_set_config(DBSiteObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err = 0;
+    u_int32_t which, value;
+    PyObject *valueO;
+    static char* kwnames[] = { "which", "value", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iO:set_config", kwnames,
+                                     &which, &valueO))
+        return NULL;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    value = PyObject_IsTrue(valueO);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->set_config(self->site, which, value);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
 #endif
 
 

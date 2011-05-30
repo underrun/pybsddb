@@ -56,4 +56,11 @@ DBSite Methods
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/dbsite_remove.html>`__
 
+.. function:: set_config(which, value)
+
+   Configures a replication site.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbsite_set_config.html>`__
+
 
