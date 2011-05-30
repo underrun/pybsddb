@@ -4060,7 +4060,14 @@ DBSite_get_config(DBSiteObject* self, PyObject* args, PyObject* kwargs)
     MYDB_END_ALLOW_THREADS;
 
     RETURN_IF_ERR();
-    return NUMBER_FromLong(value);
+
+    if (value) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    } else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
 }
 #endif
 
