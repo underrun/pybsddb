@@ -3960,7 +3960,7 @@ DBLogCursor_set(DBLogCursorObject* self, PyObject* args)
 /* DBSite methods */
 
 
-#if (DBVER > 52)
+#if (DBVER >= 52)
 static PyObject*
 DBSite_close_internal(DBSiteObject* self)
 {
@@ -8732,6 +8732,7 @@ static PyMethodDef DBLogCursor_methods[] = {
 
 #if (DBVER >= 52)
 static PyMethodDef DBSite_methods[] = {
+    {"close",   (PyCFunction)DBSite_close,      METH_NOARGS},
     {NULL,      NULL}       /* sentinel */
 };
 #endif
@@ -9153,7 +9154,7 @@ statichere PyTypeObject DBLogCursor_Type = {
     0,          /*tp_members*/
 };
 
-#if (DBVER > 52)
+#if (DBVER >= 52)
 statichere PyTypeObject DBSite_Type = {
 #if (PY_VERSION_HEX < 0x03000000)
     PyObject_HEAD_INIT(NULL)
