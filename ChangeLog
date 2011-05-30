@@ -5,6 +5,16 @@
     DB_EVENT_REP_LOCAL_SITE_REMOVED, DB_EVENT_REP_CONNECT_BROKEN,
     DB_EVENT_REP_CONNECT_ESTD, DB_EVENT_REP_CONNECT_TRY_FAILED,
     DB_EVENT_REP_INIT_DONE.
+  * New Object: "DB_SITE".
+  * Parameters for "DB_SITE->set_config()": DB_BOOTSTRAP_HELPER,
+    DB_GROUP_CREATOR, DB_LEGACY, DB_LOCAL_SITE, DB_REPMGR_PEER.
+  * Support for the new "Dynamic Environment Configuration":
+    "DB_ENV->set_memory_init()", "DB_ENV->get_memory_init()",
+    "DB_ENV->set_memory_max()", "DB_ENV->get_memory_max()",
+    "DB_ENV->set_lk_tablesize()", "DB_ENV->get_lk_tablesize()",
+    "DB_ENV->mutex_set_init()", "DB_ENV->mutex_get_init()", DB_MEM_LOCK,
+    DB_MEM_LOCKOBJECT, DB_MEM_LOCKER, DB_MEM_LOGID, DB_MEM_TRANSACTION,
+    DB_MEM_THREAD.
 
 5.1.2:
   * 5.1.1 install fails if the bsddb in the standard library is not installed,
