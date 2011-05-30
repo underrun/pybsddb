@@ -16,6 +16,9 @@ class DBReplication(unittest.TestCase) :
     if sys.version_info < (2, 4) :
         def assertTrue(self, expr, msg=None):
             self.failUnless(expr,msg=msg)
+        def assertFalse(self, expr, msg=None):
+            self.failIf(expr,msg=msg)
+
 
     def setUp(self) :
         self.homeDirMaster = get_new_environment_path()
@@ -78,15 +81,46 @@ class DBReplicationManager(DBReplication) :
         master_port = test_support.find_unused_port()
         client_port = test_support.find_unused_port()
         if db.version() >= (5, 2) :
-            site = self.dbenvMaster.repmgr_site("127.0.0.1", master_port)
-            site.set_config(db.DB_GROUP_CREATOR, True)
-            site.set_config(db.DB_LOCAL_SITE, True)
-            site2 = self.dbenvMaster.repmgr_site("127.0.0.1", client_port)
+            self.site = self.dbenvMaster.repmgr_site("127.0.0.1", master_port)
+            self.site.set_config(db.DB_GROUP_CREATOR, True)
+            self.site.set_config(db.DB_LOCAL_SITE, True)
+            self.site2 = self.dbenvMaster.repmgr_site("127.0.0.1", client_port)
 
-            site3 = self.dbenvClient.repmgr_site("127.0.0.1", master_port)
-            site3.set_config(db.DB_BOOTSTRAP_HELPER, True)
-            site4 = self.dbenvClient.repmgr_site("127.0.0.1", client_port)
-            site4.set_config(db.DB_LOCAL_SITE, True)
+            self.site3 = self.dbenvClient.repmgr_site("127.0.0.1", master_port)
+            self.site3.set_config(db.DB_BOOTSTRAP_HELPER, True)
+            self.site4 = self.dbenvClient.repmgr_site("127.0.0.1", client_port)
+            self.site4.set_config(db.DB_LOCAL_SITE, True)
+
+            d = {
+                    db.DB_BOOTSTRAP_HELPER: [False, False, True, False],
+                    db.DB_GROUP_CREATOR: [True, False, False, False],
+                    db.DB_LEGACY: [False, False, False, False],
+                    db.DB_LOCAL_SITE: [True, False, False, True],
+                    db.DB_REPMGR_PEER: [False, False, False, False ],
+                }
+
+            for i, j in d.items() :
+                for k, v in \
+                        zip([self.site, self.site2, self.site3, self.site4], j) :
+                    if v :
+                        self.assertTrue(k.get_config(i))
+                    else :
+                        self.assertFalse(k.get_config(i))
+
+            self.assertNotEqual(self.site.get_eid(), self.site2.get_eid())
+            self.assertNotEqual(self.site3.get_eid(), self.site4.get_eid())
+
+            for i, j in zip([self.site, self.site2, self.site3, self.site4], \
+                    [master_port, client_port, master_port, client_port]) :
+                addr = i.get_address()
+                self.assertEqual(addr, ("127.0.0.1", j))
+
+            for i in [self.site, self.site2] :
+                self.assertEqual(i.get_address(),
+                        self.dbenvMaster.repmgr_site_by_eid(i.get_eid()).get_address())
+            for i in [self.site3, self.site4] :
+                self.assertEqual(i.get_address(),
+                        self.dbenvClient.repmgr_site_by_eid(i.get_eid()).get_address())
         else :
             self.dbenvMaster.repmgr_set_local_site("127.0.0.1", master_port)
             self.dbenvClient.repmgr_set_local_site("127.0.0.1", client_port)
