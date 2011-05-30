@@ -1289,24 +1289,14 @@ Manager.
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/repmgrstart.html>`__
 
-.. function:: repmgr_set_local_site(host, port, flags=0)
+.. function:: repmgr_site(host, port)
 
-   Specifies the host identification string and port number for the
-   local system.
+   Returns a DB_SITE handle that defines a site's host/port network
+   address. You use the DB_SITE handle to configure and manage
+   replication sites.
    `More info...
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgrlocal_site.html>`__
-
-.. function:: repmgr_add_remote_site(host, port, flags=0)
-
-   Adds a new replication site to the replication manager's list of
-   known sites. It is not necessary for all sites in a replication group
-   to know about all other sites in the group.
-
-   Method returns the environment ID assigned to the remote site.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/repmgrremote_site.html>`__
+   C/repmgr_site.html>`__
 
 .. function:: repmgr_set_ack_policy(ack_policy)
 
