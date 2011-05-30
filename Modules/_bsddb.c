@@ -187,8 +187,10 @@ static PyObject* DBOldVersionError;     /* DB_OLD_VERSION */
 static PyObject* DBRunRecoveryError;    /* DB_RUNRECOVERY */
 static PyObject* DBVerifyBadError;      /* DB_VERIFY_BAD */
 static PyObject* DBNoServerError;       /* DB_NOSERVER */
+#if (DBVER < 52)
 static PyObject* DBNoServerHomeError;   /* DB_NOSERVER_HOME */
 static PyObject* DBNoServerIDError;     /* DB_NOSERVER_ID */
+#endif
 static PyObject* DBPageNotFoundError;   /* DB_PAGE_NOTFOUND */
 static PyObject* DBSecondaryBadError;   /* DB_SECONDARY_BAD */
 
@@ -694,8 +696,10 @@ static int makeDBError(int err)
         case DB_RUNRECOVERY:        errObj = DBRunRecoveryError;    break;
         case DB_VERIFY_BAD:         errObj = DBVerifyBadError;      break;
         case DB_NOSERVER:           errObj = DBNoServerError;       break;
+#if (DBVER < 52)
         case DB_NOSERVER_HOME:      errObj = DBNoServerHomeError;   break;
         case DB_NOSERVER_ID:        errObj = DBNoServerIDError;     break;
+#endif
         case DB_PAGE_NOTFOUND:      errObj = DBPageNotFoundError;   break;
         case DB_SECONDARY_BAD:      errObj = DBSecondaryBadError;   break;
         case DB_BUFFER_SMALL:       errObj = DBNoMemoryError;       break;
@@ -5893,7 +5897,7 @@ DBEnv_txn_recover(DBEnvObject* self)
     DBTxnObject *txn;
 #define PREPLIST_LEN 16
     DB_PREPLIST preplist[PREPLIST_LEN];
-#if (DBVER < 48)
+#if (DBVER < 48) || (DBVER >= 52)
     long retp;
 #else
     u_int32_t retp;
@@ -7614,6 +7618,7 @@ DBEnv_repmgr_start(DBEnvObject* self, PyObject* args, PyObject*
     RETURN_NONE();
 }
 
+#if (DBVER < 52)
 static PyObject*
 DBEnv_repmgr_set_local_site(DBEnvObject* self, PyObject* args, PyObject*
         kwargs)
@@ -7660,6 +7665,7 @@ DBEnv_repmgr_add_remote_site(DBEnvObject* self, PyObject* args, PyObject*
     RETURN_IF_ERR();
     return NUMBER_FromLong(eidp);
 }
+#endif
 
 static PyObject*
 DBEnv_repmgr_set_ack_policy(DBEnvObject* self, PyObject* args)
@@ -8812,10 +8818,12 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 45)
     {"repmgr_start", (PyCFunction)DBEnv_repmgr_start,
         METH_VARARGS|METH_KEYWORDS},
+#if (DBVER < 52)
     {"repmgr_set_local_site", (PyCFunction)DBEnv_repmgr_set_local_site,
         METH_VARARGS|METH_KEYWORDS},
     {"repmgr_add_remote_site", (PyCFunction)DBEnv_repmgr_add_remote_site,
         METH_VARARGS|METH_KEYWORDS},
+#endif
     {"repmgr_set_ack_policy", (PyCFunction)DBEnv_repmgr_set_ack_policy,
         METH_VARARGS},
     {"repmgr_get_ack_policy", (PyCFunction)DBEnv_repmgr_get_ack_policy,
@@ -9624,8 +9632,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_LOCK_DEADLOCK);
     ADD_INT(d, DB_LOCK_NOTGRANTED);
     ADD_INT(d, DB_NOSERVER);
+#if (DBVER < 52)
     ADD_INT(d, DB_NOSERVER_HOME);
     ADD_INT(d, DB_NOSERVER_ID);
+#endif
     ADD_INT(d, DB_NOTFOUND);
     ADD_INT(d, DB_OLD_VERSION);
     ADD_INT(d, DB_RUNRECOVERY);
@@ -9746,6 +9756,16 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #if (DBVER >= 48)
     ADD_INT(d, DB_EVENT_REG_ALIVE);
     ADD_INT(d, DB_EVENT_REG_PANIC);
+#endif
+
+#if (DBVER >=52)
+    ADD_INT(d, DB_EVENT_REP_SITE_ADDED);
+    ADD_INT(d, DB_EVENT_REP_SITE_REMOVED);
+    ADD_INT(d, DB_EVENT_REP_LOCAL_SITE_REMOVED);
+    ADD_INT(d, DB_EVENT_REP_CONNECT_BROKEN);
+    ADD_INT(d, DB_EVENT_REP_CONNECT_ESTD);
+    ADD_INT(d, DB_EVENT_REP_CONNECT_TRY_FAILED);
+    ADD_INT(d, DB_EVENT_REP_INIT_DONE);
 #endif
 
     ADD_INT(d, DB_REP_DUPMASTER);
@@ -9940,8 +9960,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     MAKE_EX(DBRunRecoveryError);
     MAKE_EX(DBVerifyBadError);
     MAKE_EX(DBNoServerError);
+#if (DBVER < 52)
     MAKE_EX(DBNoServerHomeError);
     MAKE_EX(DBNoServerIDError);
+#endif
     MAKE_EX(DBPageNotFoundError);
     MAKE_EX(DBSecondaryBadError);
 
