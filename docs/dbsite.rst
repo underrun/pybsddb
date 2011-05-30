@@ -24,6 +24,13 @@ DBSite Methods
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/dbsite_close.html>`__
 
+.. function:: get_eid()
+
+   Returns a replication site's Environment ID (EID).
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbsite_get_eid.html>`__
+
 .. function:: remove()
 
    Removes the site from the replication group. If called at the master

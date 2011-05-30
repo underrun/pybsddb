@@ -4003,6 +4003,22 @@ DBSite_remove(DBSiteObject* self)
     RETURN_IF_ERR();
     RETURN_NONE();
 }
+
+static PyObject*
+DBSite_get_eid(DBSiteObject* self)
+{
+    int err = 0;
+    int eid;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->get_eid(self->site, &eid);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(eid);
+}
 #endif
 
 
