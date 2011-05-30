@@ -1298,6 +1298,14 @@ Manager.
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/repmgr_site.html>`__
 
+.. function:: repmgr_site_by_eid(eid)
+
+   Returns a DB_SITE handle based on the site's Environment ID value.
+   You use the DB_SITE handle to configure and manage replication sites.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/repmgr_site_by_eid.html>`__
+
 .. function:: repmgr_set_ack_policy(ack_policy)
 
    Specifies how master and client sites will handle acknowledgment of

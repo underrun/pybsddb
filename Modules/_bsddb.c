@@ -6673,6 +6673,27 @@ DBEnv_repmgr_site(DBEnvObject* self, PyObject* args, PyObject *kwargs)
     RETURN_IF_ERR();
     return (PyObject*) newDBSiteObject(site, self);
 }
+
+static PyObject*
+DBEnv_repmgr_site_by_eid(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    DB_SITE* site;
+    int eid;
+    static char* kwnames[] = {"eid", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:repmgr_site_by_eid",
+                kwnames, &eid))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_site_by_eid(self->db_env, eid, &site);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return (PyObject*) newDBSiteObject(site, self);
+}
 #endif
 
 
@@ -8732,7 +8753,14 @@ static PyMethodDef DBLogCursor_methods[] = {
 
 #if (DBVER >= 52)
 static PyMethodDef DBSite_methods[] = {
-    {"close",   (PyCFunction)DBSite_close,      METH_NOARGS},
+    {"get_config",  (PyCFunction)DBSite_get_config,
+        METH_VARARGS | METH_KEYWORDS},
+    {"set_config",  (PyCFunction)DBSite_set_config,
+        METH_VARARGS | METH_KEYWORDS},
+    {"remove",      (PyCFunction)DBSite_remove,     METH_NOARGS},
+    {"get_eid",     (PyCFunction)DBSite_get_eid,    METH_NOARGS},
+    {"get_address", (PyCFunction)DBSite_get_address,    METH_NOARGS},
+    {"close",       (PyCFunction)DBSite_close,      METH_NOARGS},
     {NULL,      NULL}       /* sentinel */
 };
 #endif
@@ -8958,6 +8986,8 @@ static PyMethodDef DBEnv_methods[] = {
 #endif
 #if (DBVER >= 52)
     {"repmgr_site", (PyCFunction)DBEnv_repmgr_site,
+        METH_VARARGS | METH_KEYWORDS},
+    {"repmgr_site_by_eid",  (PyCFunction)DBEnv_repmgr_site_by_eid,
         METH_VARARGS | METH_KEYWORDS},
 #endif
     {NULL,      NULL}       /* sentinel */
