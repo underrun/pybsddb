@@ -76,13 +76,26 @@ class DBReplication(unittest.TestCase) :
 class DBReplicationManager(DBReplication) :
     def test01_basic_replication(self) :
         master_port = test_support.find_unused_port()
-        self.dbenvMaster.repmgr_set_local_site("127.0.0.1", master_port)
         client_port = test_support.find_unused_port()
-        self.dbenvClient.repmgr_set_local_site("127.0.0.1", client_port)
-        self.dbenvMaster.repmgr_add_remote_site("127.0.0.1", client_port)
-        self.dbenvClient.repmgr_add_remote_site("127.0.0.1", master_port)
-        self.dbenvMaster.rep_set_nsites(2)
-        self.dbenvClient.rep_set_nsites(2)
+        if db.version() >= (5, 2) :
+            site = self.dbenvMaster.repmgr_site("127.0.0.1", master_port)
+            site.set_config(db.DB_GROUP_CREATOR, True)
+            site.set_config(db.DB_LOCAL_SITE, True)
+            site2 = self.dbenvMaster.repmgr_site("127.0.0.1", client_port)
+
+            site3 = self.dbenvClient.repmgr_site("127.0.0.1", master_port)
+            site3.set_config(db.DB_BOOTSTRAP_HELPER, True)
+            site4 = self.dbenvClient.repmgr_site("127.0.0.1", client_port)
+            site4.set_config(db.DB_LOCAL_SITE, True)
+        else :
+            self.dbenvMaster.repmgr_set_local_site("127.0.0.1", master_port)
+            self.dbenvClient.repmgr_set_local_site("127.0.0.1", client_port)
+            self.dbenvMaster.repmgr_add_remote_site("127.0.0.1", client_port)
+            self.dbenvClient.repmgr_add_remote_site("127.0.0.1", master_port)
+
+            self.dbenvMaster.rep_set_nsites(2)
+            self.dbenvClient.rep_set_nsites(2)
+
         self.dbenvMaster.rep_set_priority(10)
         self.dbenvClient.rep_set_priority(0)
 
@@ -133,17 +146,19 @@ class DBReplicationManager(DBReplication) :
 
         d = self.dbenvMaster.repmgr_site_list()
         self.assertEqual(len(d), 1)
-        self.assertEqual(d[0][0], "127.0.0.1")
-        self.assertEqual(d[0][1], client_port)
-        self.assertTrue((d[0][2]==db.DB_REPMGR_CONNECTED) or \
-                (d[0][2]==db.DB_REPMGR_DISCONNECTED))
+        d = d.values()[0]  # There is only one
+        self.assertEqual(d[0], "127.0.0.1")
+        self.assertEqual(d[1], client_port)
+        self.assertTrue((d[2]==db.DB_REPMGR_CONNECTED) or \
+                (d[2]==db.DB_REPMGR_DISCONNECTED))
 
         d = self.dbenvClient.repmgr_site_list()
         self.assertEqual(len(d), 1)
-        self.assertEqual(d[0][0], "127.0.0.1")
-        self.assertEqual(d[0][1], master_port)
-        self.assertTrue((d[0][2]==db.DB_REPMGR_CONNECTED) or \
-                (d[0][2]==db.DB_REPMGR_DISCONNECTED))
+        d = d.values()[0]  # There is only one
+        self.assertEqual(d[0], "127.0.0.1")
+        self.assertEqual(d[1], master_port)
+        self.assertTrue((d[2]==db.DB_REPMGR_CONNECTED) or \
+                (d[2]==db.DB_REPMGR_DISCONNECTED))
 
         if db.version() >= (4,6) :
             d = self.dbenvMaster.repmgr_stat(flags=db.DB_STAT_CLEAR);

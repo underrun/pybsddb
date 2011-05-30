@@ -9671,6 +9671,9 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #if (DBVER >= 43)
         || (PyType_Ready(&DBSequence_Type) < 0)
 #endif
+#if (DBVER >= 52)
+        || (PyType_Ready(&DBSite_Type) < 0)
+#endif
         ) {
 #if (PY_VERSION_HEX < 0x03000000)
         return;
