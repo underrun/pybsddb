@@ -2920,7 +2920,7 @@ DB_get_transactional(DBObject* self)
     ** "return" should be unreachable.
     */
     RETURN_IF_ERR();
-    assert(0);  /* This coude SHOULD be unreachable */
+    assert(0);  /* This code SHOULD be unreachable */
     return NULL;
 }
 #endif
