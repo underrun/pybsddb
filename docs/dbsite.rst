@@ -32,6 +32,13 @@ DBSite Methods
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/dbsite_get_address.html>`__
 
+.. function:: get_config()
+
+   Returns whether the specified which parameter is currently set.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbsite_get_config.html>`__
+
 .. function:: get_eid()
 
    Returns a replication site's Environment ID (EID).

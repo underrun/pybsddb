@@ -4041,6 +4041,27 @@ DBSite_get_address(DBSiteObject* self)
     return Py_BuildValue("(si)", host, port);
 #endif
 }
+
+static PyObject*
+DBSite_get_config(DBSiteObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err = 0;
+    u_int32_t which, value;
+    static char* kwnames[] = { "which", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:get_config", kwnames,
+                                     &which))
+        return NULL;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->get_config(self->site, which, &value);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(value);
+}
 #endif
 
 
