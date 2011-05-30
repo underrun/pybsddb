@@ -382,8 +382,8 @@ staticforward PyTypeObject DBSequence_Type;
 #endif
 
 #if (DBVER >= 52)
-#define CHECK_SITE_NOT_CLOSED(site) \
-         _CHECK_OBJECT_NOT_CLOSED(site->site, DBError, DBSite)
+#define CHECK_SITE_NOT_CLOSED(db_site) \
+         _CHECK_OBJECT_NOT_CLOSED(db_site->site, DBError, DBSite)
 #endif
 
 #define CHECK_DBFLAG(mydb, flag)    (((mydb)->flags & (flag)) || \
@@ -4018,6 +4018,28 @@ DBSite_get_eid(DBSiteObject* self)
 
     RETURN_IF_ERR();
     return NUMBER_FromLong(eid);
+}
+
+static PyObject*
+DBSite_get_address(DBSiteObject* self)
+{
+    int err = 0;
+    const char *host;
+    u_int port;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->get_address(self->site, &host, &port);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+#if (PY_VERSION_HEX >= 0x02040000)
+    return Py_BuildValue("(sI)", host, port);
+#else
+    return Py_BuildValue("(si)", host, port);
+#endif
 }
 #endif
 

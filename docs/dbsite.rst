@@ -24,6 +24,14 @@ DBSite Methods
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/dbsite_close.html>`__
 
+.. function:: get_address()
+
+   Returns a replication site's network address. That is, this method
+   returns a tuple with the site's hostname and port. 
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbsite_get_address.html>`__
+
 .. function:: get_eid()
 
    Returns a replication site's Environment ID (EID).
