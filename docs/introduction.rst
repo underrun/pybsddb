@@ -77,6 +77,8 @@ The bsddb3.db extension module provides the following object types:
   objects that return an increasing or decreasing sequence of integers.
   Opening a sequence handle associates it with a record in a database.
 
+- **DBSite:** Site object for Replication Manager.
+
 Top level functions
 -------------------
 

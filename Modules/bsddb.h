@@ -61,7 +61,7 @@
  *
  * http://www.python.org/peps/pep-0291.html
  *
- * This module contains 6 types:
+ * This module contains 7 types:
  *
  * DB           (Database)
  * DBCursor     (Database Cursor)
@@ -69,6 +69,7 @@
  * DBTxn        (An explicit database transaction)
  * DBLock       (A lock handle)
  * DBSequence   (Sequence)
+ * DBSite       (Site)
  *
  * New datatypes:
  *
@@ -109,7 +110,7 @@
 #error "eek! DBVER can't handle minor versions > 9"
 #endif
 
-#define PY_BSDDB_VERSION "5.1.3devel2"
+#define PY_BSDDB_VERSION "5.2.0devel2"
 
 /* Python object definitions */
 
@@ -129,6 +130,9 @@ struct DBCursorObject;    /* Forward declaration */
 struct DBLogCursorObject; /* Forward declaration */
 struct DBTxnObject;       /* Forward declaration */
 struct DBSequenceObject;  /* Forward declaration */
+#if (DBVER >= 52)
+struct DBSiteObject;      /* Forward declaration */
+#endif
 
 typedef struct {
     PyObject_HEAD
@@ -140,6 +144,9 @@ typedef struct {
     struct DBObject *children_dbs;
     struct DBTxnObject *children_txns;
     struct DBLogCursorObject *children_logcursors;
+#if (DBVER >= 52)
+    struct DBSiteObject *children_sites;
+#endif
     PyObject        *private_obj;
     PyObject        *rep_transport;
     PyObject        *in_weakreflist; /* List of weak references */
@@ -207,6 +214,16 @@ typedef struct DBLogCursorObject {
     PyObject        *in_weakreflist; /* List of weak references */
 } DBLogCursorObject;
 
+#if (DBVER >= 52)
+typedef struct DBSiteObject {
+    PyObject_HEAD
+    DB_SITE         *site;
+    DBEnvObject     *env;
+    struct DBSiteObject **sibling_prev_p;
+    struct DBSiteObject *sibling_next;
+    PyObject    *in_weakreflist; /* List of weak references */
+} DBSiteObject;
+#endif
 
 typedef struct {
     PyObject_HEAD

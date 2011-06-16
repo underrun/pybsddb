@@ -64,7 +64,7 @@
  *
  * http://www.python.org/peps/pep-0291.html
  *
- * This module contains 6 types:
+ * This module contains 7 types:
  *
  * DB           (Database)
  * DBCursor     (Database Cursor)
@@ -72,6 +72,7 @@
  * DBTxn        (An explicit database transaction)
  * DBLock       (A lock handle)
  * DBSequence   (Sequence)
+ * DBSite       (Site)
  *
  * More datatypes added:
  *
@@ -187,8 +188,10 @@ static PyObject* DBOldVersionError;     /* DB_OLD_VERSION */
 static PyObject* DBRunRecoveryError;    /* DB_RUNRECOVERY */
 static PyObject* DBVerifyBadError;      /* DB_VERIFY_BAD */
 static PyObject* DBNoServerError;       /* DB_NOSERVER */
+#if (DBVER < 52)
 static PyObject* DBNoServerHomeError;   /* DB_NOSERVER_HOME */
 static PyObject* DBNoServerIDError;     /* DB_NOSERVER_ID */
+#endif
 static PyObject* DBPageNotFoundError;   /* DB_PAGE_NOTFOUND */
 static PyObject* DBSecondaryBadError;   /* DB_SECONDARY_BAD */
 
@@ -249,7 +252,7 @@ static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 #endif
 
 staticforward PyTypeObject DB_Type, DBCursor_Type, DBEnv_Type, DBTxn_Type,
-              DBLock_Type, DBLogCursor_Type;
+              DBLock_Type, DBLogCursor_Type, DBSite_Type;
 #if (DBVER >= 43)
 staticforward PyTypeObject DBSequence_Type;
 #endif
@@ -267,6 +270,9 @@ staticforward PyTypeObject DBSequence_Type;
 #define DBLockObject_Check(v)       (Py_TYPE(v) == &DBLock_Type)
 #if (DBVER >= 43)
 #define DBSequenceObject_Check(v)   (Py_TYPE(v) == &DBSequence_Type)
+#endif
+#if (DBVER >= 52)
+#define DBSiteObject_Check(v)       (Py_TYPE(v) == &DBSite_Type)
 #endif
 
 #if (DBVER < 46)
@@ -373,6 +379,11 @@ staticforward PyTypeObject DBSequence_Type;
 #if (DBVER >= 43)
 #define CHECK_SEQUENCE_NOT_CLOSED(curs) \
         _CHECK_OBJECT_NOT_CLOSED(curs->sequence, DBError, DBSequence)
+#endif
+
+#if (DBVER >= 52)
+#define CHECK_SITE_NOT_CLOSED(db_site) \
+         _CHECK_OBJECT_NOT_CLOSED(db_site->site, DBError, DBSite)
 #endif
 
 #define CHECK_DBFLAG(mydb, flag)    (((mydb)->flags & (flag)) || \
@@ -694,8 +705,10 @@ static int makeDBError(int err)
         case DB_RUNRECOVERY:        errObj = DBRunRecoveryError;    break;
         case DB_VERIFY_BAD:         errObj = DBVerifyBadError;      break;
         case DB_NOSERVER:           errObj = DBNoServerError;       break;
+#if (DBVER < 52)
         case DB_NOSERVER_HOME:      errObj = DBNoServerHomeError;   break;
         case DB_NOSERVER_ID:        errObj = DBNoServerIDError;     break;
+#endif
         case DB_PAGE_NOTFOUND:      errObj = DBPageNotFoundError;   break;
         case DB_SECONDARY_BAD:      errObj = DBSecondaryBadError;   break;
         case DB_BUFFER_SMALL:       errObj = DBNoMemoryError;       break;
@@ -1143,6 +1156,9 @@ newDBEnvObject(int flags)
     self->children_dbs = NULL;
     self->children_txns = NULL;
     self->children_logcursors = NULL ;
+#if (DBVER >= 52)
+    self->children_sites = NULL;
+#endif
     Py_INCREF(Py_None);
     self->private_obj = Py_None;
     Py_INCREF(Py_None);
@@ -1390,6 +1406,54 @@ DBSequence_dealloc(DBSequenceObject* self)
     }
 
     Py_DECREF(self->mydb);
+    PyObject_Del(self);
+}
+#endif
+
+#if (DBVER >= 52)
+static DBSiteObject*
+newDBSiteObject(DB_SITE* sitep, DBEnvObject* env)
+{
+    DBSiteObject* self;
+
+    self = PyObject_New(DBSiteObject, &DBSite_Type);
+
+    if (self == NULL)
+        return NULL;
+
+    self->site = sitep;
+    self->env = env;
+
+    INSERT_IN_DOUBLE_LINKED_LIST(self->env->children_sites, self);
+
+    self->in_weakreflist = NULL;
+    Py_INCREF(self->env);
+    return self;
+}
+
+/* Forward declaration */
+static PyObject *DBSite_close_internal(DBSiteObject* self);
+
+static void
+DBSite_dealloc(DBSiteObject* self)
+{
+    PyObject *dummy;
+
+    if (self->site != NULL) {
+        dummy = DBSite_close_internal(self);
+        /*
+        ** Raising exceptions while doing
+        ** garbage collection is a fatal error.
+        */
+        if (dummy)
+            Py_DECREF(dummy);
+        else
+            PyErr_Clear();
+    }
+    if (self->in_weakreflist != NULL) {
+        PyObject_ClearWeakRefs((PyObject *) self);
+    }
+    Py_DECREF(self->env);
     PyObject_Del(self);
 }
 #endif
@@ -2856,7 +2920,7 @@ DB_get_transactional(DBObject* self)
     ** "return" should be unreachable.
     */
     RETURN_IF_ERR();
-    assert(0);  /* This coude SHOULD be unreachable */
+    assert(0);  /* This code SHOULD be unreachable */
     return NULL;
 }
 #endif
@@ -3897,6 +3961,140 @@ DBLogCursor_set(DBLogCursorObject* self, PyObject* args)
 }
 
 
+/* --------------------------------------------------------------------- */
+/* DBSite methods */
+
+
+#if (DBVER >= 52)
+static PyObject*
+DBSite_close_internal(DBSiteObject* self)
+{
+    int err = 0;
+
+    if (self->site != NULL) {
+        EXTRACT_FROM_DOUBLE_LINKED_LIST(self);
+
+        MYDB_BEGIN_ALLOW_THREADS;
+        err = self->site->close(self->site);
+        MYDB_END_ALLOW_THREADS;
+        self->site = NULL;
+    }
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBSite_close(DBSiteObject* self)
+{
+    return DBSite_close_internal(self);
+}
+
+static PyObject*
+DBSite_remove(DBSiteObject* self)
+{
+    int err = 0;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->remove(self->site);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static PyObject*
+DBSite_get_eid(DBSiteObject* self)
+{
+    int err = 0;
+    int eid;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->get_eid(self->site, &eid);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    return NUMBER_FromLong(eid);
+}
+
+static PyObject*
+DBSite_get_address(DBSiteObject* self)
+{
+    int err = 0;
+    const char *host;
+    u_int port;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->get_address(self->site, &host, &port);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+#if (PY_VERSION_HEX >= 0x02040000)
+    return Py_BuildValue("(sI)", host, port);
+#else
+    return Py_BuildValue("(si)", host, port);
+#endif
+}
+
+static PyObject*
+DBSite_get_config(DBSiteObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err = 0;
+    u_int32_t which, value;
+    static char* kwnames[] = { "which", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:get_config", kwnames,
+                                     &which))
+        return NULL;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->get_config(self->site, which, &value);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+
+    if (value) {
+        Py_INCREF(Py_True);
+        return Py_True;
+    } else {
+        Py_INCREF(Py_False);
+        return Py_False;
+    }
+}
+
+static PyObject*
+DBSite_set_config(DBSiteObject* self, PyObject* args, PyObject* kwargs)
+{
+    int err = 0;
+    u_int32_t which, value;
+    PyObject *valueO;
+    static char* kwnames[] = { "which", "value", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iO:set_config", kwnames,
+                                     &which, &valueO))
+        return NULL;
+
+    CHECK_SITE_NOT_CLOSED(self);
+
+    value = PyObject_IsTrue(valueO);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->site->set_config(self->site, which, value);
+    MYDB_END_ALLOW_THREADS;
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
+
 
 /* --------------------------------------------------------------------- */
 /* DBCursor methods */
@@ -4683,6 +4881,10 @@ DBEnv_close_internal(DBEnvObject* self, int flags)
         }
         while(self->children_logcursors) {
             dummy = DBLogCursor_close_internal(self->children_logcursors);
+            Py_XDECREF(dummy);
+        }
+        while(self->children_sites) {
+            dummy = DBSite_close_internal(self->children_sites);
             Py_XDECREF(dummy);
         }
     }
@@ -5894,7 +6096,7 @@ DBEnv_txn_recover(DBEnvObject* self)
     DBTxnObject *txn;
 #define PREPLIST_LEN 16
     DB_PREPLIST preplist[PREPLIST_LEN];
-#if (DBVER < 48)
+#if (DBVER < 48) || (DBVER >= 52)
     long retp;
 #else
     u_int32_t retp;
@@ -6558,6 +6760,52 @@ DBEnv_log_archive(DBEnvObject* self, PyObject* args)
     }
     return list;
 }
+
+
+#if (DBVER >= 52)
+static PyObject*
+DBEnv_repmgr_site(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    DB_SITE* site;
+    char *host;
+    u_int port;
+    static char* kwnames[] = {"host", "port", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "si:repmgr_site", kwnames,
+                                     &host, &port))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_site(self->db_env, host, port, &site, 0);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return (PyObject*) newDBSiteObject(site, self);
+}
+
+static PyObject*
+DBEnv_repmgr_site_by_eid(DBEnvObject* self, PyObject* args, PyObject *kwargs)
+{
+    int err;
+    DB_SITE* site;
+    int eid;
+    static char* kwnames[] = {"eid", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:repmgr_site_by_eid",
+                kwnames, &eid))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->repmgr_site_by_eid(self->db_env, eid, &site);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    return (PyObject*) newDBSiteObject(site, self);
+}
+#endif
 
 
 #if (DBVER >= 44)
@@ -7615,6 +7863,7 @@ DBEnv_repmgr_start(DBEnvObject* self, PyObject* args, PyObject*
     RETURN_NONE();
 }
 
+#if (DBVER < 52)
 static PyObject*
 DBEnv_repmgr_set_local_site(DBEnvObject* self, PyObject* args, PyObject*
         kwargs)
@@ -7661,6 +7910,7 @@ DBEnv_repmgr_add_remote_site(DBEnvObject* self, PyObject* args, PyObject*
     RETURN_IF_ERR();
     return NUMBER_FromLong(eidp);
 }
+#endif
 
 static PyObject*
 DBEnv_repmgr_set_ack_policy(DBEnvObject* self, PyObject* args)
@@ -8612,6 +8862,19 @@ static PyMethodDef DBLogCursor_methods[] = {
     {NULL,      NULL}       /* sentinel */
 };
 
+#if (DBVER >= 52)
+static PyMethodDef DBSite_methods[] = {
+    {"get_config",  (PyCFunction)DBSite_get_config,
+        METH_VARARGS | METH_KEYWORDS},
+    {"set_config",  (PyCFunction)DBSite_set_config,
+        METH_VARARGS | METH_KEYWORDS},
+    {"remove",      (PyCFunction)DBSite_remove,     METH_NOARGS},
+    {"get_eid",     (PyCFunction)DBSite_get_eid,    METH_NOARGS},
+    {"get_address", (PyCFunction)DBSite_get_address,    METH_NOARGS},
+    {"close",       (PyCFunction)DBSite_close,      METH_NOARGS},
+    {NULL,      NULL}       /* sentinel */
+};
+#endif
 
 static PyMethodDef DBEnv_methods[] = {
     {"close",           (PyCFunction)DBEnv_close,            METH_VARARGS},
@@ -8813,10 +9076,12 @@ static PyMethodDef DBEnv_methods[] = {
 #if (DBVER >= 45)
     {"repmgr_start", (PyCFunction)DBEnv_repmgr_start,
         METH_VARARGS|METH_KEYWORDS},
+#if (DBVER < 52)
     {"repmgr_set_local_site", (PyCFunction)DBEnv_repmgr_set_local_site,
         METH_VARARGS|METH_KEYWORDS},
     {"repmgr_add_remote_site", (PyCFunction)DBEnv_repmgr_add_remote_site,
         METH_VARARGS|METH_KEYWORDS},
+#endif
     {"repmgr_set_ack_policy", (PyCFunction)DBEnv_repmgr_set_ack_policy,
         METH_VARARGS},
     {"repmgr_get_ack_policy", (PyCFunction)DBEnv_repmgr_get_ack_policy,
@@ -8829,6 +9094,12 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS|METH_KEYWORDS},
     {"repmgr_stat_print", (PyCFunction)DBEnv_repmgr_stat_print,
         METH_VARARGS|METH_KEYWORDS},
+#endif
+#if (DBVER >= 52)
+    {"repmgr_site", (PyCFunction)DBEnv_repmgr_site,
+        METH_VARARGS | METH_KEYWORDS},
+    {"repmgr_site_by_eid",  (PyCFunction)DBEnv_repmgr_site_by_eid,
+        METH_VARARGS | METH_KEYWORDS},
 #endif
     {NULL,      NULL}       /* sentinel */
 };
@@ -9024,6 +9295,49 @@ statichere PyTypeObject DBLogCursor_Type = {
     0,          /*tp_members*/
 };
 
+#if (DBVER >= 52)
+statichere PyTypeObject DBSite_Type = {
+#if (PY_VERSION_HEX < 0x03000000)
+    PyObject_HEAD_INIT(NULL)
+    0,                  /*ob_size*/
+#else
+    PyVarObject_HEAD_INIT(NULL, 0)
+#endif
+    "DBSite",         /*tp_name*/
+    sizeof(DBSiteObject),  /*tp_basicsize*/
+    0,          /*tp_itemsize*/
+    /* methods */
+    (destructor)DBSite_dealloc,/*tp_dealloc*/
+    0,          /*tp_print*/
+    0,          /*tp_getattr*/
+    0,          /*tp_setattr*/
+    0,          /*tp_compare*/
+    0,          /*tp_repr*/
+    0,          /*tp_as_number*/
+    0,          /*tp_as_sequence*/
+    0,          /*tp_as_mapping*/
+    0,          /*tp_hash*/
+    0,          /*tp_call*/
+    0,          /*tp_str*/
+    0,          /*tp_getattro*/
+    0,          /*tp_setattro*/
+    0,          /*tp_as_buffer*/
+#if (PY_VERSION_HEX < 0x03000000)
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_WEAKREFS,      /* tp_flags */
+#else
+    Py_TPFLAGS_DEFAULT,      /* tp_flags */
+#endif
+    0,          /* tp_doc */
+    0,          /* tp_traverse */
+    0,          /* tp_clear */
+    0,          /* tp_richcompare */
+    offsetof(DBSiteObject, in_weakreflist),   /* tp_weaklistoffset */
+    0,          /*tp_iter*/
+    0,          /*tp_iternext*/
+    DBSite_methods, /*tp_methods*/
+    0,          /*tp_members*/
+};
+#endif
 
 statichere PyTypeObject DBEnv_Type = {
 #if (PY_VERSION_HEX < 0x03000000)
@@ -9358,6 +9672,9 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #if (DBVER >= 43)
         || (PyType_Ready(&DBSequence_Type) < 0)
 #endif
+#if (DBVER >= 52)
+        || (PyType_Ready(&DBSite_Type) < 0)
+#endif
         ) {
 #if (PY_VERSION_HEX < 0x03000000)
         return;
@@ -9625,8 +9942,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_LOCK_DEADLOCK);
     ADD_INT(d, DB_LOCK_NOTGRANTED);
     ADD_INT(d, DB_NOSERVER);
+#if (DBVER < 52)
     ADD_INT(d, DB_NOSERVER_HOME);
     ADD_INT(d, DB_NOSERVER_ID);
+#endif
     ADD_INT(d, DB_NOTFOUND);
     ADD_INT(d, DB_OLD_VERSION);
     ADD_INT(d, DB_RUNRECOVERY);
@@ -9747,6 +10066,29 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 #if (DBVER >= 48)
     ADD_INT(d, DB_EVENT_REG_ALIVE);
     ADD_INT(d, DB_EVENT_REG_PANIC);
+#endif
+
+#if (DBVER >=52)
+    ADD_INT(d, DB_EVENT_REP_SITE_ADDED);
+    ADD_INT(d, DB_EVENT_REP_SITE_REMOVED);
+    ADD_INT(d, DB_EVENT_REP_LOCAL_SITE_REMOVED);
+    ADD_INT(d, DB_EVENT_REP_CONNECT_BROKEN);
+    ADD_INT(d, DB_EVENT_REP_CONNECT_ESTD);
+    ADD_INT(d, DB_EVENT_REP_CONNECT_TRY_FAILED);
+    ADD_INT(d, DB_EVENT_REP_INIT_DONE);
+
+    ADD_INT(d, DB_MEM_LOCK);
+    ADD_INT(d, DB_MEM_LOCKOBJECT);
+    ADD_INT(d, DB_MEM_LOCKER);
+    ADD_INT(d, DB_MEM_LOGID);
+    ADD_INT(d, DB_MEM_TRANSACTION);
+    ADD_INT(d, DB_MEM_THREAD);
+
+    ADD_INT(d, DB_BOOTSTRAP_HELPER);
+    ADD_INT(d, DB_GROUP_CREATOR);
+    ADD_INT(d, DB_LEGACY);
+    ADD_INT(d, DB_LOCAL_SITE);
+    ADD_INT(d, DB_REPMGR_PEER);
 #endif
 
     ADD_INT(d, DB_REP_DUPMASTER);
@@ -9941,8 +10283,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     MAKE_EX(DBRunRecoveryError);
     MAKE_EX(DBVerifyBadError);
     MAKE_EX(DBNoServerError);
+#if (DBVER < 52)
     MAKE_EX(DBNoServerHomeError);
     MAKE_EX(DBNoServerIDError);
+#endif
     MAKE_EX(DBPageNotFoundError);
     MAKE_EX(DBSecondaryBadError);
 

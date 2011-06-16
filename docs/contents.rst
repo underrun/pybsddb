@@ -43,5 +43,6 @@ Documentation Index
   dbtxn.rst
   dblock.rst
   dbsequence.rst
+  dbsite.rst
   history.rst
 
