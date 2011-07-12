@@ -8888,7 +8888,7 @@ static PyMethodDef DB_methods[] = {
     {"set_bt_compare",  (PyCFunction)DB_set_bt_compare, METH_O},
     {"set_cachesize",   (PyCFunction)DB_set_cachesize,  METH_VARARGS},
     {"get_cachesize",   (PyCFunction)DB_get_cachesize,  METH_NOARGS},
-    {"set_dup_compare",  (PyCFunction)DB_set_dup_compare, METH_O},
+    {"set_dup_compare", (PyCFunction)DB_set_dup_compare, METH_O},
     {"set_encrypt",     (PyCFunction)DB_set_encrypt,    METH_VARARGS|METH_KEYWORDS},
     {"get_encrypt_flags", (PyCFunction)DB_get_encrypt_flags, METH_NOARGS},
     {"set_flags",       (PyCFunction)DB_set_flags,      METH_VARARGS},
