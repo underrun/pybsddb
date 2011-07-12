@@ -333,6 +333,18 @@ DB Methods
    <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
    C/dbget_cachesize.html>`__
 
+.. function:: set_dup_compare(compareFunc)
+
+   Set the duplicate data item comparison function. This can only be
+   called once before the database has been opened. compareFunc takes
+   two arguments: (left key string, right key string) It must return a
+   -1, 0, 1 integer similar to cmp. You can shoot your database in the
+   foot, beware!  Read the Berkeley DB docs for the full details of how
+   the comparison function MUST behave.
+   `More info...
+   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
+   C/dbset_dup_compare.html>`__
+
 .. function:: set_get_returns_none(flag)
 
    Controls what get and related methods do when a key is not found.
