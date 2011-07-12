@@ -1,6 +1,8 @@
 5.2.1:
   * Support for "DBEnv->set_intermediate_dir()", available in
     Berkeley DB 4.3-4.6.  Patch by Garret Cooper.
+  * Support for "DB->set_dup_compare()".  Original patches by
+    Nikita M. Kozlovsky and Ben Schmeckpeper.
 
 5.2.0:
   * Support for Berkeley DB 5.2.

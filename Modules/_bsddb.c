@@ -959,6 +959,7 @@ newDBObject(DBEnvObject* arg, int flags)
 #endif
     self->associateCallback = NULL;
     self->btCompareCallback = NULL;
+    self->dupCompareCallback = NULL;
     self->primaryDBType = 0;
     Py_INCREF(Py_None);
     self->private_obj = Py_None;
@@ -1039,6 +1040,10 @@ DB_dealloc(DBObject* self)
     if (self->btCompareCallback != NULL) {
         Py_DECREF(self->btCompareCallback);
         self->btCompareCallback = NULL;
+    }
+    if (self->dupCompareCallback != NULL) {
+        Py_DECREF(self->dupCompareCallback);
+        self->dupCompareCallback = NULL;
     }
     Py_DECREF(self->private_obj);
     PyObject_Del(self);
@@ -2822,6 +2827,120 @@ DB_set_bt_compare(DBObject* self, PyObject* comparator)
 	/* restore the old state in case of error */
 	Py_DECREF(comparator);
 	self->btCompareCallback = NULL;
+    }
+
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+
+static int
+_db_dupCompareCallback(DB* db,
+		    const DBT *leftKey,
+		    const DBT *rightKey)
+{
+    int res = 0;
+    PyObject *args;
+    PyObject *result = NULL;
+    DBObject *self = (DBObject *)db->app_private;
+
+    if (self == NULL || self->dupCompareCallback == NULL) {
+	MYDB_BEGIN_BLOCK_THREADS;
+	PyErr_SetString(PyExc_TypeError,
+			(self == 0
+			 ? "DB_dup_compare db is NULL."
+			 : "DB_dup_compare callback is NULL."));
+	/* we're in a callback within the DB code, we can't raise */
+	PyErr_Print();
+	res = _default_cmp(leftKey, rightKey);
+	MYDB_END_BLOCK_THREADS;
+    } else {
+	MYDB_BEGIN_BLOCK_THREADS;
+
+	args = BuildValue_SS(leftKey->data, leftKey->size, rightKey->data, rightKey->size);
+	if (args != NULL) {
+		result = PyEval_CallObject(self->dupCompareCallback, args);
+	}
+	if (args == NULL || result == NULL) {
+	    /* we're in a callback within the DB code, we can't raise */
+	    PyErr_Print();
+	    res = _default_cmp(leftKey, rightKey);
+	} else if (NUMBER_Check(result)) {
+	    res = NUMBER_AsLong(result);
+	} else {
+	    PyErr_SetString(PyExc_TypeError,
+			    "DB_dup_compare callback MUST return an int.");
+	    /* we're in a callback within the DB code, we can't raise */
+	    PyErr_Print();
+	    res = _default_cmp(leftKey, rightKey);
+	}
+
+	Py_XDECREF(args);
+	Py_XDECREF(result);
+
+	MYDB_END_BLOCK_THREADS;
+    }
+    return res;
+}
+
+static PyObject*
+DB_set_dup_compare(DBObject* self, PyObject* comparator)
+{
+    int err;
+    PyObject *tuple, *result;
+
+    CHECK_DB_NOT_CLOSED(self);
+
+    if (!PyCallable_Check(comparator)) {
+	makeTypeError("Callable", comparator);
+	return NULL;
+    }
+
+    /*
+     * Perform a test call of the comparator function with two empty
+     * string objects here.  verify that it returns an int (0).
+     * err if not.
+     */
+    tuple = Py_BuildValue("(ss)", "", "");
+    result = PyEval_CallObject(comparator, tuple);
+    Py_DECREF(tuple);
+    if (result == NULL)
+        return NULL;
+    if (!NUMBER_Check(result)) {
+	Py_DECREF(result);
+	PyErr_SetString(PyExc_TypeError,
+		        "callback MUST return an int");
+	return NULL;
+    } else if (NUMBER_AsLong(result) != 0) {
+	Py_DECREF(result);
+	PyErr_SetString(PyExc_TypeError,
+		        "callback failed to return 0 on two empty strings");
+	return NULL;
+    }
+    Py_DECREF(result);
+
+    /* We don't accept multiple set_dup_compare operations, in order to
+     * simplify the code. This would have no real use, as one cannot
+     * change the function once the db is opened anyway */
+    if (self->dupCompareCallback != NULL) {
+	PyErr_SetString(PyExc_RuntimeError, "set_dup_compare() cannot be called more than once");
+	return NULL;
+    }
+
+    Py_INCREF(comparator);
+    self->dupCompareCallback = comparator;
+
+    /* This is to workaround a problem with un-initialized threads (see
+       comment in DB_associate) */
+#ifdef WITH_THREAD
+    PyEval_InitThreads();
+#endif
+
+    err = self->db->set_dup_compare(self->db, _db_dupCompareCallback);
+
+    if (err) {
+	/* restore the old state in case of error */
+	Py_DECREF(comparator);
+	self->dupCompareCallback = NULL;
     }
 
     RETURN_IF_ERR();
@@ -8769,6 +8888,7 @@ static PyMethodDef DB_methods[] = {
     {"set_bt_compare",  (PyCFunction)DB_set_bt_compare, METH_O},
     {"set_cachesize",   (PyCFunction)DB_set_cachesize,  METH_VARARGS},
     {"get_cachesize",   (PyCFunction)DB_get_cachesize,  METH_NOARGS},
+    {"set_dup_compare",  (PyCFunction)DB_set_dup_compare, METH_O},
     {"set_encrypt",     (PyCFunction)DB_set_encrypt,    METH_VARARGS|METH_KEYWORDS},
     {"get_encrypt_flags", (PyCFunction)DB_get_encrypt_flags, METH_NOARGS},
     {"set_flags",       (PyCFunction)DB_set_flags,      METH_VARARGS},
