@@ -8,13 +8,9 @@
   * New Object: "DB_SITE". Support for all its methods.
   * Parameters for "DB_SITE->set_config()": DB_BOOTSTRAP_HELPER,
     DB_GROUP_CREATOR, DB_LEGACY, DB_LOCAL_SITE, DB_REPMGR_PEER.
-  * Support for the new "Dynamic Environment Configuration":
-    "DB_ENV->set_memory_init()", "DB_ENV->get_memory_init()",
-    "DB_ENV->set_memory_max()", "DB_ENV->get_memory_max()",
-    "DB_ENV->set_lk_tablesize()", "DB_ENV->get_lk_tablesize()",
-    "DB_ENV->mutex_set_init()", "DB_ENV->mutex_get_init()", DB_MEM_LOCK,
-    DB_MEM_LOCKOBJECT, DB_MEM_LOCKER, DB_MEM_LOGID, DB_MEM_TRANSACTION,
-    DB_MEM_THREAD.
+  * Support for some stuff in the new "Dynamic Environment Configuration":
+    DB_MEM_LOCK, DB_MEM_LOCKOBJECT, DB_MEM_LOCKER, DB_MEM_LOGID,
+    DB_MEM_TRANSACTION, DB_MEM_THREAD.
   * Add "bytes" to "DBEnv_memp_stat()". Original patch from Garrett Cooper.
 
 5.1.2:
