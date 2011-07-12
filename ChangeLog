@@ -1,4 +1,6 @@
 5.2.1:
+  * Support for "DBEnv->set_intermediate_dir()", available in
+    Berkeley DB 4.3-4.6.  Patch by Garret Cooper.
 
 5.2.0:
   * Support for Berkeley DB 5.2.

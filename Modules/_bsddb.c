@@ -7032,6 +7032,27 @@ DBEnv_get_intermediate_dir_mode(DBEnvObject* self)
 }
 #endif
 
+#if (DBVER >= 43 && DBVER < 47)
+static PyObject*
+DBEnv_set_intermediate_dir(DBEnvObject* self, PyObject* args)
+{
+    int err;
+    int mode;
+    u_int32_t flags;
+
+    if (!PyArg_ParseTuple(args, "iI:set_intermediate_dir", &mode, &flags))
+        return NULL;
+
+    CHECK_ENV_NOT_CLOSED(self);
+
+    MYDB_BEGIN_ALLOW_THREADS;
+    err = self->db_env->set_intermediate_dir(self->db_env, mode, flags);
+    MYDB_END_ALLOW_THREADS;
+    RETURN_IF_ERR();
+    RETURN_NONE();
+}
+#endif
+
 static PyObject*
 DBEnv_get_open_flags(DBEnvObject* self)
 {
@@ -9034,6 +9055,10 @@ static PyMethodDef DBEnv_methods[] = {
         METH_VARARGS},
     {"get_intermediate_dir_mode", (PyCFunction)DBEnv_get_intermediate_dir_mode,
         METH_NOARGS},
+#endif
+#if (DBVER >= 43 && DBVER < 47)
+    {"set_intermediate_dir", (PyCFunction)DBEnv_set_intermediate_dir,
+        METH_VARARGS},
 #endif
     {"rep_start",       (PyCFunction)DBEnv_rep_start,
         METH_VARARGS|METH_KEYWORDS},
