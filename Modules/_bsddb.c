@@ -252,9 +252,12 @@ static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 #endif
 
 staticforward PyTypeObject DB_Type, DBCursor_Type, DBEnv_Type, DBTxn_Type,
-              DBLock_Type, DBLogCursor_Type, DBSite_Type;
+              DBLock_Type, DBLogCursor_Type;
 #if (DBVER >= 43)
 staticforward PyTypeObject DBSequence_Type;
+#endif
+#if (DBVER >= 52)
+staticforward PyTypeObject DBSite_Type;
 #endif
 
 #ifndef Py_TYPE
@@ -4883,10 +4886,12 @@ DBEnv_close_internal(DBEnvObject* self, int flags)
             dummy = DBLogCursor_close_internal(self->children_logcursors);
             Py_XDECREF(dummy);
         }
+#if (DBVER >= 52)
         while(self->children_sites) {
             dummy = DBSite_close_internal(self->children_sites);
             Py_XDECREF(dummy);
         }
+#endif
     }
 
     self->closed = 1;
