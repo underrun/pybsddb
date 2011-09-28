@@ -3,6 +3,7 @@
     Berkeley DB 4.3-4.6.  Patch by Garret Cooper.
   * Support for "DB->set_dup_compare()".  Original patches by
     Nikita M. Kozlovsky and Ben Schmeckpeper.
+  * Fixed a testsuite compatibility problem with BDB 5.2.
 
 5.2.0:
   * Support for Berkeley DB 5.2.

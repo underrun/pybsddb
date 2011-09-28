@@ -327,7 +327,7 @@ class DBEnv_log_txn(DBEnv) :
         self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL |
                 db.DB_INIT_LOG | db.DB_INIT_TXN)
 
-    if db.version() >= (4, 5) :
+    if (db.version() >= (4, 5)) and (db.version() < (5, 2)) :
         def test_tx_max(self) :
             txns=[]
             def tx() :
