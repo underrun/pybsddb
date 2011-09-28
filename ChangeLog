@@ -1,4 +1,6 @@
 5.2.1:
+OJO: https://forums.oracle.com/forums/thread.jspa?messageID=9902860
+Desactivo este test de momento.
   * Support for "DBEnv->set_intermediate_dir()", available in
     Berkeley DB 4.3-4.6.  Patch by Garret Cooper.
   * Support for "DB->set_dup_compare()".  Original patches by
