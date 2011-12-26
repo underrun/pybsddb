@@ -6,6 +6,8 @@ Desactivo este test de momento.
   * Support for "DB->set_dup_compare()".  Original patches by
     Nikita M. Kozlovsky and Ben Schmeckpeper.
   * Fixed a testsuite compatibility problem with BDB 5.2.
+  * If we are running Solaris or derivatives, and 64bit python,
+    try to find the library under "/usr/local/Berkeley.*.*/64/".
 
 5.2.0:
   * Support for Berkeley DB 5.2.

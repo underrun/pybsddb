@@ -135,22 +135,32 @@ if os.name == 'posix':
         # top of the normal inc_dirs.
         db_inc_paths = []
         db_major = {}  # We can use a SET when we drop Python 2.3 support
+        bitness = ""
+        import platform
+        if (platform.architecture()[0] == "64bit") and \
+           (platform.platform(True, True).startswith("Solaris-")) :
+               bitness = "/64"
+
         for major, minor in db_ver_list :
             if major not in db_major :
                 db_major[major] = None
                 db_inc_paths.extend([
-                    '/usr/include/db%d' % major,
-                    '/usr/local/include/db%d' %major,
-                    '/opt/sfw/include/db%d' %major,
-                    '/sw/include/db%d' %major,
+                    '/usr/include/db%d%s' %(major, bitness),
+                    '/usr/local/include/db%d%s' %(major, bitness),
+                    '/opt/sfw/include/db%d%s' %(major, bitness),
+                    '/sw/include/db%d%s' %(major, bitness),
                     ])
 
-            db_inc_paths.append('/usr/include/db%d%d' % (major, minor))
-            db_inc_paths.append('/usr/local/BerkeleyDB.%d.%d/include' % (major,
-                minor))
-            db_inc_paths.append('/usr/local/include/db%d%d' % (major, minor))
-            db_inc_paths.append('/pkg/db-%d.%d/include' % (major, minor))
-            db_inc_paths.append('/opt/db-%d.%d/include' % (major, minor))
+            db_inc_paths.append('/usr/include/db%d%d%s' % \
+                (major, minor, bitness))
+            db_inc_paths.append('/usr/local/BerkeleyDB.%d.%d%s/include' % \
+                (major, minor, bitness))
+            db_inc_paths.append('/usr/local/include/db%d%d%s' % \
+                (major, minor, bitness))
+            db_inc_paths.append('/pkg/db-%d.%d%s/include' % \
+                (major, minor, bitness))
+            db_inc_paths.append('/opt/db-%d.%d%s/include' % \
+                (major, minor, bitness))
 
         db_ver_inc_map = {}
 
