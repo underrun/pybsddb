@@ -128,7 +128,7 @@ if os.name == 'posix':
     incdir = libdir = None
     if not BERKELEYDB_DIR and not BERKELEYDB_LIBDIR and not BERKELEYDB_INCDIR:
         # Supported Berkeley DB versions, in order of preference.
-        db_ver_list = ((5, 2), (5, 1), (5, 0),
+        db_ver_list = ((5, 3), (5, 2), (5, 1), (5, 0),
                 (4, 8), (4, 7), (4, 6), (4, 5), (4, 4), (4, 3), (4, 2))
 
         # construct a list of paths to look for the header file in on
