@@ -30,11 +30,6 @@ ColorIndex = [
 ]
 
 class JoinTestCase(unittest.TestCase):
-    import sys
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-
     keytype = ''
 
     def setUp(self):

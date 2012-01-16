@@ -7,23 +7,11 @@ import unittest
 from test_all import db, test_support, get_new_environment_path, \
         get_new_database_path
 
-try :
-    a=set()
-except : # Python 2.3
-    from sets import Set as set
-else :
-    del a
-
 from test_all import verbose
 
 #----------------------------------------------------------------------
 
 class DBTxn_distributed(unittest.TestCase):
-    import sys
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-
     num_txns=1234
     nosync=True
     must_open_db=False

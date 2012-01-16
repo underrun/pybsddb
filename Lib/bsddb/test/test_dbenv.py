@@ -7,14 +7,6 @@ from test_all import db, test_support, get_new_environment_path, \
 #----------------------------------------------------------------------
 
 class DBEnv(unittest.TestCase):
-    import sys
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-
-        def assertFalse(self, expr, msg=None):
-            self.failIf(expr,msg=msg)
-
     def setUp(self):
         self.homeDir = get_new_environment_path()
         self.env = db.DBEnv()
@@ -77,19 +69,18 @@ class DBEnv_general(DBEnv) :
                 self.env.set_lg_filemode(i)
                 self.assertEqual(i, self.env.get_lg_filemode())
 
-    if db.version() >= (4, 3) :
-        def test_mp_max_openfd(self) :
-            for i in [17, 31, 42] :
-                self.env.set_mp_max_openfd(i)
-                self.assertEqual(i, self.env.get_mp_max_openfd())
+    def test_mp_max_openfd(self) :
+        for i in [17, 31, 42] :
+            self.env.set_mp_max_openfd(i)
+            self.assertEqual(i, self.env.get_mp_max_openfd())
 
-        def test_mp_max_write(self) :
-            for i in [100, 200, 300] :
-                for j in [1, 2, 3] :
-                    j *= 1000000
-                    self.env.set_mp_max_write(i, j)
-                    v=self.env.get_mp_max_write()
-                    self.assertEqual((i, j), v)
+    def test_mp_max_write(self) :
+        for i in [100, 200, 300] :
+            for j in [1, 2, 3] :
+                j *= 1000000
+                self.env.set_mp_max_write(i, j)
+                v=self.env.get_mp_max_write()
+                self.assertEqual((i, j), v)
 
     def test_invalid_txn(self) :
         # This environment doesn't support transactions
@@ -145,8 +136,7 @@ class DBEnv_general(DBEnv) :
                 db.DB_LOCK_MINLOCKS, db.DB_LOCK_MINWRITE,
                 db.DB_LOCK_OLDEST, db.DB_LOCK_RANDOM, db.DB_LOCK_YOUNGEST]
 
-        if db.version() >= (4, 3) :
-            flags.append(db.DB_LOCK_MAXWRITE)
+        flags.append(db.DB_LOCK_MAXWRITE)
 
         for i in flags :
             self.env.set_lk_detect(i)

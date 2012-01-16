@@ -11,11 +11,6 @@ from .test_all import db, hashopen, btopen, rnopen, verbose, \
 
 
 class CompatibilityTestCase(unittest.TestCase):
-    import sys
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-
     def setUp(self):
         self.filename = get_new_database_path()
 

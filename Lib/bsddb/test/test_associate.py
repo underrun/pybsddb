@@ -76,11 +76,6 @@ musicdata = {
 #----------------------------------------------------------------------
 
 class AssociateErrorTestCase(unittest.TestCase):
-    import sys
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-
     def setUp(self):
         self.filename = self.__class__.__name__ + '.db'
         self.homeDir = get_new_environment_path()
@@ -125,11 +120,6 @@ class AssociateErrorTestCase(unittest.TestCase):
 
 
 class AssociateTestCase(unittest.TestCase):
-    import sys
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-
     keytype = ''
     envFlags = 0
     dbFlags = 0

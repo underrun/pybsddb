@@ -4,12 +4,7 @@
 import sys
 import os
 import unittest
-try:
-    # For Pythons w/distutils pybsddb
-    import bsddb3 as bsddb
-except ImportError:
-    # For Python 2.3
-    import bsddb
+import bsddb3 as bsddb
 
 
 if sys.version_info[0] >= 3 :
@@ -392,10 +387,8 @@ if sys.version_info[0] >= 3 :
             return self._dbenv.get_tmp_dir().decode(charset)
 
         def get_data_dirs(self) :
-            # Have to use a list comprehension and not
-            # generators, because we are supporting Python 2.3.
             return tuple(
-                [i.decode(charset) for i in self._dbenv.get_data_dirs()])
+                (i.decode(charset) for i in self._dbenv.get_data_dirs()))
 
     class DBSequence_py3k(object) :
         def __init__(self, db, *args, **kwargs) :
@@ -440,14 +433,8 @@ if sys.version_info[0] >= 3 :
     do_proxy_db_py3k.flag = False
     do_proxy_db_py3k(True)
 
-try:
-    # For Pythons w/distutils pybsddb
-    from bsddb3 import db, dbtables, dbutils, dbshelve, \
-            hashopen, btopen, rnopen, dbobj
-except ImportError:
-    # For Python 2.3
-    from bsddb import db, dbtables, dbutils, dbshelve, \
-            hashopen, btopen, rnopen, dbobj
+from bsddb3 import db, dbtables, dbutils, dbshelve, \
+        hashopen, btopen, rnopen, dbobj
 
 try:
     from bsddb3 import test_support

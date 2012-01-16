@@ -38,11 +38,6 @@ from test_all import db, dbtables, test_support, verbose, \
 #----------------------------------------------------------------------
 
 class TableDBTestCase(unittest.TestCase):
-    import sys
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-
     db_name = 'test-table.db'
 
     def setUp(self):

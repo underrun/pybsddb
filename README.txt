@@ -3,7 +3,7 @@ IS STILL VALUABLE, SO USE YOUR BRAIN :-)
 
 
 README.txt
-bsddb3 v4.8.x
+bsddb3 v5.3.x
 http://www.jcea.es/programacion/pybsddb.htm
 2009-06-30
 --------------------------------
@@ -40,8 +40,8 @@ In addition we've run it on a several varieties of Linux and of course
 on Win32.
 
 This wrapper should be compatible with Berkeley DB releases going back
-to 4.1 up to and including DB 4.8.  It should also be compatible
-with Python versions from 2.3 to Python 2.7, and Python 3.0 to 3.2.
+to 4.3 up to and including DB 5.3.  It should also be compatible
+with Python versions from 2.4 to Python 2.7, and Python 3.1 to 3.2.
 
 
 Installation

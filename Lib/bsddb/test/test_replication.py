@@ -12,14 +12,6 @@ from test_all import db, test_support, have_threads, verbose, \
 #----------------------------------------------------------------------
 
 class DBReplication(unittest.TestCase) :
-    import sys
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-        def assertFalse(self, expr, msg=None):
-            self.failIf(expr,msg=msg)
-
-
     def setUp(self) :
         self.homeDirMaster = get_new_environment_path()
         self.homeDirClient = get_new_environment_path()

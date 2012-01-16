@@ -9,13 +9,6 @@ from .test_all import db, dbshelve, hashopen, test_support, get_new_environment_
 #----------------------------------------------------------------------
 
 class MiscTestCase(unittest.TestCase):
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr, msg=msg)
-
-        def assertFalse(self, expr, msg=None):
-            self.failIf(expr, msg=msg)
-
     def setUp(self):
         self.filename = get_new_database_path()
         self.homeDir = get_new_environment_path()

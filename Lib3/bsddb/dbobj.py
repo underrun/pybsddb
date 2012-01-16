@@ -30,12 +30,7 @@ else :
     from . import db
 
 if sys.version_info < (2, 6) :
-    try:
-        from UserDict import DictMixin
-    except ImportError:
-        # DictMixin is new in Python 2.3
-        class DictMixin: pass
-    MutableMapping = DictMixin
+    from UserDict import DictMixin as MutableMapping
 else :
     import collections
     MutableMapping = collections.MutableMapping

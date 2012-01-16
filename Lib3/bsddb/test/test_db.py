@@ -7,13 +7,6 @@ from .test_all import db, test_support, get_new_environment_path, \
 #----------------------------------------------------------------------
 
 class DB(unittest.TestCase):
-    import sys
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None):
-            self.failUnless(expr,msg=msg)
-        def assertFalse(self, expr, msg=None):
-            self.failIf(expr,msg=msg)
-
     def setUp(self):
         self.path = get_new_database_path()
         self.db = db.DB()
@@ -64,11 +57,10 @@ class DB_general(DB) :
                 self.db.set_priority(flag)
                 self.assertEqual(flag, self.db.get_priority())
 
-    if db.version() >= (4, 3) :
-        def test_get_transactional(self) :
-            self.assertFalse(self.db.get_transactional())
-            self.db.open(self.path, dbtype=db.DB_HASH, flags = db.DB_CREATE)
-            self.assertFalse(self.db.get_transactional())
+    def test_get_transactional(self) :
+        self.assertFalse(self.db.get_transactional())
+        self.db.open(self.path, dbtype=db.DB_HASH, flags = db.DB_CREATE)
+        self.assertFalse(self.db.get_transactional())
 
 class DB_hash(DB) :
     def test_h_ffactor(self) :
@@ -116,13 +108,12 @@ class DB_txn(DB) :
         self.assertEqual(db.DB_TXN_NOT_DURABLE | db.DB_CHKSUM,
                 self.db.get_flags())
 
-    if db.version() >= (4, 3) :
-        def test_get_transactional(self) :
-            self.assertFalse(self.db.get_transactional())
-            # DB_AUTO_COMMIT = Implicit transaction
-            self.db.open("XXX", dbtype=db.DB_HASH,
-                    flags = db.DB_CREATE | db.DB_AUTO_COMMIT)
-            self.assertTrue(self.db.get_transactional())
+    def test_get_transactional(self) :
+        self.assertFalse(self.db.get_transactional())
+        # DB_AUTO_COMMIT = Implicit transaction
+        self.db.open("XXX", dbtype=db.DB_HASH,
+                flags = db.DB_CREATE | db.DB_AUTO_COMMIT)
+        self.assertTrue(self.db.get_transactional())
 
 class DB_recno(DB) :
     def test_re_pad(self) :

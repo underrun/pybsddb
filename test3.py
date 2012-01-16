@@ -19,8 +19,7 @@ Options:
 -b
     Run "python setup.py build" before running tests, where "python" is the
     version of python used to run test.py.  Highly recommended.  Tests will be
-    run from the build directory.  (Note: In Python < 2.3 the -q flag is
-    added to the setup.py command line.)
+    run from the build directory.
 
 -B
     Run "python setup.py build_ext -i" before running tests.  Tests will be
@@ -559,11 +558,7 @@ def process_args(argv=None):
 
     # Do the builds
     if build:
-        # Python 2.3 is more sane in its non -q output
-        qflag = '-q'
-        if sys.hexversion >= 0x02030000:
-            qflag = ''
-        cmd = sys.executable + ' setup.py ' + qflag + ' build'
+        cmd = sys.executable + ' setup.py build'
         if build_inplace:
             cmd += '_ext -i'
         sts = os.system(cmd)

@@ -129,12 +129,12 @@ if os.name == 'posix':
     if not BERKELEYDB_DIR and not BERKELEYDB_LIBDIR and not BERKELEYDB_INCDIR:
         # Supported Berkeley DB versions, in order of preference.
         db_ver_list = ((5, 3), (5, 2), (5, 1), (5, 0),
-                (4, 8), (4, 7), (4, 6), (4, 5), (4, 4), (4, 3), (4, 2))
+                (4, 8), (4, 7), (4, 6), (4, 5), (4, 4), (4, 3))
 
         # construct a list of paths to look for the header file in on
         # top of the normal inc_dirs.
         db_inc_paths = []
-        db_major = {}  # We can use a SET when we drop Python 2.3 support
+        db_major = set()
         bitness = ""
         import platform
         if (platform.architecture()[0] == "64bit") and \
@@ -143,7 +143,7 @@ if os.name == 'posix':
 
         for major, minor in db_ver_list :
             if major not in db_major :
-                db_major[major] = None
+                db_major.add(major)
                 db_inc_paths.extend([
                     '/usr/include/db%d%s' %(major, bitness),
                     '/usr/local/include/db%d%s' %(major, bitness),
@@ -414,7 +414,6 @@ pybsddb_doc/>`__ --
                     'Topic :: Software Development',
                     'Topic :: System :: Clustering',
                     'Programming Language :: Python :: 2',
-                    'Programming Language :: Python :: 2.3',
                     'Programming Language :: Python :: 2.4',
                     'Programming Language :: Python :: 2.5',
                     'Programming Language :: Python :: 2.6',
@@ -422,5 +421,7 @@ pybsddb_doc/>`__ --
                     'Programming Language :: Python :: 3',
                     'Programming Language :: Python :: 3.1',
                     'Programming Language :: Python :: 3.2',
+                    'Programming Language :: Python :: 3.3',
                     ],
       )
+

@@ -32,19 +32,12 @@ _expected_lexical_test_data = ['', 'CCCP', 'a', 'aaa', 'b', 'c', 'cccce', 'ccccf
 _expected_lowercase_test_data = ['', 'a', 'aaa', 'b', 'c', 'CC', 'cccce', 'ccccf', 'CCCP']
 
 class ComparatorTests(unittest.TestCase) :
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None) :
-            return self.failUnless(expr,msg=msg)
-
     def comparator_test_helper(self, comparator, expected_data) :
         data = expected_data[:]
 
         import sys
         if sys.version_info < (2, 6) :
-            if sys.version_info < (2, 4) :
-                data.sort(comparator)
-            else :
-                data.sort(cmp=comparator)
+            data.sort(cmp=comparator)
         else :  # Insertion Sort. Please, improve
             data2 = []
             for i in data :
@@ -74,10 +67,6 @@ class ComparatorTests(unittest.TestCase) :
 class AbstractBtreeKeyCompareTestCase(unittest.TestCase) :
     env = None
     db = None
-
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None) :
-            self.failUnless(expr,msg=msg)
 
     if (sys.version_info < (2, 7)) or ((sys.version_info >= (3,0)) and
             (sys.version_info < (3, 2))) :
@@ -264,10 +253,6 @@ class BtreeExceptionsTestCase(AbstractBtreeKeyCompareTestCase) :
 class AbstractDuplicateCompareTestCase(unittest.TestCase) :
     env = None
     db = None
-
-    if sys.version_info < (2, 4) :
-        def assertTrue(self, expr, msg=None) :
-            self.failUnless(expr,msg=msg)
 
     if (sys.version_info < (2, 7)) or ((sys.version_info >= (3,0)) and
             (sys.version_info < (3, 2))) :
