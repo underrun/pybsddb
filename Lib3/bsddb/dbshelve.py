@@ -65,9 +65,9 @@ else :
             w.__exit__()
         del w
 
-    HIGHEST_PROTOCOL = pickle.HIGHEST_PROTOCOL
-    def _dumps(object, protocol):
-        return pickle.dumps(object, protocol=protocol)
+HIGHEST_PROTOCOL = pickle.HIGHEST_PROTOCOL
+def _dumps(object, protocol):
+    return pickle.dumps(object, protocol=protocol)
 
 if sys.version_info < (2, 6) :
     from UserDict import DictMixin as MutableMapping

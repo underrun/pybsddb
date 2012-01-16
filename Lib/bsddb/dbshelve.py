@@ -65,9 +65,9 @@ else :
             w.__exit__()
         del w
 
-    HIGHEST_PROTOCOL = cPickle.HIGHEST_PROTOCOL
-    def _dumps(object, protocol):
-        return cPickle.dumps(object, protocol=protocol)
+HIGHEST_PROTOCOL = cPickle.HIGHEST_PROTOCOL
+def _dumps(object, protocol):
+    return cPickle.dumps(object, protocol=protocol)
 
 if sys.version_info < (2, 6) :
     from UserDict import DictMixin as MutableMapping
