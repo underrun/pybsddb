@@ -136,34 +136,11 @@ typedef int Py_ssize_t;
 #define MYDB_BEGIN_ALLOW_THREADS Py_BEGIN_ALLOW_THREADS;
 #define MYDB_END_ALLOW_THREADS Py_END_ALLOW_THREADS;
 
-/* For 2.3, use the PyGILState_ calls */
-#if (PY_VERSION_HEX >= 0x02030000)
-#define MYDB_USE_GILSTATE
-#endif
-
 /* and these are for calling C --> Python */
-#if defined(MYDB_USE_GILSTATE)
 #define MYDB_BEGIN_BLOCK_THREADS \
 		PyGILState_STATE __savestate = PyGILState_Ensure();
 #define MYDB_END_BLOCK_THREADS \
 		PyGILState_Release(__savestate);
-#else /* MYDB_USE_GILSTATE */
-/* Pre GILState API - do it the long old way */
-static PyInterpreterState* _db_interpreterState = NULL;
-#define MYDB_BEGIN_BLOCK_THREADS {                              \
-        PyThreadState* prevState;                               \
-        PyThreadState* newState;                                \
-        PyEval_AcquireLock();                                   \
-        newState  = PyThreadState_New(_db_interpreterState);    \
-        prevState = PyThreadState_Swap(newState);
-
-#define MYDB_END_BLOCK_THREADS                                  \
-        newState = PyThreadState_Swap(prevState);               \
-        PyThreadState_Clear(newState);                          \
-        PyEval_ReleaseLock();                                   \
-        PyThreadState_Delete(newState);                         \
-        }
-#endif /* MYDB_USE_GILSTATE */
 
 #else
 /* Compiled without threads - avoid all this cruft */
@@ -4145,11 +4122,7 @@ DBSite_get_address(DBSiteObject* self)
 
     RETURN_IF_ERR();
 
-#if (PY_VERSION_HEX >= 0x02040000)
     return Py_BuildValue("(sI)", host, port);
-#else
-    return Py_BuildValue("(si)", host, port);
-#endif
 }
 
 static PyObject*
@@ -7461,11 +7434,7 @@ _DBEnv_rep_transportCallback(DB_ENV* db_env, const DBT* control, const DBT* rec,
     b = PyBytes_FromStringAndSize(rec->data, rec->size);
 
     args = Py_BuildValue(
-#if (PY_VERSION_HEX >= 0x02040000)
             "(OOO(ll)iI)",
-#else
-            "(OOO(ll)ii)",
-#endif
             dbenv,
             a, b,
             lsn->file, lsn->offset, envid, flags);
@@ -7546,11 +7515,7 @@ DBEnv_rep_get_request(DBEnvObject* self)
     err = self->db_env->rep_get_request(self->db_env, &minimum, &maximum);
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
-#if (PY_VERSION_HEX >= 0x02040000)
     return Py_BuildValue("II", minimum, maximum);
-#else
-    return Py_BuildValue("ii", minimum, maximum);
-#endif
 }
 #endif
 
@@ -7802,13 +7767,8 @@ DBEnv_rep_set_clockskew(DBEnvObject* self, PyObject* args)
     int err;
     unsigned int fast, slow;
 
-#if (PY_VERSION_HEX >= 0x02040000)
     if (!PyArg_ParseTuple(args,"II:rep_set_clockskew", &fast, &slow))
         return NULL;
-#else
-    if (!PyArg_ParseTuple(args,"ii:rep_set_clockskew", &fast, &slow))
-        return NULL;
-#endif
 
     CHECK_ENV_NOT_CLOSED(self);
 
@@ -7830,11 +7790,7 @@ DBEnv_rep_get_clockskew(DBEnvObject* self)
     err = self->db_env->rep_get_clockskew(self->db_env, &fast, &slow);
     MYDB_END_ALLOW_THREADS;
     RETURN_IF_ERR();
-#if (PY_VERSION_HEX >= 0x02040000)
     return Py_BuildValue("(II)", fast, slow);
-#else
-    return Py_BuildValue("(ii)", fast, slow);
-#endif
 }
 #endif
 
@@ -8096,13 +8052,8 @@ DBEnv_repmgr_site_list(DBEnvObject* self)
             free(listp);
             return NULL;
         }
-#if (PY_VERSION_HEX >= 0x02040000)
         tuple=Py_BuildValue("(sII)", listp[countp].host,
                 listp[countp].port, listp[countp].status);
-#else
-        tuple=Py_BuildValue("(sii)", listp[countp].host,
-                listp[countp].port, listp[countp].status);
-#endif
         if(!tuple) {
             Py_DECREF(key);
             Py_DECREF(stats);
@@ -9812,11 +9763,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
         return NULL;
 #endif
     }
-
-#if defined(WITH_THREAD) && !defined(MYDB_USE_GILSTATE)
-    /* Save the current interpreter, so callbacks can do the right thing. */
-    _db_interpreterState = PyThreadState_GET()->interp;
-#endif
 
     /* Create the module and add the functions */
 #if (PY_VERSION_HEX < 0x03000000)
