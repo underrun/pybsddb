@@ -491,6 +491,13 @@ class DBBaseReplication(DBReplication) :
 
             self.assertTrue(self.confirmed_master)
 
+            # Race condition showed up after upgrading to Solaris 10 Update 10
+            # https://forums.oracle.com/forums/thread.jspa?messageID=9902860
+            # jcea@jcea.es: See private email from Paula Bingham (Oracle),
+            # in 20110929.
+            while not (self.dbenvClient.rep_stat()["startup_complete"]) :
+                pass
+
     if db.version() >= (4,7) :
         def test04_test_clockskew(self) :
             fast, slow = 1234, 1230
