@@ -20,6 +20,8 @@
     https://forums.oracle.com/forums/thread.jspa?messageID=9902860 .
     Workaround proposed in a private email from Paula Bingham (Oracle),
     in 20110929.
+  * When doing the full matrix test for a release, stop the verification
+    if any test failed.
 
 5.2.0:
   * Support for Berkeley DB 5.2.

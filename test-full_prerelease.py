@@ -39,7 +39,10 @@ def do_matrix_check() :
       else :
         params = ["/usr/local/bin/python"+py] + extra_params + ["test.py","-p"]
         print "EXECUTING:", " ".join(params)
-        subprocess.call(params)
+        ret = subprocess.call(params)
+        if ret :
+            import sys
+            sys.exit(1)
 
 if __name__=="__main__" :
   print __doc__

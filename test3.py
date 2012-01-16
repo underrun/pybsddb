@@ -428,6 +428,7 @@ def runner(files, test_filter, debug):
             pdb.post_mortem(sys.exc_info()[2])
         else:
             raise
+    return r
 
 
 def main(module_filter, test_filter):
@@ -449,7 +450,7 @@ def main(module_filter, test_filter):
         gui_runner(files, test_filter)
     elif LOOP:
         while True:
-            runner(files, test_filter, debug)
+            r = runner(files, test_filter, debug)
     elif TRACE:
         coverdir = os.path.join(os.getcwd(), "coverage")
         import trace
@@ -460,7 +461,9 @@ def main(module_filter, test_filter):
         r = tracer.results()
         r.write_results(show_missing=True, summary=True, coverdir=coverdir)
     else:
-        runner(files, test_filter, debug)
+        r = runner(files, test_filter, debug)
+    bad = r.errors + r.failures
+    return bad
 
 
 def process_args(argv=None):
