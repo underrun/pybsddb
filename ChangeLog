@@ -1,3 +1,6 @@
+5.3.1:
+  * Erratic behaviour of "DBEnv->rep_elect()" because a typo.
+
 5.3.0:
   * Support Berkeley DB 5.3.x.
   * Drop support for Berkeley DB 4.2 and Python 2.3. Our reference
