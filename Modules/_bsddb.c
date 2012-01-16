@@ -638,11 +638,7 @@ PyObject *a, *b, *r;
       return NULL;
   }
 
-#if (PY_VERSION_HEX >= 0x02040000)
   r = PyTuple_Pack(2, a, b) ;
-#else
-  r = Py_BuildValue("OO", a, b);
-#endif
   Py_DECREF(a);
   Py_DECREF(b);
   return r;
@@ -2142,20 +2138,12 @@ DB_pget(DBObject* self, PyObject* args, PyObject* kwargs)
                 keyObj = NUMBER_FromLong(*(int *)key.data);
             else
                 keyObj = Build_PyString(key.data, key.size);
-#if (PY_VERSION_HEX >= 0x02040000)
             retval = PyTuple_Pack(3, keyObj, pkeyObj, dataObj);
-#else
-            retval = Py_BuildValue("OOO", keyObj, pkeyObj, dataObj);
-#endif
             Py_DECREF(keyObj);
         }
         else /* return just the pkey and data */
         {
-#if (PY_VERSION_HEX >= 0x02040000)
             retval = PyTuple_Pack(2, pkeyObj, dataObj);
-#else
-            retval = Py_BuildValue("OO", pkeyObj, dataObj);
-#endif
         }
         Py_DECREF(dataObj);
         Py_DECREF(pkeyObj);
@@ -4476,21 +4464,13 @@ DBC_pget(DBCursorObject* self, PyObject* args, PyObject *kwargs)
                 keyObj = NUMBER_FromLong(*(int *)key.data);
             else
                 keyObj = Build_PyString(key.data, key.size);
-#if (PY_VERSION_HEX >= 0x02040000)
             retval = PyTuple_Pack(3, keyObj, pkeyObj, dataObj);
-#else
-            retval = Py_BuildValue("OOO", keyObj, pkeyObj, dataObj);
-#endif
             Py_DECREF(keyObj);
             FREE_DBT(key);  /* 'make_key_dbt' could do a 'malloc' */
         }
         else /* return just the pkey and data */
         {
-#if (PY_VERSION_HEX >= 0x02040000)
             retval = PyTuple_Pack(2, pkeyObj, dataObj);
-#else
-            retval = Py_BuildValue("OO", pkeyObj, dataObj);
-#endif
         }
         Py_DECREF(dataObj);
         Py_DECREF(pkeyObj);
@@ -5184,7 +5164,7 @@ DBEnv_memp_stat(DBEnvObject* self, PyObject* args, PyObject *kwargs)
 #undef MAKE_ENTRY
     free(fsp);
 
-    r = Py_BuildValue("(OO)", d, d2);
+    r = PyTuple_Pack(2, d, d2);
     Py_DECREF(d);
     Py_DECREF(d2);
     return r;
@@ -7456,7 +7436,7 @@ DBEnv_rep_process_message(DBEnvObject* self, PyObject* args)
             break;
     }
     RETURN_IF_ERR();
-    return Py_BuildValue("(OO)", Py_None, Py_None);
+    return PyTuple_Pack(2, Py_None, Py_None);
 }
 
 static int
