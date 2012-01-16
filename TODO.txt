@@ -38,8 +38,6 @@
   is disabled because it prints a error message to screen. Solve this and
   reenable the test. This would require "set_errfile" implementation.
 
-* 20080721: When we drop Python 2.3 support, we should use "PyTuple_Pack".
-
 * 20080811: "DB.has_key()" must be retained in python3.0, since it allows
   a transaction parameter.
 
@@ -183,4 +181,8 @@
 * 20100917: Some errors are exported as integer values, beside the
   proper exception. For instance, DB_SECONDARY_BAD. Evaluate if it
   is convenient or not.
+
+* 20120116: After dropping Python 2.3 support, some integers
+  returned should be promoted to "unsigned integers". Same with
+  input values.
 
