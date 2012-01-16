@@ -161,9 +161,7 @@ typedef struct DBObject {
     struct behaviourFlags moduleFlags;
     struct DBTxnObject *txn;
     struct DBCursorObject *children_cursors;
-#if (DBVER >=43)
     struct DBSequenceObject *children_sequences;
-#endif
     struct DBObject **sibling_prev_p;
     struct DBObject *sibling_next;
     struct DBObject **sibling_prev_p_txn;
@@ -234,7 +232,6 @@ typedef struct {
 } DBLockObject;
 
 
-#if (DBVER >= 43)
 typedef struct DBSequenceObject {
     PyObject_HEAD
     DB_SEQUENCE*     sequence;
@@ -246,7 +243,6 @@ typedef struct DBSequenceObject {
     struct DBSequenceObject *sibling_next_txn;
     PyObject        *in_weakreflist; /* List of weak references */
 } DBSequenceObject;
-#endif
 
 
 /* API structure for use by C code */
@@ -290,7 +286,7 @@ typedef struct {
     PyTypeObject* dbenv_type;
     PyTypeObject* dbtxn_type;
     PyTypeObject* dblock_type;
-    PyTypeObject* dbsequence_type;  /* If DBVER < 43 -> NULL */
+    PyTypeObject* dbsequence_type;
 
     /* Functions */
     int (*makeDBError)(int err);
