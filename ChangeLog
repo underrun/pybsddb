@@ -1,6 +1,4 @@
 5.3.0:
-OJO: https://forums.oracle.com/forums/thread.jspa?messageID=9902860
-Desactivo este test de momento.
   * Support Berkeley DB 5.3.x.
   * Support for "DBEnv->set_intermediate_dir()", available in
     Berkeley DB 4.3-4.6.  Patch by Garret Cooper.
@@ -9,6 +7,11 @@ Desactivo este test de momento.
   * Fixed a testsuite compatibility problem with BDB 5.2.
   * If we are running Solaris or derivatives, and 64bit python,
     try to find the library under "/usr/local/Berkeley.*.*/64/".
+  * Solaris 10 Update 10 exposes a very old race condition in the replication
+    master election tests. Some details in 
+    https://forums.oracle.com/forums/thread.jspa?messageID=9902860 .
+    Workaround proposed in a private email from Paula Bingham (Oracle),
+    in 20110929.
 
 5.2.0:
   * Support for Berkeley DB 5.2.
