@@ -481,7 +481,10 @@ def print_versions():
     print 'py module:            %s' % getattr(bsddb, "__file"+suffix)
     print 'extension module:     %s' % getattr(bsddb, "__file"+suffix)
 
-    print 'python version:       %s' % sys.version
+    import platform
+    print 'python version:       %s %s' % \
+            (sys.version.replace("\r", "").replace("\n", ""), \
+            platform.architecture()[0])
     print 'My pid:               %s' % os.getpid()
     print '-=' * 38
 

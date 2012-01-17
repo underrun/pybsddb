@@ -1,5 +1,6 @@
 5.3.1:
   * Erratic behaviour of "DBEnv->rep_elect()" because a typo.
+  * The testsuite prints Python bitness (32/64).
 
 5.3.0:
   * Support Berkeley DB 5.3.x.
