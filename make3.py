@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys, os
-refactor_path="/usr/local/lib/python3.2/"
+refactor_path="/usr/local/lib/python3.3/"
 
 def make2to3(path_from, path_to) :
     if os.path.isdir(path_from) :
