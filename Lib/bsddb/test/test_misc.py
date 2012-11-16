@@ -46,8 +46,9 @@ class MiscTestCase(unittest.TestCase):
             d[repr(i)] = repr(100*i)
         db.close()
         db = hashopen(self.filename)
-        rp = repr(db)
-        self.assertEqual(rp, repr(d))
+        rp = repr(sorted(db.items()))
+        rd = repr(sorted(d.items()))
+        self.assertEqual(rp, rd)
         db.close()
 
     # http://sourceforge.net/tracker/index.php?func=detail&aid=1708868&group_id=13900&atid=313900

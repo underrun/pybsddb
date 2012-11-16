@@ -1,6 +1,8 @@
 5.3.1:
   * Erratic behaviour of "DBEnv->rep_elect()" because a typo.
   * The testsuite prints Python bitness (32/64).
+  * Tests compatible with hash randomization, default
+    in Python 3.3. See http://bugs.python.org/issue13703 .
 
 5.3.0:
   * Support Berkeley DB 5.3.x.
