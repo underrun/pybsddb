@@ -3559,12 +3559,13 @@ Py_ssize_t DB_length(PyObject* _self)
     err = self->db->stat(self->db, /*txnid*/ NULL, &sp, 0);
     MYDB_END_ALLOW_THREADS;
 
+    if (makeDBError(err)) {
+        return -1;
+    }
+
     /* All the stat structures have matching fields upto the ndata field,
        so we can use any of them for the type cast */
     size = ((DB_BTREE_STAT*)sp)->bt_ndata;
-
-    if (err)
-        return -1;
 
     free(sp);
     return size;

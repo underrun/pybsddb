@@ -3,6 +3,8 @@
   * The testsuite prints Python bitness (32/64).
   * Tests compatible with hash randomization, default
     in Python 3.3. See http://bugs.python.org/issue13703 .
+  * Errors when trying to calculate the length of a DB were
+    masked, and an unuseful and unrelated exception was raised.
 
 5.3.0:
   * Support Berkeley DB 5.3.x.
