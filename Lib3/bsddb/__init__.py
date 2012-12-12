@@ -42,13 +42,6 @@ instead.  It mirrors the Oracle Berkeley DB C API.
 import sys
 absolute_import = (sys.version_info[0] >= 3)
 
-if (sys.version_info >= (2, 6)) and (sys.version_info < (3, 0)) :
-    if sys.py3kwarning and (__name__ != 'bsddb3') :
-        import warnings
-        warnings.warnpy3k("in 3.x, the bsddb module has been removed; "
-                          "please use the pybsddb project instead",
-                          DeprecationWarning, 2)
-
 try:
     if __name__ == 'bsddb3':
         # import _pybsddb binary as it should be the more recent version from
