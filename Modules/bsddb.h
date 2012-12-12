@@ -255,10 +255,9 @@ typedef struct DBSequenceObject {
      PyObject*  mod;
      PyObject*  cobj;
 
-     mod  = PyImport_ImportModule("bsddb._bsddb");
-     // Use "bsddb3._pybsddb" if you're using the standalone pybsddb add-on.
+     mod  = PyImport_ImportModule("bsddb3._pybsddb");
      cobj = PyObject_GetAttrString(mod, "api");
-     api  = (BSDDB_api*)PyCObject_AsVoidPtr(cobj);
+     bsddb_api  = (BSDDB_api*)PyCObject_AsVoidPtr(cobj);
      Py_DECREF(cobj);
      Py_DECREF(mod);
 
@@ -266,9 +265,7 @@ typedef struct DBSequenceObject {
      // If you are using Python 2.7 or up: (except Python 3.0, unsupported)
      BSDDB_api* bsddb_api;
 
-     // Use "bsddb3._pybsddb.api" if you're using
-     // the standalone pybsddb add-on.
-     bsddb_api = (void **)PyCapsule_Import("bsddb._bsddb.api", 1);
+     bsddb_api = (void **)PyCapsule_Import("bsddb3._pybsddb.api", 1);
 
 
    Check "api_version" number before trying to use the API.

@@ -1,10 +1,15 @@
 5.3.1:
+  * HEADS UP: If you are using "bsddb3._bsddb" in your code,
+    for example for exceptions, change it to "bsddb3._db".
   * Erratic behaviour of "DBEnv->rep_elect()" because a typo.
   * The testsuite prints Python bitness (32/64).
   * Tests compatible with hash randomization, default
     in Python 3.3. See http://bugs.python.org/issue13703 .
   * Errors when trying to calculate the length of a DB were
     masked, and an unuseful and unrelated exception was raised.
+  * Code cleanup since pybsddb is not in the Python 3.x stdlib
+    anymore, and the version in Python 2.6/2.7 is being
+    maintained separately.
 
 5.3.0:
   * Support Berkeley DB 5.3.x.

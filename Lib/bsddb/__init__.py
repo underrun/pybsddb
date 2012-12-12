@@ -43,20 +43,12 @@ import sys
 absolute_import = (sys.version_info[0] >= 3)
 
 try:
-    if __name__ == 'bsddb3':
-        # import _pybsddb binary as it should be the more recent version from
-        # a standalone pybsddb addon package than the version included with
-        # python as bsddb._bsddb.
-        if absolute_import :
-            # Because this syntaxis is not valid before Python 2.5
-            exec("from . import _pybsddb")
-        else :
-            import _pybsddb
-        _bsddb = _pybsddb
-        from bsddb3.dbutils import DeadlockWrap as _DeadlockWrap
-    else:
-        import _bsddb
-        from bsddb.dbutils import DeadlockWrap as _DeadlockWrap
+    if absolute_import :
+        # Because this syntaxis is not valid before Python 2.5
+        exec("from . import _pybsddb")
+    else :
+        import _pybsddb
+    from bsddb3.dbutils import DeadlockWrap as _DeadlockWrap
 except ImportError:
     # Remove ourselves from sys.modules
     import sys
@@ -64,7 +56,7 @@ except ImportError:
     raise
 
 # bsddb3 calls it db, but provide _db for backwards compatibility
-db = _db = _bsddb
+db = _db = _pybsddb
 __version__ = db.__version__
 
 error = db.DBError  # So bsddb.error will mean something...
@@ -115,7 +107,7 @@ class _iter_mixin(MutableMapping):
                     try:
                         key = _DeadlockWrap(next, 0,0,0)[0]
                         yield key
-                    except _bsddb.DBCursorClosedError:
+                    except _db.DBCursorClosedError:
                         if self._kill_iteration:
                             raise RuntimeError('Database changed size '
                                                'during iteration.')
@@ -124,9 +116,9 @@ class _iter_mixin(MutableMapping):
                         # be closed by another thread before this call.
                         _DeadlockWrap(cur.set, key,0,0,0)
                         next = getattr(cur, "next")
-            except _bsddb.DBNotFoundError:
+            except _db.DBNotFoundError:
                 pass
-            except _bsddb.DBCursorClosedError:
+            except _db.DBCursorClosedError:
                 # the database was modified during iteration.  abort.
                 pass
 # When Python 2.4 not supported in bsddb3, we can change this to "finally"
@@ -158,7 +150,7 @@ class _iter_mixin(MutableMapping):
                         kv = _DeadlockWrap(next)
                         key = kv[0]
                         yield kv
-                    except _bsddb.DBCursorClosedError:
+                    except _db.DBCursorClosedError:
                         if self._kill_iteration:
                             raise RuntimeError('Database changed size '
                                                'during iteration.')
@@ -167,9 +159,9 @@ class _iter_mixin(MutableMapping):
                         # be closed by another thread before this call.
                         _DeadlockWrap(cur.set, key,0,0,0)
                         next = getattr(cur, "next")
-            except _bsddb.DBNotFoundError:
+            except _db.DBNotFoundError:
                 pass
-            except _bsddb.DBCursorClosedError:
+            except _db.DBCursorClosedError:
                 # the database was modified during iteration.  abort.
                 pass
 # When Python 2.4 not supported in bsddb3, we can change this to "finally"

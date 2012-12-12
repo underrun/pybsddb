@@ -41,20 +41,9 @@ import sys
 absolute_import = (sys.version_info[0] >= 3)
 
 if not absolute_import :
-    if __name__.startswith('bsddb3.') :
-        # import _pybsddb binary as it should be the more recent version from
-        # a standalone pybsddb addon package than the version included with
-        # python as bsddb._bsddb.
-        from _pybsddb import *
-        from _pybsddb import __version__
-    else:
-        from _bsddb import *
-        from _bsddb import __version__
+    from _pybsddb import *
+    from _pybsddb import __version__
 else :
     # Because this syntaxis is not valid before Python 2.5
-    if __name__.startswith('bsddb3.') :
-        exec("from ._pybsddb import *")
-        exec("from ._pybsddb import __version__")
-    else :
-        exec("from ._bsddb import *")
-        exec("from ._bsddb import __version__")
+    exec("from ._pybsddb import *")
+    exec("from ._pybsddb import __version__")

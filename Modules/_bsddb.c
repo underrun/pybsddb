@@ -10192,11 +10192,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
     /* The exception name must be correct for pickled exception *
      * objects to unpickle properly.                            */
-#ifdef PYBSDDB_STANDALONE  /* different value needed for standalone pybsddb */
 #define PYBSDDB_EXCEPTION_BASE  "bsddb3.db."
-#else
-#define PYBSDDB_EXCEPTION_BASE  "bsddb.db."
-#endif
 
     /* All the rest of the exceptions derive only from DBError */
 #define MAKE_EX(name)   name = PyErr_NewException(PYBSDDB_EXCEPTION_BASE #name, DBError, NULL); \
@@ -10325,7 +10321,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     } else { /* Something bad happened! */
         PyErr_WriteUnraisable(m);
         if(PyErr_Warn(PyExc_RuntimeWarning,
-                "_bsddb/_pybsddb C API will be not available")) {
+                "_pybsddb C API will be not available")) {
             PyErr_WriteUnraisable(m);
         }
         PyErr_Clear();
@@ -10334,7 +10330,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     /* Check for errors */
     if (PyErr_Occurred()) {
         PyErr_Print();
-        Py_FatalError("can't initialize module _bsddb/_pybsddb");
+        Py_FatalError("can't initialize module _pybsddb");
         Py_DECREF(m);
         m = NULL;
     }

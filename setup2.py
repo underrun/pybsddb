@@ -393,7 +393,6 @@ pybsddb_doc/>`__ --
                                sources = ['Modules/_bsddb.c'],
                                depends = ['Modules/bsddb.h'],
                                include_dirs = [ incdir ],
-                               define_macros = [('PYBSDDB_STANDALONE', 1)],
                                library_dirs = [ libdir ],
                                runtime_library_dirs = [ libdir ],
                                libraries = libname,
