@@ -69,8 +69,9 @@ if sys.version_info[0] >= 3 :
                 key = key.decode(charset)
             return (key, value.decode(charset))
 
-        def __next__(self) :
-            v = getattr(self._dbcursor, "next")()
+        def __next__(self, flags=0, dlen=-1, doff=-1) :
+            v = getattr(self._dbcursor, "next")(flags=flags, dlen=dlen,
+                    doff=doff)
             return self._fix(v)
 
         next = __next__
@@ -123,8 +124,8 @@ if sys.version_info[0] >= 3 :
             v = self._dbcursor.current(flags=flags, dlen=dlen, doff=doff)
             return self._fix(v)
 
-        def first(self) :
-            v = self._dbcursor.first()
+        def first(self, flags=0, dlen=-1, doff=-1) :
+            v = self._dbcursor.first(flags=flags, dlen=dlen, doff=doff)
             return self._fix(v)
 
         def pget(self, key=None, data=None, flags=0) :
