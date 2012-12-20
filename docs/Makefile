@@ -46,6 +46,7 @@ html:
 	@rm -rf html/
 	@cp -a $(BUILDDIR)/html/ .
 	@mv html/_static/ html/static/
+	@rm html/.buildinfo
 	@for i in html/*.html; \
 	do \
 		sed -e "sX\\"_static/X\\"static/Xg" <"${BUILDDIR}/$$i" >"$$i"; \
