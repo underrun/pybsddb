@@ -17,7 +17,7 @@ sys.path.append('tools/sphinxext')
 
 # General substitutions.
 project = 'PyBSDDB'
-copyright = '2008-2012 Jesús Cea Avión'
+copyright = '2008-2013 Jesús Cea Avión'
 
 # The default replacements for |version| and |release|.
 #
