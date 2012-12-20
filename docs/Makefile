@@ -43,8 +43,15 @@ clean:
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	@rm -rf html/
+	@cp -a $(BUILDDIR)/html/ .
+	@mv html/_static/ html/static/
+	@for i in html/*.html; \
+	do \
+		sed -e "sX\\"_static/X\\"static/Xg" <"${BUILDDIR}/$$i" >"$$i"; \
+	done
 	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+	@echo "Build finished. The HTML pages are in html/."
 
 dirhtml:
 	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml
