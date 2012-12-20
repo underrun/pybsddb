@@ -10,6 +10,7 @@
   * Code cleanup since pybsddb is not in the Python 3.x stdlib
     anymore, and the version in Python 2.6/2.7 is being
     maintained separately.
+  * Improvements to documentation generation.
 
 5.3.0:
   * Support Berkeley DB 5.3.x.

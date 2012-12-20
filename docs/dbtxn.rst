@@ -4,13 +4,10 @@
 DBTxn
 =====
 
-Read `Oracle documentation
-<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+Read :Oracle:`Oracle documentation <programmer_reference/index.html>`
 for better understanding.
 
-`More info...
-<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-C/txn.html>`__
+:OracleAPIC:`More info... <txn.html>`
 
 DBTxn Methods
 -------------
@@ -18,33 +15,25 @@ DBTxn Methods
 .. function:: abort()
 
    Aborts the transaction
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txnabort.html>`__
+   :OracleAPIC:`More info... <txnabort.html>`
 
 .. function:: commit(flags=0)
 
    Ends the transaction, committing any changes to the databases.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txncommit.html>`__
+   :OracleAPIC:`More info... <txncommit.html>`
 
 .. function:: id()
 
    The txn_id function returns the unique transaction id associated with
    the specified transaction.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txnid.html>`__
+   :OracleAPIC:`More info... <txnid.html>`
 
 .. function:: prepare(gid)
 
    Initiates the beginning of a two-phase commit. A global identifier
    parameter is required, which is a value unique across all processes
    involved in the commit. It must be a string of DB_GID_SIZE bytes.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txnprepare.html>`__
+   :OracleAPIC:`More info... <txnprepare.html>`
 
 .. function:: discard()
 
@@ -61,29 +50,21 @@ DBTxn Methods
    by the current global transaction manager should be discarded using
    "txn.discard()".
 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txndiscard.html>`__
+   :OracleAPIC:`More info... <txndiscard.html>`
 
 .. function:: set_timeout(timeout, flags)
 
    Sets timeout values for locks or transactions for the specified
    transaction.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txnset_timeout.html>`__
+   :OracleAPIC:`More info... <txnset_timeout.html>`
 
 .. function:: get_name(name)
 
    Returns the string associated with the transaction.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txnget_name.html>`__
+   :OracleAPIC:`More info... <txnget_name.html>`
 
 .. function:: set_name(name)
 
    Associates the specified string with the transaction.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/txnset_name.html>`__
+   :OracleAPIC:`More info... <txnset_name.html>`
 

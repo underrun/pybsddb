@@ -26,8 +26,7 @@ shelve-like functionality is provided allowing you to store any
 picklable Python object! 
 
 Berkeley DB is very powerful and versatile, but it is complex to
-use correctly. `Oracle documentation 
-<http://download.oracle.com/docs/cd/E17076_02/html/toc.htm>`__ is very
+use correctly. :Oracle:`Oracle documentation <toc.htm>` is very
 complete. Please, review it.
 
 Documentation Index

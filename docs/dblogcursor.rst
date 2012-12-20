@@ -4,13 +4,10 @@
 DBLogCursor
 ===========
 
-Read `Oracle documentation
-<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+Read :Oracle:`Oracle documentation <programmer_reference/index.html>`
 for better understanding.
 
-`More info...
-<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-C/logc.html>`__
+:OracleAPIC:`More info... <logc.html>`
 
 DBLogCursor Methods
 -------------------
@@ -18,9 +15,7 @@ DBLogCursor Methods
 .. function:: close()
 
    Discards the log cursor.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/logcclose.html>`__
+   :OracleAPIC:`More info... <logcclose.html>`
 
 DBLogCursor Get Methods
 -----------------------
@@ -37,9 +32,7 @@ None.
 .. function:: current()
 
    Return the log record to which the log currently refers.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/logcget.html#get_DB_CURRENT>`__
+   :OracleAPIC:`More info... <logcget.html#get_DB_CURRENT>`
 
 .. function:: first()
 
@@ -48,9 +41,7 @@ None.
 
    This method will return None if the log is empty. 
 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/logcget.html#get_DB_FIRST>`__
+   :OracleAPIC:`More info... <logcget.html#get_DB_FIRST>`
 
 .. function:: last()
 
@@ -58,9 +49,7 @@ None.
 
    This method will return None if the log is empty. 
 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/logcget.html#get_DB_LAST>`__
+   :OracleAPIC:`More info... <logcget.html#get_DB_LAST>`
 
 .. function:: next()
 
@@ -70,9 +59,7 @@ None.
 
    This method will return None if the log is empty. 
 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/logcget.html#get_DB_NEXT>`__
+   :OracleAPIC:`More info... <logcget.html#get_DB_NEXT>`
 
 .. function:: prev()
 
@@ -82,15 +69,11 @@ None.
    
    This method will return None if the log is empty. 
 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/logcget.html#get_DB_PREV>`__
+   :OracleAPIC:`More info... <logcget.html#get_DB_PREV>`
 
 .. function:: set(lsn)
 
    Retrieve the record specified by the lsn parameter.
 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/logcget.html#get_DB_SET>`__
+   :OracleAPIC:`More info... <logcget.html#get_DB_SET>`
 

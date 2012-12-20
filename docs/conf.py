@@ -7,13 +7,19 @@
 # The contents of this file are pickled, so don't put values in the namespace
 # that aren't pickleable (module imports are okay, they're removed automatically).
 
-import sys, os, time
-sys.path.append('tools/sphinxext')
-
 # General configuration
 # ---------------------
 
 #extensions = ['sphinx.ext.refcounting', 'sphinx.ext.coverage']
+extensions = ["sphinx.ext.extlinks"]
+extlinks = {
+        "oracleapic":
+            ("http://download.oracle.com/docs/cd/E17076_02/html/api_reference/C/%s",
+            None),
+        "oracle":
+            ("http://download.oracle.com/docs/cd/E17076_02/html/%s",
+            None),
+        }
 
 # General substitutions.
 project = 'PyBSDDB'

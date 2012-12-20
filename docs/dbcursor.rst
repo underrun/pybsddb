@@ -4,13 +4,10 @@
 DBCursor
 ========
 
-Read `Oracle documentation
-<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+Read :Oracle:`Oracle documentation <programmer_reference/index.html>`
 for better understanding.
 
-`More info...
-<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-C/dbc.html>`__
+:OracleAPIC:`More info... <dbc.html>`
 
 DBCursor Methods
 ----------------
@@ -20,53 +17,39 @@ DBCursor Methods
    Discards the cursor. If the cursor is created within a transaction
    then you *must* be sure to close the cursor before commiting the
    transaction.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcclose.html>`__
+   :OracleAPIC:`More info... <dbcclose.html>`
 
 .. function:: count(flags=0)
 
    Returns a count of the number of duplicate data items for the key
    referenced by the cursor.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbccount.html>`__
+   :OracleAPIC:`More info... <dbccount.html>`
 
 .. function:: delete(flags=0)
 
    Deletes the key/data pair currently referenced by the cursor.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcdel.html>`__
+   :OracleAPIC:`More info... <dbcdel.html>`
 
 .. function:: dup(flags=0)
 
    Create a new cursor.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcdup.html>`__
+   :OracleAPIC:`More info... <dbcdup.html>`
 
 .. function:: set_priority(priority)
 
    Set the cache priority for pages referenced by the DBC handle.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcset_priority.html>`__
+   :OracleAPIC:`More info... <dbcset_priority.html>`
 
 .. function:: get_priority()
 
    Returns the cache priority for pages referenced by the DBC handle.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget_priority.html>`__
+   :OracleAPIC:`More info... <dbcget_priority.html>`
 
 .. function:: put(key, data, flags=0, dlen=-1, doff=-1)
 
    Stores the key/data pair into the database. Partial data records can
    be written using dlen and doff.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcput.html>`__
+   :OracleAPIC:`More info... <dbcput.html>`
 
 .. function:: get(flags, dlen=-1, doff=-1)
 
@@ -84,9 +67,7 @@ DBCursor Methods
    using the cursor. These generic interfaces are only provided as an
    inconvenience. Partial data records are returned if dlen and doff
    are used in this method and in many of the specific methods below.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html>`__
+   :OracleAPIC:`More info... <dbcget.html>`
 
 .. function:: pget(flags, dlen=-1, doff=-1)
 
@@ -101,9 +82,7 @@ DBCursor Methods
    Similar to the already described get(). This method is available only
    on secondary databases. It will return the primary key, given the
    secondary one, and associated data
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html>`__
+   :OracleAPIC:`More info... <dbcget.html>`
 
 DBCursor Get Methods
 --------------------
@@ -114,9 +93,7 @@ C API.
 .. function:: current(flags=0, dlen=-1, doff=-1)
 
    Returns the key/data pair currently referenced by the cursor.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_CURRENT>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_CURRENT>`
 
 .. function:: get_current_size()
 
@@ -126,30 +103,22 @@ C API.
 .. function:: first(flags=0, dlen=-1, doff=-1)
 
    Position the cursor to the first key/data pair and return it.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_FIRST>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_FIRST>`
 
 .. function:: last(flags=0, dlen=-1, doff=-1)
 
    Position the cursor to the last key/data pair and return it.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_LAST>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_LAST>`
 
 .. function:: next(flags=0, dlen=-1, doff=-1)
 
    Position the cursor to the next key/data pair and return it.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_NEXT>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_NEXT>`
 
 .. function:: prev(flags=0, dlen=-1, doff=-1)
 
    Position the cursor to the previous key/data pair and return it.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_PREV>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_PREV>`
 
 .. function:: consume(flags=0, dlen=-1, doff=-1)
 
@@ -165,68 +134,52 @@ C API.
    Like set() but positions the cursor to the record matching both key
    and data. (An alias for this is set_both, which makes more sense to
    me...)
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_GET_BOTH>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_GET_BOTH>`
 
 .. function:: get_recno()
 
    Return the record number associated with the cursor. The database
    must use the BTree access method and have been created with the
    DB_RECNUM flag.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_GET_RECNO>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_GET_RECNO>`
 
 .. function:: join_item(flags=0)
 
    For cursors returned from the DB.join method, returns the combined
    key value from the joined cursors.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_JOIN_ITEM>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_JOIN_ITEM>`
 
 .. function:: next_dup(flags=0, dlen=-1, doff=-1)
 
    If the next key/data pair of the database is a duplicate record for
    the current key/data pair, the cursor is moved to the next key/data
    pair of the database, and that pair is returned.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_NEXT_DUP>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_NEXT_DUP>`
 
 .. function:: next_nodup(flags=0, dlen=-1, doff=-1)
 
    The cursor is moved to the next non-duplicate key/data pair of the
    database, and that pair is returned.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_NEXT_NODUP>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_NEXT_NODUP>`
 
 .. function:: prev_dup(flags=0, dlen=-1, doff=-1)
 
    If the previous key/data pair of the database is a duplicate data
    record for the current key/data pair, the cursor is moved to the
    previous key/data pair of the database, and that pair is returned. 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_PREV_DUP>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_PREV_DUP>`
 
 .. function:: prev_nodup(flags=0, dlen=-1, doff=-1)
 
    The cursor is moved to the previous non-duplicate key/data pair of
    the database, and that pair is returned.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_PREV_NODUP>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_PREV_NODUP>`
 
 .. function:: set(key, flags=0, dlen=-1, doff=-1)
 
    Move the cursor to the specified key in the database and return the
    key/data pair found there.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_SET>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_SET>`
 
 .. function:: set_range(key, flags=0, dlen=-1, doff=-1)
 
@@ -234,24 +187,18 @@ C API.
    method, the returned key/data pair is the smallest key greater than
    or equal to the specified key (as determined by the comparison
    function), permitting partial key matches and range searches.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_SET_RANGE>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_SET_RANGE>`
 
 .. function:: set_recno(recno, flags=0, dlen=-1, doff=-1)
 
    Move the cursor to the specific numbered record of the database, and
    return the associated key/data pair. The underlying database must be
    of type Btree and it must have been created with the DB_RECNUM flag.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_SET_RECNO>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_SET_RECNO>`
 
 .. function:: set_both(key, data, flags=0)
 
    See get_both(). The only difference in behaviour can be disabled
    using set_get_returns_none(2).
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcget.html#dbcget_DB_GET_BOTH>`__
+   :OracleAPIC:`More info... <dbcget.html#dbcget_DB_GET_BOTH>`
 

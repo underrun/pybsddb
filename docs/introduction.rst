@@ -85,17 +85,13 @@ Top level functions
 .. function:: version()
 
    Returns a tuple with major, minor and patch level.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envversion.html>`__
+   :OracleAPIC:`More info... <envversion.html>`
 
 .. function:: full_version()
 
    Returns a tuple with the full version string, family, release,
    major, minor and patch level.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/envfullversion.html>`__
+   :OracleAPIC:`More info... <envfullversion.html>`
 
 Exceptions Provided
 -------------------
@@ -215,15 +211,13 @@ automated. There are currently 482 test cases!  (March 2010)
 Reference
 ---------
 
-See the C language API `online documentation
-<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-C/index.html>`__ on Oracle's website for more details of the
+See the C language API :OracleAPIC:`online documentation <index.html>`
+on Oracle's website for more details of the
 functionality of each of these methods. The names of all the Python
 methods should be the same or similar to the names in the C API.
 
 Berkeley DB is very powerful and versatile, but it is complex to
-use correctly. `Oracle documentation
-<http://download.oracle.com/docs/cd/E17076_02/html/toc.htm>`__ is very
+use correctly. :Oracle:`Oracle documentation <toc.htm>` is very
 complete. Please, review it.
 
 **NOTE:** All the methods shown below having more than one keyword

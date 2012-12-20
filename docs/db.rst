@@ -4,13 +4,10 @@
 DB
 ==
 
-Read `Oracle documentation
-<http://download.oracle.com/docs/cd/E17076_02/html/programmer_reference/index.html>`__
+Read :Oracle:`Oracle documentation <programmer_reference/index.html>`
 for better understanding.
 
-`More info...
-<http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-C/db.html>`__
+:OracleAPIC:`More info... <db.html>`
 
 DB Methods
 ----------
@@ -18,18 +15,14 @@ DB Methods
 .. function:: DB(dbEnv=None, flags=0)
 
    Constructor.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcreate.html>`__
+   :OracleAPIC:`More info... <dbcreate.html>`
 
 .. function:: append(data, txn=None)
 
    A convenient version of put() that can be used for Recno or Queue
    databases. The DB_APPEND flag is automatically used, and the record
    number is returned.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbput.html#dbput_DB_APPEND>`__
+   :OracleAPIC:`More info... <dbput.html#dbput_DB_APPEND>`
 
 .. function:: associate(secondaryDB, callback, flags=0, txn=None)
 
@@ -39,16 +32,12 @@ DB Methods
    key or DB_DONOTINDEX if the item should not be indexed. The
    parameters the callback will receive are the primaryKey and
    primaryData values.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbassociate.html>`__
+   :OracleAPIC:`More info... <dbassociate.html>`
 
 .. function:: close(flags=0)
 
    Flushes cached data and closes the database.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbclose.html>`__
+   :OracleAPIC:`More info... <dbclose.html>`
 
 .. function:: compact(start=None, stop=None, flags=0,
    compact_fillpercent=0, compact_pages=0, compact_timeout=0)
@@ -58,18 +47,14 @@ DB Methods
    filesystem.
 
    The method returns the number of pages returned to the filesystem.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcompact.html>`__
+   :OracleAPIC:`More info... <dbcompact.html>`
 
 .. function:: consume(txn=None, flags=0)
 
    For a database with the Queue access method, returns the record
    number and data from the first available record and deletes it from
    the queue.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget.html#dbget_DB_CONSUME>`__
+   :OracleAPIC:`More info... <dbget.html#dbget_DB_CONSUME>`
 
 .. function:: consume_wait(txn=None, flags=0)
 
@@ -77,9 +62,7 @@ DB Methods
    number and data from the first available record and deletes it from
    the queue. If the Queue database is empty, the thread of control
    will wait until there is data in the queue before returning.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget.html#dbget_DB_CONSUME_WAIT>`__
+   :OracleAPIC:`More info... <dbget.html#dbget_DB_CONSUME_WAIT>`
 
 .. function:: cursor(txn=None, flags=0)
 
@@ -87,30 +70,22 @@ DB Methods
    transaction is passed then the cursor can only be used within that
    transaction and you *must* be sure to close the cursor before
    commiting the transaction.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbcursor.html>`__
+   :OracleAPIC:`More info... <dbcursor.html>`
 
 .. function:: delete(key, txn=None, flags=0)
 
    Removes a key/data pair from the database.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbdel.html>`__
+   :OracleAPIC:`More info... <dbdel.html>`
 
 .. function:: exists(key, txn=None, flags=0)
 
    Test if a key exists in the database. Returns True or False.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbexists.html>`__
+   :OracleAPIC:`More info... <dbexists.html>`
 
 .. function:: fd()
 
    Returns a file descriptor for the database.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbfd.html>`__
+   :OracleAPIC:`More info... <dbfd.html>`
 
 .. function:: get(key, default=None, txn=None, flags=0, dlen=-1, doff=-1)
 
@@ -121,32 +96,24 @@ DB Methods
    database. Partial records can be read using dlen and doff, however be
    sure to not read beyond the end of the actual data or you may get
    garbage.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget.html>`__
+   :OracleAPIC:`More info... <dbget.html>`
 
 .. function:: pget(key, default=None, txn=None, flags=0, dlen=-1, doff=-1)
 
    This method is available only on secondary databases. It will return
    the primary key, given the secondary one, and associated data.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget.html>`__
+   :OracleAPIC:`More info... <dbget.html>`
 
 .. function:: get_transactional()
 
    Returns True if the database is transactional. False if not.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_transactional.html>`__
+   :OracleAPIC:`More info... <dbget_transactional.html>`
 
 .. function:: get_priority()
 
    Returns the cache priority for pages referenced by the DB handle.
    This priority value is set using the DB->set_priority() method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_priority.html>`__
+   :OracleAPIC:`More info... <dbget_priority.html>`
 
 .. function:: set_priority(priority)
 
@@ -161,25 +128,19 @@ DB Methods
 
    The value provided must be symbolic. Check the Oracle documentation.
 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_priority.html>`__
+   :OracleAPIC:`More info... <dbset_priority.html>`
 
 .. function:: get_dbname()
 
    Returns a tuple with the filename and the database name. If
    there is no database name, the value returned will be None.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_dbname.html>`__
+   :OracleAPIC:`More info... <dbget_dbname.html>`
 
 .. function:: get_open_flags()
 
    Returns the current open method flags. That is, this method returns
    the flags that were specified when DB->open() was called.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_open_flags.html>`__
+   :OracleAPIC:`More info... <dbget_open_flags.html>`
 
 .. function:: set_private(object)
 
@@ -196,17 +157,13 @@ DB Methods
    flag, and which will be successful only if both the key and data
    value are found in the database. (Can be used to verify the presence
    of a record in the database when duplicate keys are allowed.)
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget.html#get_DB_GET_BOTH>`__
+   :OracleAPIC:`More info... <dbget.html#get_DB_GET_BOTH>`
 
 .. function:: get_byteswapped()
 
    May be used to determine if the database was created on a machine
    with the same endianess as the current machine.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_byteswapped.html>`__
+   :OracleAPIC:`More info... <dbget_byteswapped.html>`
 
 .. function:: get_size(key, txn=None)
 
@@ -215,25 +172,19 @@ DB Methods
 .. function:: get_type()
 
    Return the database's access method type.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_type.html>`__
+   :OracleAPIC:`More info... <dbget_type.html>`
 
 .. function:: join(cursorList, flags=0)
 
    Create and return a specialized cursor for use in performing joins on
    secondary indices.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbjoin.html>`__
+   :OracleAPIC:`More info... <dbjoin.html>`
 
 .. function:: key_range(key, txn=None, flags=0)
 
    Returns an estimate of the proportion of keys that are less than,
    equal to and greater than the specified key.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbkey_range.html>`__
+   :OracleAPIC:`More info... <dbkey_range.html>`
 
 .. function:: open(filename, dbname=None, dbtype=DB_UNKNOWN, flags=0, mode=0660, txn=None)
 
@@ -244,9 +195,7 @@ DB Methods
    created using a database name. In-memory databases never intended to
    be shared or preserved on disk may be created by setting both the
    filename and dbname arguments to None.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbopen.html>`__
+   :OracleAPIC:`More info... <dbopen.html>`
 
 .. function:: put(key, data, txn=None, flags=0, dlen=-1, doff=-1)
 
@@ -254,23 +203,17 @@ DB Methods
    used and the database is using the Recno or Queue access method then
    the record number allocated to the data is returned. Partial data
    objects can be written using dlen and doff.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbput.html>`__
+   :OracleAPIC:`More info... <dbput.html>`
 
 .. function:: remove(filename, dbname=None, flags=0)
 
    Remove a database.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbremove.html>`__
+   :OracleAPIC:`More info... <dbremove.html>`
 
 .. function:: rename(filename, dbname, newname, flags=0)
 
    Rename a database.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbrename.html>`__
+   :OracleAPIC:`More info... <dbrename.html>`
 
 .. function:: set_encrypt(passwd, flags=0)
 
@@ -279,16 +222,12 @@ DB Methods
    DB environments use the password specified to the environment, it is
    an error to attempt to set a password in a database created within an
    environment.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_encrypt.html>`__
+   :OracleAPIC:`More info... <dbset_encrypt.html>`
 
 .. function:: get_encrypt_flags()
 
    Returns the encryption flags.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_encrypt_flags.html>`__
+   :OracleAPIC:`More info... <dbget_encrypt_flags.html>`
  
 .. function:: set_bt_compare(compareFunc)
 
@@ -298,40 +237,30 @@ DB Methods
    0, 1 integer similar to cmp. You can shoot your database in the
    foot, beware!  Read the Berkeley DB docs for the full details of
    how the comparison function MUST behave.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_bt_compare.html>`__
+   :OracleAPIC:`More info... <dbset_bt_compare.html>`
 
 .. function:: get_bt_minkey()
 
    Returns the minimum number of key/data pairs intended to be stored on
    any single Btree leaf page. This value can be set using the
    DB->set_bt_minkey() method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_bt_minkey.html>`__
+   :OracleAPIC:`More info... <dbget_bt_minkey.html>`
 
 .. function:: set_bt_minkey(minKeys)
 
    Set the minimum number of keys that will be stored on any single
    BTree page.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_bt_minkey.html>`__
+   :OracleAPIC:`More info... <dbset_bt_minkey.html>`
 
 .. function:: set_cachesize(gbytes, bytes, ncache=0)
 
    Set the size of the database's shared memory buffer pool.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_cachesize.html>`__
+   :OracleAPIC:`More info... <dbset_cachesize.html>`
 
 .. function:: get_cachesize()
 
    Returns a tuple with the current size and composition of the cache.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_cachesize.html>`__
+   :OracleAPIC:`More info... <dbget_cachesize.html>`
 
 .. function:: set_dup_compare(compareFunc)
 
@@ -341,9 +270,7 @@ DB Methods
    -1, 0, 1 integer similar to cmp. You can shoot your database in the
    foot, beware!  Read the Berkeley DB docs for the full details of how
    the comparison function MUST behave.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_dup_compare.html>`__
+   :OracleAPIC:`More info... <dbset_dup_compare.html>`
 
 .. function:: set_get_returns_none(flag)
 
@@ -357,155 +284,117 @@ DB Methods
 
    Returns the current database flags as set by the DB->set_flags()
    method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_flags.html>`__
+   :OracleAPIC:`More info... <dbget_flags.html>`
 
 .. function:: set_flags(flags)
 
    Set additional flags on the database before opening.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_flags.html>`__
+   :OracleAPIC:`More info... <dbset_flags.html>`
 
 .. function:: get_h_ffactor()
 
    Returns the hash table density as set by the DB->set_h_ffactor()
    method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_h_ffactor.html>`__
+   :OracleAPIC:`More info... <dbget_h_ffactor.html>`
 
 .. function:: set_h_ffactor(ffactor)
 
    Set the desired density within the hash table.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_h_ffactor.html>`__
+   :OracleAPIC:`More info... <dbset_h_ffactor.html>`
 
 .. function:: get_h_nelem()
 
    Returns the estimate of the final size of the hash table as set by the
    DB->set_h_nelem() method. 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_h_nelem.html>`__
+   :OracleAPIC:`More info... <dbget_h_nelem.html>`
 
 .. function:: set_h_nelem(nelem)
 
    Set an estimate of the final size of the hash table.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_h_nelem.html>`__
+   :OracleAPIC:`More info... <dbset_h_nelem.html>`
 
 .. function:: get_lorder()
 
    Returns the database byte order; a byte order of 4,321 indicates a
    big endian order, and a byte order of 1,234 indicates a little endian
    order. This value is set using the DB->set_lorder() method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_lorder.html>`__
+   :OracleAPIC:`More info... <dbget_lorder.html>`
 
 .. function:: set_lorder(lorder)
 
    Set the byte order for integers in the stored database metadata.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_lorder.html>`__
+   :OracleAPIC:`More info... <dbset_lorder.html>`
 
 .. function:: get_pagesize()
 
    Returns the database's current page size, as set by the
    DB->set_pagesize() method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_pagesize.html>`__
+   :OracleAPIC:`More info... <dbget_pagesize.html>`
 
 .. function:: set_pagesize(pagesize)
 
    Set the size of the pages used to hold items in the database, in
    bytes.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_pagesize.html>`__
+   :OracleAPIC:`More info... <dbset_pagesize.html>`
 
 .. function:: get_re_delim()
 
    Returns the delimiting byte, which is used to mark the end of a
    record in the backing source file for the Recno access method.
    The return value will be a numeric byte value.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_re_delim.html>`__
+   :OracleAPIC:`More info... <dbget_re_delim.html>`
 
 .. function:: set_re_delim(delim)
 
    Set the delimiting byte used to mark the end of a record in the
    backing source file for the Recno access method. You can
    specify a char or a numeric byte value.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_re_delim.html>`__
+   :OracleAPIC:`More info... <dbset_re_delim.html>`
 
 .. function:: get_re_len()
 
    Returns the length of the records held in a Queue access method
    database. This value can be set using the DB->set_re_len() method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_re_len.html>`__
+   :OracleAPIC:`More info... <dbget_re_len.html>`
 
 .. function:: set_re_len(length)
 
    For the Queue access method, specify that the records are of length
    length. For the Recno access method, specify that the records are
    fixed-length, not byte delimited, and are of length length.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_re_len.html>`__
+   :OracleAPIC:`More info... <dbset_re_len.html>`
 
 .. function:: get_re_pad()
 
    Returns the pad character used for short, fixed-length records used
    by the Queue and Recno access methods. The method returns a byte
    value.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_re_pad.html>`__
+   :OracleAPIC:`More info... <dbget_re_pad.html>`
 
 .. function:: set_re_pad(pad)
 
    Set the padding character for short, fixed-length records for the
    Queue and Recno access methods. You can specify a char or a numeric
    byte value.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_re_pad.html>`__
+   :OracleAPIC:`More info... <dbset_re_pad.html>`
 
 .. function:: get_re_source()
 
    Returns the source file used by the Recno access method. This file is
    configured for the Recno access method using the DB->set_re_source()
    method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_re_source.html>`__
+   :OracleAPIC:`More info... <dbget_re_source.html>`
 
 .. function:: set_re_source(source)
 
    Set the underlying source file for the Recno access method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_re_source.html>`__
+   :OracleAPIC:`More info... <dbset_re_source.html>`
 
 .. function:: get_q_extentsize()
 
    Returns the number of pages in an extent. This value is used only for
    Queue databases and is set using the DB->set_q_extentsize() method.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbget_q_extentsize.html>`__
+   :OracleAPIC:`More info... <dbget_q_extentsize.html>`
 
 .. function:: set_q_extentsize(extentsize)
 
@@ -513,9 +402,7 @@ DB Methods
    specified as a number of pages. Each extent is created as a separate
    physical file. If no extent size is set, the default behavior is to
    create only a single underlying database file.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbset_q_extentsize.html>`__
+   :OracleAPIC:`More info... <dbset_q_extentsize.html>`
 
 .. function:: stat(flags=0, txn=None)
 
@@ -653,48 +540,36 @@ DB Methods
         | cur_recno   | Last allocated record number in the database. |
         +-------------+-----------------------------------------------+
 
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbstat.html>`__
+   :OracleAPIC:`More info... <dbstat.html>`
 
 .. function:: stat_print(flags=0)
 
    Displays the database statistical information.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbstat_print.html>`__
+   :OracleAPIC:`More info... <dbstat_print.html>`
 
 .. function:: sync(flags=0)
 
    Flushes any cached information to disk.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbsync.html>`__
+   :OracleAPIC:`More info... <dbsync.html>`
 
 .. function:: truncate(txn=None, flags=0)
 
    Empties the database, discarding all records it contains. The number
    of records discarded from the database is returned.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbtruncate.html>`__
+   :OracleAPIC:`More info... <dbtruncate.html>`
 
 .. function:: upgrade(filename, flags=0)
 
    Upgrades all of the databases included in the file filename, if
    necessary.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbupgrade.html>`__
+   :OracleAPIC:`More info... <dbupgrade.html>`
 
 .. function:: verify(filename, dbname=None, outfile=None, flags=0)
 
    Verifies the integrity of all databases in the file specified by the
    filename argument, and optionally outputs the databases' key/data
    pairs to a file.
-   `More info...
-   <http://download.oracle.com/docs/cd/E17076_02/html/api_reference/
-   C/dbverify.html>`__
+   :OracleAPIC:`More info... <dbverify.html>`
 
 DB Mapping and Compatibility Methods
 ------------------------------------
