@@ -9973,6 +9973,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_LOG_ZERO);
 #endif
 
+#if (DBVER >= 60)
+    ADD_INT(d, DB_LOG_BLOB);
+#endif
+
 #if (DBVER >= 44)
     ADD_INT(d, DB_DSYNC_DB);
 #endif
@@ -10143,6 +10147,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
 #if (DBVER >= 60)
     ADD_INT(d, DB_REPMGR_ISVIEW);
+#endif
+
+#if (DBVER >= 60)
+    ADD_INT(d, DB_DBT_BLOB);
 #endif
 
     ADD_INT(d, DB_TIMEOUT);
