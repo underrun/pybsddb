@@ -1,7 +1,7 @@
 .. $Id$
 
 =============================================
- Python Bindings for Berkeley DB 4.3 thru 5.3
+ Python Bindings for Berkeley DB 4.3 thru 6.0
 =============================================
 
 Introduction
