@@ -10033,6 +10033,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_EVENT_REG_PANIC);
 #endif
 
+#if (DBVER >= 60)
+    ADD_INT(d, DB_EVENT_REP_AUTOTAKEOVER_FAILED);
+#endif
+
 #if (DBVER >=52)
     ADD_INT(d, DB_EVENT_REP_SITE_ADDED);
     ADD_INT(d, DB_EVENT_REP_SITE_REMOVED);

@@ -3,6 +3,7 @@
   * Print test working directory when running the testsuite.
     You can control it using "TMPDIR" environment variable.
     Defaults to "/tmp/z-Berkeley_DB/".
+  * Support for "DB_EVENT_REP_AUTOTAKEOVER_FAILED" event.
 
 5.3.1:
   * HEADS UP: If you are using "bsddb3._bsddb" in your code,
