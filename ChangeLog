@@ -4,7 +4,8 @@
     You can control it using "TMPDIR" environment variable.
     Defaults to "/tmp/z-Berkeley_DB/".
   * Support for "DB_EVENT_REP_AUTOTAKEOVER_FAILED" event.
-  * Support for "DB_REPMGR_ISVIEW", "DB_DBT_BLOB", "DB_LOG_BLOB" flags.
+  * Support for "DB_REPMGR_ISVIEW", "DB_DBT_BLOB", "DB_LOG_BLOB",
+    "DB_STREAM_READ", "DB_STREAM_WRITE" and "DB_STREAM_SYNC_WRITE" flags. **OJO FLAG DB_STREAM_SYNC_WRITE**
 
 5.3.1:
   * HEADS UP: If you are using "bsddb3._bsddb" in your code,

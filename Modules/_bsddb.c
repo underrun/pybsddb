@@ -10153,6 +10153,12 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     ADD_INT(d, DB_DBT_BLOB);
 #endif
 
+#if (DBVER >= 60)
+    ADD_INT(d, DB_STREAM_READ);
+    ADD_INT(d, DB_STREAM_WRITE);
+    ADD_INT(d, DB_STREAM_SYNC_WRITE);
+#endif
+
     ADD_INT(d, DB_TIMEOUT);
 
 #if (DBVER >= 50)
