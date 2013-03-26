@@ -482,6 +482,7 @@ def print_versions():
     print 'py module:            %s' % getattr(bsddb, "__file"+suffix)
     print 'extension module:     %s' % getattr(bsddb, "__file"+suffix)
 
+    print 'Test working dir:     %s' % get_test_path_prefix()
     import platform
     print 'python version:       %s %s' % \
             (sys.version.replace("\r", "").replace("\n", ""), \
