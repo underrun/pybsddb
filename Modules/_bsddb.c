@@ -124,10 +124,14 @@ typedef int Py_ssize_t;
 #define NUMBER_Check    PyLong_Check
 #define NUMBER_AsLong   PyLong_AsLong
 #define NUMBER_FromLong PyLong_FromLong
+#define NUMBER_FromUnsignedLong PyLong_FromUnsignedLong
 #else
 #define NUMBER_Check    PyInt_Check
 #define NUMBER_AsLong   PyInt_AsLong
 #define NUMBER_FromLong PyInt_FromLong
+#if (PY_VERSION_HEX >= 0x02050000)
+#define NUMBER_FromUnsignedLong PyInt_FromSize_t
+#endif
 #endif
 
 #ifdef WITH_THREAD
@@ -852,6 +856,18 @@ static void _addIntToDict(PyObject* dict, char *name, int value)
 
     Py_XDECREF(v);
 }
+
+#if (DBVER >= 60) && (PY_VERSION_HEX >= 0x02050000)
+/* add an unsigned integer to a dictionary using the given name as a key */
+static void _addUnsignedIntToDict(PyObject* dict, char *name, unsigned int value)
+{
+    PyObject* v = NUMBER_FromUnsignedLong((unsigned long) value);
+    if (!v || PyDict_SetItemString(dict, name, v))
+        PyErr_Clear();
+
+    Py_XDECREF(v);
+}
+#endif
 
 /* The same, when the value is a time_t */
 static void _addTimeTToDict(PyObject* dict, char *name, time_t value)
@@ -8407,12 +8423,22 @@ static PyObject*
 DBSequence_get(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 {
     int err, flags = 0;
+#if (DBVER >= 60)
+    unsigned
+#endif
     int delta = 1;
     db_seq_t value;
     PyObject *txnobj = NULL;
     DB_TXN *txn = NULL;
     static char* kwnames[] = {"delta", "txn", "flags", NULL };
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iOi:get", kwnames, &delta, &txnobj, &flags))
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+#if (DBVER >=60)
+            "|IOi:get",
+#else
+            "|iOi:get",
+#endif
+            kwnames, &delta, &txnobj, &flags))
         return NULL;
     CHECK_SEQUENCE_NOT_CLOSED(self)
 
@@ -8542,8 +8568,19 @@ DBSequence_remove(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 static PyObject*
 DBSequence_set_cachesize(DBSequenceObject* self, PyObject* args)
 {
-    int err, size;
-    if (!PyArg_ParseTuple(args,"i:set_cachesize", &size))
+    int err;
+#if (DBVER >= 60)
+    unsigned
+#endif
+    int size;
+
+    if (!PyArg_ParseTuple(args,
+#if (DBVER >= 60)
+            "I:set_cachesize",
+#else
+            "i:set_cachesize",
+#endif
+            &size))
         return NULL;
     CHECK_SEQUENCE_NOT_CLOSED(self)
 
@@ -8558,7 +8595,11 @@ DBSequence_set_cachesize(DBSequenceObject* self, PyObject* args)
 static PyObject*
 DBSequence_get_cachesize(DBSequenceObject* self)
 {
-    int err, size;
+    int err;
+#if (DBVER >= 60)
+    unsigned
+#endif
+    int size;
 
     CHECK_SEQUENCE_NOT_CLOSED(self)
 
@@ -8687,6 +8728,9 @@ DBSequence_stat(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 
 
 #define MAKE_INT_ENTRY(name)  _addIntToDict(dict_stat, #name, sp->st_##name)
+#if (DBVER >= 60) && (PY_VERSION_HEX >= 0x02050000)
+#define MAKE_UNSIGNED_INT_ENTRY(name)   _addUnsignedIntToDict(dict_stat, #name, sp->st_##name)
+#endif
 #define MAKE_LONG_LONG_ENTRY(name)  _addDb_seq_tToDict(dict_stat, #name, sp->st_##name)
 
     MAKE_INT_ENTRY(wait);
@@ -8696,10 +8740,15 @@ DBSequence_stat(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
     MAKE_LONG_LONG_ENTRY(last_value);
     MAKE_LONG_LONG_ENTRY(min);
     MAKE_LONG_LONG_ENTRY(max);
+#if (DBVER >= 60) && (PY_VERSION_HEX >= 0x02050000)
+    MAKE_UNSIGNED_INT_ENTRY(cache_size);
+#else
     MAKE_INT_ENTRY(cache_size);
+#endif
     MAKE_INT_ENTRY(flags);
 
 #undef MAKE_INT_ENTRY
+#undef MAKE_UNSIGNED_INT_ENTRY
 #undef MAKE_LONG_LONG_ENTRY
 
     free(sp);
