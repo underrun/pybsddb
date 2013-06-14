@@ -1,5 +1,7 @@
 6.0.0:
   * Support Berkeley DB 6.0.x.
+  * HEADS UP: If you are using "bsddb3._bsddb" in your code,
+    for example for exceptions, change it to "bsddb3._db".
   * Print test working directory when running the testsuite.
     You can control it using "TMPDIR" environment variable.
     Defaults to "/tmp/z-Berkeley_DB/".
@@ -7,10 +9,6 @@
   * Support for "DB_REPMGR_ISVIEW", "DB_DBT_BLOB", "DB_LOG_BLOB",
     "DB_STREAM_READ", "DB_STREAM_WRITE" and "DB_STREAM_SYNC_WRITE" flags. **OJO FLAG DB_STREAM_SYNC_WRITE**
   * Some DB_SEQUENCE function signatures changed in Berkeley DB 6.0.x.
-
-5.3.1:
-  * HEADS UP: If you are using "bsddb3._bsddb" in your code,
-    for example for exceptions, change it to "bsddb3._db".
   * Erratic behaviour of "DBEnv->rep_elect()" because a typo.
   * The testsuite prints Python bitness (32/64).
   * Tests compatible with hash randomization, default
