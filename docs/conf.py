@@ -14,10 +14,10 @@
 extensions = ["sphinx.ext.extlinks"]
 extlinks = {
         "oracleapic":
-            ("http://download.oracle.com/docs/cd/E17076_02/html/api_reference/C/%s",
+            ("http://docs.oracle.com/cd/E17076_03/html/api_reference/C/%s",
             None),
         "oracle":
-            ("http://download.oracle.com/docs/cd/E17076_02/html/%s",
+            ("http://docs.oracle.com/cd/E17076_03/html/%s",
             None),
         }
 
