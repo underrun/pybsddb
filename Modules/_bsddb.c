@@ -2677,13 +2677,21 @@ _default_cmp(const DBT *leftKey,
 
 static int
 _db_compareCallback(DB* db,
-		    const DBT *leftKey,
-		    const DBT *rightKey)
+            const DBT *leftKey,
+            const DBT *rightKey
+#if (DBVER >= 60)
+          , size_t *locp
+#endif
+            )
 {
     int res = 0;
     PyObject *args;
     PyObject *result = NULL;
     DBObject *self = (DBObject *)db->app_private;
+
+# if (DBVER >= 60)
+    locp = NULL;  /* As required by documentation */
+#endif
 
     if (self == NULL || self->btCompareCallback == NULL) {
 	MYDB_BEGIN_BLOCK_THREADS;
@@ -2791,13 +2799,21 @@ DB_set_bt_compare(DBObject* self, PyObject* comparator)
 
 static int
 _db_dupCompareCallback(DB* db,
-		    const DBT *leftKey,
-		    const DBT *rightKey)
+            const DBT *leftKey,
+            const DBT *rightKey
+#if (DBVER >= 60)
+          , size_t *locp
+        )
+#endif
 {
     int res = 0;
     PyObject *args;
     PyObject *result = NULL;
     DBObject *self = (DBObject *)db->app_private;
+
+#if (DBVER >= 60)
+    locp = NULL;  /* As required by documentation */
+#endif
 
     if (self == NULL || self->dupCompareCallback == NULL) {
 	MYDB_BEGIN_BLOCK_THREADS;
