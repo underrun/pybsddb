@@ -7,7 +7,7 @@
     Defaults to "/tmp/z-Berkeley_DB/".
   * Support for "DB_EVENT_REP_AUTOTAKEOVER_FAILED" event.
   * Support for "DB_REPMGR_ISVIEW", "DB_DBT_BLOB", "DB_LOG_BLOB",
-    "DB_STREAM_READ", "DB_STREAM_WRITE" and "DB_STREAM_SYNC_WRITE" flags. **OJO FLAG DB_STREAM_SYNC_WRITE**
+    "DB_STREAM_READ", "DB_STREAM_WRITE" and "DB_STREAM_SYNC_WRITE" flags.
   * Some DB_SEQUENCE function signatures changed in Berkeley DB 6.0.x.
   * Erratic behaviour of "DBEnv->rep_elect()" because a typo.
   * The testsuite prints Python bitness (32/64).
