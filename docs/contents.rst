@@ -29,6 +29,9 @@ Berkeley DB is very powerful and versatile, but it is complex to
 use correctly. :Oracle:`Oracle documentation <toc.htm>` is very
 complete. Please, review it.
 
+Since June 2013 (release 6.0.0), this project accepts donations. Please,
+contribute if you can. Details.
+
 Documentation Index
 -------------------
 
@@ -44,4 +47,5 @@ Documentation Index
   dbsequence.rst
   dbsite.rst
   history.rst
+  donate.rst
 
