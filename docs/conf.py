@@ -23,7 +23,9 @@ extlinks = {
 
 # General substitutions.
 project = 'PyBSDDB'
-copyright = '2008-2013 Jesús Cea Avión'
+# I can't use tildes because my ZOPE configuration.
+# Something to fix in the future.
+copyright = '2008-2013 Jesus Cea Avion'
 
 # The default replacements for |version| and |release|.
 #
