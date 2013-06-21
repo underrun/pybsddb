@@ -48,10 +48,13 @@ html:
 	@rm -rf html/
 	@cp -a $(BUILDDIR)/html/ .
 	@mv html/_static/ html/static/
+	@mv html/_images/ html/images/
 	@rm html/.buildinfo
 	@for i in html/*.html; \
 	do \
-		sed -e "sX\\"_static/X\\"static/Xg" <"${BUILDDIR}/$$i" >"$$i"; \
+		sed -e "sX\\"_static/X\\"static/Xg" \
+	            -e "sX\\"_images/X\\"images/Xg" \
+		     <"${BUILDDIR}/$$i" >"$$i"; \
 	done
 	@echo
 	@echo "Build finished. The HTML pages are in html/."
