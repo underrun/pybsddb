@@ -380,6 +380,7 @@ pybsddb.htm>`__ --
 `Documentation <http://www.jcea.es/programacion/
 pybsddb_doc/>`__ --
 `Mailing List <https://mailman.jcea.es/listinfo/pybsddb>`__
+`Donation <http://www.jcea.es/programacion/pybsddb_doc/donate.html>`__
 """,
 
       author = 'Jesus Cea, Robin Dunn, Gregory P. Smith, Andrew Kuchling, Barry Warsaw',

@@ -7,8 +7,12 @@ DONATE!
 .. _BitCoins: https://en.wikipedia.org/wiki/Bitcoin
 .. _9AC53D4D: http://pgp.rediris.es:11371/pks/lookup?search=0x9AC53D4D&op=vindex&fingerprint=on&exact=on
 
-PyBSDDB/BSDDB3 needs your help. Please, consider donating to the
+Work on this project is currently driven by my own interests, needs and
+spare time. If you appreciate this software or if you want to sponsor a
+currently not translated API feature, please consider donation to the
 project.
+
+PyBSDDB/BSDDB3 needs your help.
 
 You can donate using BitCoins_. The destination address is
 16avqyUK4vDqBdpUy365PPW44zNqVHLZSC.
