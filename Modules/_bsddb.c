@@ -2803,8 +2803,8 @@ _db_dupCompareCallback(DB* db,
             const DBT *rightKey
 #if (DBVER >= 60)
           , size_t *locp
-        )
 #endif
+        )
 {
     int res = 0;
     PyObject *args;
