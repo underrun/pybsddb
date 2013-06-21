@@ -14,8 +14,8 @@ You can donate using BitCoins_. The destination address is
 16avqyUK4vDqBdpUy365PPW44zNqVHLZSC.
 
 .. image:: bitcoin.png
-    :align: center
-    :alt: 16avqyUK4vDqBdpUy365PPW44zNqVHLZSC.
+   :align: center
+   :alt: 16avqyUK4vDqBdpUy365PPW44zNqVHLZSC.
 
 Since donations thru BitCoin are not revocable, please be sure your are
 transfering to the right account (this document could have been modified
