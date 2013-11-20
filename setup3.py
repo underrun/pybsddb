@@ -439,7 +439,7 @@ pybsddb_doc/>`__ --
       author = 'Jesus Cea, Robin Dunn, Gregory P. Smith, Andrew Kuchling, Barry Warsaw',
       author_email = 'pybsddb@jcea.es',
       url = 'http://www.jcea.es/programacion/pybsddb.htm',
-      license = "MIT License",
+      license = "3-clause BSD License",
 
       packages = ['bsddb3', 'bsddb3/tests'],
       package_dir = {'bsddb3': 'Lib%s/bsddb' %version_suffix,
@@ -456,7 +456,7 @@ pybsddb_doc/>`__ --
       headers = ['Modules/bsddb.h'],
       data_files = utils,
       classifiers = [
-                    'License :: OSI Approved :: MIT License',
+                    'License :: OSI Approved :: BSD License',
                     'Development Status :: 5 - Production/Stable',
                     'Intended Audience :: Developers',
                     'Intended Audience :: Information Technology',
