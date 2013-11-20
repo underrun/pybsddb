@@ -1,3 +1,7 @@
+* 20131121: When the lower Python version we support is 2.6, we
+  can delete "test_support.py" and use the Python stock version.
+  Update the "licenses.txt" file.
+
 * 20080327: Add a parameter to DBEnv.log_flush().
 
 * 20080402: If a prepared/recovered transaction is garbaged collected,
