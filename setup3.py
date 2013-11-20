@@ -156,15 +156,15 @@ if os.name == 'posix':
     if LFLAGS or LIBS:
         lflags_arg = LFLAGS + LIBS
 
+    # Supported Berkeley DB versions, in order of preference.
+    db_ver_list = ((6, 0),
+            (5, 3), (5, 2), (5, 1), (5, 0),
+            (4, 8), (4, 7), (4, 6), (4, 5), (4, 4), (4, 3))
+
     # If we were not told where it is, go looking for it.
     dblib = 'db'
     incdir = libdir = None
     if not BERKELEYDB_DIR and not BERKELEYDB_LIBDIR and not BERKELEYDB_INCDIR:
-        # Supported Berkeley DB versions, in order of preference.
-        db_ver_list = ((6, 0),
-                (5, 3), (5, 2), (5, 1), (5, 0),
-                (4, 8), (4, 7), (4, 6), (4, 5), (4, 4), (4, 3))
-
         # construct a list of paths to look for the header file in on
         # top of the normal inc_dirs.
         db_inc_paths = []
@@ -329,6 +329,24 @@ if os.name == 'posix':
         if st != "yes":
             sys.exit(1)
 
+    # read db.h to figure out what version of Berkeley DB this is
+    ver = None
+    db_h_lines = open(os.path.join(incdir, 'db.h'), 'r').readlines()
+    db_ver_re = re.compile(
+        r'^#define\s+DB_VERSION_STRING\s.*Berkeley DB (\d+\.\d+).*')
+    for line in db_h_lines:
+        match = db_ver_re.match(line)
+        if not match:
+            continue
+        fullverstr = match.group(1)
+        ver = fullverstr[0] + fullverstr[2]   # 31 == 3.1, 32 == 3.2, etc.
+        db_ver2 = (int(fullverstr[0]), int(fullverstr[2]))
+    if db_ver != db_ver2 :
+        raise AssertionError("Detected Berkeley DB version is inconsistent")
+    if db_ver not in db_ver_list:
+        raise AssertionError("pybsddb untested with this Berkeley DB "
+                "version %d.%d" %db_ver)
+    print('Detected Berkeley DB version %d.%d from db.h' %db_ver)
 
 elif os.name == 'nt':
 
@@ -362,9 +380,11 @@ elif os.name == 'nt':
             continue
         fullverstr = match.group(1)
         ver = fullverstr[0] + fullverstr[2]   # 31 == 3.1, 32 == 3.2, etc.
-    assert (fullverstr[0], fullverstr[2]) in db_ver_list, (
-        "pybsddb untested with this Berkeley DB version", ver)
-    print('Detected Berkeley DB version', ver, 'from db.h')
+        db_ver = (int(fullverstr[0]), int(fullverstr[2]))
+    if db_ver not in db_ver_list:
+        raise AssertionError("pybsddb untested with this Berkeley DB "
+                "version %d.%d" %db_ver)
+    print('Detected Berkeley DB version %d.%d from db.h' %db_ver)
 
     if debug:
         libname = ['libdb%ssd' % ver]     # Debug, static
