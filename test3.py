@@ -334,7 +334,8 @@ class TestFileFinder:
 
     def module_from_path(self, path):
         """Return the Python package name indiciated by the filesystem path."""
-        assert path.endswith('.py')
+        if not path.endswith('.py') :
+            raise AssertionError()
         path = path[self._plen:-3]
         mod = path.replace(os.sep, '.')
         return mod
