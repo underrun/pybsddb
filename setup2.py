@@ -358,7 +358,7 @@ elif os.name == 'nt':
     # version numbers in default path names, and different library
     # names for debug/release or dll/static.
     #
-    # So to make things easier, I'm just going to exepect that the DB stuff
+    # So to make things easier, I'm just going to expect that the DB stuff
     # has been moved to the ./db directory. There's an updatedb.bat file to
     # help.
     #
