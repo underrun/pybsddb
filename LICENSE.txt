@@ -1,4 +1,8 @@
-#!/usr/bin/env python
+Except when noted in individual files, this project is distributed
+under BSD 3-Clause License. More details in
+<http://opensource.org/licenses/BSD-3-Clause>.
+
+License Text:
 
 """
 Copyright (c) 2008-2013, Jesus Cea Avion <jcea@jcea.es>
@@ -34,15 +38,4 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 """
-
-import sys
-if sys.version_info[0] == 2 :
-  import test2 as test
-else :  # >= Python 3.0
-  import test3 as test
-
-sys.path.append("/home/pybsddb/trunk/build/lib.solaris-2.10-i86pc-3.1/bsddb3/")
-
-if __name__ == "__main__":
-    test.process_args()
 
