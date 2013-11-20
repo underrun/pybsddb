@@ -50,18 +50,15 @@
  *
  * Gregory P. Smith <greg@krypto.org> is once again the maintainer.
  *
- * Use the pybsddb-users@lists.sf.net mailing list for all questions.
- * Things can change faster than the header of this file is updated.  This
- * file is shared with the PyBSDDB project at SourceForge:
+ * Since January 2008, new maintainer is Jesus Cea <jcea@jcea.es>.
+ * Jesus Cea licenses this code to PSF under a Contributor Agreement.
  *
- * http://pybsddb.sf.net
+ * Use the pybsddb@jcea.es mailing list for all questions.
+ * Things can change faster than the header of this file is updated.
  *
- * This file should remain backward compatible with Python 2.1, but see PEP
- * 291 for the most current backward compatibility requirements:
+ * http://www.jcea.es/programacion/pybsddb.htm
  *
- * http://www.python.org/peps/pep-0291.html
- *
- * This module contains 7 types:
+ * This module contains 8 types:
  *
  * DB           (Database)
  * DBCursor     (Database Cursor)
@@ -70,9 +67,6 @@
  * DBLock       (A lock handle)
  * DBSequence   (Sequence)
  * DBSite       (Site)
- *
- * New datatypes:
- *
  * DBLogCursor  (Log Cursor)
  *
  */
