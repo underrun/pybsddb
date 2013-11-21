@@ -414,7 +414,7 @@ if (db_ver in ((6,0),)) and \
   ("YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION" not in os.environ) :
     print (
         "\n"
-        "*******\n"
+        "******* COMPILATION ABORTED *******\n"
         "\n"
         "You are linking a Berkeley DB version licensed under "
         "AGPL3/Commercial.\n"
@@ -445,7 +445,7 @@ if (db_ver in ((6,0),)) and \
         "    https://forums.oracle.com/message/11184885\n"
         "    http://lists.debian.org/debian-legal/2013/07/\n"
         "\n"
-        "*******\n"
+        "******* COMPILATION ABORTED *******\n"
         )
     sys.exit(1)
 
