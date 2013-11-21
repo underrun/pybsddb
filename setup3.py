@@ -160,6 +160,7 @@ if os.name == 'posix':
     db_ver_list = ((6, 0),
             (5, 3), (5, 2), (5, 1), (5, 0),
             (4, 8), (4, 7), (4, 6), (4, 5), (4, 4), (4, 3))
+    db_ver = None
 
     # If we were not told where it is, go looking for it.
     dblib = 'db'
@@ -334,14 +335,17 @@ if os.name == 'posix':
     db_h_lines = open(os.path.join(incdir, 'db.h'), 'r').readlines()
     db_ver_re = re.compile(
         r'^#define\s+DB_VERSION_STRING\s.*Berkeley DB (\d+\.\d+).*')
+    db_ver2 = db_ver
+    if db_ver is None :
+        print("Trying to use the Berkeley DB you specified...")
     for line in db_h_lines:
         match = db_ver_re.match(line)
         if not match:
             continue
         fullverstr = match.group(1)
         ver = fullverstr[0] + fullverstr[2]   # 31 == 3.1, 32 == 3.2, etc.
-        db_ver2 = (int(fullverstr[0]), int(fullverstr[2]))
-    if db_ver != db_ver2 :
+        db_ver = (int(fullverstr[0]), int(fullverstr[2]))
+    if (db_ver2 is not None) and (db_ver != db_ver2) :
         raise AssertionError("Detected Berkeley DB version is inconsistent")
     if db_ver not in db_ver_list:
         raise AssertionError("pybsddb untested with this Berkeley DB "
@@ -405,6 +409,45 @@ elif os.name == 'nt':
                ]),
              ("bsddb3/test", glob.glob("test/*.py"))
              ]
+
+if (db_ver in ((6,0),)) and \
+  ("YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION" not in os.environ) :
+    print (
+        "\n"
+        "*******\n"
+        "\n"
+        "You are linking a Berkeley DB version licensed under "
+        "AGPL3/Commercial.\n"
+        "\n"
+        "Your are 'tainting' your program unless it is already AGPL3 "
+        "or you have acquired a commercial Berkeley DB license from Oracle.\n"
+        "\n"
+        "You have two choices:\n"
+        "\n"
+        "  1. If your code is AGPL3 or you have a commercial Berkeley DB "
+        "license from Oracle, please, define the environment variable "
+        "'YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION' to "
+        "any value, and try to install this python library again.\n"
+        "\n"
+        "  2. In any other case, you have to link to a previous version "
+        "of Berkeley DB. If you delete the problematic version, trying "
+        "to install this python library again will locate any previous "
+        "Berkeley DB library in your system. Alternatively, you can "
+        "define the environment variable 'BERKELEYDB_DIR', or "
+        "'BERKELEYDB_INCDIR' and 'BERKELEYDB_LIBDIR', with the path of "
+        "the Berkeley DB you want to use and try to install this "
+        "python library again.\n"
+        "\n"
+        "Sorry for the inconvenience. I am trying to protect you.\n"
+        "\n"
+        "More details:\n"
+        "\n"
+        "    https://forums.oracle.com/message/11184885\n"
+        "    http://lists.debian.org/debian-legal/2013/07/\n"
+        "\n"
+        "*******\n"
+        )
+    sys.exit(1)
 
 version_suffix = ""
 if sys.version_info[0] > 2 :

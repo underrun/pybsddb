@@ -2,6 +2,26 @@
   * Clarification of license. Thanks to
     Jan Staněk <jstanek@redhat.com> for bringing this issue up.
 
+  * If you want to link with Oracle Berkeley DB 6.0, you will
+    need to create the environment variable 
+    'YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION'
+    to signal to the pybsddb that you are legal. To be legal,
+    your code MUST be AGPL3 *OR* you have to buy a commercial
+    license from Oracle.
+
+    If you are not legally entitled to use Berkeley DB 6.0 and
+    you have previous versions of Berkeley DB on your system,
+    you can a) delete Berkeley DB 6.0 and try again, OR
+    b) instruct pybsddb to use a previous Berkeley DB version,
+    using environment variables or command line options.
+
+    Sorry for the inconvenience. I am trying to protect you.
+
+    Some details:
+
+        https://forums.oracle.com/message/11184885
+        http://lists.debian.org/debian-legal/2013/07/
+
 6.0.0:
   * Support Berkeley DB 6.0.x.
   * HEADS UP: If you are using "bsddb3._bsddb" in your code,
