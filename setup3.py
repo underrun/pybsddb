@@ -476,6 +476,7 @@ pybsddb_doc/>`__ --
                     'Programming Language :: Python :: 3.1',
                     'Programming Language :: Python :: 3.2',
                     'Programming Language :: Python :: 3.3',
+                    'Programming Language :: Python :: 3.4',
                     ],
       )
 
