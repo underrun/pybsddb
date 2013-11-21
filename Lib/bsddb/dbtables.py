@@ -369,7 +369,8 @@ class bsdTableDB :
 
     def ListTables(self):
         """Return a list of tables in this database."""
-        pickledtablelist = self.db.get_get(_table_names_key)
+        pickledtablelist = getattr(self.db, "get_bytes",
+                                        self.db.get)(_table_names_key)
         if pickledtablelist:
             return pickle.loads(pickledtablelist)
         else:

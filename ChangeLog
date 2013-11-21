@@ -1,7 +1,8 @@
 6.0.1:
   * Clarification of license. Thanks to
     Jan Staněk <jstanek@redhat.com> for bringing this issue up.
-
+  * Fixed a long standing bug (August 2008, rev 9fd52748fa59) 
+    on "dbtables.py". Notified by Maxime Labelle.
   * If you want to link with Oracle Berkeley DB 6.0, you will
     need to create the environment variable 
     'YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION'
