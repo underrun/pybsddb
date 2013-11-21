@@ -419,7 +419,7 @@ if (db_ver in ((6,0),)) and \
         "You are linking a Berkeley DB version licensed under "
         "AGPL3/Commercial.\n"
         "\n"
-        "Your are 'tainting' your program unless it is already AGPL3 "
+        "You are 'tainting' your program unless it is already AGPL3 "
         "or you have acquired a commercial Berkeley DB license from Oracle.\n"
         "\n"
         "You have two choices:\n"
