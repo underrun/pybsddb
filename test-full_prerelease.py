@@ -35,7 +35,7 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 """
 
-"""
+info = """
 This program checks all the matrix formed by
 several Python and Berkeley DB versions.
 
@@ -46,6 +46,13 @@ local details only applicable to maintainer. If
 you try it as is, it would fail.
 """
 
+import subprocess
+import sys
+import os
+
+# We need to be able to test BDB releases, even if the license is incompatible
+os.environ['YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION'] = ''
+
 def do_matrix_check() :
   python_versions=('2.4', '2.5', '2.6', '2.7', '3.1', '3.2', '3.3', '3.4')
   berkeleydb_versions=('4.3', '4.4', '4.5', '4.6', '4.7', '4.8',
@@ -53,7 +60,6 @@ def do_matrix_check() :
                        '6.0')
 
   warning_level=("-Wdefault", "-Werror")[1]
-  import subprocess
 
   for py in python_versions :
     for bdb in berkeleydb_versions :
@@ -78,9 +84,8 @@ def do_matrix_check() :
         print "EXECUTING:", " ".join(params)
         ret = subprocess.call(params)
         if ret :
-            import sys
             sys.exit(1)
 
 if __name__=="__main__" :
-  print __doc__
+  print info
   do_matrix_check()

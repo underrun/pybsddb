@@ -137,6 +137,10 @@ import traceback
 
 from distutils.util import get_platform
 
+# We need to be able to test BDB releases, even if the license is incompatible
+os.environ['YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION'] = ''
+
+
 PROGRAM = sys.argv[0]
 PLAT_SPEC = "%s-%s" % (get_platform(), sys.version[0:3])
 # This hack copied from distutils.command.build.  Too bad distutils
