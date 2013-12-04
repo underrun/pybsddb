@@ -12,7 +12,7 @@ New files will be covered by the 3-clause BSD license.
 License of Python files:
 
     * Except the following files, license is 3-clause BSD license.
-      Jesus Cea Avion
+      Jesus Cea Avion.
 
     * test2.py, test3.py: Zope Public License, version 2.0.
       Zope Corporation and contributors.
@@ -40,11 +40,11 @@ License of Python files:
 
     * Lib*/bsddb/test_support.py: PYTHON
       (This code will be dropped when minimum supported
-       version is Python 2.6)
+      version is Python 2.6)
 
 License of C files:
 
-    * Modules/bsddb.h, _bsddb.c: 3-clause DBS license.
+    * Modules/bsddb.h, _bsddb.c: 3-clause BSD license.
       Digital Creations, Andrew Kuchling, Robin Dunn,
       Gregory P. Smith, Duncan Grisby, Jesus Cea Avion.
 
