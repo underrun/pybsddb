@@ -82,7 +82,7 @@ def open(filename, flags=db.DB_CREATE, mode=0660, filetype=db.DB_HASH,
          dbenv=None, dbname=None):
     """
     A simple factory function for compatibility with the standard
-    shleve.py module.  It can be used like this, where key is a string
+    shelve.py module.  It can be used like this, where key is a string
     and data is a pickleable object:
 
         from bsddb import dbshelve
