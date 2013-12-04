@@ -1,3 +1,5 @@
+* 20131204: Rewrite "make3.py".
+
 * 20131121: When the lower Python version we support is 2.6, we
   can delete "test_support.py" and use the Python stock version.
   Update the "licenses.txt" file.
