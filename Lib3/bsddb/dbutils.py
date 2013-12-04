@@ -32,7 +32,7 @@ if absolute_import :
     # Because this syntaxis is not valid before Python 2.5
     exec("from . import db")
 else :
-    import db
+    from . import db
 
 # always sleep at least N seconds between retrys
 _deadlock_MinSleepTime = 1.0/128

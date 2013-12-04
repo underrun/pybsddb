@@ -27,7 +27,7 @@ if absolute_import :
     # Because this syntaxis is not valid before Python 2.5
     exec("from . import db")
 else :
-    import db
+    from . import db
 
 if sys.version_info < (2, 6) :
     from UserDict import DictMixin as MutableMapping

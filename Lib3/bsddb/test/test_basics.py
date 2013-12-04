@@ -46,7 +46,7 @@ import unittest
 import time
 import sys
 
-from test_all import db, test_support, verbose, get_new_environment_path, \
+from .test_all import db, test_support, verbose, get_new_environment_path, \
         get_new_database_path
 
 DASH = '-'

@@ -594,7 +594,7 @@ class PrintInfoFakeTest(unittest.TestCase):
 # other modules import it so they will still be able to get the right
 # verbose setting.  It's confusing but it works.
 if sys.version_info[0] < 3 :
-    import test_all
+    from . import test_all
     test_all.verbose = verbose
 else :
     import sys

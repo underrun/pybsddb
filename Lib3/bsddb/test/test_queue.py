@@ -41,7 +41,7 @@ import os, string
 from pprint import pprint
 import unittest
 
-from test_all import db, verbose, get_new_database_path
+from .test_all import db, verbose, get_new_database_path
 
 #----------------------------------------------------------------------
 

@@ -39,7 +39,7 @@ are met:
 import os, sys
 import unittest
 
-from test_all import db, dbshelve, hashopen, test_support, get_new_environment_path, get_new_database_path
+from .test_all import db, dbshelve, hashopen, test_support, get_new_environment_path, get_new_database_path
 
 #----------------------------------------------------------------------
 

@@ -51,7 +51,7 @@ except NameError:
         pass
 
 import unittest
-from test_all import db, dbutils, test_support, verbose, have_threads, \
+from .test_all import db, dbutils, test_support, verbose, have_threads, \
         get_new_environment_path, get_new_database_path
 
 if have_threads :
