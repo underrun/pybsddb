@@ -48,3 +48,5 @@ License of C files:
       Digital Creations, Andrew Kuchling, Robin Dunn,
       Gregory P. Smith, Duncan Grisby, Jesus Cea Avion.
 
+NOTE: If this file is changed, "docs/license.rst" must be updated too.
+

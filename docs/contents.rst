@@ -47,5 +47,6 @@ Documentation Index
   dbsequence.rst
   dbsite.rst
   history.rst
+  license.rst
   donate.rst
 

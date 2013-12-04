@@ -1,6 +1,7 @@
 6.0.1:
   * Clarification of license. Thanks to
     Jan Staněk <jstanek@redhat.com> for bringing this issue up.
+    This work is now explicitly licensed under 3-clause BSD license.
   * Fixed a long standing bug (August 2008, rev 9fd52748fa59) 
     on "dbtables.py". Notified by Maxime Labelle.
   * If you want to link with Oracle Berkeley DB 6.0, you will
