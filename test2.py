@@ -589,7 +589,7 @@ def print_tb_last():
     file = sys.stderr
     while True:
         f = tb.tb_frame
-        lineno = traceback.tb_lineno(tb)
+        lineno = tb.tb_lineno
         tb = tb.tb_next
         if tb is not None:
             continue
