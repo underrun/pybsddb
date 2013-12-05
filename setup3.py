@@ -456,7 +456,7 @@ if sys.version_info[0] > 2 :
 # do the actual build, install, whatever...
 setup(name = 'bsddb3',
       version = VERSION,
-      description = 'Python interface for Berkeley DB',
+      description = 'Python bindings for Oracle Berkeley DB',
       long_description = """\
 This module provides a nearly complete wrapping of the Oracle/Sleepycat C API
 for the Database Environment, Database, Cursor, Log Cursor, Sequence and
