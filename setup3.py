@@ -216,7 +216,10 @@ if os.name == 'posix':
                 f = os.path.join(d, "db.h")
                 if debug: print("db: looking for db.h in", f)
                 if os.path.exists(f):
-                    f = open(f).read()
+                    # This should move to "with" when we drop support for python 2.4 and 2.5
+                    fichero = open(f)
+                    f = fichero.read()
+                    fichero.close()
                     m = re.search(r"#define\WDB_VERSION_MAJOR\W(\d+)", f)
                     if m:
                         db_major = int(m.group(1))
@@ -332,7 +335,10 @@ if os.name == 'posix':
 
     # read db.h to figure out what version of Berkeley DB this is
     ver = None
-    db_h_lines = open(os.path.join(incdir, 'db.h'), 'r').readlines()
+    # This should move to "with" when we drop support for Python 2.4 and 2.5
+    f = open(os.path.join(incdir, 'db.h'), 'r')
+    db_h_lines = f.readlines()
+    f.close()
     db_ver_re = re.compile(
         r'^#define\s+DB_VERSION_STRING\s.*Berkeley DB (\d+\.\d+).*')
     db_ver2 = db_ver
@@ -375,7 +381,10 @@ elif os.name == 'nt':
 
     # read db.h to figure out what version of Berkeley DB this is
     ver = None
-    db_h_lines = open(os.path.join(incdir, 'db.h'), 'r').readlines()
+    # We should move this to "with" when we drop support for Python 2.4 and 2.5.
+    f = open(os.path.join(incdir, 'db.h'), 'r')
+    db_h_lines = f.readlines()
+    f.close()
     db_ver_re = re.compile(
         r'^#define\s+DB_VERSION_STRING\s.*Berkeley DB (\d+\.\d+).*')
     for line in db_h_lines:
