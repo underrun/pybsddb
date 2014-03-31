@@ -77,7 +77,7 @@ class DBTxn_distributed(unittest.TestCase):
         return self._create_env(must_open_db=True)
 
     def _destroy_env(self):
-        if self.nosync or (db.version()[:2] == (4,6)):  # Known bug
+        if self.nosync :
             self.dbenv.log_flush()
         self.db.close()
         self.dbenv.close()
@@ -174,12 +174,10 @@ class DBTxn_distributedSYNC_must_open_db(DBTxn_distributed):
 
 def test_suite():
     suite = unittest.TestSuite()
-    if db.version() >= (4,5) :
-        suite.addTest(unittest.makeSuite(DBTxn_distributed))
-        suite.addTest(unittest.makeSuite(DBTxn_distributedSYNC))
-    if db.version() >= (4,6) :
-        suite.addTest(unittest.makeSuite(DBTxn_distributed_must_open_db))
-        suite.addTest(unittest.makeSuite(DBTxn_distributedSYNC_must_open_db))
+    suite.addTest(unittest.makeSuite(DBTxn_distributed))
+    suite.addTest(unittest.makeSuite(DBTxn_distributedSYNC))
+    suite.addTest(unittest.makeSuite(DBTxn_distributed_must_open_db))
+    suite.addTest(unittest.makeSuite(DBTxn_distributedSYNC_must_open_db))
     return suite
 
 

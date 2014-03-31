@@ -88,8 +88,7 @@ class FileidResetTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    if db.version() >= (4, 4):
-        suite.addTest(unittest.makeSuite(FileidResetTestCase))
+    suite.addTest(unittest.makeSuite(FileidResetTestCase))
     return suite
 
 if __name__ == '__main__':

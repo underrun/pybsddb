@@ -221,9 +221,8 @@ class DBReplicationManager(DBReplication) :
         self.assertTrue((d[2]==db.DB_REPMGR_CONNECTED) or \
                 (d[2]==db.DB_REPMGR_DISCONNECTED))
 
-        if db.version() >= (4,6) :
-            d = self.dbenvMaster.repmgr_stat(flags=db.DB_STAT_CLEAR);
-            self.assertTrue("msgs_queued" in d)
+        d = self.dbenvMaster.repmgr_stat(flags=db.DB_STAT_CLEAR);
+        self.assertTrue("msgs_queued" in d)
 
         self.dbMaster=db.DB(self.dbenvMaster)
         txn=self.dbenvMaster.txn_begin()
@@ -456,101 +455,97 @@ class DBBaseReplication(DBReplication) :
         self.assertTrue(time.time()<timeout)
         self.assertEqual(None, v)
 
-    if db.version() >= (4,7) :
-        def test02_test_request(self) :
-            self.basic_rep_threading()
-            (minimum, maximum) = self.dbenvClient.rep_get_request()
-            self.dbenvClient.rep_set_request(minimum-1, maximum+1)
-            self.assertEqual(self.dbenvClient.rep_get_request(),
-                    (minimum-1, maximum+1))
+    def test02_test_request(self) :
+        self.basic_rep_threading()
+        (minimum, maximum) = self.dbenvClient.rep_get_request()
+        self.dbenvClient.rep_set_request(minimum-1, maximum+1)
+        self.assertEqual(self.dbenvClient.rep_get_request(),
+                (minimum-1, maximum+1))
 
-    if db.version() >= (4,6) :
-        def test03_master_election(self) :
-            # Get ready to hold an election
-            #self.dbenvMaster.rep_start(flags=db.DB_REP_MASTER)
-            self.dbenvMaster.rep_start(flags=db.DB_REP_CLIENT)
-            self.dbenvClient.rep_start(flags=db.DB_REP_CLIENT)
+    def test03_master_election(self) :
+        # Get ready to hold an election
+        #self.dbenvMaster.rep_start(flags=db.DB_REP_MASTER)
+        self.dbenvMaster.rep_start(flags=db.DB_REP_CLIENT)
+        self.dbenvClient.rep_start(flags=db.DB_REP_CLIENT)
 
-            def thread_do(env, q, envid, election_status, must_be_master) :
-                while True :
-                    v=q.get()
-                    if v is None : return
-                    r = env.rep_process_message(v[0],v[1],envid)
-                    if must_be_master and self.confirmed_master :
-                        self.dbenvMaster.rep_start(flags = db.DB_REP_MASTER)
-                        must_be_master = False
-
-                    if r[0] == db.DB_REP_HOLDELECTION :
-                        def elect() :
-                            while True :
-                                try :
-                                    env.rep_elect(2, 1)
-                                    election_status[0] = False
-                                    break
-                                except db.DBRepUnavailError :
-                                    pass
-                        if not election_status[0] and not self.confirmed_master :
-                            from threading import Thread
-                            election_status[0] = True
-                            t=Thread(target=elect)
-                            import sys
-                            if sys.version_info[0] < 3 :
-                                t.setDaemon(True)
-                            else :
-                                t.daemon = True
-                            t.start()
-
-            self.thread_do = thread_do
-
-            self.t_m.start()
-            self.t_c.start()
-
-            self.dbenvMaster.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
-            self.dbenvClient.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
-            self.client_doing_election[0] = True
+        def thread_do(env, q, envid, election_status, must_be_master) :
             while True :
-                try :
-                    self.dbenvClient.rep_elect(2, 1)
-                    self.client_doing_election[0] = False
-                    break
-                except db.DBRepUnavailError :
-                    pass
+                v=q.get()
+                if v is None : return
+                r = env.rep_process_message(v[0],v[1],envid)
+                if must_be_master and self.confirmed_master :
+                    self.dbenvMaster.rep_start(flags = db.DB_REP_MASTER)
+                    must_be_master = False
 
-            self.assertTrue(self.confirmed_master)
+                if r[0] == db.DB_REP_HOLDELECTION :
+                    def elect() :
+                        while True :
+                            try :
+                                env.rep_elect(2, 1)
+                                election_status[0] = False
+                                break
+                            except db.DBRepUnavailError :
+                                pass
+                    if not election_status[0] and not self.confirmed_master :
+                        from threading import Thread
+                        election_status[0] = True
+                        t=Thread(target=elect)
+                        import sys
+                        if sys.version_info[0] < 3 :
+                            t.setDaemon(True)
+                        else :
+                            t.daemon = True
+                        t.start()
 
-            # Race condition showed up after upgrading to Solaris 10 Update 10
-            # https://forums.oracle.com/forums/thread.jspa?messageID=9902860
-            # jcea@jcea.es: See private email from Paula Bingham (Oracle),
-            # in 20110929.
-            while not (self.dbenvClient.rep_stat()["startup_complete"]) :
+        self.thread_do = thread_do
+
+        self.t_m.start()
+        self.t_c.start()
+
+        self.dbenvMaster.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
+        self.dbenvClient.rep_set_timeout(db.DB_REP_ELECTION_TIMEOUT, 50000)
+        self.client_doing_election[0] = True
+        while True :
+            try :
+                self.dbenvClient.rep_elect(2, 1)
+                self.client_doing_election[0] = False
+                break
+            except db.DBRepUnavailError :
                 pass
 
-    if db.version() >= (4,7) :
-        def test04_test_clockskew(self) :
-            fast, slow = 1234, 1230
-            self.dbenvMaster.rep_set_clockskew(fast, slow)
-            self.assertEqual((fast, slow),
-                    self.dbenvMaster.rep_get_clockskew())
-            self.basic_rep_threading()
+        self.assertTrue(self.confirmed_master)
+
+        # Race condition showed up after upgrading to Solaris 10 Update 10
+        # https://forums.oracle.com/forums/thread.jspa?messageID=9902860
+        # jcea@jcea.es: See private email from Paula Bingham (Oracle),
+        # in 20110929.
+        while not (self.dbenvClient.rep_stat()["startup_complete"]) :
+            pass
+
+    def test04_test_clockskew(self) :
+        fast, slow = 1234, 1230
+        self.dbenvMaster.rep_set_clockskew(fast, slow)
+        self.assertEqual((fast, slow),
+                self.dbenvMaster.rep_get_clockskew())
+        self.basic_rep_threading()
 
 #----------------------------------------------------------------------
 
 def test_suite():
     suite = unittest.TestSuite()
-    if db.version() >= (4, 6) :
-        dbenv = db.DBEnv()
-        try :
-            dbenv.repmgr_get_ack_policy()
-            ReplicationManager_available=True
-        except :
-            ReplicationManager_available=False
-        dbenv.close()
-        del dbenv
-        if ReplicationManager_available :
-            suite.addTest(unittest.makeSuite(DBReplicationManager))
+    dbenv = db.DBEnv()
+    try :
+        dbenv.repmgr_get_ack_policy()
+        ReplicationManager_available=True
+    except :
+        ReplicationManager_available=False
+    dbenv.close()
+    del dbenv
+    if ReplicationManager_available :
+        suite.addTest(unittest.makeSuite(DBReplicationManager))
 
-        if have_threads :
-            suite.addTest(unittest.makeSuite(DBBaseReplication))
+    if have_threads :
+        suite.addTest(unittest.makeSuite(DBBaseReplication))
 
     return suite
 

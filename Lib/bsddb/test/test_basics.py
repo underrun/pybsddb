@@ -566,14 +566,13 @@ class BasicTestCase(unittest.TestCase):
         self.assertEqual(old, 1)
         self.test03_SimpleCursorStuff(get_raises_error=0, set_raises_error=0)
 
-    if db.version() >= (4, 6):
-        def test03d_SimpleCursorPriority(self) :
-            c = self.d.cursor()
-            c.set_priority(db.DB_PRIORITY_VERY_LOW)  # Positional
-            self.assertEqual(db.DB_PRIORITY_VERY_LOW, c.get_priority())
-            c.set_priority(priority=db.DB_PRIORITY_HIGH)  # Keyword
-            self.assertEqual(db.DB_PRIORITY_HIGH, c.get_priority())
-            c.close()
+    def test03d_SimpleCursorPriority(self) :
+        c = self.d.cursor()
+        c.set_priority(db.DB_PRIORITY_VERY_LOW)  # Positional
+        self.assertEqual(db.DB_PRIORITY_VERY_LOW, c.get_priority())
+        c.set_priority(priority=db.DB_PRIORITY_HIGH)  # Keyword
+        self.assertEqual(db.DB_PRIORITY_HIGH, c.get_priority())
+        c.close()
 
     #----------------------------------------
 
@@ -648,31 +647,29 @@ class BasicTestCase(unittest.TestCase):
 
     #----------------------------------------
 
-    if db.version() >= (4, 6):
-        def test08_exists(self) :
-            self.d.put("abcde", "ABCDE")
-            self.assertTrue(self.d.exists("abcde") == True,
-                    "DB->exists() returns wrong value")
-            self.assertTrue(self.d.exists("x") == False,
-                    "DB->exists() returns wrong value")
+    def test08_exists(self) :
+        self.d.put("abcde", "ABCDE")
+        self.assertTrue(self.d.exists("abcde") == True,
+                "DB->exists() returns wrong value")
+        self.assertTrue(self.d.exists("x") == False,
+                "DB->exists() returns wrong value")
 
     #----------------------------------------
 
-    if db.version() >= (4, 7):
-        def test_compact(self) :
-            d = self.d
-            self.assertEqual(0, d.compact(flags=db.DB_FREELIST_ONLY))
-            self.assertEqual(0, d.compact(flags=db.DB_FREELIST_ONLY))
-            d.put("abcde", "ABCDE");
-            d.put("bcde", "BCDE");
-            d.put("abc", "ABC");
-            d.put("monty", "python");
-            d.delete("abc")
-            d.delete("bcde")
-            d.compact(start='abcde', stop='monty', txn=None,
-                    compact_fillpercent=42, compact_pages=1,
-                    compact_timeout=50000000,
-                    flags=db.DB_FREELIST_ONLY|db.DB_FREE_SPACE)
+    def test_compact(self) :
+        d = self.d
+        self.assertEqual(0, d.compact(flags=db.DB_FREELIST_ONLY))
+        self.assertEqual(0, d.compact(flags=db.DB_FREELIST_ONLY))
+        d.put("abcde", "ABCDE");
+        d.put("bcde", "BCDE");
+        d.put("abc", "ABC");
+        d.put("monty", "python");
+        d.delete("abc")
+        d.delete("bcde")
+        d.compact(start='abcde', stop='monty', txn=None,
+                compact_fillpercent=42, compact_pages=1,
+                compact_timeout=50000000,
+                flags=db.DB_FREELIST_ONLY|db.DB_FREE_SPACE)
 
     #----------------------------------------
 
@@ -814,17 +811,16 @@ class BasicTransactionTestCase(BasicTestCase):
 
     #----------------------------------------
 
-    if db.version() >= (4, 6):
-        def test08_exists(self) :
-            txn = self.env.txn_begin()
-            self.d.put("abcde", "ABCDE", txn=txn)
-            txn.commit()
-            txn = self.env.txn_begin()
-            self.assertTrue(self.d.exists("abcde", txn=txn) == True,
-                    "DB->exists() returns wrong value")
-            self.assertTrue(self.d.exists("x", txn=txn) == False,
-                    "DB->exists() returns wrong value")
-            txn.abort()
+    def test08_exists(self) :
+        txn = self.env.txn_begin()
+        self.d.put("abcde", "ABCDE", txn=txn)
+        txn.commit()
+        txn = self.env.txn_begin()
+        self.assertTrue(self.d.exists("abcde", txn=txn) == True,
+                "DB->exists() returns wrong value")
+        self.assertTrue(self.d.exists("x", txn=txn) == False,
+                "DB->exists() returns wrong value")
+        txn.abort()
 
     #----------------------------------------
 
@@ -868,24 +864,23 @@ class BasicTransactionTestCase(BasicTestCase):
     #----------------------------------------
 
 
-    if db.version() >= (4, 4):
-        def test_txn_name(self) :
-            txn=self.env.txn_begin()
-            self.assertEqual(txn.get_name(), "")
-            txn.set_name("XXYY")
-            self.assertEqual(txn.get_name(), "XXYY")
-            txn.set_name("")
-            self.assertEqual(txn.get_name(), "")
-            txn.abort()
+    def test_txn_name(self) :
+        txn=self.env.txn_begin()
+        self.assertEqual(txn.get_name(), "")
+        txn.set_name("XXYY")
+        self.assertEqual(txn.get_name(), "XXYY")
+        txn.set_name("")
+        self.assertEqual(txn.get_name(), "")
+        txn.abort()
 
     #----------------------------------------
 
 
-        def test_txn_set_timeout(self) :
-            txn=self.env.txn_begin()
-            txn.set_timeout(1234567, db.DB_SET_LOCK_TIMEOUT)
-            txn.set_timeout(2345678, flags=db.DB_SET_TXN_TIMEOUT)
-            txn.abort()
+    def test_txn_set_timeout(self) :
+        txn=self.env.txn_begin()
+        txn.set_timeout(1234567, db.DB_SET_LOCK_TIMEOUT)
+        txn.set_timeout(2345678, flags=db.DB_SET_TXN_TIMEOUT)
+        txn.abort()
 
     #----------------------------------------
 

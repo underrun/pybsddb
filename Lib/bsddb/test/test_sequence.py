@@ -119,19 +119,18 @@ class DBSequenceTest(unittest.TestCase):
                       'flags', 'cache_size', 'last_value', 'wait'):
             self.assertTrue(param in stat, "parameter %s isn't in stat info" % param)
 
-    if db.version() >= (4,7) :
-        # This code checks a crash solved in Berkeley DB 4.7
-        def test_stat_crash(self) :
-            d=db.DB()
-            d.open(None,dbtype=db.DB_HASH,flags=db.DB_CREATE)  # In RAM
-            seq = db.DBSequence(d, flags=0)
+    # This code checks a crash solved in Berkeley DB 4.7
+    def test_stat_crash(self) :
+        d=db.DB()
+        d.open(None,dbtype=db.DB_HASH,flags=db.DB_CREATE)  # In RAM
+        seq = db.DBSequence(d, flags=0)
 
-            self.assertRaises(db.DBNotFoundError, seq.open,
-                    key='id', txn=None, flags=0)
+        self.assertRaises(db.DBNotFoundError, seq.open,
+                key='id', txn=None, flags=0)
 
-            self.assertRaises(db.DBInvalidArgError, seq.stat)
+        self.assertRaises(db.DBInvalidArgError, seq.stat)
 
-            d.close()
+        d.close()
 
     def test_64bits(self) :
         # We don't use both extremes because they are problematic

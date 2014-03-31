@@ -61,9 +61,6 @@ class DBEnv:
         return self._cobj.set_lg_max(*args, **kwargs)
     def set_lk_detect(self, *args, **kwargs):
         return self._cobj.set_lk_detect(*args, **kwargs)
-    if db.version() < (4,5):
-        def set_lk_max(self, *args, **kwargs):
-            return self._cobj.set_lk_max(*args, **kwargs)
     def set_lk_max_locks(self, *args, **kwargs):
         return self._cobj.set_lk_max_locks(*args, **kwargs)
     def set_lk_max_lockers(self, *args, **kwargs):
@@ -112,12 +109,11 @@ class DBEnv:
     def set_encrypt(self, *args, **kwargs):
         return self._cobj.set_encrypt(*args, **kwargs)
 
-    if db.version() >= (4,4):
-        def fileid_reset(self, *args, **kwargs):
-            return self._cobj.fileid_reset(*args, **kwargs)
+    def fileid_reset(self, *args, **kwargs):
+        return self._cobj.fileid_reset(*args, **kwargs)
 
-        def lsn_reset(self, *args, **kwargs):
-            return self._cobj.lsn_reset(*args, **kwargs)
+    def lsn_reset(self, *args, **kwargs):
+        return self._cobj.lsn_reset(*args, **kwargs)
 
 
 class DB(MutableMapping):

@@ -63,46 +63,43 @@ class DBEnv_general(DBEnv) :
         self.env.open(self.homeDir, flags)
         self.assertEqual(flags, self.env.get_open_flags())
 
-    if db.version() >= (4, 7) :
-        def test_lk_partitions(self) :
-            for i in [10, 20, 40] :
-                self.env.set_lk_partitions(i)
-                self.assertEqual(i, self.env.get_lk_partitions())
+    def test_lk_partitions(self) :
+        for i in [10, 20, 40] :
+            self.env.set_lk_partitions(i)
+            self.assertEqual(i, self.env.get_lk_partitions())
 
-        def test_getset_intermediate_dir_mode(self) :
-            self.assertEqual(None, self.env.get_intermediate_dir_mode())
-            for mode in ["rwx------", "rw-rw-rw-", "rw-r--r--"] :
-                self.env.set_intermediate_dir_mode(mode)
-                self.assertEqual(mode, self.env.get_intermediate_dir_mode())
-            self.assertRaises(db.DBInvalidArgError,
-                    self.env.set_intermediate_dir_mode, "abcde")
+    def test_getset_intermediate_dir_mode(self) :
+        self.assertEqual(None, self.env.get_intermediate_dir_mode())
+        for mode in ["rwx------", "rw-rw-rw-", "rw-r--r--"] :
+            self.env.set_intermediate_dir_mode(mode)
+            self.assertEqual(mode, self.env.get_intermediate_dir_mode())
+        self.assertRaises(db.DBInvalidArgError,
+                self.env.set_intermediate_dir_mode, "abcde")
 
-    if db.version() >= (4, 6) :
-        def test_thread(self) :
-            for i in [16, 100, 1000] :
-                self.env.set_thread_count(i)
-                self.assertEqual(i, self.env.get_thread_count())
+    def test_thread(self) :
+        for i in [16, 100, 1000] :
+            self.env.set_thread_count(i)
+            self.assertEqual(i, self.env.get_thread_count())
 
-        def test_cache_max(self) :
-            for size in [64, 128] :
-                size = size*1024*1024  # Megabytes
-                self.env.set_cache_max(0, size)
-                size2 = self.env.get_cache_max()
-                self.assertEqual(0, size2[0])
-                self.assertTrue(size <= size2[1])
-                self.assertTrue(2*size > size2[1])
+    def test_cache_max(self) :
+        for size in [64, 128] :
+            size = size*1024*1024  # Megabytes
+            self.env.set_cache_max(0, size)
+            size2 = self.env.get_cache_max()
+            self.assertEqual(0, size2[0])
+            self.assertTrue(size <= size2[1])
+            self.assertTrue(2*size > size2[1])
 
-    if db.version() >= (4, 4) :
-        def test_mutex_stat(self) :
-            self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL |
-                    db.DB_INIT_LOCK)
-            stat = self.env.mutex_stat()
-            self.assertTrue("mutex_inuse_max" in stat)
+    def test_mutex_stat(self) :
+        self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL |
+                db.DB_INIT_LOCK)
+        stat = self.env.mutex_stat()
+        self.assertTrue("mutex_inuse_max" in stat)
 
-        def test_lg_filemode(self) :
-            for i in [0600, 0660, 0666] :
-                self.env.set_lg_filemode(i)
-                self.assertEqual(i, self.env.get_lg_filemode())
+    def test_lg_filemode(self) :
+        for i in [0600, 0660, 0666] :
+            self.env.set_lg_filemode(i)
+            self.assertEqual(i, self.env.get_lg_filemode())
 
     def test_mp_max_openfd(self) :
         for i in [17, 31, 42] :
@@ -245,78 +242,77 @@ class DBEnv_general(DBEnv) :
             self.env.set_shm_key, shm_key)
         self.assertEqual(shm_key+1, self.env.get_shm_key())
 
-    if db.version() >= (4, 4) :
-        def test_mutex_setget_max(self) :
-            v = self.env.mutex_get_max()
-            v2 = v*2+1
+    def test_mutex_setget_max(self) :
+        v = self.env.mutex_get_max()
+        v2 = v*2+1
 
-            self.env.mutex_set_max(v2)
-            self.assertEqual(v2, self.env.mutex_get_max())
+        self.env.mutex_set_max(v2)
+        self.assertEqual(v2, self.env.mutex_get_max())
 
-            self.env.mutex_set_max(v)
-            self.assertEqual(v, self.env.mutex_get_max())
+        self.env.mutex_set_max(v)
+        self.assertEqual(v, self.env.mutex_get_max())
 
-            # You can not change configuration after opening
-            # the environment.
-            self.env.open(self.homeDir, db.DB_CREATE)
-            self.assertRaises(db.DBInvalidArgError,
-                    self.env.mutex_set_max, v2)
+        # You can not change configuration after opening
+        # the environment.
+        self.env.open(self.homeDir, db.DB_CREATE)
+        self.assertRaises(db.DBInvalidArgError,
+                self.env.mutex_set_max, v2)
 
-        def test_mutex_setget_increment(self) :
-            v = self.env.mutex_get_increment()
-            v2 = 127
+    def test_mutex_setget_increment(self) :
+        v = self.env.mutex_get_increment()
+        v2 = 127
 
-            self.env.mutex_set_increment(v2)
-            self.assertEqual(v2, self.env.mutex_get_increment())
+        self.env.mutex_set_increment(v2)
+        self.assertEqual(v2, self.env.mutex_get_increment())
 
-            self.env.mutex_set_increment(v)
-            self.assertEqual(v, self.env.mutex_get_increment())
+        self.env.mutex_set_increment(v)
+        self.assertEqual(v, self.env.mutex_get_increment())
 
-            # You can not change configuration after opening
-            # the environment.
-            self.env.open(self.homeDir, db.DB_CREATE)
-            self.assertRaises(db.DBInvalidArgError,
-                    self.env.mutex_set_increment, v2)
+        # You can not change configuration after opening
+        # the environment.
+        self.env.open(self.homeDir, db.DB_CREATE)
+        self.assertRaises(db.DBInvalidArgError,
+                self.env.mutex_set_increment, v2)
 
-        def test_mutex_setget_tas_spins(self) :
-            self.env.mutex_set_tas_spins(0)  # Default = BDB decides
-            v = self.env.mutex_get_tas_spins()
-            v2 = v*2+1
+    def test_mutex_setget_tas_spins(self) :
+        self.env.mutex_set_tas_spins(0)  # Default = BDB decides
+        v = self.env.mutex_get_tas_spins()
+        v2 = v*2+1
 
-            self.env.mutex_set_tas_spins(v2)
-            self.assertEqual(v2, self.env.mutex_get_tas_spins())
+        self.env.mutex_set_tas_spins(v2)
+        self.assertEqual(v2, self.env.mutex_get_tas_spins())
 
-            self.env.mutex_set_tas_spins(v)
-            self.assertEqual(v, self.env.mutex_get_tas_spins())
+        self.env.mutex_set_tas_spins(v)
+        self.assertEqual(v, self.env.mutex_get_tas_spins())
 
-            # In this case, you can change configuration
-            # after opening the environment.
-            self.env.open(self.homeDir, db.DB_CREATE)
-            self.env.mutex_set_tas_spins(v2)
+        # In this case, you can change configuration
+        # after opening the environment.
+        self.env.open(self.homeDir, db.DB_CREATE)
+        self.env.mutex_set_tas_spins(v2)
 
-        def test_mutex_setget_align(self) :
-            v = self.env.mutex_get_align()
-            v2 = 64
-            if v == 64 :
-                v2 = 128
+    def test_mutex_setget_align(self) :
+        v = self.env.mutex_get_align()
+        v2 = 64
+        if v == 64 :
+            v2 = 128
 
-            self.env.mutex_set_align(v2)
-            self.assertEqual(v2, self.env.mutex_get_align())
+        self.env.mutex_set_align(v2)
+        self.assertEqual(v2, self.env.mutex_get_align())
 
-            # Requires a nonzero power of two
-            self.assertRaises(db.DBInvalidArgError,
-                    self.env.mutex_set_align, 0)
-            self.assertRaises(db.DBInvalidArgError,
-                    self.env.mutex_set_align, 17)
+        # Requires a nonzero power of two
+        self.assertRaises(db.DBInvalidArgError,
+                self.env.mutex_set_align, 0)
+        self.assertRaises(db.DBInvalidArgError,
+                self.env.mutex_set_align, 17)
 
-            self.env.mutex_set_align(2*v2)
-            self.assertEqual(2*v2, self.env.mutex_get_align())
+        self.env.mutex_set_align(2*v2)
+        self.assertEqual(2*v2, self.env.mutex_get_align())
 
-            # You can not change configuration after opening
-            # the environment.
-            self.env.open(self.homeDir, db.DB_CREATE)
-            self.assertRaises(db.DBInvalidArgError,
-                    self.env.mutex_set_align, v2)
+        # You can not change configuration after opening
+        # the environment.
+        self.env.open(self.homeDir, db.DB_CREATE)
+        self.assertRaises(db.DBInvalidArgError,
+                self.env.mutex_set_align, v2)
 
 
 class DBEnv_log(DBEnv) :
@@ -328,13 +324,12 @@ class DBEnv_log(DBEnv) :
         log_file = self.env.log_file((1, 1))
         self.assertEqual("log.0000000001", log_file[-14:])
 
-    if db.version() >= (4, 4) :
-        # The version with transactions is checked in other test object
-        def test_log_printf(self) :
-            msg = "This is a test..."
-            self.env.log_printf(msg)
-            logc = self.env.log_cursor()
-            self.assertTrue(msg in (logc.last()[1]))
+    # The version with transactions is checked in other test object
+    def test_log_printf(self) :
+        msg = "This is a test..."
+        self.env.log_printf(msg)
+        logc = self.env.log_cursor()
+        self.assertTrue(msg in (logc.last()[1]))
 
     if db.version() >= (4, 7) :
         def test_log_config(self) :
@@ -352,7 +347,7 @@ class DBEnv_log_txn(DBEnv) :
         self.env.open(self.homeDir, db.DB_CREATE | db.DB_INIT_MPOOL |
                 db.DB_INIT_LOG | db.DB_INIT_TXN)
 
-    if (db.version() >= (4, 5)) and (db.version() < (5, 2)) :
+    if db.version() < (5, 2) :
         def test_tx_max(self) :
             txns=[]
             def tx() :
@@ -367,30 +362,29 @@ class DBEnv_log_txn(DBEnv) :
             for i in txns :
                 i.abort()
 
-    if db.version() >= (4, 4) :
-        # The version without transactions is checked in other test object
-        def test_log_printf(self) :
-            msg = "This is a test..."
-            txn = self.env.txn_begin()
-            self.env.log_printf(msg, txn=txn)
-            txn.commit()
-            logc = self.env.log_cursor()
-            logc.last()  # Skip the commit
-            self.assertTrue(msg in (logc.prev()[1]))
+    # The version without transactions is checked in other test object
+    def test_log_printf(self) :
+        msg = "This is a test..."
+        txn = self.env.txn_begin()
+        self.env.log_printf(msg, txn=txn)
+        txn.commit()
+        logc = self.env.log_cursor()
+        logc.last()  # Skip the commit
+        self.assertTrue(msg in (logc.prev()[1]))
 
-            msg = "This is another test..."
-            txn = self.env.txn_begin()
-            self.env.log_printf(msg, txn=txn)
-            txn.abort()  # Do not store the new message
-            logc.last()  # Skip the abort
-            self.assertTrue(msg not in (logc.prev()[1]))
+        msg = "This is another test..."
+        txn = self.env.txn_begin()
+        self.env.log_printf(msg, txn=txn)
+        txn.abort()  # Do not store the new message
+        logc.last()  # Skip the abort
+        self.assertTrue(msg not in (logc.prev()[1]))
 
-            msg = "This is a third test..."
-            txn = self.env.txn_begin()
-            self.env.log_printf(msg, txn=txn)
-            txn.commit()  # Do not store the new message
-            logc.last()  # Skip the commit
-            self.assertTrue(msg in (logc.prev()[1]))
+        msg = "This is a third test..."
+        txn = self.env.txn_begin()
+        self.env.log_printf(msg, txn=txn)
+        txn.commit()  # Do not store the new message
+        logc.last()  # Skip the commit
+        self.assertTrue(msg in (logc.prev()[1]))
 
 
 class DBEnv_memp(DBEnv):

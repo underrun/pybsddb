@@ -244,22 +244,21 @@ class AssociateTestCase(unittest.TestCase):
 
         return self._associateAfterDB(self.getGenre)
 
-    if db.version() >= (4, 6):
-        def test03_associateWithDB(self):
-            if verbose:
-                print('\n', '-=' * 30)
-                print("Running %s.test03_associateWithDB..." % \
-                      self.__class__.__name__)
+    def test03_associateWithDB(self):
+        if verbose:
+            print('\n', '-=' * 30)
+            print("Running %s.test03_associateWithDB..." % \
+                  self.__class__.__name__)
 
-            return self._associateWithDB(self.getGenreList)
+        return self._associateWithDB(self.getGenreList)
 
-        def test04_associateAfterDB(self):
-            if verbose:
-                print('\n', '-=' * 30)
-                print("Running %s.test04_associateAfterDB..." % \
-                      self.__class__.__name__)
+    def test04_associateAfterDB(self):
+        if verbose:
+            print('\n', '-=' * 30)
+            print("Running %s.test04_associateAfterDB..." % \
+                  self.__class__.__name__)
 
-            return self._associateAfterDB(self.getGenreList)
+        return self._associateAfterDB(self.getGenreList)
 
 
     def finish_test(self, secDB, txn=None):

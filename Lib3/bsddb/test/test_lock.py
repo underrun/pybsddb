@@ -171,8 +171,7 @@ class LockingTestCase(unittest.TestCase):
         self.env.lock_id_free(anID)
         self.env.lock_id_free(anID2)
 
-        if db.version() >= (4,6):
-            self.assertTrue(deadlock_detection.count>0)
+        self.assertTrue(deadlock_detection.count>0)
 
     def theThread(self, lockType):
         import sys
