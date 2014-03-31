@@ -159,7 +159,7 @@ if os.name == 'posix':
     # Supported Berkeley DB versions, in order of preference.
     db_ver_list = ((6, 0),
             (5, 3), (5, 2), (5, 1), (5, 0),
-            (4, 8), (4, 7), (4, 6), (4, 5), (4, 4), (4, 3))
+            (4, 8), (4, 7))
     db_ver = None
 
     # If we were not told where it is, go looking for it.
