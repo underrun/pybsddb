@@ -507,7 +507,6 @@ def print_versions():
     if db.version() >= (5, 0) :
         print 'bsddb.db.full_version(): %s' %repr(db.full_version())
     print 'bsddb.db.__version__: %s' % db.__version__
-    print 'bsddb.db.cvsid:       %s' % db.cvsid
 
     # Workaround for allowing generating an EGGs as a ZIP files.
     suffix="__"

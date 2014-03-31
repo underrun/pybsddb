@@ -91,8 +91,6 @@
 #include "bsddb.h"
 #undef COMPILING_BSDDB_C
 
-static char *rcs_id = "$Id$";
-
 /* --------------------------------------------------------------------- */
 /* Various macro definitions */
 
@@ -9415,17 +9413,14 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     PyObject* py_api;
     PyObject* pybsddb_version_s;
     PyObject* db_version_s;
-    PyObject* cvsid_s;
 
 #if (PY_VERSION_HEX < 0x03000000)
     pybsddb_version_s = PyString_FromString(PY_BSDDB_VERSION);
     db_version_s = PyString_FromString(DB_VERSION_STRING);
-    cvsid_s = PyString_FromString(rcs_id);
 #else
     /* This data should be ascii, so UTF-8 conversion is fine */
     pybsddb_version_s = PyUnicode_FromString(PY_BSDDB_VERSION);
     db_version_s = PyUnicode_FromString(DB_VERSION_STRING);
-    cvsid_s = PyUnicode_FromString(rcs_id);
 #endif
 
     /* Initialize object types */
@@ -9464,12 +9459,9 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     /* Add some symbolic constants to the module */
     d = PyModule_GetDict(m);
     PyDict_SetItemString(d, "__version__", pybsddb_version_s);
-    PyDict_SetItemString(d, "cvsid", cvsid_s);
     PyDict_SetItemString(d, "DB_VERSION_STRING", db_version_s);
     Py_DECREF(pybsddb_version_s);
     pybsddb_version_s = NULL;
-    Py_DECREF(cvsid_s);
-    cvsid_s = NULL;
     Py_DECREF(db_version_s);
     db_version_s = NULL;
 
