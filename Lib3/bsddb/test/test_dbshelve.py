@@ -65,8 +65,7 @@ class DataClass:
 
 
 class DBShelveTestCase(unittest.TestCase):
-    if (sys.version_info < (2, 7)) or ((sys.version_info >= (3, 0)) and
-            (sys.version_info < (3, 2))) :
+    if sys.version_info < (2, 7) :
         def assertIn(self, a, b, msg=None) :
             return self.assertTrue(a in b, msg=msg)
 
@@ -157,14 +156,10 @@ class DBShelveTestCase(unittest.TestCase):
 
         dbvalues = list(d.values())
         self.assertEqual(len(dbvalues), len(list(d.keys())))
-        if sys.version_info < (2, 6) :
-            values.sort()
-            dbvalues.sort()
-            self.assertEqual(values, dbvalues)
-        else :  # XXX: Convert all to strings. Please, improve
-            values.sort(key=lambda x : str(x))
-            dbvalues.sort(key=lambda x : str(x))
-            self.assertEqual(repr(values), repr(dbvalues))
+        # XXX: Convert all to strings. Please, improve
+        values.sort(key=lambda x : str(x))
+        dbvalues.sort(key=lambda x : str(x))
+        self.assertEqual(repr(values), repr(dbvalues))
 
         items = list(d.items())
         self.assertEqual(len(items), len(values))

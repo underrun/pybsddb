@@ -44,6 +44,5 @@ if not absolute_import :
     from _pybsddb import *
     from _pybsddb import __version__
 else :
-    # Because this syntaxis is not valid before Python 2.5
-    exec("from ._pybsddb import *")
-    exec("from ._pybsddb import __version__")
+    from ._pybsddb import *
+    from ._pybsddb import __version__

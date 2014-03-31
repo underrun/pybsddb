@@ -32,48 +32,24 @@ storage.
 import sys
 absolute_import = (sys.version_info[0] >= 3)
 if absolute_import :
-    # Because this syntaxis is not valid before Python 2.5
-    exec("from . import db")
+    from . import db
 else :
     from . import db
 
 if sys.version_info[0] >= 3 :
     import pickle  # Will be converted to "pickle" by "2to3"
 else :
-    if sys.version_info < (2, 6) :
+    import warnings
+    with warnings.catch_warnings() :
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
         import pickle
-    else :
-        # When we drop support for python 2.4
-        # we could use: (in 2.5 we need a __future__ statement)
-        #
-        #    with warnings.catch_warnings():
-        #        warnings.filterwarnings(...)
-        #        ...
-        #
-        # We can not use "with" as is, because it would be invalid syntax
-        # in python 2.4 and (with no __future__) 2.5.
-        # Here we simulate "with" following PEP 343 :
-        import warnings
-        w = warnings.catch_warnings()
-        w.__enter__()
-        try :
-            warnings.filterwarnings('ignore',
-                message='the cPickle module has been removed in Python 3.0',
-                category=DeprecationWarning)
-            import pickle
-        finally :
-            w.__exit__()
-        del w
 
 HIGHEST_PROTOCOL = pickle.HIGHEST_PROTOCOL
 def _dumps(object, protocol):
     return pickle.dumps(object, protocol=protocol)
 
-if sys.version_info < (2, 6) :
-    from UserDict import DictMixin as MutableMapping
-else :
-    import collections
-    MutableMapping = collections.MutableMapping
+import collections
+MutableMapping = collections.MutableMapping
 
 #------------------------------------------------------------------------
 
@@ -167,16 +143,15 @@ class DBShelf(MutableMapping):
         else:
             return list(self.db.keys())
 
-    if sys.version_info >= (2, 6) :
-        def __iter__(self) :  # XXX: Load all keys in memory :-(
-            for k in list(self.db.keys()) :
-                yield k
+    def __iter__(self) :  # XXX: Load all keys in memory :-(
+        for k in list(self.db.keys()) :
+            yield k
 
-        # Do this when "DB"  support iteration
-        # Or is it enough to pass thru "getattr"?
-        #
-        # def __iter__(self) :
-        #    return self.db.__iter__()
+    # Do this when "DB"  support iteration
+    # Or is it enough to pass thru "getattr"?
+    #
+    # def __iter__(self) :
+    #    return self.db.__iter__()
 
 
     def open(self, *args, **kwargs):

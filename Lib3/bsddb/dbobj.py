@@ -24,16 +24,12 @@
 import sys
 absolute_import = (sys.version_info[0] >= 3)
 if absolute_import :
-    # Because this syntaxis is not valid before Python 2.5
-    exec("from . import db")
+    from . import db
 else :
     from . import db
 
-if sys.version_info < (2, 6) :
-    from UserDict import DictMixin as MutableMapping
-else :
-    import collections
-    MutableMapping = collections.MutableMapping
+import collections
+MutableMapping = collections.MutableMapping
 
 class DBEnv:
     def __init__(self, *args, **kwargs):
@@ -131,9 +127,8 @@ class DB(MutableMapping):
     def __delitem__(self, arg):
         del self._cobj[arg]
 
-    if sys.version_info >= (2, 6) :
-        def __iter__(self) :
-            return self._cobj.__iter__()
+    def __iter__(self) :
+        return self._cobj.__iter__()
 
     def append(self, *args, **kwargs):
         return self._cobj.append(*args, **kwargs)

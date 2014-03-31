@@ -44,8 +44,7 @@ absolute_import = (sys.version_info[0] >= 3)
 
 try:
     if absolute_import :
-        # Because this syntaxis is not valid before Python 2.5
-        exec("from . import _pybsddb")
+        from . import _pybsddb
     else :
         import _pybsddb
     from bsddb3.dbutils import DeadlockWrap as _DeadlockWrap
@@ -67,12 +66,8 @@ import sys, os
 
 from weakref import ref
 
-if sys.version_info < (2, 6) :
-    import UserDict
-    MutableMapping = UserDict.DictMixin
-else :
-    import collections
-    MutableMapping = collections.MutableMapping
+import collections
+MutableMapping = collections.MutableMapping
 
 class _iter_mixin(MutableMapping):
     def _make_iter_cursor(self):
@@ -121,12 +116,8 @@ class _iter_mixin(MutableMapping):
             except _db.DBCursorClosedError:
                 # the database was modified during iteration.  abort.
                 pass
-# When Python 2.4 not supported in bsddb3, we can change this to "finally"
-        except :
+        finally :
             self._in_iter -= 1
-            raise
-
-        self._in_iter -= 1
 
     def iteritems(self):
         if not self.db:
@@ -164,12 +155,8 @@ class _iter_mixin(MutableMapping):
             except _db.DBCursorClosedError:
                 # the database was modified during iteration.  abort.
                 pass
-# When Python 2.4 not supported in bsddb3, we can change this to "finally"
-        except :
+        finally :
             self._in_iter -= 1
-            raise
-
-        self._in_iter -= 1
 
 
 class _DBWithCursor(_iter_mixin):
@@ -242,11 +229,10 @@ class _DBWithCursor(_iter_mixin):
         self._checkOpen()
         return _DeadlockWrap(lambda: len(self.db))  # len(self.db)
 
-    if sys.version_info >= (2, 6) :
-        def __repr__(self) :
-            if self.isOpen() :
-                return repr(dict(_DeadlockWrap(self.db.items)))
-            return repr(dict())
+    def __repr__(self) :
+        if self.isOpen() :
+            return repr(dict(_DeadlockWrap(self.db.items)))
+        return repr(dict())
 
     def __getitem__(self, key):
         self._checkOpen()

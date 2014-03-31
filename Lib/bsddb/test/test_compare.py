@@ -71,19 +71,17 @@ class ComparatorTests(unittest.TestCase) :
         data = expected_data[:]
 
         import sys
-        if sys.version_info < (2, 6) :
-            data.sort(cmp=comparator)
-        else :  # Insertion Sort. Please, improve
-            data2 = []
-            for i in data :
-                for j, k in enumerate(data2) :
-                    r = comparator(k, i)
-                    if r == 1 :
-                        data2.insert(j, i)
-                        break
-                else :
-                    data2.append(i)
-            data = data2
+        # Insertion Sort. Please, improve
+        data2 = []
+        for i in data :
+            for j, k in enumerate(data2) :
+                r = comparator(k, i)
+                if r == 1 :
+                    data2.insert(j, i)
+                    break
+            else :
+                data2.append(i)
+        data = data2
 
         self.assertEqual(data, expected_data,
                          "comparator `%s' is not right: %s vs. %s"
@@ -103,8 +101,7 @@ class AbstractBtreeKeyCompareTestCase(unittest.TestCase) :
     env = None
     db = None
 
-    if (sys.version_info < (2, 7)) or ((sys.version_info >= (3,0)) and
-            (sys.version_info < (3, 2))) :
+    if sys.version_info < (2, 7) :
         def assertLess(self, a, b, msg=None) :
             return self.assertTrue(a<b, msg=msg)
 
@@ -289,8 +286,7 @@ class AbstractDuplicateCompareTestCase(unittest.TestCase) :
     env = None
     db = None
 
-    if (sys.version_info < (2, 7)) or ((sys.version_info >= (3,0)) and
-            (sys.version_info < (3, 2))) :
+    if sys.version_info < (2, 7) :
         def assertLess(self, a, b, msg=None) :
             return self.assertTrue(a<b, msg=msg)
 

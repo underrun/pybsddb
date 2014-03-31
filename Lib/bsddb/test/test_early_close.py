@@ -201,31 +201,9 @@ class DBEnvClosedEarlyCrash(unittest.TestCase):
 
         # Not interested in warnings about implicit close.
         import warnings
-        if sys.version_info < (2, 6) :
-            # Completely resetting the warning state is
-            # problematic with python >=2.6 with -3 (py3k warning),
-            # because some stdlib modules selectively ignores warnings.
-            warnings.simplefilter("ignore")
+        with warnings.catch_warnings() :
+            warnings.filterwarnings("ignore")
             txn.commit()
-            warnings.resetwarnings()
-        else :
-            # When we drop support for python 2.4
-            # we could use: (in 2.5 we need a __future__ statement)
-            #
-            #    with warnings.catch_warnings():
-            #        warnings.simplefilter("ignore")
-            #        txn.commit()
-            #
-            # We can not use "with" as is, because it would be invalid syntax
-            # in python 2.4 and (with no __future__) 2.5.
-            # Here we simulate "with" following PEP 343 :
-            w = warnings.catch_warnings()
-            w.__enter__()
-            try :
-                warnings.simplefilter("ignore")
-                txn.commit()
-            finally :
-                w.__exit__()
 
         self.assertRaises(db.DBCursorClosedError, c2.first)
 

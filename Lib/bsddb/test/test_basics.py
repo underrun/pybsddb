@@ -189,10 +189,7 @@ class BasicTestCase(unittest.TestCase):
         try:
             d.delete('abcd')
         except db.DBNotFoundError, val:
-            if sys.version_info < (2, 6) :
-                self.assertEqual(val[0], db.DB_NOTFOUND)
-            else :
-                self.assertEqual(val.args[0], db.DB_NOTFOUND)
+            self.assertEqual(val.args[0], db.DB_NOTFOUND)
             if verbose: print val
         else:
             self.fail("expected exception")
@@ -211,10 +208,7 @@ class BasicTestCase(unittest.TestCase):
         try:
             d.put('abcd', 'this should fail', flags=db.DB_NOOVERWRITE)
         except db.DBKeyExistError, val:
-            if sys.version_info < (2, 6) :
-                self.assertEqual(val[0], db.DB_KEYEXIST)
-            else :
-                self.assertEqual(val.args[0], db.DB_KEYEXIST)
+            self.assertEqual(val.args[0], db.DB_KEYEXIST)
             if verbose: print val
         else:
             self.fail("expected exception")
@@ -364,10 +358,7 @@ class BasicTestCase(unittest.TestCase):
                 rec = c.next()
             except db.DBNotFoundError, val:
                 if get_raises_error:
-                    if sys.version_info < (2, 6) :
-                        self.assertEqual(val[0], db.DB_NOTFOUND)
-                    else :
-                        self.assertEqual(val.args[0], db.DB_NOTFOUND)
+                    self.assertEqual(val.args[0], db.DB_NOTFOUND)
                     if verbose: print val
                     rec = None
                 else:
@@ -388,10 +379,7 @@ class BasicTestCase(unittest.TestCase):
                 rec = c.prev()
             except db.DBNotFoundError, val:
                 if get_raises_error:
-                    if sys.version_info < (2, 6) :
-                        self.assertEqual(val[0], db.DB_NOTFOUND)
-                    else :
-                        self.assertEqual(val.args[0], db.DB_NOTFOUND)
+                    self.assertEqual(val.args[0], db.DB_NOTFOUND)
                     if verbose: print val
                     rec = None
                 else:
@@ -414,10 +402,7 @@ class BasicTestCase(unittest.TestCase):
         try:
             n = c.set('bad key')
         except db.DBNotFoundError, val:
-            if sys.version_info < (2, 6) :
-                self.assertEqual(val[0], db.DB_NOTFOUND)
-            else :
-                self.assertEqual(val.args[0], db.DB_NOTFOUND)
+            self.assertEqual(val.args[0], db.DB_NOTFOUND)
             if verbose: print val
         else:
             if set_raises_error:
@@ -431,10 +416,7 @@ class BasicTestCase(unittest.TestCase):
         try:
             n = c.get_both('0404', 'bad data')
         except db.DBNotFoundError, val:
-            if sys.version_info < (2, 6) :
-                self.assertEqual(val[0], db.DB_NOTFOUND)
-            else :
-                self.assertEqual(val.args[0], db.DB_NOTFOUND)
+            self.assertEqual(val.args[0], db.DB_NOTFOUND)
             if verbose: print val
         else:
             if get_raises_error:
@@ -463,10 +445,7 @@ class BasicTestCase(unittest.TestCase):
             rec = c.current()
         except db.DBKeyEmptyError, val:
             if get_raises_error:
-                if sys.version_info < (2, 6) :
-                    self.assertEqual(val[0], db.DB_KEYEMPTY)
-                else :
-                    self.assertEqual(val.args[0], db.DB_KEYEMPTY)
+                self.assertEqual(val.args[0], db.DB_KEYEMPTY)
                 if verbose: print val
             else:
                 self.fail("unexpected DBKeyEmptyError")
@@ -511,10 +490,7 @@ class BasicTestCase(unittest.TestCase):
                 # a bug may cause a NULL pointer dereference...
                 getattr(c, method)(*args)
             except db.DBError, val:
-                if sys.version_info < (2, 6) :
-                    self.assertEqual(val[0], 0)
-                else :
-                    self.assertEqual(val.args[0], 0)
+                self.assertEqual(val.args[0], 0)
                 if verbose: print val
             else:
                 self.fail("no exception raised when using a buggy cursor's"
@@ -729,8 +705,7 @@ class BasicHashWithEnvTestCase(BasicWithEnvTestCase):
 #----------------------------------------------------------------------
 
 class BasicTransactionTestCase(BasicTestCase):
-    if (sys.version_info < (2, 7)) or ((sys.version_info >= (3, 0)) and
-            (sys.version_info < (3, 2))) :
+    if sys.version_info < (2, 7) :
         def assertIn(self, a, b, msg=None) :
             return self.assertTrue(a in b, msg=msg)
 
