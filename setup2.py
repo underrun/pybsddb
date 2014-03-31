@@ -480,6 +480,10 @@ the website for more details on the types and methods provided. The goal is to
 mirror most of the real Berkeley DB API so fall back to the Oracle Berkeley DB
 documentation as appropriate.
 
+If you need to support ancient versiones of Python and/or Berkeley DB , you can
+use old releases of this bindings.
+
+
 `Homepage <http://www.jcea.es/programacion/
 pybsddb.htm>`__ --
 `Documentation <http://www.jcea.es/programacion/
@@ -520,12 +524,9 @@ pybsddb_doc/>`__ --
                     'Topic :: Software Development',
                     'Topic :: System :: Clustering',
                     'Programming Language :: Python :: 2',
-                    'Programming Language :: Python :: 2.4',
-                    'Programming Language :: Python :: 2.5',
                     'Programming Language :: Python :: 2.6',
                     'Programming Language :: Python :: 2.7',
                     'Programming Language :: Python :: 3',
-                    'Programming Language :: Python :: 3.1',
                     'Programming Language :: Python :: 3.2',
                     'Programming Language :: Python :: 3.3',
                     'Programming Language :: Python :: 3.4',
