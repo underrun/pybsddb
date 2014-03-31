@@ -65,9 +65,9 @@ copyright = '2008-2014 Jesus Cea Avion'
 # The default replacements for |version| and |release|.
 #
 # The short X.Y version.
-version = '6.0.2'
+version = '6.1.0'
 # The full version, including alpha/beta/rc tags.
-release = '6.0.2'
+release = '6.1.0'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
