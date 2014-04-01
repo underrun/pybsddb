@@ -8,7 +8,8 @@
     compatibility with those versions, you can keep using old
     releases of these bindings.
   * From now, on our support reference is Red Had Enterprise Linux 6.
-  * Drop module attribute "cvsid".
+  * Drop modules attributes "cvsid".
+  * Drop (hidden) $Id$ keyword in the documentation.
 
 6.0.1:
   * Clarification of license. Thanks to
