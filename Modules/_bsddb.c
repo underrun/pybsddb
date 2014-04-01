@@ -94,21 +94,6 @@
 /* --------------------------------------------------------------------- */
 /* Various macro definitions */
 
-#if (PY_VERSION_HEX < 0x02050000)
-typedef int Py_ssize_t;
-#endif
-
-#if (PY_VERSION_HEX < 0x02060000)  /* really: before python trunk r63675 */
-/* This code now uses PyBytes* API function names instead of PyString*.
- * These #defines map to their equivalent on earlier python versions.    */
-#define PyBytes_FromStringAndSize PyString_FromStringAndSize
-#define PyBytes_FromString PyString_FromString
-#define PyBytes_AsStringAndSize PyString_AsStringAndSize
-#define PyBytes_Check PyString_Check
-#define PyBytes_GET_SIZE PyString_GET_SIZE
-#define PyBytes_AS_STRING PyString_AS_STRING
-#endif
-
 #if (PY_VERSION_HEX >= 0x03000000)
 #define NUMBER_Check    PyLong_Check
 #define NUMBER_AsLong   PyLong_AsLong
@@ -118,9 +103,7 @@ typedef int Py_ssize_t;
 #define NUMBER_Check    PyInt_Check
 #define NUMBER_AsLong   PyInt_AsLong
 #define NUMBER_FromLong PyInt_FromLong
-#if (PY_VERSION_HEX >= 0x02050000)
 #define NUMBER_FromUnsignedLong PyInt_FromSize_t
-#endif
 #endif
 
 #ifdef WITH_THREAD
@@ -190,14 +173,9 @@ static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 /* --------------------------------------------------------------------- */
 /* Structure definitions */
 
-#if PYTHON_API_VERSION < 1010
-#error "Python 2.1 or later required"
-#endif
-
-
 /* Defaults for moduleFlags in DBEnvObject and DBObject. */
 #define DEFAULT_GET_RETURNS_NONE                1
-#define DEFAULT_CURSOR_SET_RETURNS_NONE         1   /* 0 in pybsddb < 4.2, python < 2.4 */
+#define DEFAULT_CURSOR_SET_RETURNS_NONE         1 
 
 
 /* See comment in Python 2.6 "object.h" */
@@ -213,11 +191,6 @@ staticforward PyTypeObject DB_Type, DBCursor_Type, DBEnv_Type, DBTxn_Type,
 staticforward PyTypeObject DBSequence_Type;
 #if (DBVER >= 52)
 staticforward PyTypeObject DBSite_Type;
-#endif
-
-#ifndef Py_TYPE
-/* for compatibility with Python 2.5 and earlier */
-#define Py_TYPE(ob)              (((PyObject*)(ob))->ob_type)
 #endif
 
 #define DBObject_Check(v)           (Py_TYPE(v) == &DB_Type)
@@ -819,7 +792,7 @@ static void _addIntToDict(PyObject* dict, char *name, int value)
     Py_XDECREF(v);
 }
 
-#if (DBVER >= 60) && (PY_VERSION_HEX >= 0x02050000)
+#if (DBVER >= 60)
 /* add an unsigned integer to a dictionary using the given name as a key */
 static void _addUnsignedIntToDict(PyObject* dict, char *name, unsigned int value)
 {
@@ -8518,7 +8491,7 @@ DBSequence_stat(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
 
 
 #define MAKE_INT_ENTRY(name)  _addIntToDict(dict_stat, #name, sp->st_##name)
-#if (DBVER >= 60) && (PY_VERSION_HEX >= 0x02050000)
+#if (DBVER >= 60)
 #define MAKE_UNSIGNED_INT_ENTRY(name)   _addUnsignedIntToDict(dict_stat, #name, sp->st_##name)
 #endif
 #define MAKE_LONG_LONG_ENTRY(name)  _addDb_seq_tToDict(dict_stat, #name, sp->st_##name)
@@ -8530,7 +8503,7 @@ DBSequence_stat(DBSequenceObject* self, PyObject* args, PyObject* kwargs)
     MAKE_LONG_LONG_ENTRY(last_value);
     MAKE_LONG_LONG_ENTRY(min);
     MAKE_LONG_LONG_ENTRY(max);
-#if (DBVER >= 60) && (PY_VERSION_HEX >= 0x02050000)
+#if (DBVER >= 60)
     MAKE_UNSIGNED_INT_ENTRY(cache_size);
 #else
     MAKE_INT_ENTRY(cache_size);
@@ -9928,22 +9901,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     DBError = NULL;     /* used in MAKE_EX so that it derives from nothing */
     MAKE_EX(DBError);
 
-#if (PY_VERSION_HEX < 0x03000000)
-    /* Some magic to make DBNotFoundError and DBKeyEmptyError derive
-     * from both DBError and KeyError, since the API only supports
-     * using one base class. */
-    PyDict_SetItemString(d, "KeyError", PyExc_KeyError);
-    PyRun_String("class DBNotFoundError(DBError, KeyError): pass\n"
-	         "class DBKeyEmptyError(DBError, KeyError): pass",
-                 Py_file_input, d, d);
-    DBNotFoundError = PyDict_GetItemString(d, "DBNotFoundError");
-    DBKeyEmptyError = PyDict_GetItemString(d, "DBKeyEmptyError");
-    PyDict_DelItemString(d, "KeyError");
-#else
-    /* Since Python 2.5, PyErr_NewException() accepts a tuple, to be able to
-    ** derive from several classes. We use this new API only for Python 3.0,
-    ** though.
-    */
     {
         PyObject* bases;
 
@@ -9958,7 +9915,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
         Py_XDECREF(bases);
     }
-#endif
 
     MAKE_EX(DBCursorClosedError);
     MAKE_EX(DBKeyExistError);
@@ -10007,11 +9963,6 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
     bsddb_api.dbsequence_type  = &DBSequence_Type;
     bsddb_api.makeDBError      = makeDBError;
 
-    /*
-    ** Capsules exist from Python 2.7 and 3.1.
-    ** We don't support Python 3.0 anymore, so...
-    ** #if (PY_VERSION_HEX < ((PY_MAJOR_VERSION < 3) ? 0x02070000 : 0x03020000))
-    */
 #if (PY_VERSION_HEX < 0x02070000)
     py_api = PyCObject_FromVoidPtr((void*)&bsddb_api, NULL);
 #else
