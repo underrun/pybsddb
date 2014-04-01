@@ -41,7 +41,6 @@ refactor_path="/usr/local/lib/python3.3/"
 def copy2to3(path_from, path_to) :
     files_to_convert = {}
     if os.path.isdir(path_from) :
-        if path_from.endswith(".svn") : return {}
         if path_from.endswith(".hg") : return {}
         try :
             os.mkdir(path_to)
