@@ -93,10 +93,6 @@ License of Python files
     * Lib*/bsddb/dbshelve.py: Free software.
       Total Control Software.
 
-    * Lib*/bsddb/test_support.py: PYTHON
-      (This code will be dropped when minimum supported
-      version is Python 2.6)
-
 License of C files
 ++++++++++++++++++
 

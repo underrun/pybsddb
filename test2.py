@@ -292,7 +292,7 @@ class PathInit:
         # Hack sys.path
         self.cwd = os.getcwd()
         print 'Running tests from', self.cwd
-        sys.path.insert(0, os.path.join(self.cwd, self.libdir))
+        sys.path[0] = os.path.join(self.cwd, self.libdir)
 
 
 def match(rx, s):
