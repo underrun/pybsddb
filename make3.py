@@ -36,7 +36,7 @@ SUCH DAMAGE.
 """
 
 import sys, os
-refactor_path="/usr/local/lib/python3.3/"
+refactor_path="/usr/local/lib/python3.4/"
 
 def copy2to3(path_from, path_to) :
     files_to_convert = {}
