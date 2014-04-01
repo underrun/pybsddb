@@ -3,7 +3,7 @@ IS STILL VALUABLE, SO USE YOUR BRAIN :-)
 
 
 README.txt
-bsddb3 v6.0.x
+bsddb3 v6.1.x
 http://www.jcea.es/programacion/pybsddb.htm
 2009-06-30
 --------------------------------
@@ -40,8 +40,8 @@ In addition we've run it on a several varieties of Linux and of course
 on Win32.
 
 This wrapper should be compatible with Berkeley DB releases going back
-to 4.3 up to and including DB 6.0.  It should also be compatible
-with Python versions from 2.4 to Python 2.7, and Python 3.1 to 3.3.
+to 4.7 up to and including DB 6.1.  It should also be compatible
+with Python versions 2.6, 2.7, and Python 3.2 to 3.4.
 
 
 Installation
@@ -62,8 +62,8 @@ fairly simple to get things ready to go.
    are indicated in the README then apply it to your Berkeley DB
    sources and rebuild it.
 
-1. First, make sure that you have a Berkeley DB version >= 4.3 and
-   no later than 6.0 and that it is built and installed.  Setup.py will
+1. First, make sure that you have a Berkeley DB version >= 4.7 and
+   no later than 6.1 and that it is built and installed.  Setup.py will
    detect a db3 or Berkeley DB directory under either /usr/local or /usr
    in that order; this will catch installations from RPMs and most hand
    installations under Unix.  If setup.py can't find your libdb then you

@@ -1,12 +1,12 @@
 =================================================
-Berkeley DB 4.3 thru 6.0 Python Extension Package
+Berkeley DB 4.7 thru 6.1 Python Extension Package
 =================================================
 
 Introduction
 ------------
 
 This is a simple bit of documentation for the bsddb3.db Python extension
-module which wraps the Berkeley DB 4.3 thru 6.0 C library. The extension
+module which wraps the Berkeley DB 4.7 thru 6.1 C library. The extension
 module is located in a Python package along with a few pure python
 modules.
 

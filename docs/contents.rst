@@ -1,5 +1,5 @@
 =============================================
- Python Bindings for Berkeley DB 4.3 thru 6.0
+ Python Bindings for Berkeley DB 4.7 thru 6.1
 =============================================
 
 Introduction
