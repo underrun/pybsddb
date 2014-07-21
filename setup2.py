@@ -53,10 +53,7 @@ if (sys.version_info[0] < 3) and (sys.version_info >= (2, 6)) :
             category=DeprecationWarning)
 
     if sys.version_info[:2] == (2, 7) :
-        # We should use "with", but it is not available until Python 2.5.
-        context = warnings.catch_warnings()
-        context.__enter__()
-        try :
+        with warnings.catch_warnings() :
             # Python 2.7.0
             warnings.filterwarnings('ignore',
                 message='The CObject type is marked Pending Deprecation ' \
@@ -73,8 +70,6 @@ if (sys.version_info[0] < 3) and (sys.version_info >= (2, 6)) :
                 import bsddb  # Import the 2.7 version, that uses CObject
             except ImportError :
                 pass
-        finally :
-            context.__exit__()
 
     # setuptools warnings
     warnings.filterwarnings('ignore',
@@ -216,10 +211,8 @@ if os.name == 'posix':
                 f = os.path.join(d, "db.h")
                 if debug: print "db: looking for db.h in", f
                 if os.path.exists(f):
-                    # This should move to "with" when we drop support for python 2.4 and 2.5
-                    fichero = open(f)
-                    f = fichero.read()
-                    fichero.close()
+                    with open(f) as fichero :
+                        f = fichero.read()
                     m = re.search(r"#define\WDB_VERSION_MAJOR\W(\d+)", f)
                     if m:
                         db_major = int(m.group(1))
@@ -335,10 +328,8 @@ if os.name == 'posix':
 
     # read db.h to figure out what version of Berkeley DB this is
     ver = None
-    # This should move to "with" when we drop support for Python 2.4 and 2.5
-    f = open(os.path.join(incdir, 'db.h'), 'r')
-    db_h_lines = f.readlines()
-    f.close()
+    with open(os.path.join(incdir, 'db.h'), 'r') as f :
+        db_h_lines = f.readlines()
     db_ver_re = re.compile(
         r'^#define\s+DB_VERSION_STRING\s.*Berkeley DB (\d+\.\d+).*')
     db_ver2 = db_ver
@@ -381,10 +372,8 @@ elif os.name == 'nt':
 
     # read db.h to figure out what version of Berkeley DB this is
     ver = None
-    # We should move this to "with" when we drop support for Python 2.4 and 2.5.
-    f = open(os.path.join(incdir, 'db.h'), 'r')
-    db_h_lines = f.readlines()
-    f.close()
+    with open(os.path.join(incdir, 'db.h'), 'r') as f :
+        db_h_lines = f.readlines()
     db_ver_re = re.compile(
         r'^#define\s+DB_VERSION_STRING\s.*Berkeley DB (\d+\.\d+).*')
     for line in db_h_lines:
