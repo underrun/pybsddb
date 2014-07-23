@@ -3,7 +3,7 @@ DONATE!
 =======
 
 .. _BitCoins: https://en.wikipedia.org/wiki/Bitcoin
-.. _9AC53D4D: http://pgp.rediris.es:11371/pks/lookup?search=0x9AC53D4D&op=vindex&fingerprint=on&exact=on
+.. _4A86FE43: http://pgp.rediris.es:11371/pks/lookup?search=0x4A86FE43&op=vindex&fingerprint=on&exact=on
 
 Work on this project is currently driven by my own interests, needs and
 spare time. If you appreciate this software or if you want to sponsor a
@@ -33,19 +33,21 @@ for a third party). You can verify it in two diffent ways:
    .. code-block:: none
 
      -----BEGIN PGP SIGNED MESSAGE-----
-     Hash: SHA1
+     Hash: SHA256
 
      The BitCoin address for donating to PyBSDDB/BSDDB3 project
      is "16avqyUK4vDqBdpUy365PPW44zNqVHLZSC".
 
      -----BEGIN PGP SIGNATURE-----
-     Version: GnuPG v1.4.10 (GNU/Linux)
+     Version: GnuPG v1
 
-     iQCVAwUBUcOqLplgi5GaxT1NAQIJWQP+MNdszxcFnlJFMMs/RmDEX5J4WeasoajY
-     jHuHII2wrDxhTcneKeBFNwogmgZReFMTVp/emJ/kjidgXrWXOCfsEEcE/EesJq/u
-     0m6f7LRLufKOi6JwqnYnsKSSJ9ikhsKS9nyTzCBXUETEPhkQ/e3vYy103WefVnOd
-     hxw5UNrUOtk=
-     =2VGk
+     iQEcBAEBCAAGBQJT0AKrAAoJEGjgN61Khv5DK1kH/3JctpZUr+h8iFCfpRCaHsX8
+     +6dmncm3ebAWt9kCRqZZ74Eq8h9918C4UwxLLPrskAIqQw3g2IyTdaPOHomM23XH
+     Ru1ok5fhCjNMCw4+dnnO/AXxEY6cIf2PjsQlkUznCe0zz1ndZQ33XbdI/1ItUEhy
+     nZVWblnCCAQnO69Nhf6vPxfRDol1oDTh0bginhflmS01P2r8m9Mzx9h7Rrx7oKwG
+     meNIVIzwdA+Tbex0GvQGorPSwEuid/mVYuDp9jSLp8XgeXBQfeqPWv+PO2tkijYE
+     Zs1A1YuFA3S8uDnZhe9P7u4w7PGlCNIrDvTyippXiYB9fnSHu6mPmCw3wv+SWkM=
+     =9xWm
      -----END PGP SIGNATURE-----
 
    Doing something like :kbd:`gpg --verify` and pasting this block, your
@@ -53,12 +55,14 @@ for a third party). You can verify it in two diffent ways:
 
    .. code-block:: none
 
-      gpg: Signature made Fri 21 Jun 2013 03:19:42 AM CEST using RSA key ID 9AC53D4D
-      gpg: Good signature from "Jesus Cea Avion <jcea@jcea.es>"
+      gpg: Signature made Wed 23 Jul 2014 08:44:59 PM CEST using RSA key ID 4A86FE43
+      gpg: Good signature from "Jesús Cea Avión <jcea@jcea.es>"
 
-   My PGP key ID is "9AC53D4D_". My key fingerprint is::
+   My PGP key ID is "4A86FE43_". My key fingerprint is::
 
-    pub   1024R/9AC53D4D 1995-01-01
-          Key fingerprint = F4 07 90 C2 58 86 8A 75  45 40 33 1C 72 4C E5 E1
-    uid                  Jesus Cea Avion <jcea@jcea.es>
+    pub   4096R/1567BC0F 2014-01-13
+          Key fingerprint = 8627 62C4 6EC3 567C B58C  7FB1 A510 404E 1567 BC0F
+	  uid                  Jesús Cea Avión <jcea@jcea.es>
+	  sub   2048R/4A86FE43 2014-01-13
+	  sub   2048R/05488493 2014-01-13
 

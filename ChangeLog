@@ -1,5 +1,6 @@
 6.1.1:
   * Code cleanup after dropping Python 2.4/2.5 support.
+  * PGP key changed.
 
 6.1.0:
   * Support Berkeley DB 6.1.x.
