@@ -2,6 +2,7 @@
   * Code cleanup after dropping Python 2.4/2.5 support.
   * PGP key changed.
   * Support for DB_FORCESYNCENV flag in "DB_ENV.close()".
+  * Support for DB_LOG_NOSYNC flag in "DB_ENV.log_set_config()".
 
 6.1.0:
   * Support Berkeley DB 6.1.x.

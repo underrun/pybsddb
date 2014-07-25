@@ -9745,6 +9745,7 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
 #if (DBVER >= 61)
     ADD_INT(d, DB_FORCESYNCENV);
+    ADD_INT(d, DB_LOG_NOSYNC);
 #endif
 
 #if (DBVER >=52)
