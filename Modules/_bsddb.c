@@ -175,7 +175,7 @@ static PyObject* DBRepUnavailError;     /* DB_REP_UNAVAIL */
 
 /* Defaults for moduleFlags in DBEnvObject and DBObject. */
 #define DEFAULT_GET_RETURNS_NONE                1
-#define DEFAULT_CURSOR_SET_RETURNS_NONE         1 
+#define DEFAULT_CURSOR_SET_RETURNS_NONE         1
 
 
 /* See comment in Python 2.6 "object.h" */
@@ -9741,6 +9741,10 @@ PyMODINIT_FUNC  PyInit__bsddb(void)    /* Note the two underscores */
 
 #if (DBVER >= 60)
     ADD_INT(d, DB_EVENT_REP_AUTOTAKEOVER_FAILED);
+#endif
+
+#if (DBVER >= 61)
+    ADD_INT(d, DB_FORCESYNCENV);
 #endif
 
 #if (DBVER >=52)
