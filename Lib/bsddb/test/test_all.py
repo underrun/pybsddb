@@ -443,9 +443,6 @@ if sys.version_info[0] >= 3 :
         def get_dbp(self) :
             return self._db
 
-    import string
-    string.letters=[chr(i) for i in xrange(65,91)]
-
     bsddb._db.DBEnv_orig = bsddb._db.DBEnv
     bsddb._db.DB_orig = bsddb._db.DB
     bsddb._db.DBSequence_orig = bsddb._db.DBSequence

@@ -3,6 +3,7 @@
   * PGP key changed.
   * Support for DB_FORCESYNCENV flag in "DB_ENV.close()".
   * Support for DB_LOG_NOSYNC flag in "DB_ENV.log_set_config()".
+  * Fix tests under Windows. See https://bugs.python.org/issue22943 .
 
 6.1.0:
   * Support Berkeley DB 6.1.x.
